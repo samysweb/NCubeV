@@ -1,8 +1,12 @@
+module AST
+
+export ParsedNode, Term, Variable, TermNumber, Operation, CompositeTerm, Formula, Comparator, Atom, Connective, CompositeFormula
+
 abstract type ParsedNode end
 
 # Terms
 abstract type Term <: ParsedNode end
-struct Number <: Term
+struct TermNumber <: Term
 	value :: Float64
 end
 struct Variable <: Term
@@ -32,6 +36,4 @@ struct CompositeFormula <: Formula
 	args :: Vector{Formula}
 end
 
-struct SyntaxParsingException <: Exception
-	message
 end

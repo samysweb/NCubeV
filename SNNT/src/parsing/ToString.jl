@@ -3,7 +3,7 @@ function term_to_string(v :: Variable)
 	return v.name
 end
 
-function term_to_string(n :: Number)
+function term_to_string(n :: TermNumber)
 	return string(n.value)
 end
 
@@ -26,7 +26,7 @@ function term_to_string(a :: Atom)
 end
 
 function term_to_string(c :: CompositeFormula)
-	if c.connective == Not
+	if c.connective == AST.Not
 		return "!("*term_to_string(c.args[1])*")"
 	else
 		first_value = true
@@ -44,15 +44,15 @@ function term_to_string(c :: CompositeFormula)
 end
 
 function term_to_string(op :: Operation)
-	if op == Add
+	if op == AST.Add
 		return "+"
-	elseif op == Sub
+	elseif op == AST.Sub
 		return "-"
-	elseif op == Mul
+	elseif op == AST.Mul
 		return "*"
-	elseif op == Div
+	elseif op == AST.Div
 		return "/"
-	elseif op == Pow
+	elseif op == AST.Pow
 		return "^"
 	else
 		throw("Unknown operation")
@@ -60,13 +60,13 @@ function term_to_string(op :: Operation)
 end
 
 function term_to_string(con :: Connective)
-	if con == Not
+	if con == AST.Not
 		return "!"
-	elseif con == And
+	elseif con == AST.And
 		return "&"
-	elseif con == Or
+	elseif con == AST.Or
 		return "|"
-	elseif con == Implies
+	elseif con == AST.Implies
 		return "->"
 	else
 		throw("Unknown connective")
@@ -74,17 +74,17 @@ function term_to_string(con :: Connective)
 end
 
 function term_to_string(comp :: Comparator)
-	if comp == Less
+	if comp == AST.Less
 		return "<"
-	elseif comp == LessEq
+	elseif comp == AST.LessEq
 		return "<="
-	elseif comp == Greater
+	elseif comp == AST.Greater
 		return ">"
-	elseif comp == GreaterEq
+	elseif comp == AST.GreaterEq
 		return ">="
-	elseif comp == Eq
+	elseif comp == AST.Eq
 		return "="
-	elseif comp == Neq
+	elseif comp == AST.Neq
 		return "!="
 	else
 		throw("Unknown comparator")
