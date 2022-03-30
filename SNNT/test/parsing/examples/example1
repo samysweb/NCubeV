@@ -1,0 +1,2 @@
+
+rPos + rVel * T > rVel^2 / (2 * A) & !(0 <= T) & cpost = 0 & rAccpost = 0 & rPospost = rPos -> rVelpost != rVel

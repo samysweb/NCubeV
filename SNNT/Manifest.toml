@@ -1,0 +1,9 @@
+# This file is machine-generated - editing it directly is not advised
+
+julia_version = "1.7.1"
+manifest_format = "2.0"
+
+[[deps.Tokenize]]
+git-tree-sha1 = "0952c9cee34988092d73a5708780b3917166a0dd"
+uuid = "0796e94c-ce3b-5d07-9a54-7f471281c624"
+version = "0.5.21"
