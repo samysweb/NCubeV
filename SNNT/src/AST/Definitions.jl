@@ -1,7 +1,3 @@
-module AST
-
-export ParsedNode, Term, Variable, TermNumber, Operation, CompositeTerm, Formula, Comparator, Atom, Connective, CompositeFormula
-
 abstract type ParsedNode end
 
 # Terms
@@ -12,7 +8,7 @@ end
 struct Variable <: Term
 	name :: String
 end
-@enum Operation Add=0 Sub=1 Mul=2 Div=3 Pow=4
+@enum Operation Add=0 Sub=1 Mul=2 Div=3 Pow=4 Neg=5
 struct CompositeTerm <: Term
 	operation :: Operation
 	args :: Vector{Term}
@@ -34,6 +30,4 @@ end
 struct CompositeFormula <: Formula
 	connective :: Connective
 	args :: Vector{Formula}
-end
-
 end

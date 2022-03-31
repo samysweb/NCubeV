@@ -1,6 +1,6 @@
 module SNNT
-include("AST.jl")
-include("parsing/Main.jl")
+include("AST/Main.jl")
+include("Parsing/Main.jl")
 
 
 

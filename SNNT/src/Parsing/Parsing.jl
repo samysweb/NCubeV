@@ -245,6 +245,10 @@ function parse_factor(tokenmanager :: TokenManager)
 		end
 		@debug "Parsing bracket expression (end)"
 		return result
+	elseif Tokens.exactkind(current_token) == Tokens.MINUS
+		@debug "Parsing unary minus"
+		next(tokenmanager)
+		return CompositeTerm(AST.Neg, [parse_factor(tokenmanager)])
 	elseif Tokens.kind(current_token) == Tokens.INTEGER || Tokens.kind(current_token) == Tokens.FLOAT
 		@debug "Parsing number"
 		current_token = next(tokenmanager)

@@ -8,17 +8,21 @@ function term_to_string(n :: TermNumber)
 end
 
 function term_to_string(t :: CompositeTerm)
-	first_value = true
-	result = ""
-	for v in t.args
-		if first_value
-			first_value = false
-		else
-			result = result*term_to_string(t.operation)
+	if t.operation == AST.Neg
+		return "-"*term_to_string(t.args[1])
+	else
+		first_value = true
+		result = ""
+		for v in t.args
+			if first_value
+				first_value = false
+			else
+				result = result*term_to_string(t.operation)
+			end
+			result = result*term_to_string(v)
 		end
-		result = result*term_to_string(v)
+		return "("*result*")"
 	end
-	return "("*result*")"
 end
 
 function term_to_string(a :: Atom)
