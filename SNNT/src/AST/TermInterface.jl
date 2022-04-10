@@ -4,17 +4,31 @@ import TermInterface.operation
 import TermInterface.arguments
 import TermInterface.similarterm
 import TermInterface.symtype
+import TermInterface.issym
+import TermInterface.nameof
 import SymbolicUtils.promote_symtype
+import SymbolicUtils.is_literal_number
 import Base.isequal
+#import MultivariatePolynomials.similarvariable
 
 istree(x :: TermNumber) = false
 istree(x :: Variable) = false
-function istree(x :: CompositeTerm)
-	@debug "istree(CompositeTerm)"
-	return true
-end
-istree(x :: Atom) = true
-istree(x :: CompositeFormula) = true
+istree(x::Type{CompositeTerm}) = true
+istree(x::Type{Atom}) = true
+istree(x::Type{CompositeFormula}) = true
+
+issym(x::Type{TermNumber}) = true
+issym(x::Type{Variable}) = true
+
+nameof(x :: TermNumber) = x
+nameof(x :: Variable) = x
+
+# function similarvariable(p,v::Variable)
+# 	return Variable(v.name)
+# end
+# function similarvariable(p,v::TermNumber)
+# 	return TermNumber(v.value)
+# end
 
 function exprhead(x :: CompositeTerm)
 	@debug "exprhead(CompositeTerm)"
@@ -62,11 +76,13 @@ function operation(x :: CompositeFormula)
 	elseif x.connective == Or
 		return (or)
 	elseif x.connective == Implies
-		return :implies
+		return (implies)
 	end
 end
 
 function operation_to_ast(op)
+	@debug "operation_to_ast(op)"
+	@debug op
 	if op == (+)
 		return Add
 	elseif op == (-)
@@ -77,25 +93,25 @@ function operation_to_ast(op)
 		return Div
 	elseif op == (^)
 		return Pow
-	elseif op == :(!)
+	elseif op == (not)
 		return Not
-	elseif op == :(&&)
+	elseif op == (and)
 		return And
-	elseif op == :(||)
+	elseif op == (or)
 		return Or
-	elseif op == :implies
+	elseif op == (implies)
 		return Implies
-	elseif op == :(<)
+	elseif op == (<)
 		return Less
-	elseif op == :(<=)
+	elseif op == (<=)
 		return LessEq
-	elseif op == :(>)
+	elseif op == (>)
 		return Greater
-	elseif op == :(>=)
+	elseif op == (>=)
 		return GreaterEq
-	elseif op == :(==)
+	elseif op == (==)
 		return Eq
-	elseif op == :(!=)
+	elseif op == (!=)
 		return Neq
 	end
 	throw("Unknown operation")
@@ -116,19 +132,25 @@ function similarterm(t::CompositeTerm, f, args, symtype=CompositeTerm;metadata=n
 	@debug "symtype: ", symtype
 	@debug "metadata: ", metadata
 	@debug "exprhead: ", exprhead
-
+	if args[1]==(*)
+		println("Weird case")
+		println(args[1])
+		println(args[1]==(*))
+		args = args[2:end]
+		throw("Weird case")
+	end
 	return CompositeTerm(operation_to_ast(f), args)
 end
 
 function similarterm(f::CompositeFormula, c, args, symtype=CompositeFormula;metadata=nothing, exprhead=:call)
 	@debug "similarterm(CompositeFormula)"
-	return CompositeFormula(c, args)
+	return CompositeFormula(operation_to_ast(c), args)
 end
 
 function similarterm(a::Atom, c, args, symtype=Atom;metadata=nothing, exprhead=:call)
 	@debug "similarterm(Atom)"
 	if length(args) == 2
-		return Atom(c, args[1], args[2])
+		return Atom(operation_to_ast(c), args[1], args[2])
 	else
 		throw("Can only instantiate atom with two arguments!")
 	end
@@ -163,3 +185,5 @@ function isequal(x :: CompositeTerm, y :: CompositeTerm)
 end
 isequal(x :: Atom, y :: Atom) = x.comparator == y.comparator && isequal(x.left, y.left) && isequal(x.right, y.right)
 isequal(x :: CompositeFormula, y :: CompositeFormula) = x.connective == y.connective && all(isequal(x.args, y.args))
+
+is_literal_number(x :: TermNumber) = true

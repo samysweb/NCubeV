@@ -6,6 +6,6 @@ export istree, exprhead, operation, arguments,similarterm,symtype, promote_symty
 include("Definitions.jl")
 include("Operations.jl")
 include("TermInterface.jl")
-
+include("SymbolicUtils.jl")
 
 end

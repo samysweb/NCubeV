@@ -19,21 +19,31 @@ geq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(GreaterEq,t1,t2)
 eq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Eq,t1,t2)
 neq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Neq,t1,t2)
 
-+(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}} = CompositeTerm(Add,Term[t1,t2])
-function +(t1 :: T1, t2 :: T2, t3 :: T3, t4 :: T4...) where {T1 <: Term,T2 <: Term,T3 <: Term,T4 <: Term}
-	args = Term[t1,t2,t3]
-	append!(args, t4)
-	CompositeTerm(Add,args)
+#+(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}} = CompositeTerm(Add,Term[t1,t2])
+#+(t1 :: T1) where {T1 <: Union{Term,Number}} = t1
+function +(t1 :: T1, t2 :: T2...) where {T1 <: Union{Term,Number},T2 <: Term}
+	args = Term[t1]
+	append!(args, t2)
+	if all(x->x isa TermNumber, args)
+		return TermNumber(+(map(x->x.value, args)...))
+	else
+		CompositeTerm(Add,args)
+	end
 end
-+(t1 :: T1) where {T1 <: Union{Term,Number}} = t1
 -(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}} = CompositeTerm(Sub,Term[t1,t2])
-*(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}} = CompositeTerm(Mul,Term[t1,t2])
-function *(t1 :: T1, t2 :: T2, t3 :: T3, t4 :: T4...) where {T1 <: Term,T2 <: Term,T3 <: Term,T4 <: Term}
-	args = Term[t1,t2,t3]
-	append!(args, t4)
-	CompositeTerm(Mul,args)
+#*(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}} = CompositeTerm(Mul,Term[t1,t2])
+#*(t1 :: T1) where {T1 <: Union{Term,Number}} = t1
+function *(t1 :: T1, t2 :: T2...) where {T1 <: Union{Term,Number},T2 <: Union{Term, Number}}
+	args = Term[t1]
+	append!(args, t2)
+	if all(x->x isa TermNumber, args)
+		result = TermNumber(*(map(x->x.value, args)...))
+	else
+		result = CompositeTerm(Mul,args)
+	end
+	@debug result
+	return result
 end
-*(t1 :: T1) where {T1 <: Union{Term,Number}} = t1
 /(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}} = CompositeTerm(Div,Term[t1,t2])
 ^(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}} = CompositeTerm(Pow,Term[t1,t2])
 
