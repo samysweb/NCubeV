@@ -31,14 +31,14 @@ nameof(x :: Variable) = x
 # end
 
 function exprhead(x :: CompositeTerm)
-	@debug "exprhead(CompositeTerm)"
+	# @debug "exprhead(CompositeTerm)"
 	return :call
 end
 exprhead(x :: Atom) = :call
 exprhead(x :: CompositeFormula) = :call
 
 function operation(x :: CompositeTerm)
-	@debug "operation(CompositeTerm)"
+	# @debug "operation(CompositeTerm)"
 	if x.operation == Add
 		return (+)
 	elseif x.operation == Sub
@@ -81,8 +81,8 @@ function operation(x :: CompositeFormula)
 end
 
 function operation_to_ast(op)
-	@debug "operation_to_ast(op)"
-	@debug op
+	# @debug "operation_to_ast(op)"
+	# @debug op
 	if op == (+)
 		return Add
 	elseif op == (-)
@@ -118,20 +118,20 @@ function operation_to_ast(op)
 end
 
 function arguments(x :: CompositeTerm)
-	@debug "arguments(CompositeTerm) returning ", x.args
+	# @debug "arguments(CompositeTerm) returning ", x.args
 	return x.args
 end
 arguments(x :: Atom) = [x.left, x.right]
 arguments(x :: CompositeFormula) = x.args
 
 function similarterm(t::CompositeTerm, f, args, symtype=CompositeTerm;metadata=nothing, exprhead=:call)
-	@debug "similarterm(CompositeTerm)"
-	@debug "t: ", t
-	@debug "f: ", f
-	@debug "args: ", args
-	@debug "symtype: ", symtype
-	@debug "metadata: ", metadata
-	@debug "exprhead: ", exprhead
+	# @debug "similarterm(CompositeTerm)"
+	# @debug "t: ", t
+	# @debug "f: ", f
+	# @debug "args: ", args
+	# @debug "symtype: ", symtype
+	# @debug "metadata: ", metadata
+	# @debug "exprhead: ", exprhead
 	if args[1]==(*)
 		println("Weird case")
 		println(args[1])
@@ -142,13 +142,13 @@ function similarterm(t::CompositeTerm, f, args, symtype=CompositeTerm;metadata=n
 	return CompositeTerm(operation_to_ast(f), args)
 end
 
-function similarterm(f::CompositeFormula, c, args, symtype=CompositeFormula;metadata=nothing, exprhead=:call)
-	@debug "similarterm(CompositeFormula)"
+function similarterm(::Type{CompositeFormula}, c, args, symtype=CompositeFormula;metadata=nothing, exprhead=:call)
+	# @debug "similarterm(CompositeFormula)"
 	return CompositeFormula(operation_to_ast(c), args)
 end
 
-function similarterm(a::Atom, c, args, symtype=Atom;metadata=nothing, exprhead=:call)
-	@debug "similarterm(Atom)"
+function similarterm(::Type{Atom}, c, args, symtype=Atom;metadata=nothing, exprhead=:call)
+	# @debug "similarterm(Atom)"
 	if length(args) == 2
 		return Atom(operation_to_ast(c), args[1], args[2])
 	else
@@ -157,9 +157,9 @@ function similarterm(a::Atom, c, args, symtype=Atom;metadata=nothing, exprhead=:
 end
 
 function promote_symtype(f :: Symbol, arg_symtypes)
-	@debug "promote_symtype(Symbol, Vector{Symbol})"
-	@debug f
-	@debug arg_symtypes
+	# @debug "promote_symtype(Symbol, Vector{Symbol})"
+	# @debug f
+	# @debug arg_symtypes
 	if f == (+) || f == (-) || f == (*) || f == (/) || f == (^)
 		return CompositeTerm
 	elseif f == :(!) || f == :(&&) || f == :(||) || f == :implies

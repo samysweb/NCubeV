@@ -28,6 +28,12 @@ end
 function term_to_string(a :: Atom)
 	return term_to_string(a.left)*term_to_string(a.comparator)*term_to_string(a.right)
 end
+function term_to_string(a :: TrueAtom)
+	return "true"
+end
+function term_to_string(a :: FalseAtom)
+	return "false"
+end
 
 function term_to_string(c :: CompositeFormula)
 	if c.connective == AST.Not

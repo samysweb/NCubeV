@@ -25,6 +25,17 @@ struct Atom <: Formula
 	right :: Term
 end
 
+struct TrueAtom <: Formula end
+struct FalseAtom <: Formula end
+
+struct LinearConstraint <: Formula
+	# !equality => coefficients * variables <= constant
+	# equality => coefficients * variables == constant
+	coefficients :: Array{Float64}
+	bias :: Float64
+	equality :: Bool
+end
+
 # Composite formulae
 @enum Connective Not=0 And=1 Or=2 Implies=3
 struct CompositeFormula <: Formula

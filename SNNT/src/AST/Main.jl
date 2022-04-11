@@ -1,6 +1,6 @@
 module AST
 
-export ParsedNode, Term, Variable, TermNumber, Operation, CompositeTerm, Formula, Comparator, Atom, Connective, CompositeFormula
+export ParsedNode, Term, Variable, TermNumber, Operation, CompositeTerm, Formula, Comparator, Atom, TrueAtom, FalseAtom, Connective, CompositeFormula
 export istree, exprhead, operation, arguments,similarterm,symtype, promote_symtype
 
 include("Definitions.jl")
