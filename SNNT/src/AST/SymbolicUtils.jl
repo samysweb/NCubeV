@@ -1,39 +1,10 @@
 using Metatheory.Rewriters
 using SymbolicUtils
-using Metatheory
+#using Metatheory
 
 import SymbolicUtils.simplify
 
 # Many of the rules are based on the rules provided by SymbolicUtils.simplify with adjustments for our AST types.
-
-function not_division(x :: Term)
-	@debug "not_division -", x," - ", !(x isa CompositeTerm) || operation(x) != (/)
-	return !(x isa CompositeTerm) || operation(x) != (/) && (!istree(x) || all(y->not_division(y), arguments(x)))
-end
-
-function _isone(x :: Term)
-	return x isa TermNumber && isone(x.value)
-end
-
-function _iszero(x :: Term)
-	return x isa TermNumber && iszero(x.value)
-end
-
-function _isnotzero(x :: Term)
-	return !_iszero(x)
-end
-
-function _istrue(x :: Formula)
-	return x isa TrueAtom
-end
-
-function _isfalse(x :: Formula)
-	return x isa FalseAtom
-end
-
-function is_literal_number(x :: Term)
-	return x isa TermNumber
-end
 
 PLUS_RULES = [
 	@rule(~x::SymbolicUtils.isnotflat(+) => SymbolicUtils.flatten_term(+, ~x))
@@ -84,9 +55,6 @@ ASSORTED_RULES = [
 	@rule(~x \ ~y => ~y / (~x))
 	@rule(one(~x) => one(symtype(~x)))
 	@rule(zero(~x) => zero(symtype(~x)))
-	@rule(conj(~x::SymbolicUtils._isreal) => ~x)
-	@rule(real(~x::SymbolicUtils._isreal) => ~x)
-	@rule(imag(~x::SymbolicUtils._isreal) => zero(symtype(~x)))
 	@rule(ifelse(~x::is_literal_number, ~y, ~z) => ~x ? ~y : ~z)
 	# DIV Rules
 	@rule (~x / ~x => TermNumber(1.0))

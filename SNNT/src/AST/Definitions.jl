@@ -1,15 +1,29 @@
+using MLStyle.AbstractPatterns: literal
+
 abstract type ParsedNode end
 
 # Terms
 abstract type Term <: ParsedNode end
-struct TermNumber <: Term
+@as_record struct TermNumber <: Term
 	value :: Float64
 end
-struct Variable <: Term
+
+@enum VariableType Input=1 Output=2
+MLStyle.is_enum(::VariableType)=true
+MLStyle.pattern_uncall(e::VariableType, _, _, _, _) = literal(e)
+
+@as_record struct Variable <: Term
 	name :: String
+	mapping :: Union{Nothing,Tuple{VariableType, Int64}}
+	position :: Union{Nothing,Int64}
+	Variable(name :: String) = new(name, nothing, nothing)
+	# Full constructor
+	Variable(name :: String, mapping :: Union{Nothing,Tuple{VariableType, Int64}}, position :: Union{Nothing,Int64}) = new(name, mapping, position)
 end
 @enum Operation Add=0 Sub=1 Mul=2 Div=3 Pow=4 Neg=5
-struct CompositeTerm <: Term
+MLStyle.is_enum(::Operation)=true
+MLStyle.pattern_uncall(o::Operation, _, _, _, _) = literal(o)
+@as_record struct CompositeTerm <: Term
 	operation :: Operation
 	args :: Vector{Term}
 end
@@ -18,17 +32,28 @@ end
 abstract type Formula <: ParsedNode end
 
 # Atoms
+# After simplification the only ones allowed are Less, LessEq, Eq, Neq
 @enum Comparator Less=0 LessEq=1 Greater=2 GreaterEq=3 Eq=4 Neq=5
-struct Atom <: Formula
+MLStyle.is_enum(::Comparator)=true
+MLStyle.pattern_uncall(e::Comparator, _, _, _, _) = literal(e)
+@as_record struct Atom <: Formula
 	comparator :: Comparator
 	left :: Term
 	right :: Term
 end
 
-struct TrueAtom <: Formula end
-struct FalseAtom <: Formula end
+@as_record struct TrueAtom <: Formula end
+@as_record struct FalseAtom <: Formula end
 
-struct LinearConstraint <: Formula
+@as_record struct OverApprox
+	formula :: Formula
+end
+
+@as_record struct UnderApprox
+	formula :: Formula
+end
+
+@as_record struct LinearConstraint <: Formula
 	# !equality => coefficients * variables <= constant
 	# equality => coefficients * variables == constant
 	coefficients :: Array{Float64}
@@ -38,7 +63,9 @@ end
 
 # Composite formulae
 @enum Connective Not=0 And=1 Or=2 Implies=3
-struct CompositeFormula <: Formula
+MLStyle.is_enum(::Connective)=true
+MLStyle.pattern_uncall(e::Connective, _, _, _, _) = literal(e)
+@as_record struct CompositeFormula <: Formula
 	connective :: Connective
 	args :: Vector{Formula}
 end

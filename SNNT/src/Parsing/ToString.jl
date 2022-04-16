@@ -34,6 +34,13 @@ end
 function term_to_string(a :: FalseAtom)
 	return "false"
 end
+function term_to_string(a :: LinearConstraint)
+	if a.equality
+		return string(a.coefficients)*"<="*string(a.bias)
+	else
+		return string(a.coefficients)*"<"*string(a.bias)
+	end
+end
 
 function term_to_string(c :: CompositeFormula)
 	if c.connective == AST.Not
