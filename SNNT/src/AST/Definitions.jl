@@ -45,11 +45,13 @@ end
 @as_record struct TrueAtom <: Formula end
 @as_record struct FalseAtom <: Formula end
 
-@as_record struct OverApprox
+abstract type ApproxNode <: Formula end
+
+@as_record struct OverApprox <: ApproxNode
 	formula :: Formula
 end
 
-@as_record struct UnderApprox
+@as_record struct UnderApprox <: ApproxNode
 	formula :: Formula
 end
 
@@ -68,4 +70,16 @@ MLStyle.pattern_uncall(e::Connective, _, _, _, _) = literal(e)
 @as_record struct CompositeFormula <: Formula
 	connective :: Connective
 	args :: Vector{Formula}
+end
+
+struct Query
+	formula :: Formula
+	variables :: Set{Variable}
+	num_input_vars :: Int64
+	num_output_vars :: Int64
+	function Query(formula :: Formula, variables :: Set{Variable})
+		num_input_vars = length(filter(x->x.mapping[1]==Input,variables))
+		num_output_vars = length(variables)-num_input_vars
+		return new(formula, variables, num_input_vars, num_output_vars)
+	end
 end

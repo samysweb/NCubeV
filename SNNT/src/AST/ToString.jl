@@ -107,3 +107,11 @@ function term_to_string(comp :: Comparator)
 		throw("Unknown comparator")
 	end
 end
+
+function term_to_string(o :: OverApprox)
+	return "O("*term_to_string(o.formula)*")"
+end
+
+function term_to_string(o :: UnderApprox)
+	return "U("*term_to_string(o.formula)*")"
+end

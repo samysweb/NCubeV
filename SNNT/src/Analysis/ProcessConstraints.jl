@@ -92,6 +92,7 @@ function make_linear(left :: Term, right :: Term, comp :: Comparator, var_number
 		end
 		_ => throw("Unsupported term in make_linear: "*string(left))
 	end
+	# TODO(steuber): Possible optimization: Include side-constraint for Eq/Neq that one of the two formulas always has to be true/false
 	if comp == AST.LessEq
 		return LinearConstraint(constraint_row, bias, true)
 	elseif comp == AST.Less
@@ -123,17 +124,13 @@ function overapprox(f :: ParsedNode)
 	return @match f begin
 		Atom() => OverApprox(f)
 		CompositeFormula(c, args) => begin
-			print(c)
 			return @match c begin
 				Not => CompositeFormula(c, [underapprox(args[1])])
 				Implies => begin
 					res = CompositeFormula(c, [underapprox(args[1]), overapprox(args[2])])
-					print(res)
 					return res
 				end
 				_ => begin
-					print(c)
-					println("fallback")
 					return CompositeFormula(c, map(overapprox, args))
 				end
 			end

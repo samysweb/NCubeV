@@ -3,6 +3,7 @@ using SymbolicUtils
 #using Metatheory
 
 import SymbolicUtils.simplify
+import SymbolicUtils.<ₑ
 
 # Many of the rules are based on the rules provided by SymbolicUtils.simplify with adjustments for our AST types.
 
@@ -23,9 +24,34 @@ PLUS_RULES = [
 	@rule(+(~x) => ~x)
 ]
 
+# Push divisions to the front of multiplication so they can be removed...
+function mul_comp(a,b)
+	if istree(a) && operation(a) == (/) && (!istree(b) || operation(b) != /)
+		return true
+	elseif (!istree(a) || operation(a) != (/)) && istree(b) && operation(b) == (/)
+		return false
+	else
+		return a <ₑ b
+	end
+end
+
+mul_needs_sorting(f) = x -> SymbolicUtils.is_operation(f)(x) && !issorted(arguments(x), lt=mul_comp)
+
+function sort_mul_args(f, t)
+    args = arguments(t)
+    if length(args) < 2
+        return similarterm(t, f, args)
+    elseif length(args) == 2
+        x, y = args
+        return similarterm(t, f, mul_comp(x,y) ? [x,y] : [y,x])
+    end
+    args = args isa Tuple ? [args...] : args
+    similarterm(t, f, sort(args, lt=mul_comp))
+end
+
 TIMES_RULES = [
 	@rule(~x::SymbolicUtils.isnotflat(*) => SymbolicUtils.flatten_term(*, ~x))
-	@rule(~x::SymbolicUtils.needs_sorting(*) => SymbolicUtils.sort_args(*, ~x))
+	@rule(~x::mul_needs_sorting(*) => sort_mul_args(*, ~x))
 
 	@SymbolicUtils.ordered_acrule(~a::is_literal_number * ~b::is_literal_number => ~a * ~b)
 	@rule(*(~~x::SymbolicUtils.hasrepeats) => *(SymbolicUtils.merge_repeats(^, ~~x)...))
@@ -44,6 +70,7 @@ POW_RULES = [
 	@rule((((~x)^(~p::SymbolicUtils._isinteger))^(~q::SymbolicUtils._isinteger)) => (~x)^((~p)*(~q)))
 	@rule(^(~x, ~z::_iszero) => 1)
 	@rule(^(~x, ~z::_isone) => ~x)
+	@rule (^(~a::is_literal_number, ~b::is_literal_number) => ^(~a, ~b))
 	@rule(inv(~x) => 1/(~x))
 ]
 
@@ -119,14 +146,15 @@ function atom_simplifier()
 				@rule (~a::is_literal_number != ~b::is_literal_number => solve_concrete_atom(!=, ~a, ~b))
 
 				# TODO(steuber): Extend matching rule for >=3 element multiplications
-				@rule ( ((~x::_isone/~y)* ~z < ~a) => le(~z, ~a * ~y) )
-				@rule ( (~z * (~x::_isone/~y) < ~a) => le(~z, ~a * ~y) )
-				@rule ( ((~x::_isone/~y) * ~z <= ~a) => leq(~z, ~a * ~y) )
-				@rule ( (~z * (~x::_isone/~y) <= ~a) => leq(~z, ~a * ~y) )
-				@rule ( ((~x::_isone/~y) * ~z == ~a) => eq(~z, ~a * ~y) )
-				@rule ( (~z * (~x::_isone/~y) == ~a) => eq(~z, ~a * ~y) )
-				@rule ( ((~x::_isone/~y) * ~z != ~a) => neq(~z, ~a * ~y) )
-				@rule ( (~z * (~x::_isone/~y) != ~a) => neq(~z, ~a * ~y) )
+				@rule ( (*((~x::_isone/~y), ~~z) < ~a) => le(*(~~z...), ~a * ~y) )
+				@rule ( (*((~x::_isone/~y), ~~z) <= ~a) => leq(*(~~z...), ~a * ~y) )
+				@rule ( (*((~x::_isone/~y), ~~z) == ~a) => eq(*(~~z...), ~a * ~y) )
+				@rule ( (*((~x::_isone/~y), ~~z) != ~a) => neq(*(~~z...), ~a * ~y) )
+				
+				#@rule ( (~z * (~x::_isone/~y) < ~a) => le(~z, ~a * ~y) )
+				#@rule ( (~z * (~x::_isone/~y) <= ~a) => leq(~z, ~a * ~y) )
+				#@rule ( (~z * (~x::_isone/~y) == ~a) => eq(~z, ~a * ~y) )
+				#@rule ( (~z * (~x::_isone/~y) != ~a) => neq(~z, ~a * ~y) )
 			]
 		)
 	)

@@ -34,6 +34,12 @@ function or_construction(fs :: Vector{Formula})
 end
 implies(f :: T1, g :: T2) where {T1 <: Formula,T2 <: Formula} = CompositeFormula(Implies,[f,g])
 
+linear_lesseq(coeff :: Vector{Float64}, bias :: Float64) = LinearConstraint(coeff, bias, true)
+linear_less(coeff :: Vector{Float64}, bias :: Float64) = LinearConstraint(coeff, bias, false)
+
+overapprox_fun(f :: T1) where {T1 <: Formula} = OverApprox(f)
+underapprox_fun(f :: T1) where {T1 <: Formula} = UnderApprox(f)
+
 le(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Less,t1,t2)
 leq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(LessEq,t1,t2)
 gr(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Greater,t1,t2)
@@ -83,6 +89,44 @@ function /(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,
 		return CompositeTerm(Div,Term[t1,t2])
 	end
 end
-^(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}} = CompositeTerm(Pow,Term[t1,t2])
+function ^(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}}
+	if t1 isa TermNumber && t2 isa TermNumber
+		return TermNumber(t1.value ^ t2.value)
+	elseif t1 isa TermNumber && t2 isa Number
+		return TermNumber(t1.value ^ t2)
+	else
+		return CompositeTerm(Pow,Term[t1,t2])
+	end
+end
 
 convert(::Type{Term}, x :: T) where {T <: Number} = TermNumber(x)
+
+function negate(a :: UnderApprox)
+	return OverApprox(negate(a.formula))
+end
+function negate(a :: OverApprox)
+	return UnderApprox(negate(a.formula))
+end
+
+
+function negate(a :: Atom)
+	if a.comparator == Less
+		return Atom(GreaterEq, a.left, a.right)
+	elseif a.comparator == LessEq
+		return Atom(Greater, a.left, a.right)
+	elseif a.comparator == Greater
+		return Atom(LessEq, a.left, a.right)
+	elseif a.comparator == GreaterEq
+		return Atom(Less, a.left, a.right)
+	elseif a.comparator == Eq
+		return Atom(Neq, a.left, a.right)
+	elseif a.comparator == Neq
+		return Atom(Eq, a.left, a.right)
+	else
+		return CompositeFormula(Not, [a])
+	end
+end
+
+function negate(a :: LinearConstraint)
+	return LinearConstraint(-a.coefficients, -a.bias, !a.equality)
+end

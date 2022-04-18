@@ -2,6 +2,7 @@ module Parsing
 	using Tokenize
 	using ..AST
 
+	export parse_constraint
+
 	include("Parsing.jl")
-	include("ToString.jl")
 end
