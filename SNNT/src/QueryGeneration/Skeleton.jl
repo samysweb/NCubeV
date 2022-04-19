@@ -72,7 +72,6 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 						# Set internal to what is contained in the under-approximation
 						#formula.formula = internal
 						new_formula = (typeof(formula))(internal)
-						print(new_formula)
 						skeleton.variable_mapping[internal_formula.variable_number] = ConstraintVariable(new_formula)
 						return internal_formula
 					end

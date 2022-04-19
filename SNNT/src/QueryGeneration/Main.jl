@@ -6,6 +6,7 @@ module QueryGeneration
 
 	using ..AST
 	using ..LP
+	using ..Z3Interface
 	include("Definitions.jl")
 	include("Skeleton.jl")
 	include("Iterator.jl")

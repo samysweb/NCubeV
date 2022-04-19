@@ -69,6 +69,9 @@ function iterate(query :: Query, state :: Union{Nothing, BooleanSkeleton})
 	if isnothing(state)
 		state = BooleanSkeleton(query.formula)
 	end
+	# TODO(steuber): Refactor z3 context creation (maybe same for LP)
+	ctx, variables = z3_context(query.num_input_vars+query.num_output_vars)
+	@assert (Z3Interface.nl_feasible(Formula[query.formula], ctx, variables))
 	solution = nothing
 	feasible = 0
 	solution = solve(state.sat_instance)
@@ -81,10 +84,23 @@ function iterate(query :: Query, state :: Union{Nothing, BooleanSkeleton})
 		while solution != :unsatisfiable
 			conjunction = get_atoms(state, solution)
 			linear, nonlinear = split_by_linearity(conjunction)
-			if !LP.is_feasible(map(x->x[2],linear))
-				#print("_")
-				# Flag combination of linear constraints as infeasible and continue...
+			infeasible_combination = nothing
+			#if !LP.is_feasible(map(x->x[2],linear))
+			# Flag combination of linear constraints as infeasible and continue...
+			#	infeasible_combination = map(x -> -x[1], linear)
+			# TODO(steuber): How many checks here are the optimal choice?
+			if !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],linear)),ctx, variables)
+				#println("Z3 says it's infeasible")
 				infeasible_combination = map(x -> -x[1], linear)
+			elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
+				#println("Z3 says it's infeasible")
+				infeasible_combination = map(x -> -x[1], nonlinear)
+			elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],conjunction)),ctx, variables)
+				#println("Z3 says it's infeasible")
+				infeasible_combination = map(x -> -x[1], conjunction)
+			end
+			if !isnothing(infeasible_combination)
+				#print("_")
 				push!(infeasibility_cache, infeasible_combination)
 				add_clause(
 					state.sat_instance,
@@ -113,9 +129,9 @@ function iterate(query :: Query, state :: Union{Nothing, BooleanSkeleton})
 			solution = solve(state.sat_instance)
 		end
 		pop(state.sat_instance)
+		# Dump infeasibility_cache into clause database
+		add_clauses(state.sat_instance, infeasibility_cache)
 		if !isnothing(input)
-			# Dump infeasibility_cache into clause database
-			add_clauses(state.sat_instance, infeasibility_cache)
 			feasible+=1
 			# Disallow input
 			add_clause(

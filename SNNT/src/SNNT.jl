@@ -3,6 +3,7 @@ include("AST/Main.jl")
 include("Parsing/Main.jl")
 include("Analysis/Main.jl")
 include("LP/Main.jl")
+include("Z3Interface/Main.jl")
 include("QueryGeneration/Main.jl")
 include("Control/Main.jl")
 using .AST
