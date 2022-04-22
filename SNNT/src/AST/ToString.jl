@@ -115,3 +115,15 @@ end
 function term_to_string(o :: UnderApprox)
 	return "U("*term_to_string(o.formula)*")"
 end
+
+function term_to_string(v :: NonLinearSubstitution)
+	return "(N)" #term_to_string(v.term)
+end
+
+function term_to_string(a :: SemiLinearConstraint)
+	if a.equality
+		return string(a.coefficients)*"+N("*string(length(a.semilinears))*")<="*string(a.bias)
+	else
+		return string(a.coefficients)*"+N("*string(length(a.semilinears))*")<"*string(a.bias)
+	end
+end

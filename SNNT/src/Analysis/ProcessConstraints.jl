@@ -57,32 +57,70 @@ function translate_constraints(f :: Formula, variable_set :: Set{Variable})
 end
 
 function make_linear(left :: Term, right :: Term, comp :: Comparator, var_number :: Int64)
-	@assert AST.is_linear(left) && right isa TermNumber
+	# @assert AST.is_linear(left) && right isa TermNumber
 	constraint_row = zeros(Float64, var_number)
 	bias = right.value
+	semilinears = Dict{ApproxQuery, Float64}()
 	@match left begin
 		TermNumber(value) => throw("Constraint "*string(left)*" "*string(comp)*" "*string(right)*" should have been simplified already")
 		Variable(name, _, position) => begin
 			constraint_row[position]+=1.0
 		end
+		NonLinearSubstitution(query) => begin
+			if haskey(semilinears, query)
+				semilinears[query] += 1.0
+			else
+				semilinears[query] = 1.0
+			end
+		end
 		CompositeTerm(op, args) => begin
 			if op == AST.Mul
 				@assert length(args) == 2
-				@assert args[1] isa TermNumber
-				@assert args[2] isa Variable
-				constraint_row[args[2].position]+=args[1].value
+				if !(args[1] isa TermNumber)
+					@assert args[2] isa TermNumber
+					args = [args[2], args[1]]
+				end
+				if args[2] isa Variable
+					constraint_row[args[2].position]+=args[1].value
+				elseif args[2] isa NonLinearSubstitution
+					if haskey(semilinears, args[2])
+						semilinears[args[2].query] += args[1].value
+					else
+						semilinears[args[2].query] = args[1].value
+					end
+				else
+					throw("Constraint "*string(left)*" "*string(comp)*" "*string(right)*" should have been simplified already")
+				end
 			elseif op == AST.Add
 				for cur_arg in left.args
 					if cur_arg isa Variable
 						constraint_row[cur_arg.position] += 1
 					elseif cur_arg isa TermNumber
 						bias -= cur_arg.value
+					elseif cur_arg isa NonLinearSubstitution
+						if haskey(semilinears, cur_arg)
+							semilinears[cur_arg.query] += 1.0
+						else
+							semilinears[cur_arg.query] = 1.0
+						end
 					elseif cur_arg.operation == AST.Mul
 						@assert length(cur_arg.args) == 2
-						if cur_arg.args[1] isa TermNumber
-							constraint_row[cur_arg.args[2].position] += cur_arg.args[1].value
+						if !(cur_arg.args[1] isa TermNumber)
+							@assert cur_arg.args[2] isa TermNumber
+							args = [cur_arg.args[2], cur_arg.args[1]]
+						else 
+							args = cur_arg.args
+						end
+						if args[2] isa Variable
+							constraint_row[args[2].position]+=args[1].value
+						elseif args[2] isa NonLinearSubstitution
+							if haskey(semilinears, args[2])
+								semilinears[args[2].query] += args[1].value
+							else
+								semilinears[args[2].query] = args[1].value
+							end
 						else
-							constraint_row[cur_arg.args[1].position] += cur_arg.args[2].value
+							throw("Constraint "*string(left)*" "*string(comp)*" "*string(right)*" should have been simplified already")
 						end
 					else
 						throw("Unsupported term in make_linear: "*string(cur_arg))
@@ -93,20 +131,30 @@ function make_linear(left :: Term, right :: Term, comp :: Comparator, var_number
 		_ => throw("Unsupported term in make_linear: "*string(left))
 	end
 	# TODO(steuber): Possible optimization: Include side-constraint for Eq/Neq that one of the two formulas always has to be true/false
+	if length(semilinears)>0
+		C = SemiLinearConstraint(semilinears)
+	else
+		C = LinearConstraint
+	end
+	bias = convert(Float64, bias)
 	if comp == AST.LessEq
-		return LinearConstraint(constraint_row, bias, true)
+		return C(constraint_row, bias, true)
 	elseif comp == AST.Less
-		return LinearConstraint(constraint_row, bias, false)
+		return C(constraint_row, bias, false)
 	elseif comp == AST.Eq
+		@assert length(semilinears) == 0
 		return AST.and_construction(Formula[
-			LinearConstraint(constraint_row, bias, true),
-			LinearConstraint(-constraint_row, -bias, true)
+			C(constraint_row, bias, true),
+			C(-constraint_row, -bias, true)
 		])
 	elseif comp == AST.Neq
+		@assert length(semilinears) == 0
 		return AST.or_construction(Formula[
-			LinearConstraint(constraint_row, bias, false),
-			LinearConstraint(-constraint_row, -bias, false)
+			C(constraint_row, bias, false),
+			C(-constraint_row, -bias, false)
 		])
+	else
+		throw("Unsupported comparator in make_linear: "*string(comp))
 	end
 end
 

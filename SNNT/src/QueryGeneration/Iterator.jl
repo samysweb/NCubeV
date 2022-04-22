@@ -52,9 +52,9 @@ function has_output_variables(f :: ParsedNode, query :: Query)
 	end
 end
 
-function split_by_variables(atoms :: Vector{Tuple{Int64,Union{ApproxNode,LinearConstraint}}}, query :: Query)
-	input_atoms = Tuple{Int64,Union{ApproxNode,LinearConstraint}}[]
-	mixed_atoms = Tuple{Int64,Union{ApproxNode,LinearConstraint}}[]
+function split_by_variables(atoms :: Vector{Tuple{Int64,Union{SemiLinearConstraint,LinearConstraint}}}, query :: Query)
+	input_atoms = Tuple{Int64,Union{SemiLinearConstraint,LinearConstraint}}[]
+	mixed_atoms = Tuple{Int64,Union{SemiLinearConstraint,LinearConstraint}}[]
 	for (s,a) in atoms
 		if has_output_variables(a, query)
 			push!(mixed_atoms, (s,a))
@@ -111,15 +111,30 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 			solution = solve(state.sat_instance)
 			continue
 		end
+		new_conjunction = Tuple{Int64,Union{SemiLinearConstraint,LinearConstraint}}[]
+		# Resolve nonlinearities to semi-linear constraints
+		varnum = query.num_input_vars+query.num_output_vars
+		for cur_f  in conjunction
+			if cur_f[2] isa ApproxNode
+				@assert cur_f[2].formula.right isa TermNumber
+				approx_direction = (cur_f[2] isa OverApprox) ? Lower : Upper
+				approx_queries, semilinear = handle_nonlinearity(approx_direction, cur_f[2].formula.left)
+				nonlinearities_set = union(nonlinearities_set, approx_queries)
+				new_formula = make_linear(semilinear, cur_f[2].formula.right, cur_f[2].formula.comparator, varnum)
+				push!(new_conjunction, (cur_f[1], new_formula ))
+			else
+				push!(new_conjunction, cur_f)
+			end
+		end
 		#print("|")
 		# OK, our combination is feasible...
-		input, mixed = split_by_variables(conjunction,query)
+		input, mixed = split_by_variables(new_conjunction,query)
 		# Store non-linearities of current combination in set
-		for a in nonlinear
-			@assert a[2].formula.right isa TermNumber
-			approx_direction = (a[2] isa OverApprox) ? Lower : Upper
-			nonlinearities_set=union(nonlinearities_set, collect_nonlinearities(approx_direction, a[2].formula.left))
-		end
+		# for a in nonlinear
+		# 	@assert a[2].formula.right isa TermNumber
+		# 	approx_direction = (a[2] isa OverApprox) ? Lower : Upper
+		# 	nonlinearities_set=union(nonlinearities_set, collect_nonlinearities(approx_direction, a[2].formula.left))
+		# end
 		# Add in-out constraints to disjunction
 		push!(disjunction, map(x -> x[2], mixed))
 	
@@ -139,14 +154,14 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 				state.sat_instance,
 				map(x -> -x[1], input)
 			)
-		println("Input: ", map(x -> AST.term_to_string(x[2]), input))
-		println("#Mixed: ", length(disjunction))
-		println("#Nonlinear",length(nonlinearities_set))
-		println("---------------------")
-		for x in nonlinearities_set
-			println(x.bound," -> ",AST.term_to_string(x.term))
-		end
-		println("---------------------")
+		# println("Input: ", map(x -> AST.term_to_string(x[2]), input))
+		# println("#Mixed: ", length(disjunction))
+		# println("#Nonlinear",length(nonlinearities_set))
+		# println("---------------------")
+		# for x in nonlinearities_set
+		# 	println(x.bound," -> ",AST.term_to_string(x.term))
+		# end
+		# println("---------------------")
 		return NormalizedQuery(map(x->x[2],input), disjunction, nonlinearities_set, query), state
 	else
 		return nothing

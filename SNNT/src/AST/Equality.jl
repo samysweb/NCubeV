@@ -24,3 +24,8 @@ hash(x :: CompositeFormula) = hash(x.connective) * reduce(+,map(hash,x.args))
 hash(x :: OverApprox) = 7*hash(x.formula)
 hash(x :: UnderApprox) = 11*hash(x.formula)
 
+isequal(a :: ApproxQuery, b :: ApproxQuery) = isequal(a.bound, b.bound) && isequal(a.term, b.term)
+hash(a :: ApproxQuery) = hash(a.bound) + hash(a.term)
+
+isequal(a :: NonLinearSubstitution, b :: NonLinearSubstitution) = isequal(a.query, b.query)
+hash(a :: NonLinearSubstitution) = 13*hash(a.query)

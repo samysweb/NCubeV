@@ -101,30 +101,34 @@ end
 
 convert(::Type{Term}, x :: T) where {T <: Number} = TermNumber(x)
 
+# The switch between under/overapprox has happened previously. This is a purely technical switch from one to the other...
 function negate(a :: UnderApprox)
-	return OverApprox(negate(a.formula))
+	return UnderApprox(negate(a.formula))
 end
 function negate(a :: OverApprox)
-	return UnderApprox(negate(a.formula))
+	return OverApprox(negate(a.formula))
 end
 
 
 function negate(a :: Atom)
 	if a.comparator == Less
-		return Atom(GreaterEq, a.left, a.right)
+		return Atom(LessEq, simplify(CompositeTerm(Neg,[a.left])), TermNumber(-a.right.value))
 	elseif a.comparator == LessEq
-		return Atom(Greater, a.left, a.right)
-	elseif a.comparator == Greater
-		return Atom(LessEq, a.left, a.right)
-	elseif a.comparator == GreaterEq
-		return Atom(Less, a.left, a.right)
-	elseif a.comparator == Eq
-		return Atom(Neq, a.left, a.right)
-	elseif a.comparator == Neq
-		return Atom(Eq, a.left, a.right)
+		return Atom(Less, simplify(CompositeTerm(Neg,[a.left])), TermNumber(-a.right.value))
 	else
-		return CompositeFormula(Not, [a])
+		throw("Unexpected comparator in negate"*string(a))
 	end
+	# elseif a.comparator == Greater
+	# 	return Atom(LessEq, a.left, a.right)
+	# elseif a.comparator == GreaterEq
+	# 	return Atom(Less, a.left, a.right)
+	# elseif a.comparator == Eq
+	# 	return Atom(Neq, a.left, a.right)
+	# elseif a.comparator == Neq
+	# 	return Atom(Eq, a.left, a.right)
+	# else
+	# 	return CompositeFormula(Not, [a])
+	# end
 end
 
 function negate(a :: LinearConstraint)

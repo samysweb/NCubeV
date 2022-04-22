@@ -24,20 +24,12 @@ struct SkeletonFormula <: Formula
 	variable_number :: Int64
 end
 
-struct ApproxQuery
-	bound :: BoundType
-	term :: Term
-end
-
-isequal(a :: ApproxQuery, b :: ApproxQuery) = isequal(a.bound, b.bound) && isequal(a.term, b.term)
-hash(a :: ApproxQuery) = hash(a.bound) + hash(a.term)
-
 struct NormalizedQuery
 	input_bounds :: Vector{Vector{Float64}}
 	output_bounds :: Vector{Vector{Float64}}
 	input_linear :: Vector{LinearConstraint}
-	input_nonlinear :: Vector{ApproxNode}
-	mixed_constraints :: Vector{Tuple{Vector{LinearConstraint},Vector{ApproxNode}}}
+	input_nonlinear :: Vector{SemiLinearConstraint}
+	mixed_constraints :: Vector{Tuple{Vector{LinearConstraint},Vector{SemiLinearConstraint}}}
 	approx_queries :: Dict{Term, Vector{BoundType}}
 	function NormalizedQuery(
 		input :: Vector{Formula},
@@ -54,8 +46,8 @@ struct NormalizedQuery
 			push!(output_bounds, Float64[-Inf, Inf])
 		end
 		input_linear = Vector{LinearConstraint}()
-		input_nonlinear = Vector{ApproxNode}()
-		mixed_constraints = Vector{Tuple{Vector{LinearConstraint},Vector{ApproxNode}}}()
+		input_nonlinear = Vector{SemiLinearConstraint}()
+		mixed_constraints = Vector{Tuple{Vector{LinearConstraint},Vector{SemiLinearConstraint}}}()
 		approx_query_result = Dict{Term, Vector{BoundType}}()
 		for f in input
 			if f isa LinearConstraint
@@ -64,7 +56,7 @@ struct NormalizedQuery
 				else
 					push!(input_linear, f)
 				end
-			elseif f isa ApproxNode
+			elseif f isa SemiLinearConstraint
 				push!(input_nonlinear, f)
 			else
 				error("Unsupported formula type")
@@ -72,7 +64,7 @@ struct NormalizedQuery
 		end
 		for conj in disjunction
 			linears = Vector{LinearConstraint}()
-			nonlinears = Vector{ApproxNode}()
+			nonlinears = Vector{SemiLinearConstraint}()
 			for f in conj
 				if f isa LinearConstraint
 					if count(!=(0),f.coefficients)==1
@@ -82,7 +74,7 @@ struct NormalizedQuery
 					else
 						push!(linears, f)
 					end
-				elseif f isa ApproxNode
+				elseif f isa SemiLinearConstraint
 					push!(nonlinears, f)
 				else
 					error("Unsupported formula type")

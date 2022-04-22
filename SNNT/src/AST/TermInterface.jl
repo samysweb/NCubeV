@@ -222,3 +222,9 @@ symtype(x :: UnderApprox) = Bool
 
 
 is_literal_number(x :: TermNumber) = true
+
+
+istree(x :: NonLinearSubstitution) = false
+issym(x :: NonLinearSubstitution) = true
+nameof(x :: NonLinearSubstitution) = x
+symtype(x :: NonLinearSubstitution) = Number

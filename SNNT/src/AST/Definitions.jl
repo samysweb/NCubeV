@@ -61,6 +61,27 @@ end
 	formula :: Formula
 end
 
+struct ApproxQuery
+	bound :: BoundType
+	term :: Term
+end
+
+@as_record struct NonLinearSubstitution <: Term
+	query :: ApproxQuery
+end
+
+@as_record struct SemiLinearConstraint <: Formula
+	semilinears :: Dict{ApproxQuery, Float64}
+	coefficients :: Array{Float64}
+	bias :: Float64
+	equality :: Bool
+	function SemiLinearConstraint(semilinears :: Dict{ApproxQuery, Float64})
+		return function(coefficients :: Array{Float64}, bias :: Float64, equality :: Bool)
+			return new(semilinears, coefficients, bias, equality)
+		end
+	end
+end
+
 @as_record struct LinearConstraint <: Formula
 	# !equality => coefficients * variables <= constant
 	# equality => coefficients * variables == constant
