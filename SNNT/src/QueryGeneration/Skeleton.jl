@@ -67,12 +67,16 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 			end
 			OverApprox(internal_formula) || UnderApprox(internal_formula) => begin
 				@debug "OverApprox or UnderApprox => propagating from below"
+				# print("Encountered ")
+				# println(formula)
+				# println(internal)
 				return @match skeleton.variable_mapping[internal_formula.variable_number] begin
 					ConstraintVariable(internal) => begin
-						# Set internal to what is contained in the under-approximation
-						#formula.formula = internal
-						new_formula = (typeof(formula))(internal)
-						skeleton.variable_mapping[internal_formula.variable_number] = ConstraintVariable(new_formula)
+						# May have already happened at other location...
+						if !(internal isa UnderApprox || internal isa OverApprox)
+							new_formula = (typeof(formula))(internal)
+							skeleton.variable_mapping[internal_formula.variable_number] = ConstraintVariable(new_formula)
+						end
 						return internal_formula
 					end
 					_ => throw("ApproxNode is supposed to contain a ConstraintVariable")

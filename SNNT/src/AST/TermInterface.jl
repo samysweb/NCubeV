@@ -220,18 +220,5 @@ symtype(x :: CompositeFormula) = Bool
 symtype(x :: OverApprox) = Bool
 symtype(x :: UnderApprox) = Bool
 
-isequal(x :: TermNumber, y :: TermNumber) = x.value == y.value
-isequal(x :: Variable, y :: Variable) = isequal(x.name, y.name)
-function isequal(x :: CompositeTerm, y :: CompositeTerm)
-	if x.operation == y.operation
-		return all(isequal(x.args, y.args))
-	end
-	return false
-end
-isequal(x :: Atom, y :: Atom) = x.comparator == y.comparator && isequal(x.left, y.left) && isequal(x.right, y.right)
-isequal(x :: LinearConstraint, y :: LinearConstraint) = isequal(x.coefficients, y.coefficients) && isequal(x.bias, y.bias) && x.equality == y.equality
-isequal(x :: CompositeFormula, y :: CompositeFormula) = x.connective == y.connective && all(isequal(x.args, y.args))
-isequal(x :: OverApprox, y :: OverApprox) = isequal(x.formula, y.formula)
-isequal(x :: UnderApprox, y :: UnderApprox) = isequal(x.formula, y.formula)
 
 is_literal_number(x :: TermNumber) = true

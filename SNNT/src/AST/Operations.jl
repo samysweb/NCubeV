@@ -84,16 +84,16 @@ function *(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 end
 function /(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}}
 	if t1 isa TermNumber && t2 isa TermNumber
-		return TermNumber(t1.value / t2.value)
+		return TermNumber(t1.value // t2.value)
 	else
 		return CompositeTerm(Div,Term[t1,t2])
 	end
 end
 function ^(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}}
 	if t1 isa TermNumber && t2 isa TermNumber
-		return TermNumber(t1.value ^ t2.value)
+		return TermNumber(Rational{Int32}((t1.value.num ^ t2.value))//Rational{Int32}((t1.value.den ^ t2.value)))
 	elseif t1 isa TermNumber && t2 isa Number
-		return TermNumber(t1.value ^ t2)
+		return TermNumber((t1.value.num ^ t2)//(t1.value.den ^ 1))
 	else
 		return CompositeTerm(Pow,Term[t1,t2])
 	end

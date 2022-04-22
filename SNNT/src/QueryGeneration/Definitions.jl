@@ -1,3 +1,6 @@
+import Base.isequal
+import Base.hash
+
 @data BooleanVariableType begin
 	IntermediateVariable
 	ConstraintVariable(::Union{LinearConstraint,Atom,ApproxNode})
@@ -19,4 +22,95 @@ end
 
 struct SkeletonFormula <: Formula
 	variable_number :: Int64
+end
+
+struct ApproxQuery
+	bound :: BoundType
+	term :: Term
+end
+
+isequal(a :: ApproxQuery, b :: ApproxQuery) = isequal(a.bound, b.bound) && isequal(a.term, b.term)
+hash(a :: ApproxQuery) = hash(a.bound) + hash(a.term)
+
+struct NormalizedQuery
+	input_bounds :: Vector{Vector{Float64}}
+	output_bounds :: Vector{Vector{Float64}}
+	input_linear :: Vector{LinearConstraint}
+	input_nonlinear :: Vector{ApproxNode}
+	mixed_constraints :: Vector{Tuple{Vector{LinearConstraint},Vector{ApproxNode}}}
+	approx_queries :: Dict{Term, Vector{BoundType}}
+	function NormalizedQuery(
+		input :: Vector{Formula},
+		disjunction :: Vector{Vector{Formula}},
+		approx_queries :: Set{ApproxQuery},
+		query :: Query)
+		# Initiate properties
+		input_bounds = Vector{Vector{Float64}}()
+		for _ in 1:query.num_input_vars
+			push!(input_bounds, Float64[-Inf, Inf])
+		end
+		output_bounds = Vector{Vector{Float64}}()
+		for _ in 1:query.num_output_vars
+			push!(output_bounds, Float64[-Inf, Inf])
+		end
+		input_linear = Vector{LinearConstraint}()
+		input_nonlinear = Vector{ApproxNode}()
+		mixed_constraints = Vector{Tuple{Vector{LinearConstraint},Vector{ApproxNode}}}()
+		approx_query_result = Dict{Term, Vector{BoundType}}()
+		for f in input
+			if f isa LinearConstraint
+				if count(!=(0),f.coefficients)==1
+					init_linear_to_bound(f, input_bounds, true, 0)
+				else
+					push!(input_linear, f)
+				end
+			elseif f isa ApproxNode
+				push!(input_nonlinear, f)
+			else
+				error("Unsupported formula type")
+			end
+		end
+		for conj in disjunction
+			linears = Vector{LinearConstraint}()
+			nonlinears = Vector{ApproxNode}()
+			for f in conj
+				if f isa LinearConstraint
+					if count(!=(0),f.coefficients)==1
+						# This assumes that every combination of constraints is linearly bounded which we do not explicitly check at the moment
+						init_linear_to_bound(f, output_bounds, false, query.num_input_vars)
+						push!(linears, f)
+					else
+						push!(linears, f)
+					end
+				elseif f isa ApproxNode
+					push!(nonlinears, f)
+				else
+					error("Unsupported formula type")
+				end
+			end
+			push!(mixed_constraints, (linears, nonlinears))
+		end
+		for aq in approx_queries
+			if !haskey(approx_query_result, aq.term)
+				approx_query_result[aq.term] = BoundType[aq.bound]
+			else
+				push!(approx_query_result[aq.term], aq.bound)
+			end
+		end
+		return new(input_bounds, output_bounds, input_linear, input_nonlinear, mixed_constraints, approx_query_result)
+	end
+					
+end
+
+function init_linear_to_bound(f :: LinearConstraint, bounds :: Vector{Vector{Float64}},tighten::Bool, offset::Int64)
+	var_index = findnext(map(!=(0.0),f.coefficients),1)
+	coeff = f.coefficients[var_index]
+	lower, upper = bounds[var_index-offset]
+	if coeff < 0.0
+		op = (tighten||isinf(lower)) ? (max) : (min)
+		bounds[var_index-offset][1] = (op)(lower, f.bias/coeff)
+	else
+		op = (tighten||isinf(upper)) ? (min) : (max)
+		bounds[var_index-offset][2] = (op)(upper, f.bias/coeff)
+	end
 end

@@ -9,7 +9,9 @@ module QueryGeneration
 	using ..Z3Interface
 	include("Definitions.jl")
 	include("Skeleton.jl")
+	include("NonLinear.jl")
 	include("Iterator.jl")
 
-	export get_skeleton
+	export iterate
+	export NormalizedQuery
 end

@@ -1,0 +1,232 @@
+(p  <  r + (v1^2 + v2^2)^(1 / 2) &
+c > 0 &
+(
+  c *
+  (
+    (-c / (p - r) * v1) *
+    (x1 - o1 - -c / (p - r) * v1) +
+    (-c / (p - r) * v2) *
+    (x2 - o2 - -c / (p - r) * v2)
+  ) +
+  (
+    (-c / (p - r) * v1)^2 + (-c / (p - r) * v2)^2 -
+    c^2
+  )^(1 / 2) *
+  (
+    (-c / (p - r) * v1) * (x2 - o2) -
+    (-c / (p - r) * v2) * (x1 - o1)
+  ) >
+  0 |
+  c *
+  (
+    (-c / (p - r) * v1) *
+    (x1 - o1 - -c / (p - r) * v1) +
+    (-c / (p - r) * v2) *
+    (x2 - o2 - -c / (p - r) * v2)
+  ) -
+  (
+    (-c / (p - r) * v1)^2 + (-c / (p - r) * v2)^2 -
+    c^2
+  )^(1 / 2) *
+  (
+    (-c / (p - r) * v1) * (x2 - o2) -
+    (-c / (p - r) * v2) * (x1 - o1)
+  ) >
+  0
+))
+->
+(y1post^2 + y2post^2 <= 1 &
+(
+  cpost *
+  (
+    (-cpost / (p - r) * v1post) *
+    (x1 - o1post - -cpost / (p - r) * v1post) +
+    (-cpost / (p - r) * v2post) *
+    (x2 - o2post - -cpost / (p - r) * v2post)
+  ) +
+  (
+    (-cpost / (p - r) * v1post)^2 + (-cpost / (p - r) * v2post)^2 -
+    cpost^2
+  )^(1 / 2) *
+  (
+    (-cpost / (p - r) * v1post) * (x2 - o2post) -
+    (-cpost / (p - r) * v2post) * (x1 - o1post)
+  ) >
+  0 &
+  cpost *
+  (
+    (-cpost / (p - r) * v1post) *
+    (
+      x1 - o1post + T * (v1post + p * y1post) -
+      T * r *
+      (
+        (
+          cpost * (-cpost / (p - r) * v1post) +
+          (
+            (-cpost / (p - r) * v1post)^2 +
+            (-cpost / (p - r) * v2post)^2 -
+            cpost^2
+          )^(1 / 2) *
+          (-cpost / (p - r) * (-v2post))
+        ) /
+        ((-cpost / (p - r) * v1post)^2 + (-cpost / (p - r) * v2post)^2)
+      ) -
+      -cpost / (p - r) * v1post
+    ) +
+    (-cpost / (p - r) * v2post) *
+    (
+      x2 - o2post + T * (v2post + p * y2post) -
+      T * r *
+      (
+        (
+          cpost * (-cpost / (p - r) * v2post) +
+          (
+            (-cpost / (p - r) * v1post)^2 +
+            (-cpost / (p - r) * v2post)^2 -
+            cpost^2
+          )^(1 / 2) *
+          (-cpost / (p - r) * v1post)
+        ) /
+        ((-cpost / (p - r) * v1post)^2 + (-cpost / (p - r) * v2post)^2)
+      ) -
+      -cpost / (p - r) * v2post
+    )
+  ) +
+  (
+    (-cpost / (p - r) * v1post)^2 + (-cpost / (p - r) * v2post)^2 -
+    cpost^2
+  )^(1 / 2) *
+  (
+    (-cpost / (p - r) * v1post) *
+    (
+      x2 - o2post + T * (v2post + p * y2post) -
+      T * r *
+      (
+        (
+          cpost * (-cpost / (p - r) * v2post) +
+          (
+            (-cpost / (p - r) * v1post)^2 +
+            (-cpost / (p - r) * v2post)^2 -
+            cpost^2
+          )^(1 / 2) *
+          (-cpost / (p - r) * v1post)
+        ) /
+        ((-cpost / (p - r) * v1post)^2 + (-cpost / (p - r) * v2post)^2)
+      )
+    ) -
+    (-cpost / (p - r) * v2post) *
+    (
+      x1 - o1post + T * (v1post + p * y1post) -
+      T * r *
+      (
+        (
+          cpost * (-cpost / (p - r) * v1post) +
+          (
+            (-cpost / (p - r) * v1post)^2 +
+            (-cpost / (p - r) * v2post)^2 -
+            cpost^2
+          )^(1 / 2) *
+          (-cpost / (p - r) * (-v2post))
+        ) /
+        ((-cpost / (p - r) * v1post)^2 + (-cpost / (p - r) * v2post)^2)
+      )
+    )
+  ) >
+  0 |
+  cpost *
+  (
+    (-cpost / (p - r) * v1post) *
+    (x1 - o1post - -cpost / (p - r) * v1post) +
+    (-cpost / (p - r) * v2post) *
+    (x2 - o2post - -cpost / (p - r) * v2post)
+  ) -
+  (
+    (-cpost / (p - r) * v1post)^2 + (-cpost / (p - r) * v2post)^2 -
+    cpost^2
+  )^(1 / 2) *
+  (
+    (-cpost / (p - r) * v1post) * (x2 - o2post) -
+    (-cpost / (p - r) * v2post) * (x1 - o1post)
+  ) >
+  0 &
+  cpost *
+  (
+    (-cpost / (p - r) * v1post) *
+    (
+      x1 - o1post + T * (v1post + p * y1post) -
+      T * r *
+      (
+        (
+          cpost * (-cpost / (p - r) * v1post) -
+          (
+            (-cpost / (p - r) * v1post)^2 +
+            (-cpost / (p - r) * v2post)^2 -
+            cpost^2
+          )^(1 / 2) *
+          (-cpost / (p - r) * (-v2post))
+        ) /
+        ((-cpost / (p - r) * v1post)^2 + (-cpost / (p - r) * v2post)^2)
+      ) -
+      -cpost / (p - r) * v1post
+    ) +
+    (-cpost / (p - r) * v2post) *
+    (
+      x2 - o2post + T * (v2post + p * y2post) -
+      T * r *
+      (
+        (
+          cpost * (-cpost / (p - r) * v2post) -
+          (
+            (-cpost / (p - r) * v1post)^2 +
+            (-cpost / (p - r) * v2post)^2 -
+            cpost^2
+          )^(1 / 2) *
+          (-cpost / (p - r) * v1post)
+        ) /
+        ((-cpost / (p - r) * v1post)^2 + (-cpost / (p - r) * v2post)^2)
+      ) -
+      -cpost / (p - r) * v2post
+    )
+  ) -
+  (
+    (-cpost / (p - r) * v1post)^2 + (-cpost / (p - r) * v2post)^2 -
+    cpost^2
+  )^(1 / 2) *
+  (
+    (-cpost / (p - r) * v1post) *
+    (
+      x2 - o2post + T * (v2post + p * y2post) -
+      T * r *
+      (
+        (
+          cpost * (-cpost / (p - r) * v2post) -
+          (
+            (-cpost / (p - r) * v1post)^2 +
+            (-cpost / (p - r) * v2post)^2 -
+            cpost^2
+          )^(1 / 2) *
+          (-cpost / (p - r) * v1post)
+        ) /
+        ((-cpost / (p - r) * v1post)^2 + (-cpost / (p - r) * v2post)^2)
+      )
+    ) -
+    (-cpost / (p - r) * v2post) *
+    (
+      x1 - o1post + T * (v1post + p * y1post) -
+      T * r *
+      (
+        (
+          cpost * (-cpost / (p - r) * v1post) -
+          (
+            (-cpost / (p - r) * v1post)^2 +
+            (-cpost / (p - r) * v2post)^2 -
+            cpost^2
+          )^(1 / 2) *
+          (-cpost / (p - r) * (-v2post))
+        ) /
+        ((-cpost / (p - r) * v1post)^2 + (-cpost / (p - r) * v2post)^2)
+      )
+    )
+  ) >
+  0
+))

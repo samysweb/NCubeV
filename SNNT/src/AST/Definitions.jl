@@ -5,7 +5,7 @@ abstract type ParsedNode end
 # Terms
 abstract type Term <: ParsedNode end
 @as_record struct TermNumber <: Term
-	value :: Float64
+	value :: Rational{Int32}
 end
 
 @enum VariableType Input=1 Output=2
@@ -46,6 +46,12 @@ end
 @as_record struct FalseAtom <: Formula end
 
 abstract type ApproxNode <: Formula end
+
+@enum BoundType Lower=0 Upper=1
+MLStyle.is_enum(::BoundType)=true
+MLStyle.pattern_uncall(e::BoundType, _, _, _, _) = literal(e)
+
+flip(b :: BoundType) = if b == Lower Upper else Lower end
 
 @as_record struct OverApprox <: ApproxNode
 	formula :: Formula

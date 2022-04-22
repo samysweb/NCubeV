@@ -48,6 +48,7 @@ function ast2z3(v :: Variable, variables)
 	return variables[v.position]
 end
 function ast2z3(n :: TermNumber, variables)
-	value32 = Float32(n.value)
-	return rationalize(value32)
+	#value32 = Float32(n.value)
+	#return rationalize(value32)
+	return n.value
 end

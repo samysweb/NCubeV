@@ -65,91 +65,92 @@ function split_by_variables(atoms :: Vector{Tuple{Int64,Union{ApproxNode,LinearC
 	return input_atoms, mixed_atoms
 end
 
-function iterate(query :: Query, state :: Union{Nothing, BooleanSkeleton})
+function iterate(query :: Query)
+	state = BooleanSkeleton(query.formula)
+	return iterate(query, state)
+end
+
+function iterate(query :: Query, state :: BooleanSkeleton)
 	if isnothing(state)
 		state = BooleanSkeleton(query.formula)
 	end
 	# TODO(steuber): Refactor z3 context creation (maybe same for LP)
 	ctx, variables = z3_context(query.num_input_vars+query.num_output_vars)
 	@assert (Z3Interface.nl_feasible(Formula[query.formula], ctx, variables))
-	solution = nothing
-	feasible = 0
 	solution = solve(state.sat_instance)
+	input = nothing
+	disjunction = Vector{Vector{Formula}}()
+	infeasibility_cache = []
+	nonlinearities_set = Set{ApproxQuery}()
+	push(state.sat_instance)
 	while solution != :unsatisfiable
-		input = nothing
-		disjunction = []
-		infeasibility_cache = []
-		nonlinearities_set = Set{Tuple{Int64, Term}}()
-		push(state.sat_instance)
-		while solution != :unsatisfiable
-			conjunction = get_atoms(state, solution)
-			linear, nonlinear = split_by_linearity(conjunction)
-			infeasible_combination = nothing
-			#if !LP.is_feasible(map(x->x[2],linear))
-			# Flag combination of linear constraints as infeasible and continue...
-			#	infeasible_combination = map(x -> -x[1], linear)
-			# TODO(steuber): How many checks here are the optimal choice?
-			if !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],linear)),ctx, variables)
-				#println("Z3 says it's infeasible")
-				infeasible_combination = map(x -> -x[1], linear)
-			elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
-				#println("Z3 says it's infeasible")
-				infeasible_combination = map(x -> -x[1], nonlinear)
-			elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],conjunction)),ctx, variables)
-				#println("Z3 says it's infeasible")
-				infeasible_combination = map(x -> -x[1], conjunction)
-			end
-			if !isnothing(infeasible_combination)
-				#print("_")
-				push!(infeasibility_cache, infeasible_combination)
-				add_clause(
-					state.sat_instance,
-					infeasible_combination
-				)
-				solution = solve(state.sat_instance)
-				continue
-			end
-			#print("|")
-			# OK, our combination is feasible...
-			input, mixed = split_by_variables(conjunction,query)
-			# Store non-linearities of current combination in set
-			for a in nonlinear
-				@assert a[2].formula.right isa TermNumber
-				approx_direction = (a[2] isa OverApprox) ? -1 : 1
-				push!(nonlinearities_set, (approx_direction, a[2].formula.left))
-			end
-			# Add in-out constraints to disjunction
-			push!(disjunction, map(x -> x[2], mixed))
-		
-			# Fix input constraints for further search
-			add_clause(state.sat_instance, map(x -> x[1], input))
-			# Disallow current mixed constraint for further search
-			add_clause(state.sat_instance, map(x -> -x[1], mixed))
-			# Find new model
-			solution = solve(state.sat_instance)
+		conjunction = get_atoms(state, solution)
+		linear, nonlinear = split_by_linearity(conjunction)
+		infeasible_combination = nothing
+		#if !LP.is_feasible(map(x->x[2],linear))
+		# Flag combination of linear constraints as infeasible and continue...
+		#	infeasible_combination = map(x -> -x[1], linear)
+		# TODO(steuber): How many checks here are the optimal choice?
+		if !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],linear)),ctx, variables)
+			#println("Z3 says it's infeasible")
+			infeasible_combination = map(x -> -x[1], linear)
+		elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
+			#println("Z3 says it's infeasible")
+			infeasible_combination = map(x -> -x[1], nonlinear)
+		elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],conjunction)),ctx, variables)
+			#println("Z3 says it's infeasible")
+			infeasible_combination = map(x -> -x[1], conjunction)
 		end
-		pop(state.sat_instance)
-		# Dump infeasibility_cache into clause database
-		add_clauses(state.sat_instance, infeasibility_cache)
-		if !isnothing(input)
-			feasible+=1
-			# Disallow input
+		if !isnothing(infeasible_combination)
+			#print("_")
+			push!(infeasibility_cache, infeasible_combination)
 			add_clause(
-					state.sat_instance,
-					map(x -> -x[1], input)
-				)
-			println("Input: ", map(x -> AST.term_to_string(x[2]), input))
-			println("#Mixed: ", length(disjunction))
-			println("#Nonlinear",length(nonlinearities_set))
-			println("---------------------")
-			for x in nonlinearities_set
-				println(x[1]," -> ",AST.term_to_string(x[2]))
-			end
-			println("---------------------")
+				state.sat_instance,
+				infeasible_combination
+			)
+			solution = solve(state.sat_instance)
+			continue
 		end
+		#print("|")
+		# OK, our combination is feasible...
+		input, mixed = split_by_variables(conjunction,query)
+		# Store non-linearities of current combination in set
+		for a in nonlinear
+			@assert a[2].formula.right isa TermNumber
+			approx_direction = (a[2] isa OverApprox) ? Lower : Upper
+			nonlinearities_set=union(nonlinearities_set, collect_nonlinearities(approx_direction, a[2].formula.left))
+		end
+		# Add in-out constraints to disjunction
+		push!(disjunction, map(x -> x[2], mixed))
+	
+		# Fix input constraints for further search
+		add_clause(state.sat_instance, map(x -> x[1], input))
+		# Disallow current mixed constraint for further search
+		add_clause(state.sat_instance, map(x -> -x[1], mixed))
+		# Find new model
 		solution = solve(state.sat_instance)
 	end
-	print("Feasible solutions: ", feasible)
+	pop(state.sat_instance)
+	# Dump infeasibility_cache into clause database
+	add_clauses(state.sat_instance, infeasibility_cache)
+	if !isnothing(input)
+		# Disallow input
+		add_clause(
+				state.sat_instance,
+				map(x -> -x[1], input)
+			)
+		println("Input: ", map(x -> AST.term_to_string(x[2]), input))
+		println("#Mixed: ", length(disjunction))
+		println("#Nonlinear",length(nonlinearities_set))
+		println("---------------------")
+		for x in nonlinearities_set
+			println(x.bound," -> ",AST.term_to_string(x.term))
+		end
+		println("---------------------")
+		return NormalizedQuery(map(x->x[2],input), disjunction, nonlinearities_set, query), state
+	else
+		return nothing
+	end
 end
 
 # 		add_clause(skeleton.sat_instance, map(x->-x, solution))
