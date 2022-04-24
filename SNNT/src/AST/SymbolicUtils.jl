@@ -71,6 +71,8 @@ POW_RULES = [
 	@rule(^(~x, ~z::_iszero) => 1)
 	@rule(^(~x, ~z::_isone) => ~x)
 	@rule (^(~a::is_literal_number, ~b::is_literal_number) => ^(~a, ~b))
+	@rule(^(+(~x,~y), ~z::_istwo) => +(^(~x, ~z), *(~z, ~x, ~y), ^(~y, ~z)))
+	@rule(^(*(~~x...),~y) => *(map(a->^(a,~y), ~~x)...))
 	@rule(inv(~x) => 1/(~x))
 ]
 

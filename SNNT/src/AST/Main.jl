@@ -8,6 +8,7 @@ export Input, Output, Add, Sub, Mul, Div, Pow, Neg, Less, LessEq, Greater, Great
 export ApproxNode, ApproxQuery, OverApprox, UnderApprox, LinearConstraint, SemiLinearConstraint
 export flip
 export istree, exprhead, operation, arguments,similarterm,symtype, promote_symtype
+export to_expr, from_expr
 
 include("Definitions.jl")
 include("Equality.jl")
@@ -16,5 +17,6 @@ include("Operations.jl")
 include("TermInterface.jl")
 include("SymbolicUtils.jl")
 include("ToString.jl")
+include("Expr.jl")
 
 end

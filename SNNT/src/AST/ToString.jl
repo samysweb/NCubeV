@@ -1,15 +1,23 @@
+import Base.show
 
 function term_to_string(v :: Variable)
 	return v.name
 end
 
 function term_to_string(n :: TermNumber)
-	return string(n.value)
+	return string(convert(Float32,n.value))
 end
 
 function term_to_string(t :: CompositeTerm)
 	if t.operation == AST.Neg
 		return "-"*term_to_string(t.args[1])
+	elseif t.operation == Min || t.operation == Max
+		res = term_to_string(t.operation)*"("
+		for arg in t.args
+			res = res*term_to_string(arg)*","
+		end
+		res = res[1:end-1]*")"
+		return res
 	else
 		first_value = true
 		result = ""
@@ -71,6 +79,12 @@ function term_to_string(op :: Operation)
 		return "/"
 	elseif op == AST.Pow
 		return "^"
+	elseif op == AST.Neg
+		return "-"
+	elseif op == AST.Min
+		return "min"
+	elseif op == AST.Max
+		return "max"
 	else
 		throw("Unknown operation")
 	end
@@ -126,4 +140,8 @@ function term_to_string(a :: SemiLinearConstraint)
 	else
 		return string(a.coefficients)*"+N("*string(length(a.semilinears))*")<"*string(a.bias)
 	end
+end
+
+function show(io::IO, p :: ParsedNode)
+	print(io, term_to_string(p))
 end

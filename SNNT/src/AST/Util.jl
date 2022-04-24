@@ -11,6 +11,10 @@ function _iszero(x :: Term)
 	return x isa TermNumber && iszero(x.value)
 end
 
+function _istwo(x :: Term)
+	return x isa TermNumber && x.value == 2
+end
+
 function _isnotzero(x :: Term)
 	return !_iszero(x)
 end

@@ -20,7 +20,7 @@ MLStyle.pattern_uncall(e::VariableType, _, _, _, _) = literal(e)
 	# Full constructor
 	Variable(name :: String, mapping :: Union{Nothing,Tuple{VariableType, Int64}}, position :: Union{Nothing,Int64}) = new(name, mapping, position)
 end
-@enum Operation Add=0 Sub=1 Mul=2 Div=3 Pow=4 Neg=5
+@enum Operation Add=0 Sub=1 Mul=2 Div=3 Pow=4 Neg=5 Min=6 Max=7
 MLStyle.is_enum(::Operation)=true
 MLStyle.pattern_uncall(o::Operation, _, _, _, _) = literal(o)
 @as_record struct CompositeTerm <: Term

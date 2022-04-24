@@ -70,10 +70,8 @@ struct NormalizedQuery
 					if count(!=(0),f.coefficients)==1
 						# This assumes that every combination of constraints is linearly bounded which we do not explicitly check at the moment
 						init_linear_to_bound(f, output_bounds, false, query.num_input_vars)
-						push!(linears, f)
-					else
-						push!(linears, f)
 					end
+					push!(linears, f)
 				elseif f isa SemiLinearConstraint
 					push!(nonlinears, f)
 				else

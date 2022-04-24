@@ -5,6 +5,7 @@ include("Analysis/Main.jl")
 include("LP/Main.jl")
 include("Z3Interface/Main.jl")
 include("QueryGeneration/Main.jl")
+include("Approx/Main.jl")
 include("Control/Main.jl")
 using .AST
 export not, and, or, implies, <, <=, >, >=, ==, !=, +, -, *, /, ^

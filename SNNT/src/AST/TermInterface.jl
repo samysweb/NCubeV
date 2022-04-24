@@ -57,6 +57,12 @@ function operation(x :: CompositeTerm)
 		return (^)
 	elseif x.operation == Neg
 		return (-)
+	elseif x.operation == Min
+		return (min)
+	elseif x.operation == Max
+		return (max)
+	else
+		error("Unknown operation: "*x.operation)
 	end
 end
 function operation(x :: Atom)
@@ -112,6 +118,10 @@ function operation_to_ast(op)
 		return Div
 	elseif op == (^)
 		return Pow
+	elseif op == (min)
+		return Min
+	elseif op == (max)
+		return Max
 	elseif op == (not)
 		return Not
 	elseif op == (and)
