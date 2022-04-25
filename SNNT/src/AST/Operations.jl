@@ -34,8 +34,8 @@ function or_construction(fs :: Vector{Formula})
 end
 implies(f :: T1, g :: T2) where {T1 <: Formula,T2 <: Formula} = CompositeFormula(Implies,[f,g])
 
-linear_lesseq(coeff :: Vector{Float64}, bias :: Float64) = LinearConstraint(coeff, bias, true)
-linear_less(coeff :: Vector{Float64}, bias :: Float64) = LinearConstraint(coeff, bias, false)
+linear_lesseq(coeff :: Vector{Rational{Int128}}, bias :: Rational{Int128}) = LinearConstraint(coeff, bias, true)
+linear_less(coeff :: Vector{Rational{Int128}}, bias :: Rational{Int128}) = LinearConstraint(coeff, bias, false)
 
 overapprox_fun(f :: T1) where {T1 <: Formula} = OverApprox(f)
 underapprox_fun(f :: T1) where {T1 <: Formula} = UnderApprox(f)
@@ -55,7 +55,17 @@ function +(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 	args = Term[t1]
 	append!(args, t2)
 	if all(x->x isa TermNumber, args)
-		return TermNumber(+(map(x->x.value, args)...))
+		try
+			return TermNumber(+(map(x->x.value, args)...))
+		catch e
+			#TODO(steuber): Remove again
+			if e isa InexactError || e isa OverflowError
+				@warn "Inexact/Overflow error on rational addition -> fallback to floats may impede correctness"
+				return TermNumber(Rational{Int128}(+(map(x->Float32(x.value), args)...)))
+			else
+				rethrow(e)
+			end
+		end
 	else
 		CompositeTerm(Add,args)
 	end
@@ -75,7 +85,17 @@ function *(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 	if all(x->x isa Number, args)
 		return Base.*(args...)
 	elseif all(x->x isa TermNumber, args)
-		result = TermNumber(*(map(x->x.value, args)...))
+		try
+			result = TermNumber(*(map(x->x.value, args)...))
+		catch e
+			#TODO(steuber): Remove again
+			if e isa InexactError || e isa OverflowError
+				@warn "Inexact/Overflow error on rational multiplication -> fallback to floats may impede correctness"
+				result = TermNumber(Rational{Int128}(*(map(x->Float32(x.value), args)...)))
+			else
+				rethrow(e)
+			end
+		end
 	else
 		result = CompositeTerm(Mul,args)
 	end
@@ -91,7 +111,7 @@ function /(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,
 end
 function ^(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}}
 	if t1 isa TermNumber && t2 isa TermNumber
-		return TermNumber(Rational{Int32}((t1.value.num ^ t2.value))//Rational{Int32}((t1.value.den ^ t2.value)))
+		return TermNumber(Rational{Int128}((t1.value.num ^ t2.value))//Rational{Int128}((t1.value.den ^ t2.value)))
 	elseif t1 isa TermNumber && t2 isa Number
 		return TermNumber((t1.value.num ^ t2)//(t1.value.den ^ 1))
 	else
@@ -134,3 +154,10 @@ end
 function negate(a :: LinearConstraint)
 	return LinearConstraint(-a.coefficients, -a.bias, !a.equality)
 end
+
+# function reduce_precision(p :: ParsedNode;digits=3)
+# 	return Postwalk(PassThrough(If(
+# 		x -> x isa TermNumber,
+# 		x -> TermNumber(Rational{Int128}(round(Float32(x.value),digits=digits)))
+# 	)))(p)
+# end

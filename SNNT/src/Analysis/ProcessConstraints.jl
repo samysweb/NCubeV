@@ -58,9 +58,9 @@ end
 
 function make_linear(left :: Term, right :: Term, comp :: Comparator, var_number :: Int64)
 	# @assert AST.is_linear(left) && right isa TermNumber
-	constraint_row = zeros(Float64, var_number)
+	constraint_row = zeros(Rational{Int128}, var_number)
 	bias = right.value
-	semilinears = Dict{ApproxQuery, Float64}()
+	semilinears = Dict{ApproxQuery, Rational{Int128}}()
 	@match left begin
 		TermNumber(value) => throw("Constraint "*string(left)*" "*string(comp)*" "*string(right)*" should have been simplified already")
 		Variable(name, _, position) => begin
@@ -136,7 +136,7 @@ function make_linear(left :: Term, right :: Term, comp :: Comparator, var_number
 	else
 		C = LinearConstraint
 	end
-	bias = convert(Float64, bias)
+	#bias = convert(Float64, bias)
 	if comp == AST.LessEq
 		return C(constraint_row, bias, true)
 	elseif comp == AST.Less

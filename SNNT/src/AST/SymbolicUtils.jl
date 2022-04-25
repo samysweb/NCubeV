@@ -72,7 +72,7 @@ POW_RULES = [
 	@rule(^(~x, ~z::_isone) => ~x)
 	@rule (^(~a::is_literal_number, ~b::is_literal_number) => ^(~a, ~b))
 	@rule(^(+(~x,~y), ~z::_istwo) => +(^(~x, ~z), *(~z, ~x, ~y), ^(~y, ~z)))
-	@rule(^(*(~~x...),~y) => *(map(a->^(a,~y), ~~x)...))
+	@rule(^(*(~~x),~y) => *(map(a->^(a,~y), ~~x)...))
 	@rule(inv(~x) => 1/(~x))
 ]
 
@@ -95,6 +95,11 @@ ASSORTED_RULES = [
 	@rule (~a::is_literal_number / ~b::is_literal_number => ~a / ~b)
 	# TODO(steuber): Push even further outwards by multiplying other parts...
 ]
+MINMAX_RULES = [
+	@rule ( (min(~x::is_literal_number, ~y::is_literal_number)) => (min((~x).value, (~y).value)) )
+	@rule ( (max(~x::is_literal_number, ~y::is_literal_number)) => (max((~x).value, (~y).value)) )
+]
+
 function number_simplifier()
 	rule_tree = [If(istree, Chain(ASSORTED_RULES)),
 				 If(SymbolicUtils.is_operation(+),
@@ -102,7 +107,9 @@ function number_simplifier()
 				 If(SymbolicUtils.is_operation(*),
 					Chain(TIMES_RULES)),
 				 If(SymbolicUtils.is_operation(^),
-					Chain(POW_RULES))]
+					Chain(POW_RULES)),
+				 If( x-> istree(x) && (operation(x) == min || operation(x) == max),
+				 	Chain(MINMAX_RULES))]
 
 	return Chain(rule_tree)
 end

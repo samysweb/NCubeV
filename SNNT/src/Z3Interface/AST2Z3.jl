@@ -1,3 +1,4 @@
+# TODO(steuber): Floating Point Correctness?
 function ast2z3(f :: CompositeFormula, variables)
 	arguments = map(x -> ast2z3(x, variables), f.args)
 	return @match f.connective begin
@@ -10,12 +11,12 @@ end
 function ast2z3(f :: LinearConstraint, variables)
 	formula = 0.0
 	for (i,c) in enumerate(f.coefficients)
-		formula = formula + c * variables[i]
+		formula = formula + Float32(c) * variables[i]
 	end
 	if f.equality
-		return formula <= f.bias
+		return formula <= Float32(f.bias)
 	else
-		return formula < f.bias
+		return formula < Float32(f.bias)
 	end
 end
 function ast2z3(f :: ApproxNode, variables)
@@ -50,5 +51,5 @@ end
 function ast2z3(n :: TermNumber, variables)
 	#value32 = Float32(n.value)
 	#return rationalize(value32)
-	return n.value
+	return Float32(n.value)
 end

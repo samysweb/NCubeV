@@ -1,14 +1,14 @@
 abstract type ApproximationPrototype end
 
 struct Approximation <: ApproximationPrototype
-	constraints :: Vector{Vector{Float64}}
+	bounds :: Vector{Vector{Float64}}
 	# Coefficients for linear constraint
-	linear_constraints :: Vector{Vector{Float64}}
+	linear_constraints :: Vector{Tuple{Vector{Rational{Int128}},Rational{Int128}}}
 end
 
 struct IncompleteApproximation <: ApproximationPrototype
 	bounds :: Vector{Vector{Float64}}
-	constraints :: Vector{Union{Vector{Float64}, Term}}
+	constraints :: Vector{Union{Tuple{Vector{Rational{Int128}},Rational{Int128}}, Term}}
 	function IncompleteApproximation( bounds :: Vector{Vector{Float64}}, formula :: Term)
 		constraints = Union{Vector{Float64}, Term}[formula]
 		return new(bounds, constraints)

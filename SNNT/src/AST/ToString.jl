@@ -9,8 +9,8 @@ function term_to_string(n :: TermNumber)
 end
 
 function term_to_string(t :: CompositeTerm)
-	if t.operation == AST.Neg
-		return "-"*term_to_string(t.args[1])
+	if t.operation == AST.Neg || (t.operation == AST.Sub && length(t.args) == 1)
+		return "-("*term_to_string(t.args[1])*")"
 	elseif t.operation == Min || t.operation == Max
 		res = term_to_string(t.operation)*"("
 		for arg in t.args
