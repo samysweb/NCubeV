@@ -168,18 +168,18 @@ function translate_constraints_internal(var_number :: Int64)
 	end
 end
 
-function overapprox(f :: ParsedNode)
+function get_overapprox(f :: ParsedNode)
 	return @match f begin
 		Atom() => OverApprox(f)
 		CompositeFormula(c, args) => begin
 			return @match c begin
-				Not => CompositeFormula(c, [underapprox(args[1])])
+				Not => CompositeFormula(c, [get_underapprox(args[1])])
 				Implies => begin
-					res = CompositeFormula(c, [underapprox(args[1]), overapprox(args[2])])
+					res = CompositeFormula(c, [get_underapprox(args[1]), get_overapprox(args[2])])
 					return res
 				end
 				_ => begin
-					return CompositeFormula(c, map(overapprox, args))
+					return CompositeFormula(c, map(get_overapprox, args))
 				end
 			end
 		end
@@ -187,14 +187,14 @@ function overapprox(f :: ParsedNode)
 	end
 end
 
-function underapprox(f :: ParsedNode)
+function get_underapprox(f :: ParsedNode)
 	return @match f begin
 		Atom() => UnderApprox(f)
 		CompositeFormula(c, args) => begin
 			return @match c begin
-				Not => CompositeFormula(c, [overapprox(args[1])])
-				Implies => CompositeFormula(c, [overapprox(args[1]), underapprox(args[2])])
-				_ => CompositeFormula(c, map(underapprox, args))
+				Not => CompositeFormula(c, [get_overapprox(args[1])])
+				Implies => CompositeFormula(c, [get_overapprox(args[1]), get_underapprox(args[2])])
+				_ => CompositeFormula(c, map(get_underapprox, args))
 			end
 		end
 		_ => f

@@ -60,7 +60,7 @@ function +(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 		catch e
 			#TODO(steuber): Remove again
 			if e isa InexactError || e isa OverflowError
-				@warn "Inexact/Overflow error on rational addition -> fallback to floats may impede correctness"
+				# @warn "Inexact/Overflow error on rational addition -> fallback to floats may impede correctness"
 				return TermNumber(Rational{Int128}(+(map(x->Float32(x.value), args)...)))
 			else
 				rethrow(e)
@@ -90,7 +90,7 @@ function *(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 		catch e
 			#TODO(steuber): Remove again
 			if e isa InexactError || e isa OverflowError
-				@warn "Inexact/Overflow error on rational multiplication -> fallback to floats may impede correctness"
+				# @warn "Inexact/Overflow error on rational multiplication -> fallback to floats may impede correctness"
 				result = TermNumber(Rational{Int128}(*(map(x->Float32(x.value), args)...)))
 			else
 				rethrow(e)
@@ -99,7 +99,7 @@ function *(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 	else
 		result = CompositeTerm(Mul,args)
 	end
-	@debug result
+	# @debug result
 	return result
 end
 function /(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}}

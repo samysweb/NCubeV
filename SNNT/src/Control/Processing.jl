@@ -17,7 +17,7 @@ end
 function prepare_for_olnnv(query :: Query)
 	formula = query.formula
 	variable_set = query.variables
-	underapprox_formula :: Formula = underapprox(formula)
+	underapprox_formula :: Formula = get_underapprox(formula)
 	# We are looking for counter-examples so we use the negation...
 	olnnv_formula = CompositeFormula(Not,[underapprox_formula])
 	return Query(olnnv_formula, variable_set)

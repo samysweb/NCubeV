@@ -4,6 +4,6 @@ module Analysis
 
 	using ..AST
 	export map_variables, fix_variables, translate_constraints, make_linear
-	export overapprox, underapprox
+	export get_overapprox, get_underapprox
 	include("ProcessConstraints.jl")
 end

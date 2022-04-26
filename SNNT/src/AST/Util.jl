@@ -1,5 +1,4 @@
 function not_division(x :: Term)
-	@debug "not_division -", x," - ", !(x isa CompositeTerm) || operation(x) != (/)
 	return !(x isa CompositeTerm) || operation(x) != (/) && (!istree(x) || all(y->not_division(y), arguments(x)))
 end
 

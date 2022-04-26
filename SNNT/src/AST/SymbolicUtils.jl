@@ -179,7 +179,7 @@ function formula_simplifier()
 end
 
 function distribute_factor(x,ys)
-	@debug "Distributing factor: ", x, " over ", ys
+	# @debug "Distributing factor: ", x, " over ", ys
 	return map(y->x*y,ys)
 end
 
