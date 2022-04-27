@@ -14,6 +14,7 @@ import Base.isequal
 istree(x :: TermNumber) = false
 istree(x :: Variable) = false
 istree(x::Type{CompositeTerm}) = true
+istree(x::Type{LinearTerm}) = true
 istree(x::Type{Atom}) = true
 istree(x::Type{LinearConstraint}) = true
 istree(x::Type{CompositeFormula}) = true
@@ -39,6 +40,7 @@ function exprhead(x :: CompositeTerm)
 end
 exprhead(x :: Atom) = :call
 exprhead(x :: LinearConstraint) = :call
+exprhead(x :: LinearTerm) = :call
 exprhead(x :: CompositeFormula) = :call
 exprhead(x :: OverApprox) = :call
 exprhead(x :: UnderApprox) = :call
@@ -86,6 +88,9 @@ function operation(x :: LinearConstraint)
 	else
 		return linear_less
 	end
+end
+function operation(x :: LinearTerm)
+	return linear
 end
 function operation(x :: CompositeFormula)
 	if x.connective == Not
@@ -152,6 +157,7 @@ function arguments(x :: CompositeTerm)
 end
 arguments(x :: Atom) = [x.left, x.right]
 arguments(x :: LinearConstraint) = [x.coefficients, x.bias]
+arguments(x :: LinearTerm) = [x.coefficients, x.bias]
 arguments(x :: CompositeFormula) = x.args
 arguments(x :: OverApprox) = [x.formula]
 arguments(x :: UnderApprox) = [x.formula]
@@ -208,6 +214,15 @@ function similarterm(::Type{LinearConstraint}, c, args, symtype=LinearConstraint
 	end
 end
 
+function similarterm(::Type{LinearTerm}, c, args, symtype=LinearTerm;metadata=nothing, exprhead=:call)
+	# @debug "similarterm(LinearTerm)"
+	if length(args) == 2
+		return LinearTerm(args[1],args[2])
+	else
+		throw("Can only instantiate linear term with two arguments!")
+	end
+end
+
 function promote_symtype(f :: Symbol, arg_symtypes)
 	# @debug "promote_symtype(Symbol, Vector{Symbol})"
 	# @debug f
@@ -224,6 +239,7 @@ end
 symtype(x :: TermNumber) = Number
 symtype(x :: Variable) = Number
 symtype(x :: CompositeTerm) = Number
+symtype(x :: LinearTerm) = Number
 symtype(x :: Atom) = Bool
 symtype(x :: LinearConstraint) = Bool
 symtype(x :: CompositeFormula) = Bool

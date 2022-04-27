@@ -9,7 +9,11 @@ function evaluate(x :: Vector{Float64}, approximation :: IncompleteApproximation
 		subst[Variable("x"*string(i))] = TermNumber(x_i)
 	end
 	try
-		return simplify(substitute(approximation.constraints[pos+1], subst, fold=false)).value
+		if approximation.constraints[pos+1] isa LinearTerm
+			return dot(x, approximation.constraints[pos+1].coefficients) + approximation.constraints[pos+1].bias
+		else
+			return simplify(substitute(approximation.constraints[pos+1], subst, fold=false)).value
+		end
 	catch e
 		@assert false
 	end

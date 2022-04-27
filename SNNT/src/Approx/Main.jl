@@ -1,4 +1,7 @@
 module Approx
+	using LinearAlgebra
+
+	using MLStyle
 	using OVERT
 	using SymbolicUtils
 

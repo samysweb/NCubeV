@@ -56,13 +56,13 @@ function translate_constraints(f :: Formula, variable_set :: Set{Variable})
 	return Postwalk(translate_constraints_internal(var_number))(f)
 end
 
-function make_linear(left :: Term, right :: Term, comp :: Comparator, var_number :: Int64)
+function make_linear(left :: T1, right :: T2, comp :: Comparator, var_number :: Int64) where {T1 <: Term, T2 <: Term}
 	# @assert AST.is_linear(left) && right isa TermNumber
 	constraint_row = zeros(Rational{Int128}, var_number)
 	bias = right.value
 	semilinears = Dict{ApproxQuery, Rational{Int128}}()
 	@match left begin
-		TermNumber(value) => throw("Constraint "*string(left)*" "*string(comp)*" "*string(right)*" should have been simplified already")
+		TermNumber(value) => begin end
 		Variable(name, _, position) => begin
 			constraint_row[position]+=1.0
 		end
@@ -72,6 +72,11 @@ function make_linear(left :: Term, right :: Term, comp :: Comparator, var_number
 			else
 				semilinears[query] = 1.0
 			end
+		end
+		LinearTerm(c, b) => begin
+			@assert length(c) == var_number
+			constraint_row[:] += c
+			bias -= b
 		end
 		CompositeTerm(op, args) => begin
 			if op == AST.Mul
@@ -88,6 +93,10 @@ function make_linear(left :: Term, right :: Term, comp :: Comparator, var_number
 					else
 						semilinears[args[2].query] = args[1].value
 					end
+				elseif args[2] isa LinearTerm
+					@assert length(args[2].coefficients) == var_number
+					constraint_row +=  args[1].value*args[2].coefficients
+					bias -=  args[1].value*args[2].bias
 				else
 					throw("Constraint "*string(left)*" "*string(comp)*" "*string(right)*" should have been simplified already")
 				end
@@ -103,6 +112,10 @@ function make_linear(left :: Term, right :: Term, comp :: Comparator, var_number
 						else
 							semilinears[cur_arg.query] = 1.0
 						end
+					elseif cur_arg isa LinearTerm
+						@assert length(cur_arg.coefficients) == var_number
+						constraint_row += cur_arg.coefficients
+						bias -= cur_arg.bias
 					elseif cur_arg.operation == AST.Mul
 						@assert length(cur_arg.args) == 2
 						if !(cur_arg.args[1] isa TermNumber)
@@ -119,6 +132,10 @@ function make_linear(left :: Term, right :: Term, comp :: Comparator, var_number
 							else
 								semilinears[args[2].query] = args[1].value
 							end
+						elseif args[2] isa LinearTerm
+							@assert length(args[2].coefficients) == var_number
+							constraint_row +=  args[1].value*args[2].coefficients
+							bias -=  args[1].value*args[2].bias
 						else
 							throw("Constraint "*string(left)*" "*string(comp)*" "*string(right)*" should have been simplified already")
 						end

@@ -90,6 +90,11 @@ end
 	equality :: Bool
 end
 
+@as_record struct LinearTerm <: Term
+	coefficients :: Array{Rational{Int128}}
+	bias :: Rational{Int128}
+end
+
 # Composite formulae
 @enum Connective Not=0 And=1 Or=2 Implies=3
 MLStyle.is_enum(::Connective)=true

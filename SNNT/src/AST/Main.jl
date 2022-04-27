@@ -3,7 +3,7 @@ module AST
 using SymbolicUtils
 using MLStyle
 
-export Query, ParsedNode, Term, VariableType, Variable, NonLinearSubstitution, TermNumber, Operation, CompositeTerm, Formula, Comparator, Atom, TrueAtom, FalseAtom, Connective, CompositeFormula, BoundType
+export Query, ParsedNode, Term, VariableType, Variable, NonLinearSubstitution, TermNumber, LinearTerm, Operation, CompositeTerm, Formula, Comparator, Atom, TrueAtom, FalseAtom, Connective, CompositeFormula, BoundType
 export Input, Output, Add, Sub, Mul, Div, Pow, Neg, Less, LessEq, Greater, GreaterEq, Eq, Neq, Not, And, Or, Implies, Lower, Upper
 export ApproxNode, ApproxQuery, OverApprox, UnderApprox, LinearConstraint, SemiLinearConstraint
 export flip

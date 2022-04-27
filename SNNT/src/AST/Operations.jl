@@ -37,6 +37,8 @@ implies(f :: T1, g :: T2) where {T1 <: Formula,T2 <: Formula} = CompositeFormula
 linear_lesseq(coeff :: Vector{Rational{Int128}}, bias :: Rational{Int128}) = LinearConstraint(coeff, bias, true)
 linear_less(coeff :: Vector{Rational{Int128}}, bias :: Rational{Int128}) = LinearConstraint(coeff, bias, false)
 
+linear(coeff :: Vector{Rational{Int128}}, bias :: Rational{Int128}) = LinearTerm(coeff, bias)
+
 overapprox_fun(f :: T1) where {T1 <: Formula} = OverApprox(f)
 underapprox_fun(f :: T1) where {T1 <: Formula} = UnderApprox(f)
 
@@ -61,7 +63,7 @@ function +(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 			#TODO(steuber): Remove again
 			if e isa InexactError || e isa OverflowError
 				# @warn "Inexact/Overflow error on rational addition -> fallback to floats may impede correctness"
-				return TermNumber(Rational{Int128}(+(map(x->Float32(x.value), args)...)))
+				return TermNumber(Rational{Int128}(+(map(x->Float64(x.value), args)...)))
 			else
 				rethrow(e)
 			end
@@ -91,7 +93,7 @@ function *(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 			#TODO(steuber): Remove again
 			if e isa InexactError || e isa OverflowError
 				# @warn "Inexact/Overflow error on rational multiplication -> fallback to floats may impede correctness"
-				result = TermNumber(Rational{Int128}(*(map(x->Float32(x.value), args)...)))
+				result = TermNumber(Rational{Int128}(*(map(x->Float64(x.value), args)...)))
 			else
 				rethrow(e)
 			end
@@ -158,6 +160,36 @@ end
 # function reduce_precision(p :: ParsedNode;digits=3)
 # 	return Postwalk(PassThrough(If(
 # 		x -> x isa TermNumber,
-# 		x -> TermNumber(Rational{Int128}(round(Float32(x.value),digits=digits)))
+# 		x -> TermNumber(Rational{Int128}(round(Float64(x.value),digits=digits)))
 # 	)))(p)
 # end
+
+correct_mul(x,y) = Base.*(x,y)
+
+function *(x :: Rational{Int128}, y :: Rational{Int128})
+	try
+		return correct_mul(x, y)
+	catch
+		return rationalize(Int128,Float64(x)*Float64(y))
+	end
+end
+
+correct_add(x,y) = Base.+(x,y)
+
+function +(x :: Rational{Int128}, y :: Rational{Int128})
+	try
+		return correct_add(x, y)
+	catch
+		return rationalize(Int128,Float64(x)+Float64(y))
+	end
+end
+
+correct_sub(x,y) = Base.-(x,y)
+
+function -(x :: Rational{Int128}, y :: Rational{Int128})
+	try
+		return correct_sub(x, y)
+	catch
+		return rationalize(Int128,Float64(x)-Float64(y))
+	end
+end

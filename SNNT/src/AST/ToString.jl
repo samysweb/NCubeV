@@ -49,6 +49,9 @@ function term_to_string(a :: LinearConstraint)
 		return string(a.coefficients)*"<"*string(a.bias)
 	end
 end
+function term_to_string(a :: LinearTerm)
+	return string(a.coefficients)*"+"*string(a.bias)
+end
 
 function term_to_string(c :: CompositeFormula)
 	if c.connective == AST.Not

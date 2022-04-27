@@ -8,7 +8,9 @@ end
 
 struct IncompleteApproximation <: ApproximationPrototype
 	bounds :: Vector{Vector{Float64}}
+	# [[0,100],[-200,0,200],[-100,100]]
 	constraints :: Vector{Union{Tuple{Vector{Rational{Int128}},Rational{Int128}}, Term}}
+	# [-vel, vel]
 	function IncompleteApproximation( bounds :: Vector{Vector{Float64}}, formula :: Term)
 		constraints = Union{Vector{Float64}, Term}[formula]
 		return new(bounds, constraints)

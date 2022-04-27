@@ -42,83 +42,65 @@ function find_split_point(bounds :: Vector{Float64}, split_point :: Float64)
 	end
 end
 
-function find_minmax_internal(cur_term, i)
-	if istree(cur_term)
+function find_minmax_generic(cur_term :: Term, check; direction=AST.Upper)
+	if cur_term isa CompositeTerm
 		vars = true
-		for arg in arguments(cur_term)
-			argvars, argres = find_minmax_internal(arg, i)
+		next_dir = nothing
+		if cur_term.operation == AST.Add || cur_term.operation == AST.Min || cur_term.operation == AST.Max
+			next_dir = map(x -> direction, cur_term.args)
+		elseif cur_term.operation == AST.Sub
+			next_dir = [direction;map(x -> flip(direction), cur_term.args[2:end])]
+		elseif cur_term.operation == AST.Mul
+			@assert length(cur_term.args) == 2
+			args = cur_term.args
+			f = identity
+			if !(args[1] isa TermNumber)
+				@assert args[2] isa TermNumber
+				args = [args[2], args[1]]
+				f = reverse
+			end
+			next_dir = f([direction, (args[1].value<0) ? flip(direction) : direction])
+		elseif cur_term.operation == AST.Div
+			@assert cur_term.args[2] isa TermNumber
+			next_dir = [(cur_term.args[2].value<0) ? flip(direction) : direction, direction]
+		else
+			throw("Unexpected operator: "*string(cur_term.operation))
+		end
+		for (arg, cur_dir) in zip(cur_term.args,next_dir)
+			argvars, argres, res_dir = find_minmax_generic(arg, check, direction=cur_dir)
 			vars = vars && argvars
 			if !isnothing(argres)
-				return (vars, argres)
+				return (vars, argres, res_dir)
 			end
 		end
 		if vars && (operation(cur_term) == min || operation(cur_term) == max)
-			return (true, cur_term)
+			@debug "Found min/max: ", cur_term
+			@debug "Flip bound: ", direction != Upper
+			return (true, cur_term, direction != Upper)
 		else
-			return (vars, nothing)
+			return (vars, nothing, false)
 		end
 	elseif cur_term isa Variable 
-		if cur_term.position == i
-			return true, nothing
+		if check(cur_term)
+			return true, nothing, false
 		else
-			return false, nothing
+			return false, nothing, false
 		end
 	else
-		return true,nothing
+		return true,nothing, false
 	end
 end
 
-function get_split(atom :: Atom)
-	@assert atom.comparator == AST.LessEq
-	@assert atom.right isa TermNumber
-	if atom.left isa Variable
-		return atom.right.value
-	else
-		bias = atom.right.value
-		if operation(atom.left) == (*)
-			@assert length(atom.left.args) == 2
-			a = atom.left.args[1]
-			b = atom.left.args[2]
-			if a isa Variable
-				return bias/b.value
-			else
-				@assert b isa Variable
-				return bias/a.value
-			end
-		else
-			@assert istree(atom) && operation(atom.left) == (+)
-			@assert length(atom.left.args) == 2
-			a = atom.left.args[1]
-			b = atom.left.args[2]
-			x = nothing
-			if a isa TermNumber
-				bias = bias - a.value
-				x = b
-			else
-				@assert b isa TermNumber
-				bias = bias - b.value
-				x=a
-			end
-			if x isa Variable
-				return bias
-			else
-				@assert istree(x) && operation(x) == (*) && length(x.args) == 2
-				a = x.args[1]
-				b = x.args[2]
-				if a isa Variable
-					return bias/b.value
-				else
-					@assert b isa Variable
-					return bias/a.value
-				end
-			end
-		end
-	end
+function find_minmax_internal(cur_term :: Term, i :: Int64)
+	return find_minmax_generic(cur_term, v -> (v.position == i))
 end
 
+function find_any_inner_minmax(cur_term :: Term)
+	return find_minmax_generic(cur_term, v -> true)
+end
 
-function find_minmax(cur_term, i)
-	_, res = find_minmax_internal(cur_term, i)
+function find_univariate_minmax(cur_term, i)
+	_, res, _ = find_minmax_internal(cur_term, i)
 	if !isnothing(res)
 		term1 = simplify(res.args[1])
 		term2 = simplify(res.args[2])
@@ -137,6 +119,28 @@ function find_minmax(cur_term, i)
 	end
 end
 
+# Either returns term1, term2 of some max(term1, term2)
+# or returns -term1, -term2 of some min(term1, term2) = -max(-term1, -term2)
+# or returns nothing
+function find_multivariate_minmax(cur_term, var_num :: Int64)
+	_, res, doflip = find_any_inner_minmax(cur_term)
+	if !isnothing(res)
+		c = (res.operation == AST.Min) ? -1.0 : 1.0
+		term1 = simplify(res.args[1])
+		term2 = simplify(res.args[2])
+		# term1 <= term2
+		linear1 = make_linear(term1, TermNumber(0.0), AST.LessEq, var_num)
+		linear2 = make_linear(term2, TermNumber(0.0), AST.LessEq, var_num)
+		linear_term1, bias1 = c*linear1.coefficients, -c*linear1.bias
+		linear_term2, bias2 = c*linear2.coefficients, -c*linear2.bias
+		return LinearTerm(linear_term1,bias1), LinearTerm(linear_term2,bias2), res, doflip
+	else
+		return nothing
+	end
+end
+
+
+
 
 function resolve_univariate_minmax(approximation :: IncompleteApproximation)
 	N = 1
@@ -144,7 +148,7 @@ function resolve_univariate_minmax(approximation :: IncompleteApproximation)
 	# TODO(steuber): Comment out expensive sanity check (i.e. everything related to old)
 	for i in length(bounds):-1:1
 		cur_term = approximation.constraints[1]
-		next_minmax = find_minmax(cur_term, i)
+		next_minmax = find_univariate_minmax(cur_term, i)
 		while !isnothing(next_minmax)
 			old = deepcopy(approximation)
 			term1, term2, split_point, original_term = next_minmax
@@ -183,21 +187,120 @@ function resolve_univariate_minmax(approximation :: IncompleteApproximation)
 			#check_approx_equiv(old,approximation)
 			# Find next splitting point
 			cur_term = approximation.constraints[1]
-			next_minmax = find_minmax(cur_term, i)
+			next_minmax = find_univariate_minmax(cur_term, i)
 		end
 		N *= (length(bounds[i])-1)
 	end
 	return approximation
 end
 
-function resolve_multivariate_minmax(approximation :: IncompleteApproximation, bound_direction :: BoundType)
+function bounds_iterator(approximation :: ApproximationPrototype)
+	return map(x->collect( b for b in reverse(x)),
+		Iterators.product(
+			map(x -> zip(x,x[2:end]),
+				# First iterator changes the fastest -> reverse direction of bounds
+				reverse(approximation.bounds)
+			)...
+		)
+	)
+end
+
+function optimize_term(bounds :: Vector{Tuple{Float64,Float64}}, term :: LinearTerm)
+	x_min = map(
+		(x) -> (x[2]>=0) ? x[1][1] : x[1][2],
+		zip(bounds, term.coefficients)
+	)
+	x_max = map(
+		(x) -> (x[2]>=0) ? x[1][2] : x[1][1],
+		zip(bounds, term.coefficients)
+	)
+	return ((dot(x_min, term.coefficients) + term.bias),x_min), ((dot(x_max, term.coefficients) + term.bias),x_max)
 
 end
 
+function resolve_or_approx(op :: AST.Operation, bounds :: Vector{Tuple{Float64,Float64}}, term1 :: LinearTerm, term2 :: LinearTerm, bound_direction :: BoundType)
+	split_hyperplane = term1.coefficients-term2.coefficients
+	split_bias = term1.bias-term2.bias
+	# max {term1-term2} <= 0 => max(term1,term2) = term2
+	# min {term1-term2} >= 0 => max(term1,term2) = term1
+	# else: approximation necessary
+	split_term = LinearTerm(split_hyperplane, split_bias)
+	(split_min, xg), (split_max, xf) = optimize_term(bounds, split_term)
+	@debug "Bounds:"
+	@debug bounds
+	if split_max <= 0.0
+		@debug "No need for approximation, returning "
+		@debug term2
+		return term2
+	elseif split_min >= 0.0
+		@debug "No need for approximation, returning "
+		@debug term1
+		return term1
+	else
+		# Do approximation
+		if bound_direction == AST.Lower
+			@debug "Generating lower bound"
+			return LinearTerm(0.5*term1.coefficients + 0.5*term2.coefficients, 0.5*term1.bias + 0.5*term2.bias)
+		else
+			@debug "Generating upper bound"
+			fxf = dot(xf, term1.coefficients) + term1.bias
+			fxg = dot(xg, term1.coefficients) + term1.bias
+			gxf = dot(xf, term2.coefficients) + term2.bias
+			gxg = dot(xg, term2.coefficients) + term2.bias
+			mu = -(gxf - fxf)/(fxf-fxg-gxf+gxg)
+			c = -(fxf-gxf)*(fxg-gxg)/(fxf-fxg-gxf+gxg)
+			@debug "C: ",c
+			@debug "Bias: ",mu*term1.bias + (1-mu)*term2.bias+c
+			return LinearTerm(mu*term1.coefficients + (1-mu)*term2.coefficients, mu*term1.bias + (1-mu)*term2.bias+c)
+		end
+	end
+end
+
+function resolve_multivariate_minmax(approximation :: IncompleteApproximation, bound_direction_overall :: BoundType)
+	for (i, cur_bounds) in enumerate(bounds_iterator(approximation))
+		next_minmax = find_multivariate_minmax(approximation.constraints[i], length(approximation.bounds))
+		while !isnothing(next_minmax)
+			bound_direction = bound_direction_overall
+			term1, term2, res, doflip = next_minmax
+			if doflip
+				bound_direction = flip(bound_direction)
+			end
+			function_symbol = res.operation
+			if function_symbol == AST.Min
+				bound_direction = flip(bound_direction)
+			end
+			new_term = resolve_or_approx(function_symbol, cur_bounds, term1, term2, bound_direction)
+			# TODO(steuber): Actually produce term
+			if function_symbol == AST.Min
+				new_term = LinearTerm(-new_term.coefficients, -new_term.bias)
+			end
+			@debug "Results in new term: "
+			@debug new_term
+			approximation.constraints[i] = substitute(approximation.constraints[i], Dict(res => new_term),fold=false)
+			@debug "After substitution"
+			@debug AST.term_to_string(simplify(approximation.constraints[i]))
+			next_minmax = find_multivariate_minmax(approximation.constraints[i],length(approximation.bounds))
+		end
+	end
+	for i in 1:length(approximation.constraints)
+		linear = make_linear(simplify(approximation.constraints[i]), TermNumber(0.0), AST.LessEq, length(approximation.bounds))
+		approximation.constraints[i] = LinearTerm(linear.coefficients, -linear.bias)
+	end
+	return approximation
+end
+
 function resolve_approximation(approximation :: IncompleteApproximation, bound_direction :: BoundType)
+	@info "Simplifying"
+	approximation.constraints[1] = simplify(approximation.constraints[1])
+	@info "Resolving univariate"
 	approx_step_1 = resolve_univariate_minmax(approximation)
+	@info "Simplifying"
+	for i in 1:length(approximation.constraints)
+		approximation.constraints[i] = simplify(approximation.constraints[i])
+	end
+	@info "Resolving multivariate"
 	approx_step_2 = resolve_multivariate_minmax(approx_step_1, bound_direction)
-	return approx_step_1
+	return approx_step_2
 end
 
 # For each set of intervals I_0, I_1, ..., I_n
