@@ -45,6 +45,16 @@ function has_output_variables(f :: ParsedNode, query :: Query)
 		return f.mapping[1] == AST.Output
 	elseif f isa LinearConstraint
 		return !iszero(f.coefficients[query.num_input_vars+1:end])
+	elseif f isa SemiLinearConstraint
+		if !iszero(f.coefficients[query.num_input_vars+1:end])
+			return true
+		end
+		for (k,_) in f.semilinears
+			if has_output_variables(k.term, query)
+				return true
+			end
+		end
+		return false
 	elseif istree(f)
 		return any(map(x -> has_output_variables(x,query), arguments(f)))
 	else
@@ -121,6 +131,7 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 				approx_queries, semilinear = handle_nonlinearity(approx_direction, cur_f[2].formula.left)
 				nonlinearities_set = union(nonlinearities_set, approx_queries)
 				new_formula = make_linear(semilinear, cur_f[2].formula.right, cur_f[2].formula.comparator, varnum)
+				#@debug "New semilinear constraint: ", new_formula
 				push!(new_conjunction, (cur_f[1], new_formula ))
 			else
 				push!(new_conjunction, cur_f)
@@ -136,6 +147,7 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 		# 	nonlinearities_set=union(nonlinearities_set, collect_nonlinearities(approx_direction, a[2].formula.left))
 		# end
 		# Add in-out constraints to disjunction
+		@debug "Adding in-out constraints: ", mixed
 		push!(disjunction, map(x -> x[2], mixed))
 	
 		# Fix input constraints for further search
@@ -162,6 +174,7 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 		# 	println(x.bound," -> ",AST.term_to_string(x.term))
 		# end
 		# println("---------------------")
+		@debug "Disjunction: ", disjunction
 		return NormalizedQuery(map(x->x[2],input), disjunction, nonlinearities_set, query), state
 	else
 		return nothing

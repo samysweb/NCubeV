@@ -22,3 +22,12 @@ function prepare_for_olnnv(query :: Query)
 	olnnv_formula = CompositeFormula(Not,[underapprox_formula])
 	return Query(olnnv_formula, variable_set)
 end
+
+function run_query(f, query :: Query)
+	for current_conjunction in query
+		approx_normalized = get_approx_normalized_query(current_conjunction)
+		for linear_query in approx_normalized
+			f(linear_query)
+		end
+	end
+end

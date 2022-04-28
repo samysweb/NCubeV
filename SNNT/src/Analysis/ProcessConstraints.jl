@@ -149,6 +149,7 @@ function make_linear(left :: T1, right :: T2, comp :: Comparator, var_number :: 
 	end
 	# TODO(steuber): Possible optimization: Include side-constraint for Eq/Neq that one of the two formulas always has to be true/false
 	if length(semilinears)>0
+		@debug "Generating semilinear constraint..."
 		C = SemiLinearConstraint(semilinears)
 	else
 		C = LinearConstraint

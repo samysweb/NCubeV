@@ -20,8 +20,6 @@
 #       For all terms h*N+k<=j<h*N+k+1: Substitute with term2
 #       N++
 
-EPSILON=1e-3
-
 function find_split_point(bounds :: Vector{Float64}, split_point :: Float64)
 	lower = searchsortedlast(bounds, split_point)
 	if lower < length(bounds) && bounds[lower+1]-EPSILON <= split_point
@@ -74,8 +72,8 @@ function find_minmax_generic(cur_term :: Term, check; direction=AST.Upper)
 			end
 		end
 		if vars && (operation(cur_term) == min || operation(cur_term) == max)
-			@debug "Found min/max: ", cur_term
-			@debug "Flip bound: ", direction != Upper
+			#@debug "Found min/max: ", cur_term
+			#@debug "Flip bound: ", direction != Upper
 			return (true, cur_term, direction != Upper)
 		else
 			return (vars, nothing, false)
@@ -152,7 +150,7 @@ function resolve_univariate_minmax(approximation :: IncompleteApproximation)
 		while !isnothing(next_minmax)
 			old = deepcopy(approximation)
 			term1, term2, split_point, original_term = next_minmax
-			#@debug term2
+			##@debug term2
 			k_low, k_high = find_split_point(bounds[i], split_point)
 			if k_low == -1 # Split outside bounds
 				term = (k_high == 1) ? term1 : term2
@@ -194,17 +192,6 @@ function resolve_univariate_minmax(approximation :: IncompleteApproximation)
 	return approximation
 end
 
-function bounds_iterator(approximation :: ApproximationPrototype)
-	return map(x->collect( b for b in reverse(x)),
-		Iterators.product(
-			map(x -> zip(x,x[2:end]),
-				# First iterator changes the fastest -> reverse direction of bounds
-				reverse(approximation.bounds)
-			)...
-		)
-	)
-end
-
 function optimize_term(bounds :: Vector{Tuple{Float64,Float64}}, term :: LinearTerm)
 	x_min = map(
 		(x) -> (x[2]>=0) ? x[1][1] : x[1][2],
@@ -226,38 +213,38 @@ function resolve_or_approx(op :: AST.Operation, bounds :: Vector{Tuple{Float64,F
 	# else: approximation necessary
 	split_term = LinearTerm(split_hyperplane, split_bias)
 	(split_min, xg), (split_max, xf) = optimize_term(bounds, split_term)
-	@debug "Bounds:"
-	@debug bounds
+	#@debug "Bounds:"
+	#@debug bounds
 	if split_max <= 0.0
-		@debug "No need for approximation, returning "
-		@debug term2
+		#@debug "No need for approximation, returning "
+		#@debug term2
 		return term2
 	elseif split_min >= 0.0
-		@debug "No need for approximation, returning "
-		@debug term1
+		#@debug "No need for approximation, returning "
+		#@debug term1
 		return term1
 	else
 		# Do approximation
 		if bound_direction == AST.Lower
-			@debug "Generating lower bound"
+			#@debug "Generating lower bound"
 			return LinearTerm(0.5*term1.coefficients + 0.5*term2.coefficients, 0.5*term1.bias + 0.5*term2.bias)
 		else
-			@debug "Generating upper bound"
+			#@debug "Generating upper bound"
 			fxf = dot(xf, term1.coefficients) + term1.bias
 			fxg = dot(xg, term1.coefficients) + term1.bias
 			gxf = dot(xf, term2.coefficients) + term2.bias
 			gxg = dot(xg, term2.coefficients) + term2.bias
 			mu = -(gxf - fxf)/(fxf-fxg-gxf+gxg)
 			c = -(fxf-gxf)*(fxg-gxg)/(fxf-fxg-gxf+gxg)
-			@debug "C: ",c
-			@debug "Bias: ",mu*term1.bias + (1-mu)*term2.bias+c
+			#@debug "C: ",c
+			#@debug "Bias: ",mu*term1.bias + (1-mu)*term2.bias+c
 			return LinearTerm(mu*term1.coefficients + (1-mu)*term2.coefficients, mu*term1.bias + (1-mu)*term2.bias+c)
 		end
 	end
 end
 
 function resolve_multivariate_minmax(approximation :: IncompleteApproximation, bound_direction_overall :: BoundType)
-	for (i, cur_bounds) in enumerate(bounds_iterator(approximation))
+	for (i, cur_bounds) in enumerate(bounds_iterator(approximation.bounds))
 		next_minmax = find_multivariate_minmax(approximation.constraints[i], length(approximation.bounds))
 		while !isnothing(next_minmax)
 			bound_direction = bound_direction_overall
@@ -274,11 +261,11 @@ function resolve_multivariate_minmax(approximation :: IncompleteApproximation, b
 			if function_symbol == AST.Min
 				new_term = LinearTerm(-new_term.coefficients, -new_term.bias)
 			end
-			@debug "Results in new term: "
-			@debug new_term
+			#@debug "Results in new term: "
+			#@debug new_term
 			approximation.constraints[i] = substitute(approximation.constraints[i], Dict(res => new_term),fold=false)
-			@debug "After substitution"
-			@debug AST.term_to_string(simplify(approximation.constraints[i]))
+			#@debug "After substitution"
+			#@debug AST.term_to_string(simplify(approximation.constraints[i]))
 			next_minmax = find_multivariate_minmax(approximation.constraints[i],length(approximation.bounds))
 		end
 	end
@@ -300,7 +287,7 @@ function resolve_approximation(approximation :: IncompleteApproximation, bound_d
 	end
 	@info "Resolving multivariate"
 	approx_step_2 = resolve_multivariate_minmax(approx_step_1, bound_direction)
-	return approx_step_2
+	return Approximation(approx_step_2.bounds, convert(Vector{LinearTerm},approx_step_2.constraints))
 end
 
 # For each set of intervals I_0, I_1, ..., I_n

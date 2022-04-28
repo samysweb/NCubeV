@@ -3,7 +3,7 @@ abstract type ApproximationPrototype end
 struct Approximation <: ApproximationPrototype
 	bounds :: Vector{Vector{Float64}}
 	# Coefficients for linear constraint
-	linear_constraints :: Vector{Tuple{Vector{Rational{Int128}},Rational{Int128}}}
+	linear_constraints :: Vector{LinearTerm}
 end
 
 struct IncompleteApproximation <: ApproximationPrototype
@@ -28,6 +28,28 @@ struct ApproxNormalizedQueryPrototype{T <: ApproximationPrototype}
 		output_bounds = nonlinear_query.output_bounds
 		approximations = construct_approx(nonlinear_query)
 		return new{IncompleteApproximation}(nonlinear_query, input_bounds, output_bounds, approximations)
+	end
+	function ApproxNormalizedQueryPrototype{Approximation}(
+		incomplete :: ApproxNormalizedQueryPrototype{IncompleteApproximation},
+		approximations :: Dict{ApproxQuery, Approximation})
+		input_bounds = deepcopy(incomplete.input_bounds)
+		input_length = length(input_bounds)
+		output_bounds = deepcopy(incomplete.output_bounds)
+		output_length = length(output_bounds)
+		for (_, approximation) in approximations
+			for i in 1:input_length
+				input_bounds[i] = union(input_bounds[i], approximation.bounds[i])
+			end
+			for j in 1:output_length
+				output_bounds[j] = union(output_bounds[j], approximation.bounds[input_length+j])
+			end
+		end
+		map(x->sort!(x),input_bounds)
+		map(x->sort!(x),output_bounds)
+		unique_filter = ( (x,y) -> (abs(y[2]-x) < EPSILON) ? y : ([x;y[1]], x) )
+		input_bounds = map(x -> foldr(unique_filter ,x;init=([],Inf))[1], input_bounds)
+		output_bounds = map(x -> foldr(unique_filter ,x;init=([],Inf))[1], output_bounds)
+		return new{Approximation}(incomplete.nonlinear_query, input_bounds, output_bounds, approximations)
 	end
 end
 

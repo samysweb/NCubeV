@@ -19,6 +19,18 @@ function evaluate(x :: Vector{Float64}, approximation :: IncompleteApproximation
 	end
 end
 
+function get_linear_term_position(approximation :: ApproximationPrototype, bounds :: Vector{Tuple{Float64, Float64}})
+	pos = 0
+	for (i, b) in enumerate(bounds)
+		pos*= length(approximation.bounds[i])-1
+		@assert approximation.bounds[i][1] <= b[1] && b[2] <= approximation.bounds[i][length(approximation.bounds[i])]
+		j = get_position(approximation.bounds[i], b[1])
+		@assert b[2] <= approximation.bounds[i][j+1]+EPSILON
+		pos += j-1
+	end
+	return pos+1
+end
+
 function get_position(bounds :: Vector{Float64}, x :: Float64)
 	j = searchsortedlast(bounds, x)
 	if j == length(bounds) && x <= bounds[j]
