@@ -58,9 +58,9 @@ end
 
 function make_linear(left :: T1, right :: T2, comp :: Comparator, var_number :: Int64) where {T1 <: Term, T2 <: Term}
 	# @assert AST.is_linear(left) && right isa TermNumber
-	constraint_row = zeros(Rational{Int128}, var_number)
+	constraint_row = zeros(Rational{BigInt}, var_number)
 	bias = right.value
-	semilinears = Dict{ApproxQuery, Rational{Int128}}()
+	semilinears = Dict{ApproxQuery, Rational{BigInt}}()
 	@match left begin
 		TermNumber(value) => begin end
 		Variable(name, _, position) => begin

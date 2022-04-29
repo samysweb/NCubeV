@@ -1,5 +1,7 @@
 import Base.iterate
 
+# TODO(steuber): Float32 rounding from rationals: Ensure rounding in right direction!
+
 function bounds_iterator(bounds :: Vector{Vector{Float64}};limit_bounds :: Union{Nothing,Vector{Tuple{Float64, Float64}}}=nothing)
 	#TODO(steuber): This should be possible without any memory allocation
 	if isnothing(limit_bounds)

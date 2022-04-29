@@ -5,7 +5,7 @@ abstract type ParsedNode end
 # Terms
 abstract type Term <: ParsedNode end
 @as_record struct TermNumber <: Term
-	value :: Rational{Int128}
+	value :: Rational{BigInt}
 end
 
 @enum VariableType Input=1 Output=2
@@ -71,12 +71,12 @@ end
 end
 
 @as_record struct SemiLinearConstraint <: Formula
-	semilinears :: Dict{ApproxQuery, Rational{Int128}}
-	coefficients :: Array{Rational{Int128}}
-	bias :: Rational{Int128}
+	semilinears :: Dict{ApproxQuery, Rational{BigInt}}
+	coefficients :: Array{Rational{BigInt}}
+	bias :: Rational{BigInt}
 	equality :: Bool
-	function SemiLinearConstraint(semilinears :: Dict{ApproxQuery, Rational{Int128}})
-		return function(coefficients :: Array{Rational{Int128}}, bias :: Rational{Int128}, equality :: Bool)
+	function SemiLinearConstraint(semilinears :: Dict{ApproxQuery, Rational{BigInt}})
+		return function(coefficients :: Array{Rational{BigInt}}, bias :: Rational{BigInt}, equality :: Bool)
 			return new(semilinears, coefficients, bias, equality)
 		end
 	end
@@ -85,14 +85,14 @@ end
 @as_record struct LinearConstraint <: Formula
 	# !equality => coefficients * variables <= constant
 	# equality => coefficients * variables == constant
-	coefficients :: Array{Rational{Int128}}
-	bias :: Rational{Int128}
+	coefficients :: Array{Rational{BigInt}}
+	bias :: Rational{BigInt}
 	equality :: Bool
 end
 
 @as_record struct LinearTerm <: Term
-	coefficients :: Array{Rational{Int128}}
-	bias :: Rational{Int128}
+	coefficients :: Array{Rational{BigInt}}
+	bias :: Rational{BigInt}
 end
 
 # Composite formulae

@@ -239,8 +239,8 @@ function resolve_or_approx(op :: AST.Operation, bounds :: Vector{Tuple{Float64,F
 			fxg = dot(xg, term1.coefficients) + term1.bias
 			gxf = dot(xf, term2.coefficients) + term2.bias
 			gxg = dot(xg, term2.coefficients) + term2.bias
-			mu = rationalize(Int128,-(gxf - fxf)/(fxf-fxg-gxf+gxg))
-			c = rationalize(Int128,-(fxf-gxf)*(fxg-gxg)/(fxf-fxg-gxf+gxg))
+			mu = rationalize(BigInt,-(gxf - fxf)/(fxf-fxg-gxf+gxg))
+			c = rationalize(BigInt,-(fxf-gxf)*(fxg-gxg)/(fxf-fxg-gxf+gxg))
 			#@debug "C: ",c
 			#@debug "Bias: ",mu*term1.bias + (1-mu)*term2.bias+c
 			return LinearTerm(mu*term1.coefficients + (1-mu)*term2.coefficients, mu*term1.bias + (1-mu)*term2.bias+c)

@@ -36,10 +36,10 @@ function or_construction(fs :: Vector{Formula})
 end
 implies(f :: T1, g :: T2) where {T1 <: Formula,T2 <: Formula} = CompositeFormula(Implies,[f,g])
 
-linear_lesseq(coeff :: Vector{Rational{Int128}}, bias :: Rational{Int128}) = LinearConstraint(coeff, bias, true)
-linear_less(coeff :: Vector{Rational{Int128}}, bias :: Rational{Int128}) = LinearConstraint(coeff, bias, false)
+linear_lesseq(coeff :: Vector{Rational{BigInt}}, bias :: Rational{BigInt}) = LinearConstraint(coeff, bias, true)
+linear_less(coeff :: Vector{Rational{BigInt}}, bias :: Rational{BigInt}) = LinearConstraint(coeff, bias, false)
 
-linear(coeff :: Vector{Rational{Int128}}, bias :: Rational{Int128}) = LinearTerm(coeff, bias)
+linear(coeff :: Vector{Rational{BigInt}}, bias :: Rational{BigInt}) = LinearTerm(coeff, bias)
 
 overapprox_fun(f :: T1) where {T1 <: Formula} = OverApprox(f)
 underapprox_fun(f :: T1) where {T1 <: Formula} = UnderApprox(f)
@@ -65,7 +65,7 @@ function +(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 			#TODO(steuber): Remove again
 			if e isa InexactError || e isa OverflowError
 				# @warn "Inexact/Overflow error on rational addition -> fallback to floats may impede correctness"
-				return TermNumber(Rational{Int128}(+(map(x->Float64(x.value), args)...)))
+				return TermNumber(Rational{BigInt}(+(map(x->Float64(x.value), args)...)))
 			else
 				rethrow(e)
 			end
@@ -95,7 +95,7 @@ function *(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 			#TODO(steuber): Remove again
 			if e isa InexactError || e isa OverflowError
 				# @warn "Inexact/Overflow error on rational multiplication -> fallback to floats may impede correctness"
-				result = TermNumber(Rational{Int128}(*(map(x->Float64(x.value), args)...)))
+				result = TermNumber(Rational{BigInt}(*(map(x->Float64(x.value), args)...)))
 			else
 				rethrow(e)
 			end
@@ -115,7 +115,7 @@ function /(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,
 end
 function ^(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}}
 	if t1 isa TermNumber && t2 isa TermNumber
-		return TermNumber(Rational{Int128}((t1.value.num ^ t2.value))//Rational{Int128}((t1.value.den ^ t2.value)))
+		return TermNumber(Rational{BigInt}((t1.value.num ^ t2.value))//Rational{BigInt}((t1.value.den ^ t2.value)))
 	elseif t1 isa TermNumber && t2 isa Number
 		return TermNumber((t1.value.num ^ t2)//(t1.value.den ^ 1))
 	else
@@ -162,36 +162,36 @@ end
 # function reduce_precision(p :: ParsedNode;digits=3)
 # 	return Postwalk(PassThrough(If(
 # 		x -> x isa TermNumber,
-# 		x -> TermNumber(Rational{Int128}(round(Float64(x.value),digits=digits)))
+# 		x -> TermNumber(Rational{BigInt}(round(Float64(x.value),digits=digits)))
 # 	)))(p)
 # end
 
-correct_mul(x,y) = Base.*(x,y)
+# correct_mul(x,y) = Base.*(x,y)
 
-function *(x :: Rational{Int128}, y :: Rational{Int128})
-	try
-		return correct_mul(x, y)
-	catch
-		return rationalize(Int128,Float64(x)*Float64(y))
-	end
-end
+# function *(x :: Rational{BigInt}, y :: Rational{BigInt})
+# 	try
+# 		return correct_mul(x, y)
+# 	catch
+# 		return rationalize(BigInt,Float64(x)*Float64(y))
+# 	end
+# end
 
-correct_add(x,y) = Base.+(x,y)
+# correct_add(x,y) = Base.+(x,y)
 
-function +(x :: Rational{Int128}, y :: Rational{Int128})
-	try
-		return correct_add(x, y)
-	catch
-		return rationalize(Int128,Float64(x)+Float64(y))
-	end
-end
+# function +(x :: Rational{BigInt}, y :: Rational{BigInt})
+# 	try
+# 		return correct_add(x, y)
+# 	catch
+# 		return rationalize(BigInt,Float64(x)+Float64(y))
+# 	end
+# end
 
-correct_sub(x,y) = Base.-(x,y)
+# correct_sub(x,y) = Base.-(x,y)
 
-function -(x :: Rational{Int128}, y :: Rational{Int128})
-	try
-		return correct_sub(x, y)
-	catch
-		return rationalize(Int128,Float64(x)-Float64(y))
-	end
-end
+# function -(x :: Rational{BigInt}, y :: Rational{BigInt})
+# 	try
+# 		return correct_sub(x, y)
+# 	catch
+# 		return rationalize(BigInt,Float64(x)-Float64(y))
+# 	end
+# end
