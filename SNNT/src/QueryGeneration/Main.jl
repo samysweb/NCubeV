@@ -16,4 +16,5 @@ module QueryGeneration
 
 	export iterate
 	export NormalizedQuery
+	export PwlConjunction
 end

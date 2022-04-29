@@ -1,6 +1,3 @@
-N = 2
-epsilon = 0.01
-
 function get_val_ranges(offset :: Int64, bounds :: Vector{Vector{Float64}})
 	val_ranges = Dict{Symbol, Array{Float64, 1}}()
 	for (i, bound) in enumerate(bounds)

@@ -75,7 +75,7 @@ function make_linear(left :: T1, right :: T2, comp :: Comparator, var_number :: 
 		end
 		LinearTerm(c, b) => begin
 			@assert length(c) == var_number
-			constraint_row[:] += c
+			constraint_row[:] .+= c
 			bias -= b
 		end
 		CompositeTerm(op, args) => begin
@@ -95,7 +95,7 @@ function make_linear(left :: T1, right :: T2, comp :: Comparator, var_number :: 
 					end
 				elseif args[2] isa LinearTerm
 					@assert length(args[2].coefficients) == var_number
-					constraint_row +=  args[1].value*args[2].coefficients
+					constraint_row .+=  args[1].value.*args[2].coefficients
 					bias -=  args[1].value*args[2].bias
 				else
 					throw("Constraint "*string(left)*" "*string(comp)*" "*string(right)*" should have been simplified already")
@@ -114,7 +114,7 @@ function make_linear(left :: T1, right :: T2, comp :: Comparator, var_number :: 
 						end
 					elseif cur_arg isa LinearTerm
 						@assert length(cur_arg.coefficients) == var_number
-						constraint_row += cur_arg.coefficients
+						constraint_row .+= cur_arg.coefficients
 						bias -= cur_arg.bias
 					elseif cur_arg.operation == AST.Mul
 						@assert length(cur_arg.args) == 2
@@ -134,7 +134,7 @@ function make_linear(left :: T1, right :: T2, comp :: Comparator, var_number :: 
 							end
 						elseif args[2] isa LinearTerm
 							@assert length(args[2].coefficients) == var_number
-							constraint_row +=  args[1].value*args[2].coefficients
+							constraint_row .+=  args[1].value.*args[2].coefficients
 							bias -=  args[1].value*args[2].bias
 						else
 							throw("Constraint "*string(left)*" "*string(comp)*" "*string(right)*" should have been simplified already")
@@ -149,7 +149,7 @@ function make_linear(left :: T1, right :: T2, comp :: Comparator, var_number :: 
 	end
 	# TODO(steuber): Possible optimization: Include side-constraint for Eq/Neq that one of the two formulas always has to be true/false
 	if length(semilinears)>0
-		@debug "Generating semilinear constraint..."
+		#@debug "Generating semilinear constraint..."
 		C = SemiLinearConstraint(semilinears)
 	else
 		C = LinearConstraint

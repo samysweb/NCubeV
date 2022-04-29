@@ -46,9 +46,8 @@ struct ApproxNormalizedQueryPrototype{T <: ApproximationPrototype}
 		end
 		map(x->sort!(x),input_bounds)
 		map(x->sort!(x),output_bounds)
-		unique_filter = ( (x,y) -> (abs(y[2]-x) < EPSILON) ? y : ([x;y[1]], x) )
-		input_bounds = map(x -> foldr(unique_filter ,x;init=([],Inf))[1], input_bounds)
-		output_bounds = map(x -> foldr(unique_filter ,x;init=([],Inf))[1], output_bounds)
+		input_bounds = filter_bounds(input_bounds)
+		output_bounds = filter_bounds(output_bounds)
 		return new{Approximation}(incomplete.nonlinear_query, input_bounds, output_bounds, approximations)
 	end
 end

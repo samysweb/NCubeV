@@ -147,7 +147,7 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 		# 	nonlinearities_set=union(nonlinearities_set, collect_nonlinearities(approx_direction, a[2].formula.left))
 		# end
 		# Add in-out constraints to disjunction
-		@debug "Adding in-out constraints: ", mixed
+		#@debug "Adding in-out constraints: ", mixed
 		push!(disjunction, map(x -> x[2], mixed))
 	
 		# Fix input constraints for further search
@@ -174,7 +174,7 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 		# 	println(x.bound," -> ",AST.term_to_string(x.term))
 		# end
 		# println("---------------------")
-		@debug "Disjunction: ", disjunction
+		#@debug "Disjunction: ", disjunction
 		return NormalizedQuery(map(x->x[2],input), disjunction, nonlinearities_set, query), state
 	else
 		return nothing

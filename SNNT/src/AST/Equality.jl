@@ -17,10 +17,10 @@ isequal(x :: UnderApprox, y :: UnderApprox) = isequal(x.formula, y.formula)
 
 hash(x :: TermNumber) = hash(x.value)
 hash(x :: Variable) = hash(x.name)
-hash(x :: CompositeTerm) = hash(x.operation) * reduce(+,map(hash,x.args))
+hash(x :: CompositeTerm) = hash(x.operation) * reduce(+,Iterators.map(hash,x.args))
 hash(x :: Atom) = hash(x.comparator) * hash(x.left) * hash(x.right)
 hash(x :: LinearConstraint) = hash(x.coefficients) * hash(x.bias) * hash(x.equality)
-hash(x :: CompositeFormula) = hash(x.connective) * reduce(+,map(hash,x.args))
+hash(x :: CompositeFormula) = hash(x.connective) * reduce(+,Iterators.map(hash,x.args))
 hash(x :: OverApprox) = 7*hash(x.formula)
 hash(x :: UnderApprox) = 11*hash(x.formula)
 

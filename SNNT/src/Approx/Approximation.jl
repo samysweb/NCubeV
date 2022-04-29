@@ -43,6 +43,7 @@ end
 function find_minmax_generic(cur_term :: Term, check; direction=AST.Upper)
 	if cur_term isa CompositeTerm
 		vars = true
+		# TODO(steuber): next_dir is very memory inefficient!
 		next_dir = nothing
 		if cur_term.operation == AST.Add || cur_term.operation == AST.Min || cur_term.operation == AST.Max
 			next_dir = map(x -> direction, cur_term.args)
@@ -129,8 +130,11 @@ function find_multivariate_minmax(cur_term, var_num :: Int64)
 		# term1 <= term2
 		linear1 = make_linear(term1, TermNumber(0.0), AST.LessEq, var_num)
 		linear2 = make_linear(term2, TermNumber(0.0), AST.LessEq, var_num)
-		linear_term1, bias1 = c*linear1.coefficients, -c*linear1.bias
-		linear_term2, bias2 = c*linear2.coefficients, -c*linear2.bias
+		linear1.coefficients .*= c
+		linear2.coefficients .*= c
+		linear_term1 = linear1.coefficients
+		linear_term2 = linear2.coefficients
+		bias1, bias2 = -c*linear1.bias, -c*linear2.bias
 		return LinearTerm(linear_term1,bias1), LinearTerm(linear_term2,bias2), res, doflip
 	else
 		return nothing
@@ -148,7 +152,7 @@ function resolve_univariate_minmax(approximation :: IncompleteApproximation)
 		cur_term = approximation.constraints[1]
 		next_minmax = find_univariate_minmax(cur_term, i)
 		while !isnothing(next_minmax)
-			old = deepcopy(approximation)
+			#old = deepcopy(approximation)
 			term1, term2, split_point, original_term = next_minmax
 			##@debug term2
 			k_low, k_high = find_split_point(bounds[i], split_point)
@@ -201,6 +205,7 @@ function optimize_term(bounds :: Vector{Tuple{Float64,Float64}}, term :: LinearT
 		(x) -> (x[2]>=0) ? x[1][2] : x[1][1],
 		zip(bounds, term.coefficients)
 	)
+	# TODO(steuber): Apparently this line costs a lot of memory allocation?
 	return ((dot(x_min, term.coefficients) + term.bias),x_min), ((dot(x_max, term.coefficients) + term.bias),x_max)
 
 end
@@ -234,8 +239,8 @@ function resolve_or_approx(op :: AST.Operation, bounds :: Vector{Tuple{Float64,F
 			fxg = dot(xg, term1.coefficients) + term1.bias
 			gxf = dot(xf, term2.coefficients) + term2.bias
 			gxg = dot(xg, term2.coefficients) + term2.bias
-			mu = -(gxf - fxf)/(fxf-fxg-gxf+gxg)
-			c = -(fxf-gxf)*(fxg-gxg)/(fxf-fxg-gxf+gxg)
+			mu = rationalize(Int128,-(gxf - fxf)/(fxf-fxg-gxf+gxg))
+			c = rationalize(Int128,-(fxf-gxf)*(fxg-gxg)/(fxf-fxg-gxf+gxg))
 			#@debug "C: ",c
 			#@debug "Bias: ",mu*term1.bias + (1-mu)*term2.bias+c
 			return LinearTerm(mu*term1.coefficients + (1-mu)*term2.coefficients, mu*term1.bias + (1-mu)*term2.bias+c)
@@ -259,7 +264,8 @@ function resolve_multivariate_minmax(approximation :: IncompleteApproximation, b
 			new_term = resolve_or_approx(function_symbol, cur_bounds, term1, term2, bound_direction)
 			# TODO(steuber): Actually produce term
 			if function_symbol == AST.Min
-				new_term = LinearTerm(-new_term.coefficients, -new_term.bias)
+				new_term.coefficients .*= -1.0
+				new_term = LinearTerm(new_term.coefficients, -new_term.bias)
 			end
 			#@debug "Results in new term: "
 			#@debug new_term
@@ -277,15 +283,15 @@ function resolve_multivariate_minmax(approximation :: IncompleteApproximation, b
 end
 
 function resolve_approximation(approximation :: IncompleteApproximation, bound_direction :: BoundType)
-	@info "Simplifying"
+	#@info "Simplifying"
 	approximation.constraints[1] = simplify(approximation.constraints[1])
-	@info "Resolving univariate"
+	#@info "Resolving univariate"
 	approx_step_1 = resolve_univariate_minmax(approximation)
-	@info "Simplifying"
-	for i in 1:length(approximation.constraints)
-		approximation.constraints[i] = simplify(approximation.constraints[i])
-	end
-	@info "Resolving multivariate"
+	#@info "Simplifying"
+	#for i in 1:length(approximation.constraints)
+	#	approximation.constraints[i] = simplify(approximation.constraints[i])
+	#end
+	#@info "Resolving multivariate"
 	approx_step_2 = resolve_multivariate_minmax(approx_step_1, bound_direction)
 	return Approximation(approx_step_2.bounds, convert(Vector{LinearTerm},approx_step_2.constraints))
 end

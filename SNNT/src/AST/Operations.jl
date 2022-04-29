@@ -7,6 +7,8 @@ import Base.convert
 
 export not, and, or, implies, le, leq, gr, geq, eq, neq, +, -, *, /, ^
 
+# TODO(steuber): Improve memory efficiency
+
 not(f :: T1) where {T1 <: Formula} =  CompositeFormula(Not,[f])
 function and(fs :: T1...) where {T1 <: Formula}
 	return and_construction(fs)

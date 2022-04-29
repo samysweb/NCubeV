@@ -24,12 +24,24 @@ struct SkeletonFormula <: Formula
 	variable_number :: Int64
 end
 
+struct PwlConjunction
+	bounds :: Vector{Vector{Float64}}
+	linear_constraints :: Vector{LinearConstraint}
+	semilinear_constraints :: Vector{SemiLinearConstraint}
+	function PwlConjunction(num_vars :: Int64, linear_constraints :: Vector{LinearConstraint}, semilinear_constraints :: Vector{SemiLinearConstraint})
+		return new(
+			Vector{Float64}[Float64[] for _ in 1:num_vars],
+			linear_constraints,
+			semilinear_constraints
+		)
+	end
+end
+
 struct NormalizedQuery
 	input_bounds :: Vector{Vector{Float64}}
 	output_bounds :: Vector{Vector{Float64}}
-	input_linear :: Vector{LinearConstraint}
-	input_nonlinear :: Vector{SemiLinearConstraint}
-	mixed_constraints :: Vector{Tuple{Vector{LinearConstraint},Vector{SemiLinearConstraint}}}
+	input_constraints :: PwlConjunction
+	mixed_constraints :: Vector{PwlConjunction}
 	approx_queries :: Dict{Term, Vector{BoundType}}
 	function NormalizedQuery(
 		input :: Vector{Formula},
@@ -45,9 +57,10 @@ struct NormalizedQuery
 		for _ in 1:query.num_output_vars
 			push!(output_bounds, Float64[-Inf, Inf])
 		end
+		num_vars = query.num_input_vars + query.num_output_vars
 		input_linear = Vector{LinearConstraint}()
 		input_nonlinear = Vector{SemiLinearConstraint}()
-		mixed_constraints = Vector{Tuple{Vector{LinearConstraint},Vector{SemiLinearConstraint}}}()
+		mixed_constraints = Vector{PwlConjunction}()
 		approx_query_result = Dict{Term, Vector{BoundType}}()
 		for f in input
 			if f isa LinearConstraint
@@ -78,7 +91,7 @@ struct NormalizedQuery
 					error("Unsupported formula type")
 				end
 			end
-			push!(mixed_constraints, (linears, nonlinears))
+			push!(mixed_constraints, PwlConjunction(num_vars,linears, nonlinears))
 		end
 		for aq in approx_queries
 			if !haskey(approx_query_result, aq.term)
@@ -87,7 +100,7 @@ struct NormalizedQuery
 				push!(approx_query_result[aq.term], aq.bound)
 			end
 		end
-		return new(input_bounds, output_bounds, input_linear, input_nonlinear, mixed_constraints, approx_query_result)
+		return new(input_bounds, output_bounds, PwlConjunction(num_vars,input_linear, input_nonlinear), mixed_constraints, approx_query_result)
 	end
 					
 end

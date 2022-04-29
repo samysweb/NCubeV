@@ -1,14 +1,28 @@
 import Base.iterate
 
-function bounds_iterator(bounds :: Vector{Vector{Float64}})
-	return map(x->collect( b for b in reverse(x)),
-		Iterators.product(
-			map(x -> zip(x,x[2:end]),
-				# First iterator changes the fastest -> reverse direction of bounds
-				reverse(bounds)
-			)...
+function bounds_iterator(bounds :: Vector{Vector{Float64}};limit_bounds :: Union{Nothing,Vector{Tuple{Float64, Float64}}}=nothing)
+	#TODO(steuber): This should be possible without any memory allocation
+	if isnothing(limit_bounds)
+		used_bounds = bounds
+	else
+		used_bounds = Vector{Vector{Float64}}()
+		for (i,cur_bound) in enumerate(bounds)
+			if i <= length(limit_bounds)
+				push!(used_bounds,
+					filter(x -> limit_bounds[i][1]-EPSILON <= x && x <= limit_bounds[i][2]+EPSILON, cur_bound))
+			else
+				push!(used_bounds, cur_bound)
+			end
+		end
+	end
+	return Iterators.map(x->collect( b for b in reverse(x)),
+			Iterators.product(
+				map(x -> zip(x,x[2:end]),
+					# First iterator changes the fastest -> reverse direction of bounds
+					reverse(used_bounds)
+				)...
+			)
 		)
-	)
 end
 
 function iterate(approx :: ApproxNormalizedQuery, state)
@@ -22,7 +36,20 @@ function iterate(approx :: ApproxNormalizedQuery, state)
 end
 
 function iterate(approx :: ApproxNormalizedQuery)
-	iter = map(b-> generate_conjunction(approx, b), bounds_iterator(approx.input_bounds))
+	# Initialization...
+	init_pwl_bounds(approx.nonlinear_query.input_constraints, approx.approximations)
+	for output_conjunciton in approx.nonlinear_query.mixed_constraints
+		for (i, cur_bounds) in enumerate(approx.nonlinear_query.input_constraints.bounds)
+			append!(output_conjunciton.bounds[i],cur_bounds)
+		end
+		init_pwl_bounds(output_conjunciton, approx.approximations)
+		#@info "Initialized bounds for disjunction: ", output_conjunciton.bounds
+	end
+	# Iterator...
+	num_inputs = length(approx.input_bounds)
+	iter = map(b-> generate_conjunction(approx, b), bounds_iterator(
+		approx.nonlinear_query.input_constraints.bounds[1:num_inputs]
+	))
 	iter_res = iterate(iter)
 	if isnothing(iter_res)
 		return nothing
@@ -36,63 +63,70 @@ function get_linear_term(bounds :: Vector{Tuple{Float64,Float64}}, approx :: App
 	return approx.linear_constraints[pos]
 end
 
-function generate_linear_constraint(bounds :: Vector{Tuple{Float64, Float64}}, semi :: SemiLinearConstraint, approximations :: Dict{ApproxQuery,Approximation},startpos,endpos)
-	coefficients = map(Float32,semi.coefficients[startpos:endpos])
-	bias = semi.bias
+function generate_linear_constraint(
+	coefficient_matrix :: Matrix{Float32}, bias_vector :: Vector{Float32}, row :: Int64,
+	bounds :: Vector{Tuple{Float64, Float64}}, semi :: SemiLinearConstraint, approximations :: Dict{ApproxQuery,Approximation},startpos,endpos)
+	coefficient_matrix[row,startpos:endpos] = Float32.(semi.coefficients[startpos:endpos])
+	bias_vector[row] = semi.bias
 	for (query, coeff) in semi.semilinears
 		linear_term = get_linear_term(bounds, approximations[query])
-		@debug "Linear term: ", linear_term
-		@debug "Coefficients before: ", coefficients
-		coefficients[:] += coeff * map(Float32,linear_term.coefficients[startpos:endpos])
-		@debug "Coefficients after: ", coefficients
-		bias -= coeff * linear_term.bias
+		#@debug "Linear term: ", linear_term
+		#@debug "Coefficients before: ", coefficient_matrix[row,startpos:endpos]
+		coefficient_matrix[row,startpos:endpos] .+= coeff .* Float32.(linear_term.coefficients[startpos:endpos])
+		#@debug "Coefficients after: ", coefficient_matrix[row,startpos:endpos]
+		bias_vector[row] -= coeff * linear_term.bias
 	end
-	return coefficients, bias
 end
 
 function generate_conjunction(approx :: ApproxNormalizedQuery, bounds :: Vector{Tuple{Float64, Float64}})
 	num_input_vars = length(approx.input_bounds)
 	num_output_vars = length(approx.output_bounds)
-	num_linear_input_constraints = length(approx.nonlinear_query.input_linear)
-	num_input_constraints = num_linear_input_constraints+length(approx.nonlinear_query.input_nonlinear)
+	num_linear_input_constraints = length(approx.nonlinear_query.input_constraints.linear_constraints)
+	num_input_constraints = num_linear_input_constraints+length(approx.nonlinear_query.input_constraints.semilinear_constraints)
 	input_matrix = Matrix{Float32}(undef, num_input_constraints, num_input_vars)
 	input_bias = Vector{Float32}(undef, num_input_constraints)
-	for (i,li) in enumerate(approx.nonlinear_query.input_linear)
-		@debug "Matrix line before insertion: ", input_matrix[i,:]
-		@debug "Coefficients: ", li.coefficients[1:num_input_vars]
-		input_matrix[i,:] = map(Float32,li.coefficients[1:num_input_vars])
-		@debug "Matrix line after insertion: ", input_matrix[i,:]
+	for (i,li) in enumerate(approx.nonlinear_query.input_constraints.linear_constraints)
+		#@debug "Matrix line before insertion: ", input_matrix[i,:]
+		#@debug "Coefficients: ", li.coefficients[1:num_input_vars]
+		input_matrix[i,:] .= Float32.(li.coefficients[1:num_input_vars])
+		#@debug "Matrix line after insertion: ", input_matrix[i,:]
 		input_bias[i] = li.bias
 	end
-	for (i,ni) in enumerate(approx.nonlinear_query.input_nonlinear)
-		@debug "Matrix line before insertion: ", input_matrix[i+num_linear_input_constraints,:]
-		input_matrix[num_linear_input_constraints+i,:], input_bias[num_linear_input_constraints+i] = generate_linear_constraint(bounds, ni, approx.approximations,1,num_input_vars)
-		@debug "Matrix line after insertion: ", input_matrix[i+num_linear_input_constraints,:]
+	for (i,ni) in enumerate(approx.nonlinear_query.input_constraints.semilinear_constraints)
+		#@debug "Matrix line before insertion: ", input_matrix[i+num_linear_input_constraints,:]
+		generate_linear_constraint(
+			input_matrix, input_bias, num_linear_input_constraints+i,
+			bounds, ni, approx.approximations,1,num_input_vars)
+		#@debug "Matrix line after insertion: ", input_matrix[i+num_linear_input_constraints,:]
 	end
 	output_disjunction = Vector{Tuple{Matrix{Float32},Vector{Float32}}}()
-	for output_bound in bounds_iterator(approx.output_bounds)
-		all_bounds = [bounds; output_bound]
-		for output_conjunction in approx.nonlinear_query.mixed_constraints
-			num_linear_output_constraints = length(output_conjunction[1])+2*num_output_vars
-			num_output_constraints = num_linear_output_constraints + length(output_conjunction[2])
+	@debug "Considering bounds ", bounds
+	for output_conjunction in approx.nonlinear_query.mixed_constraints
+		@debug "|- Considering output conjunction: ", output_conjunction
+		for all_bounds in bounds_iterator(output_conjunction.bounds;limit_bounds=bounds)
+			@debug "|-- Considering bounds: ", all_bounds
+			num_linear_output_constraints = length(output_conjunction.linear_constraints)+2*length(all_bounds)
+			num_output_constraints = num_linear_output_constraints + length(output_conjunction.semilinear_constraints)
 			output_matrix = Matrix{Float32}(undef, num_output_constraints, num_input_vars+num_output_vars)
 			output_bias = Vector{Float32}(undef, num_output_constraints)
-			@debug "OUTPUT with ", num_output_constraints, " constraints (", num_linear_output_constraints, " linear, ", length(output_conjunction[2]), " nonlinear)"
-			for (i,(blow,bhigh)) in enumerate(output_bound)
+			#@debug "OUTPUT with ", num_output_constraints, " constraints (", num_linear_output_constraints, " linear, ", length(output_conjunction.semilinear_constraints), " nonlinear)"
+			for (i,(blow,bhigh)) in enumerate(all_bounds)
 				output_matrix[2*i-1,:] .= 0.
 				output_matrix[2*i,:] .= 0.
-				output_matrix[2*i-1,num_input_vars+i] = 1.
-				output_matrix[2*i,num_input_vars+i] = -1.
+				output_matrix[2*i-1,i] = 1.
+				output_matrix[2*i,i] = -1.
 				output_bias[2*i-1] = bhigh+EPSILON
 				output_bias[2*i] = -blow+EPSILON
 			end
-			for (i,li) in enumerate(output_conjunction[1])
-				output_matrix[2*num_output_vars+i,:] = map(Float32,li.coefficients[1:num_input_vars+num_output_vars])
+			for (i,li) in enumerate(output_conjunction.linear_constraints)
+				output_matrix[2*num_output_vars+i,:] .= Float32.(li.coefficients[1:num_input_vars+num_output_vars])
 				output_bias[2*num_output_vars+i] = li.bias
 			end
-			for (i,ni) in enumerate(output_conjunction[2])
-				@debug "Adding nonlinear constraint"
-				output_matrix[num_linear_output_constraints+i,:], output_bias[num_linear_output_constraints+i] = generate_linear_constraint(all_bounds, ni, approx.approximations,1,num_input_vars+num_output_vars)
+			for (i,ni) in enumerate(output_conjunction.semilinear_constraints)
+				#@debug "Adding nonlinear constraint"
+				generate_linear_constraint(
+					output_matrix, output_bias, num_linear_output_constraints+i,
+					all_bounds, ni, approx.approximations,1,num_input_vars+num_output_vars)
 			end
 			push!(output_disjunction, (output_matrix, output_bias))
 		end

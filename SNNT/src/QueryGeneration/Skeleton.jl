@@ -11,7 +11,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 	return function(formula :: Formula)
 		return @match formula begin
 			Atom() || LinearConstraint() => begin
-				@debug "Atom or LinearConstraint => constraint variable"
+				#@debug "Atom or LinearConstraint => constraint variable"
 				if haskey(variable_number_dict, formula)
 					return SkeletonFormula(variable_number_dict[formula])
 				else
@@ -22,12 +22,12 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 				end
 			end
 			CompositeFormula(c, args) => begin
-				@debug "CompositeFormula => intermediate variable"
+				#@debug "CompositeFormula => intermediate variable"
 				variable_number = next_var(skeleton.sat_instance)
 				skeleton.variable_mapping[variable_number] = IntermediateVariable
 				@match c begin
 					Or => begin
-						@debug "OR"
+						#@debug "OR"
 						# variable_number => [args]
 						add_clause(skeleton.sat_instance,append!([-variable_number], map(x->x.variable_number, args)))
 						# args[i] => variable_number
@@ -36,7 +36,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 						end
 					end
 					Not => begin
-						@debug "NOT"
+						#@debug "NOT"
 						@assert length(args) == 1
 						# variable_number => -args[1]
 						add_clause(skeleton.sat_instance, [-variable_number, -args[1].variable_number])
@@ -44,7 +44,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 						add_clause(skeleton.sat_instance, [variable_number, args[1].variable_number])
 					end
 					And => begin
-						@debug "AND"
+						#@debug "AND"
 						# variable_number => args[i]
 						for arg in args
 							add_clause(skeleton.sat_instance, [-variable_number, arg.variable_number])
@@ -53,7 +53,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 						add_clause(skeleton.sat_instance, append!(map(x->-x.variable_number, args), [variable_number]))
 					end
 					Implies => begin
-						@debug "IMPLIES"
+						#@debug "IMPLIES"
 						@assert length(args) == 2
 						# variable_number => -args[1] | args[2]
 						add_clause(skeleton.sat_instance, [-variable_number, -args[1].variable_number, args[2].variable_number])
@@ -66,7 +66,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 				return SkeletonFormula(variable_number)
 			end
 			OverApprox(internal_formula) || UnderApprox(internal_formula) => begin
-				@debug "OverApprox or UnderApprox => propagating from below"
+				#@debug "OverApprox or UnderApprox => propagating from below"
 				# print("Encountered ")
 				# println(formula)
 				# println(internal)
