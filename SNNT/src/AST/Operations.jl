@@ -9,7 +9,7 @@ export not, and, or, implies, le, leq, gr, geq, eq, neq, +, -, *, /, ^
 
 # TODO(steuber): Improve memory efficiency
 
-not(f :: T1) where {T1 <: Formula} =  CompositeFormula(Not,[f])
+not(f :: T1) where {T1 <: Formula} =  CompositeFormula(Not,Formula[f])
 function and(fs :: T1...) where {T1 <: Formula}
 	return and_construction(fs)
 end
@@ -34,7 +34,7 @@ function or_construction(fs :: Vector{Formula})
 		return CompositeFormula(Or, fs)
 	end
 end
-implies(f :: T1, g :: T2) where {T1 <: Formula,T2 <: Formula} = CompositeFormula(Implies,[f,g])
+implies(f :: T1, g :: T2) where {T1 <: Formula,T2 <: Formula} = CompositeFormula(Implies,Formula[f,g])
 
 linear_lesseq(coeff :: Vector{Rational{BigInt}}, bias :: Rational{BigInt}) = LinearConstraint(coeff, bias, true)
 linear_less(coeff :: Vector{Rational{BigInt}}, bias :: Rational{BigInt}) = LinearConstraint(coeff, bias, false)
@@ -136,9 +136,9 @@ end
 
 function negate(a :: Atom)
 	if a.comparator == Less
-		return Atom(LessEq, simplify(CompositeTerm(Neg,[a.left])), TermNumber(-a.right.value))
+		return Atom(LessEq, simplify(CompositeTerm(Neg,Term[a.left])), TermNumber(-a.right.value))
 	elseif a.comparator == LessEq
-		return Atom(Less, simplify(CompositeTerm(Neg,[a.left])), TermNumber(-a.right.value))
+		return Atom(Less, simplify(CompositeTerm(Neg,Term[a.left])), TermNumber(-a.right.value))
 	else
 		throw("Unexpected comparator in negate"*string(a))
 	end

@@ -15,14 +15,14 @@ isequal(x :: CompositeFormula, y :: CompositeFormula) = x.connective == y.connec
 isequal(x :: OverApprox, y :: OverApprox) = isequal(x.formula, y.formula)
 isequal(x :: UnderApprox, y :: UnderApprox) = isequal(x.formula, y.formula)
 
-hash(x :: TermNumber) = hash(x.value)
-hash(x :: Variable) = hash(x.name)
-hash(x :: CompositeTerm) = hash(x.operation) * reduce(+,Iterators.map(hash,x.args))
-hash(x :: Atom) = hash(x.comparator) * hash(x.left) * hash(x.right)
-hash(x :: LinearConstraint) = hash(x.coefficients) * hash(x.bias) * hash(x.equality)
-hash(x :: CompositeFormula) = hash(x.connective) * reduce(+,Iterators.map(hash,x.args))
-hash(x :: OverApprox) = 7*hash(x.formula)
-hash(x :: UnderApprox) = 11*hash(x.formula)
+hash(x :: TermNumber) :: UInt = hash(x.value)
+hash(x :: Variable) :: UInt = hash(x.name)
+hash(x :: CompositeTerm) :: UInt = hash(x.operation) * x.args_hash
+hash(x :: Atom) :: UInt = hash(x.comparator) * hash(x.left) * hash(x.right)
+hash(x :: LinearConstraint) :: UInt = hash(x.coefficients) * hash(x.bias) * hash(x.equality)
+hash(x :: CompositeFormula) :: UInt = hash(x.connective) * x.args_hash
+hash(x :: OverApprox) :: UInt = 7*hash(x.formula)
+hash(x :: UnderApprox) :: UInt = 11*hash(x.formula)
 
 isequal(a :: ApproxQuery, b :: ApproxQuery) = isequal(a.bound, b.bound) && isequal(a.term, b.term)
 hash(a :: ApproxQuery) = hash(a.bound) + hash(a.term)

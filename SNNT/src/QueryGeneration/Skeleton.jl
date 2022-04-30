@@ -21,7 +21,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 					return SkeletonFormula(variable_number)
 				end
 			end
-			CompositeFormula(c, args) => begin
+			CompositeFormula(c, args,_) => begin
 				#@debug "CompositeFormula => intermediate variable"
 				variable_number = next_var(skeleton.sat_instance)
 				skeleton.variable_mapping[variable_number] = IntermediateVariable

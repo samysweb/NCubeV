@@ -26,6 +26,8 @@ MLStyle.pattern_uncall(o::Operation, _, _, _, _) = literal(o)
 @as_record struct CompositeTerm <: Term
 	operation :: Operation
 	args :: Vector{Term}
+	args_hash :: UInt
+	CompositeTerm(operation :: Operation, args :: Vector{T}) where {T <: Term} = new(operation, args, reduce(+,Iterators.map(hash,args)))
 end
 
 # Formulae
@@ -102,6 +104,8 @@ MLStyle.pattern_uncall(e::Connective, _, _, _, _) = literal(e)
 @as_record struct CompositeFormula <: Formula
 	connective :: Connective
 	args :: Vector{Formula}
+	args_hash :: UInt
+	CompositeFormula(connective :: Connective, args :: Vector{T}) where {T <: Formula} = new(connective, args, reduce(+,Iterators.map(hash,args)))
 end
 
 struct Query

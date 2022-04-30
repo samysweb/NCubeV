@@ -66,8 +66,8 @@ TIMES_RULES = [
 
 
 POW_RULES = [
-	@rule(^(*(~~x), ~y::SymbolicUtils._isinteger) => *(map(a->pow(a, ~y), ~~x)...))
-	@rule((((~x)^(~p::SymbolicUtils._isinteger))^(~q::SymbolicUtils._isinteger)) => (~x)^((~p)*(~q)))
+	#@rule(^(*(~~x), ~y::SymbolicUtils._isinteger) => *(map(a->pow(a, ~y), ~~x)...))
+	#@rule((((~x)^(~p::SymbolicUtils._isinteger))^(~q::SymbolicUtils._isinteger)) => (~x)^((~p)*(~q)))
 	@rule(^(~x, ~z::_iszero) => 1)
 	@rule(^(~x, ~z::_isone) => ~x)
 	@rule (^(~a::is_literal_number, ~b::is_literal_number) => ^(~a, ~b))
@@ -77,14 +77,14 @@ POW_RULES = [
 ]
 
 ASSORTED_RULES = [
-	@rule(identity(~x) => ~x)
+	#@rule(identity(~x) => ~x)
 	@rule(-(~x) => -1*~x)
 	@rule(-(~x, ~y) => ~x + -1(~y))
-	@rule(~x::_isone \ ~y => ~y)
-	@rule(~x \ ~y => ~y / (~x))
-	@rule(one(~x) => one(symtype(~x)))
-	@rule(zero(~x) => zero(symtype(~x)))
-	@rule(ifelse(~x::is_literal_number, ~y, ~z) => ~x ? ~y : ~z)
+	#@rule(~x::_isone \ ~y => ~y)
+	#@rule(~x \ ~y => ~y / (~x))
+	#@rule(one(~x) => one(symtype(~x)))
+	#@rule(zero(~x) => zero(symtype(~x)))
+	#@rule(ifelse(~x::is_literal_number, ~y, ~z) => ~x ? ~y : ~z)
 	# DIV Rules
 	@rule (~x / ~x => TermNumber(1.0))
 	@rule(~x / (~y) => (~x) * (TermNumber(1.0) / ~y))

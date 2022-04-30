@@ -48,7 +48,7 @@ function find_minmax_generic(cur_term :: Term, check; direction=AST.Upper)
 		if cur_term.operation == AST.Add || cur_term.operation == AST.Min || cur_term.operation == AST.Max
 			next_dir = map(x -> direction, cur_term.args)
 		elseif cur_term.operation == AST.Sub
-			next_dir = [direction;map(x -> flip(direction), cur_term.args[2:end])]
+			next_dir = [direction;map(x -> flip(direction), (@view cur_term.args[2:end]))]
 		elseif cur_term.operation == AST.Mul
 			@assert length(cur_term.args) == 2
 			args = cur_term.args
@@ -177,7 +177,7 @@ function resolve_univariate_minmax(approximation :: IncompleteApproximation)
 				for j in ((k_low+1)*N):length(approximation.constraints)
 					approximation.constraints[j] = substitute(approximation.constraints[j], Dict(original_term => term2),fold=false)
 				end
-				terms = approximation.constraints[((k_low-1)*N+1):(k_low*N)]
+				terms = (@view approximation.constraints[((k_low-1)*N+1):(k_low*N)])
 				term_list1 = Term[]
 				term_list2 = Term[]
 				for t in terms
@@ -284,7 +284,7 @@ end
 
 function resolve_approximation(approximation :: IncompleteApproximation, bound_direction :: BoundType)
 	#@info "Simplifying"
-	approximation.constraints[1] = simplify(approximation.constraints[1])
+	#approximation.constraints[1] = simplify(approximation.constraints[1])
 	#@info "Resolving univariate"
 	approx_step_1 = resolve_univariate_minmax(approximation)
 	#@info "Simplifying"

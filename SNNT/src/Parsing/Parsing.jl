@@ -68,7 +68,7 @@ function parse_implies_list(tokenmanager :: TokenManager, or_result :: Formula)
 	if Tokens.exactkind(peek_token(tokenmanager)) == Tokens.ANON_FUNC
 		next(tokenmanager)
 		next_element = parse_composite(tokenmanager)
-		overall_result = CompositeFormula(AST.Implies, [or_result, next_element])
+		overall_result = CompositeFormula(AST.Implies, Formula[or_result, next_element])
 		return parse_implies_list(tokenmanager, overall_result)
 	else
 		return or_result
@@ -83,7 +83,7 @@ end
 
 function parse_or_list(tokenmanager :: TokenManager, result :: Formula)
 	@debug "Parsing or list"
-	resulting_or = []
+	resulting_or = Formula[]
 	push!(resulting_or, result)
 	while Tokens.exactkind(peek_token(tokenmanager)) == Tokens.OR
 		next(tokenmanager)
@@ -104,7 +104,7 @@ end
 
 function parse_and_list(tokenmanager :: TokenManager, result :: Formula)
 	@debug "Parsing and list"
-	resulting_and = []
+	resulting_and = Formula[]
 	push!(resulting_and, result)
 	while Tokens.exactkind(peek_token(tokenmanager)) == Tokens.AND
 		next(tokenmanager)
@@ -135,7 +135,7 @@ function parse_elementary(tokenmanager :: TokenManager)
 	elseif Tokens.exactkind(next_token) == Tokens.NOT
 		next(tokenmanager)
 		result = parse_elementary(tokenmanager)
-		return CompositeFormula(AST.Not, [result])
+		return CompositeFormula(AST.Not, Formula[result])
 	else
 		return parse_atom(tokenmanager)
 	end
@@ -180,12 +180,12 @@ function parse_term_list(tokenmanager :: TokenManager, result :: Term)
 	if Tokens.exactkind(peek_token(tokenmanager)) == Tokens.PLUS
 		next(tokenmanager)
 		next_element = parse_multiply_composite(tokenmanager)
-		overall_result = CompositeTerm(AST.Add, [result, next_element])
+		overall_result = CompositeTerm(AST.Add, Term[result, next_element])
 		return parse_term_list(tokenmanager, overall_result)
 	elseif Tokens.exactkind(peek_token(tokenmanager)) == Tokens.MINUS
 		next(tokenmanager)
 		next_element = parse_multiply_composite(tokenmanager)
-		overall_result = CompositeTerm(AST.Sub, [result, next_element])
+		overall_result = CompositeTerm(AST.Sub, Term[result, next_element])
 		return parse_term_list(tokenmanager, overall_result)
 	else
 		return result
@@ -203,12 +203,12 @@ function parse_multiply_list(tokenmanager :: TokenManager, result :: Term)
 	if Tokens.exactkind(peek_token(tokenmanager)) == Tokens.STAR
 		next(tokenmanager)
 		next_element = parse_power_composite(tokenmanager)
-		overall_result = CompositeTerm(AST.Mul, [result, next_element])
+		overall_result = CompositeTerm(AST.Mul, Term[result, next_element])
 		return parse_multiply_list(tokenmanager, overall_result)
 	elseif Tokens.exactkind(peek_token(tokenmanager)) == Tokens.FWD_SLASH
 		next(tokenmanager)
 		next_element = parse_power_composite(tokenmanager)
-		overall_result = CompositeTerm(AST.Div, [result, next_element])
+		overall_result = CompositeTerm(AST.Div, Term[result, next_element])
 		return parse_multiply_list(tokenmanager, overall_result)
 	else
 		return result
@@ -226,7 +226,7 @@ function parse_power_list(tokenmanager :: TokenManager, result :: Term)
 	if Tokens.exactkind(peek_token(tokenmanager)) == Tokens.CIRCUMFLEX_ACCENT
 		next(tokenmanager)
 		exponent = parse_factor(tokenmanager)
-		return parse_power_list(tokenmanager, CompositeTerm(AST.Pow, [result, exponent]))
+		return parse_power_list(tokenmanager, CompositeTerm(AST.Pow, Term[result, exponent]))
 	else
 		return result
 	end

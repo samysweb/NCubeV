@@ -72,7 +72,7 @@ function substitute_vars(
 			return result
 		elseif term.args[1] == :-
 			new_args_sub :: Vector{Any} = [substitute_vars(term.args[2], overapprox_result, bound)]
-			for arg in term.args[3:end]
+			for arg in (@view term.args[3:end])
 				push!(new_args_sub, substitute_vars(arg, overapprox_result, flip(bound)))
 			end
 			return Expr(

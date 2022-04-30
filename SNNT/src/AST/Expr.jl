@@ -48,7 +48,7 @@ function from_expr(e :: Expr) :: CompositeTerm
 	@assert e.head == :call
 	operation = op_from_expr(e.args[1])
 	args = Vector{Term}()
-	for arg in e.args[2:end]
+	for arg in (@view e.args[2:end])
 		push!(args, from_expr(arg))
 	end
 	res =  CompositeTerm(operation, args)

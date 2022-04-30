@@ -178,12 +178,12 @@ function similarterm(t::CompositeTerm, f, args, symtype=CompositeTerm;metadata=n
 		args = args[2:end]
 		throw("Weird case")
 	end
-	return CompositeTerm(operation_to_ast(f), args)
+	return CompositeTerm(operation_to_ast(f), convert(Vector{Term},args))
 end
 
 function similarterm(::Type{CompositeFormula}, c, args, symtype=CompositeFormula;metadata=nothing, exprhead=:call)
 	# @debug "similarterm(CompositeFormula)"
-	return CompositeFormula(operation_to_ast(c), args)
+	return CompositeFormula(operation_to_ast(c), convert(Vector{Formula},args))
 end
 
 function similarterm(::Type{OverApprox}, c, args, symtype=OverApprox;metadata=nothing, exprhead=:call)

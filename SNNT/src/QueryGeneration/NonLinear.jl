@@ -5,7 +5,7 @@ end
 
 function handle_nonlinearity_internal(b :: BoundType, f ::Term) :: Tuple{Set{ApproxQuery}, Term}
 	@match f begin
-		CompositeTerm(op, args) => begin
+		CompositeTerm(op, args,_) => begin
 			@match op begin
 				Add => begin
 					res = Set{ApproxQuery}()

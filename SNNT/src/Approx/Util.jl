@@ -52,7 +52,7 @@ function check_approx_equiv_internal(bounds, old, new, x :: Vector{Float64})
 			@assert false
 		end
 	else
-		for (x_i1,x_i2) in zip(bounds[1], bounds[1][2:end])
+		for (x_i1,x_i2) in zip(bounds[1], (@view bounds[1][2:end]))
 			check_approx_equiv_internal(bounds[2:end], old, new, [x;(Float64(x_i1)+Float64(x_i2))/2.0])
 		end
 	end

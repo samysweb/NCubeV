@@ -78,7 +78,7 @@ function make_linear(left :: T1, right :: T2, comp :: Comparator, var_number :: 
 			constraint_row[:] .+= c
 			bias -= b
 		end
-		CompositeTerm(op, args) => begin
+		CompositeTerm(op, args,_) => begin
 			if op == AST.Mul
 				@assert length(args) == 2
 				if !(args[1] isa TermNumber)
@@ -189,7 +189,7 @@ end
 function get_overapprox(f :: ParsedNode)
 	return @match f begin
 		Atom() => OverApprox(f)
-		CompositeFormula(c, args) => begin
+		CompositeFormula(c, args,_) => begin
 			return @match c begin
 				Not => CompositeFormula(c, [get_underapprox(args[1])])
 				Implies => begin
@@ -208,7 +208,7 @@ end
 function get_underapprox(f :: ParsedNode)
 	return @match f begin
 		Atom() => UnderApprox(f)
-		CompositeFormula(c, args) => begin
+		CompositeFormula(c, args,_) => begin
 			return @match c begin
 				Not => CompositeFormula(c, [get_overapprox(args[1])])
 				Implies => CompositeFormula(c, [get_overapprox(args[1]), get_underapprox(args[2])])
