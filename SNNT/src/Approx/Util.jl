@@ -23,9 +23,9 @@ function get_linear_term_position(approximation :: ApproximationPrototype, bound
 	pos = 0
 	for (i, b) in enumerate(bounds)
 		pos*= length(approximation.bounds[i])-1
-		#@assert approximation.bounds[i][1]-EPSILON <= b[1] && b[2] <= approximation.bounds[i][length(approximation.bounds[i])]+EPSILON ("Mismatch between searched bound "*string(b)*" and approximation bound "*string(approximation.bounds[i])*" for dimension "*string(i))
+		@assert approximation.bounds[i][1]-EPSILON <= b[1] && b[2] <= approximation.bounds[i][length(approximation.bounds[i])]+EPSILON ("Mismatch between searched bound "*string(b)*" and approximation bound "*string(approximation.bounds[i])*" for dimension "*string(i))
 		j = get_position(approximation.bounds[i], b[1])
-		#@assert b[2] <= approximation.bounds[i][j+1]+EPSILON
+		@assert b[2] <= approximation.bounds[i][j+1]+EPSILON
 		pos += j-1
 	end
 	return pos+1

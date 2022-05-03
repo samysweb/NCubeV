@@ -1,3 +1,6 @@
+import Base.hash
+import Base.isequal
+
 abstract type ApproximationPrototype end
 
 struct Approximation <: ApproximationPrototype
@@ -55,3 +58,13 @@ end
 
 ApproxNormalizedQuery = ApproxNormalizedQueryPrototype{Approximation}
 IncompleteApproxNormalizedQuery = ApproxNormalizedQueryPrototype{IncompleteApproximation}
+
+struct ApproxCacheObject
+	query :: ApproxQuery
+	bounds :: Vector{Tuple{Float64,Float64}}
+end
+
+isequal(a :: ApproxCacheObject, b :: ApproxCacheObject) = isequal(a.query, b.query) && isequal(a.bounds, b.bounds)
+hash(a :: ApproxCacheObject) = hash(a.query) + hash(a.bounds)
+
+ApproxCache = Dict{ApproxCacheObject, Approximation}

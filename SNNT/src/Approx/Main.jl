@@ -24,6 +24,7 @@ module Approx
 	include("Approximation.jl")
 	include("Generation.jl")
 
+	export ApproxCache
 	export get_approx_normalized_query
 
 end
