@@ -1,4 +1,5 @@
 module SNNT
+include("Config/Main.jl")
 include("AST/Main.jl")
 include("Parsing/Main.jl")
 include("Analysis/Main.jl")

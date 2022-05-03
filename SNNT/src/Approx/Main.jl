@@ -5,6 +5,7 @@ module Approx
 	using OVERT
 	using SymbolicUtils
 
+	using ..Config
 	using ..AST
 	using ..Analysis
 	using ..QueryGeneration

@@ -68,15 +68,21 @@ end
 function generate_linear_constraint(
 	coefficient_matrix :: Matrix{Float32}, bias_vector :: Vector{Float32}, row :: Int64,
 	bounds :: Vector{Tuple{Float64, Float64}}, semi :: SemiLinearConstraint, approximations :: Dict{ApproxQuery,Approximation},startpos,endpos)
-	coefficient_matrix[row,startpos:endpos] = Float32.(@view semi.coefficients[startpos:endpos])
-	bias_vector[row] = semi.bias
-	for (query, coeff) in semi.semilinears
-		linear_term = get_linear_term(bounds, approximations[query])
-		#@debug "Linear term: ", linear_term
-		#@debug "Coefficients before: ", coefficient_matrix[row,startpos:endpos]
-		coefficient_matrix[row,startpos:endpos] .+= coeff .* Float32.(@view linear_term.coefficients[startpos:endpos])
-		#@debug "Coefficients after: ", coefficient_matrix[row,startpos:endpos]
-		bias_vector[row] -= coeff * linear_term.bias
+	coefficient_matrix[row,:] .= 0.0
+	bias_vector[row] = 0.0
+	if Config.INCLUDE_APPROXIMATIONS
+		coefficient_matrix[row,startpos:endpos] .= Float32.(@view semi.coefficients[startpos:endpos])
+		bias_vector[row] = semi.bias
+		for (query, coeff) in semi.semilinears
+			linear_term = get_linear_term(bounds, approximations[query])
+			#@debug "Linear term: ", linear_term
+			#@debug "Coefficients before: ", coefficient_matrix[row,startpos:endpos]
+			coefficient_matrix[row,startpos:endpos] .+= coeff .* Float32.(@view linear_term.coefficients[startpos:endpos])
+			#@debug "Coefficients after: ", coefficient_matrix[row,startpos:endpos]
+			bias_vector[row] -= coeff * linear_term.bias
+		end
+	else
+		@info "Skipping nonlinear approximation constraints"
 	end
 end
 

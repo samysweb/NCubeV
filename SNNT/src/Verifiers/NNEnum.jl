@@ -35,7 +35,7 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction):
 	# TODO(steuber): Seem to have numerical issue here?
 	Settings.SKIP_CONSTRAINT_NORMALIZATION = True
 	Settings.PRINT_PROGRESS = False
-	Settings.PRINT_OUTPUT = True
+	Settings.PRINT_OUTPUT = False
 	Settings.RESULT_SAVE_COUNTER_STARS = True
 	#Settings.INPUT_SPACE_MINIMIZATION = False
 	Settings.FIND_CONCRETE_COUNTEREXAMPLES = True
@@ -95,7 +95,7 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction):
 				bounds,
 				star.counter_example
 			))
-		return (result.result_str, (cex, counterex_stars))
+		return (result.result_str, result.total_stars, (cex, counterex_stars))
 	else:
 		return None
 """
