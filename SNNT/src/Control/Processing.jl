@@ -24,8 +24,18 @@ function prepare_for_olnnv(query :: Query)
 end
 
 function run_query(f, query :: Query)
+	@info "Iterating over conjunctions..."
 	for current_conjunction in query
+		@info "Considering conjunction with ",
+			length(current_conjunction.input_constraints.linear_constraints)+length(current_conjunction.input_constraints.semilinear_constraints),
+			" input constraints and a disjunction of size ",length(current_conjunction.mixed_constraints)
+		#@info "Input Constraints:",current_conjunction.input_constraints
+		#@info "Mixed:"
+		#for mixed in current_conjunction.mixed_constraints
+		#	@info mixed
+		#end
 		approx_normalized = get_approx_normalized_query(current_conjunction)
+		#@info "Initiating iterator"
 		for linear_query in approx_normalized
 			f(linear_query)
 		end

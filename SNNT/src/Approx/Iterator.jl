@@ -111,6 +111,7 @@ function generate_conjunction(approx :: ApproxNormalizedQuery, bounds :: Vector{
 			output_bias = Vector{Float32}(undef, num_output_constraints)
 			#@debug "OUTPUT with ", num_output_constraints, " constraints (", num_linear_output_constraints, " linear, ", length(output_conjunction.semilinear_constraints), " nonlinear)"
 			for (i,(blow,bhigh)) in enumerate(all_bounds)
+				#@info "Placing bounds for dimension ",i," at ",2*i-1," and ",2*i," at column ",i," blow,bhigh: ",blow,",",bhigh
 				@inbounds output_matrix[2*i-1,:] .= 0.
 				@inbounds output_matrix[2*i,:] .= 0.
 				@inbounds output_matrix[2*i-1,i] = 1.
@@ -119,8 +120,8 @@ function generate_conjunction(approx :: ApproxNormalizedQuery, bounds :: Vector{
 				@inbounds output_bias[2*i] = -blow+EPSILON
 			end
 			for (i,li) in enumerate(output_conjunction.linear_constraints)
-				@inbounds output_matrix[2*num_output_vars+i,:] .= Float32.(@view li.coefficients[1:num_input_vars+num_output_vars])
-				@inbounds output_bias[2*num_output_vars+i] = li.bias
+				@inbounds output_matrix[2*length(all_bounds)+i,:] .= Float32.(@view li.coefficients[1:num_input_vars+num_output_vars])
+				@inbounds output_bias[2*length(all_bounds)+i] = li.bias
 			end
 			for (i,ni) in enumerate(output_conjunction.semilinear_constraints)
 				#@debug "Adding nonlinear constraint"
@@ -131,6 +132,7 @@ function generate_conjunction(approx :: ApproxNormalizedQuery, bounds :: Vector{
 			push!(output_disjunction, (output_matrix, output_bias))
 		end
 	end
+	@info "# Conjunctions over output: ", length(output_disjunction)
 	bounds = map(b -> (b[1]-EPSILON, b[2]+EPSILON), bounds)
-	return (bounds, (input_matrix, input_bias), output_disjunction)
+	return OlnnvQuery(bounds, input_matrix, input_bias, output_disjunction)
 end

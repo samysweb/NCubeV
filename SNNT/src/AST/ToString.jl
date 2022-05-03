@@ -138,10 +138,11 @@ function term_to_string(v :: NonLinearSubstitution)
 end
 
 function term_to_string(a :: SemiLinearConstraint)
+	nonlinearities = join([term_to_string(k.term)*"*"*string(c) for (k,c) in a.semilinears],",")
 	if a.equality
-		return string(a.coefficients)*"+N("*string(length(a.semilinears))*")<="*string(a.bias)
+		return string(a.coefficients)*"+N("*nonlinearities*")<="*string(a.bias)
 	else
-		return string(a.coefficients)*"+N("*string(length(a.semilinears))*")<"*string(a.bias)
+		return string(a.coefficients)*"+N("*nonlinearities*")<"*string(a.bias)
 	end
 end
 

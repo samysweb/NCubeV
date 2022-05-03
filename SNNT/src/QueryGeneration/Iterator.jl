@@ -84,79 +84,91 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 	if isnothing(state)
 		state = BooleanSkeleton(query.formula)
 	end
+	# We need this block (and the subsequent garbage collector call) to ensure that
+	# ctx and variables are correctly freed.
+	begin
 	# TODO(steuber): Refactor z3 context creation (maybe same for LP)
-	ctx, variables = z3_context(query.num_input_vars+query.num_output_vars)
-	@assert (Z3Interface.nl_feasible(Formula[query.formula], ctx, variables))
-	solution = solve(state.sat_instance)
-	input = nothing
-	disjunction = Vector{Vector{Formula}}()
-	infeasibility_cache = []
-	nonlinearities_set = Set{ApproxQuery}()
-	push(state.sat_instance)
-	while solution != :unsatisfiable
-		conjunction = get_atoms(state, solution)
-		linear, nonlinear = split_by_linearity(conjunction)
-		infeasible_combination = nothing
-		#if !LP.is_feasible(map(x->x[2],linear))
-		# Flag combination of linear constraints as infeasible and continue...
-		#	infeasible_combination = map(x -> -x[1], linear)
-		# TODO(steuber): How many checks here are the optimal choice?
-		if !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],linear)),ctx, variables)
-			#println("Z3 says it's infeasible")
-			infeasible_combination = map(x -> -x[1], linear)
-		elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
-			#println("Z3 says it's infeasible")
-			infeasible_combination = map(x -> -x[1], nonlinear)
-		elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],conjunction)),ctx, variables)
-			#println("Z3 says it's infeasible")
-			infeasible_combination = map(x -> -x[1], conjunction)
-		end
-		if !isnothing(infeasible_combination)
-			#print("_")
-			push!(infeasibility_cache, infeasible_combination)
-			add_clause(
-				state.sat_instance,
-				infeasible_combination
-			)
-			solution = solve(state.sat_instance)
-			continue
-		end
-		new_conjunction = Tuple{Int64,Union{SemiLinearConstraint,LinearConstraint}}[]
-		# Resolve nonlinearities to semi-linear constraints
-		varnum = query.num_input_vars+query.num_output_vars
-		for cur_f  in conjunction
-			if cur_f[2] isa ApproxNode
-				@assert cur_f[2].formula.right isa TermNumber
-				approx_direction = (cur_f[2] isa OverApprox) ? Lower : Upper
-				approx_queries, semilinear = handle_nonlinearity(approx_direction, cur_f[2].formula.left)
-				nonlinearities_set = union(nonlinearities_set, approx_queries)
-				new_formula = make_linear(semilinear, cur_f[2].formula.right, cur_f[2].formula.comparator, varnum)
-				#@debug "New semilinear constraint: ", new_formula
-				push!(new_conjunction, (cur_f[1], new_formula ))
-			else
-				push!(new_conjunction, cur_f)
-			end
-		end
-		#print("|")
-		# OK, our combination is feasible...
-		input, mixed = split_by_variables(new_conjunction,query)
-		# Store non-linearities of current combination in set
-		# for a in nonlinear
-		# 	@assert a[2].formula.right isa TermNumber
-		# 	approx_direction = (a[2] isa OverApprox) ? Lower : Upper
-		# 	nonlinearities_set=union(nonlinearities_set, collect_nonlinearities(approx_direction, a[2].formula.left))
-		# end
-		# Add in-out constraints to disjunction
-		#@debug "Adding in-out constraints: ", mixed
-		push!(disjunction, map(x -> x[2], mixed))
-	
-		# Fix input constraints for further search
-		add_clause(state.sat_instance, map(x -> x[1], input))
-		# Disallow current mixed constraint for further search
-		add_clause(state.sat_instance, map(x -> -x[1], mixed))
-		# Find new model
+		ctx, variables = z3_context(query.num_input_vars+query.num_output_vars)
+		@assert (Z3Interface.nl_feasible(Formula[query.formula], ctx, variables))
 		solution = solve(state.sat_instance)
+		input = nothing
+		disjunction = Vector{Vector{Formula}}()
+		infeasibility_cache = []
+		nonlinearities_set = Set{ApproxQuery}()
+		push(state.sat_instance)
+		while solution != :unsatisfiable
+			conjunction = get_atoms(state, solution)
+			linear, nonlinear = split_by_linearity(conjunction)
+			infeasible_combination = nothing
+			#if !LP.is_feasible(map(x->x[2],linear))
+			# Flag combination of linear constraints as infeasible and continue...
+			#	infeasible_combination = map(x -> -x[1], linear)
+			# TODO(steuber): How many checks here are the optimal choice?
+			if !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],linear)),ctx, variables)
+				#println("Z3 says it's infeasible")
+				infeasible_combination = map(x -> -x[1], linear)
+			elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
+				#println("Z3 says it's infeasible")
+				infeasible_combination = map(x -> -x[1], nonlinear)
+			elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],conjunction)),ctx, variables)
+				#println("Z3 says it's infeasible")
+				infeasible_combination = map(x -> -x[1], conjunction)
+			end
+			if !isnothing(infeasible_combination)
+				#print("_")
+				push!(infeasibility_cache, infeasible_combination)
+				add_clause(
+					state.sat_instance,
+					infeasible_combination
+				)
+				solution = solve(state.sat_instance)
+				continue
+			end
+			new_conjunction = Tuple{Int64,Union{SemiLinearConstraint,LinearConstraint}}[]
+			# Resolve nonlinearities to semi-linear constraints
+			varnum = query.num_input_vars+query.num_output_vars
+			#@debug "Resolving nonlinearities:"
+			for cur_f  in conjunction
+				if cur_f[2] isa ApproxNode
+					#TODO(steuber): Do we *ever* have UnderApprox? I feel like we might be able to simplify this...
+					@assert cur_f[2].formula.right isa TermNumber
+					approx_direction = (cur_f[2] isa OverApprox) ? Lower : Upper
+					# Generate term which has all nonlinearities replaced by Nonlinear Substitutions
+					approx_queries, semilinear = handle_nonlinearity(approx_direction, cur_f[2].formula.left)
+					nonlinearities_set = union(nonlinearities_set, approx_queries)
+					#@debug "Old semilinear constraint: ", cur_f[2].formula
+					# Convert from term semilinear (contains nonlinear substitutions) to semilinear term (i.e. linear term with some additions)
+					new_formula = make_linear(semilinear, cur_f[2].formula.right, cur_f[2].formula.comparator, varnum)
+					#@debug "New semilinear constraint: ", new_formula
+					push!(new_conjunction, (cur_f[1], new_formula ))
+				else
+					push!(new_conjunction, cur_f)
+				end
+			end
+			#print("|")
+			# OK, our combination is feasible...
+			input, mixed = split_by_variables(new_conjunction,query)
+			# Store non-linearities of current combination in set
+			# for a in nonlinear
+			# 	@assert a[2].formula.right isa TermNumber
+			# 	approx_direction = (a[2] isa OverApprox) ? Lower : Upper
+			# 	nonlinearities_set=union(nonlinearities_set, collect_nonlinearities(approx_direction, a[2].formula.left))
+			# end
+			# Add in-out constraints to disjunction
+			#@debug "Adding in-out constraints: ", mixed
+			push!(disjunction, map(x -> x[2], mixed))
+		
+			# Fix input constraints for further search
+			for (v,_) in input
+				add_clause(state.sat_instance, v)
+			end
+			# Disallow current mixed constraint for further search
+			add_clause(state.sat_instance, map(x -> -x[1], mixed))
+			# Find new model
+			solution = solve(state.sat_instance)
+		end
 	end
+	GC.gc(true)
 	pop(state.sat_instance)
 	# Dump infeasibility_cache into clause database
 	add_clauses(state.sat_instance, infeasibility_cache)
@@ -174,6 +186,7 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 		# 	println(x.bound," -> ",AST.term_to_string(x.term))
 		# end
 		# println("---------------------")
+		#@debug "Input:", map(x->x[2],input)
 		#@debug "Disjunction: ", disjunction
 		return NormalizedQuery(map(x->x[2],input), disjunction, nonlinearities_set, query), state
 	else

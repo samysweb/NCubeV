@@ -119,3 +119,11 @@ struct Query
 		return new(formula, variables, num_input_vars, num_output_vars)
 	end
 end
+
+# TODO(steuber): Put this somewhere else? Doesn't really belong here...
+struct OlnnvQuery
+	bounds :: Vector{Tuple{Float64,Float64}}
+	input_matrix :: Matrix{Float32}
+	input_bias :: Vector{Float32}
+	disjunction :: Vector{Tuple{Matrix{Float32},Vector{Float32}}}
+end
