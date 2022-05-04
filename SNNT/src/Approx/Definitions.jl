@@ -15,7 +15,7 @@ struct IncompleteApproximation <: ApproximationPrototype
 	constraints :: Vector{Term}
 	# [-vel, vel]
 	function IncompleteApproximation( bounds :: Vector{Vector{Float64}}, formula :: Term)
-		constraints = Union{Vector{Float64}, Term}[formula]
+		constraints = Term[formula]
 		return new(bounds, constraints)
 	end
 end

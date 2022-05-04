@@ -1,14 +1,32 @@
 module SNNT
+# Configuration
 include("Config/Main.jl")
+
+# Basic Definitions
 include("AST/Main.jl")
+include("VerifierInterface/Main.jl")
+
+# Parsing
 include("Parsing/Main.jl")
+
+# Analysis
 include("Analysis/Main.jl")
+
+# Constraint Solvers
 include("LP/Main.jl")
 include("Z3Interface/Main.jl")
+
+# Query Generation
 include("QueryGeneration/Main.jl")
+
+# Query Approximation
 include("Approx/Main.jl")
-include("Control/Main.jl")
+
+# Verifier Integration
 include("Verifiers/Main.jl")
+
+# Bringing it all together
+include("Control/Main.jl")
 using .AST
 export not, and, or, implies, <, <=, >, >=, ==, !=, +, -, *, /, ^
 export istree, exprhead, operation, arguments,similarterm, symtype, promote_symtype

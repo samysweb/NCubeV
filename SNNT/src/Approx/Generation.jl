@@ -30,6 +30,11 @@ function get_approx_normalized_query(initial_query :: NormalizedQuery, approx_ca
 	@info "Resolving approximation"
 	for (approx_query, incomplete_approx) in incomplete_query.approximations
 		new_approx = resolve_approximation(incomplete_approx, approx_query.bound)
+		if Config.RIGOROUS_APPROXIMATIONS
+			verify_approximation(approx_query, new_approx)
+		else
+			@info "Skipping verification of approximation (switch on using Config.set_rigorous_approximations(true))"
+		end
 		ready_approximations[approx_query] = new_approx
 		cur_bounds = generate_bounds(approx_query.term, bounds)
 		cache_needle = ApproxCacheObject(approx_query, cur_bounds)

@@ -8,7 +8,10 @@ module Approx
 	using ..Config
 	using ..AST
 	using ..Analysis
+	using ..LP
+	using ..VerifierInterface
 	using ..QueryGeneration
+	using ..Z3Interface
 
 	# OVERT configuration
 	N = 2
@@ -22,6 +25,7 @@ module Approx
 	include("PwlConjunction.jl")
 	include("Iterator.jl")
 	include("Approximation.jl")
+	include("Verify.jl")
 	include("Generation.jl")
 
 	export ApproxCache

@@ -252,6 +252,7 @@ function parse_factor(tokenmanager :: TokenManager)
 	elseif Tokens.kind(current_token) == Tokens.INTEGER || Tokens.kind(current_token) == Tokens.FLOAT
 		@debug "Parsing number"
 		current_token = next(tokenmanager)
+		#TODO(steuber): FLOAT INCORRECTNESS
 		return TermNumber(parse(Float64, untokenize(current_token)))
 	elseif Tokens.kind(current_token) == Tokens.IDENTIFIER
 		@debug "Parsing variable"

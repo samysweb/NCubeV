@@ -1,7 +1,7 @@
 module NNEnum
 	using PyCall
 
-	using ....AST
+	using ....VerifierInterface
 
 	run_nnenum = nothing
 
@@ -80,7 +80,7 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction):
 		print(f"Found counter-example stars: {len(result.stars)}")
 		for star in result.stars:
 			# Extract Ax <= b
-			A = star.lpi.get_constraints_csr()
+			A = star.lpi.get_constraints_csr().todense()
 			b = star.lpi.get_rhs()
 			# Extract M*x + c
 			M = star.a_mat
@@ -106,7 +106,14 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction):
 		@info "Running nnenum now..."
 		lb = [b[1] for b in olnnv_query.bounds]
 		ub = [b[2] for b in olnnv_query.bounds]
-		run_nnenum(model, lb, ub, olnnv_query.input_matrix, olnnv_query.input_bias, olnnv_query.disjunction)
+		@info "lb: ", lb
+		@info "ub: ", ub
+		res = run_nnenum(model, lb, ub, olnnv_query.input_matrix, olnnv_query.input_bias, olnnv_query.disjunction)
+		if isnothing(res)
+			return OlnnvResult()
+		else
+			return OlnnvResult(res[1],res[2],map(Star,res[3][2]))
+		end
 	end
 
 end

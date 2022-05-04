@@ -1,6 +1,7 @@
 import Base.iterate
 
 # TODO(steuber): Float32 rounding from rationals: Ensure rounding in right direction!
+#TODO(steuber): FLOAT INCORRECTNESS
 
 function bounds_iterator(bounds :: AbstractArray{Vector{Float64}};limit_bounds :: Union{Nothing,Vector{Tuple{Float64, Float64}}}=nothing)
 	#TODO(steuber): This should be possible without any memory allocation
@@ -49,9 +50,11 @@ function iterate(approx :: ApproxNormalizedQuery)
 	end
 	# Iterator...
 	num_inputs = length(approx.input_bounds)
-	iter = map(b-> generate_conjunction(approx, b), bounds_iterator(
-		(@view approx.nonlinear_query.input_constraints.bounds[1:num_inputs])
-	))
+	iter = Iterators.filter( query -> !LP.is_infeasible(query.bounds, query.input_matrix, query.input_bias) ,
+		Iterators.map(b-> generate_conjunction(approx, b), bounds_iterator(
+			(@view approx.nonlinear_query.input_constraints.bounds[1:num_inputs])
+		))
+	)
 	iter_res = iterate(iter)
 	if isnothing(iter_res)
 		return nothing
