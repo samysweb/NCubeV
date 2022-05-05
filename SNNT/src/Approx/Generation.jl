@@ -33,7 +33,7 @@ function get_approx_normalized_query(initial_query :: NormalizedQuery, approx_ca
 		if Config.RIGOROUS_APPROXIMATIONS
 			verify_approximation(approx_query, new_approx)
 		else
-			@info "Skipping verification of approximation (switch on using Config.set_rigorous_approximations(true))"
+			@info "Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))"
 		end
 		ready_approximations[approx_query] = new_approx
 		cur_bounds = generate_bounds(approx_query.term, bounds)

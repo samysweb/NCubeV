@@ -1,4 +1,6 @@
 module SNNT
+#Util
+include("Util/Main.jl")
 # Configuration
 include("Config/Main.jl")
 

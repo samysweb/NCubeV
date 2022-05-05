@@ -1,8 +1,5 @@
 import Base.iterate
 
-# TODO(steuber): Float32 rounding from rationals: Ensure rounding in right direction!
-#TODO(steuber): FLOAT INCORRECTNESS
-
 function bounds_iterator(bounds :: AbstractArray{Vector{Float64}};limit_bounds :: Union{Nothing,Vector{Tuple{Float64, Float64}}}=nothing)
 	#TODO(steuber): This should be possible without any memory allocation
 	if isnothing(limit_bounds)
@@ -74,15 +71,15 @@ function generate_linear_constraint(
 	coefficient_matrix[row,:] .= 0.0
 	bias_vector[row] = 0.0
 	if Config.INCLUDE_APPROXIMATIONS
-		coefficient_matrix[row,startpos:endpos] .= Float32.(@view semi.coefficients[startpos:endpos])
+		coefficient_matrix[row,startpos:endpos] .= round_minimize.(@view semi.coefficients[startpos:endpos])
 		bias_vector[row] = semi.bias
 		for (query, coeff) in semi.semilinears
 			linear_term = get_linear_term(bounds, approximations[query])
 			#@debug "Linear term: ", linear_term
 			#@debug "Coefficients before: ", coefficient_matrix[row,startpos:endpos]
-			coefficient_matrix[row,startpos:endpos] .+= coeff .* Float32.(@view linear_term.coefficients[startpos:endpos])
+			coefficient_matrix[row,startpos:endpos] .+= round_minimize.(coeff .* @view linear_term.coefficients[startpos:endpos])
 			#@debug "Coefficients after: ", coefficient_matrix[row,startpos:endpos]
-			bias_vector[row] -= coeff * linear_term.bias
+			bias_vector[row] -= round_maximize(coeff * linear_term.bias)
 		end
 	else
 		@info "Skipping nonlinear approximation constraints"
@@ -97,9 +94,9 @@ function generate_conjunction(approx :: ApproxNormalizedQuery, bounds :: Vector{
 	input_matrix = Matrix{Float32}(undef, num_input_constraints, num_input_vars)
 	input_bias = Vector{Float32}(undef, num_input_constraints)
 	for (i,li) in enumerate(approx.nonlinear_query.input_constraints.linear_constraints)
-		@inbounds input_matrix[i,:] .= Float32.(@view li.coefficients[1:num_input_vars])
+		@inbounds input_matrix[i,:] .= round_minimize.(@view li.coefficients[1:num_input_vars])
 		#@debug "Matrix line after insertion: ", input_matrix[i,:]
-		@inbounds input_bias[i] = li.bias
+		@inbounds input_bias[i] = round_maximize(li.bias)
 	end
 	for (i,ni) in enumerate(approx.nonlinear_query.input_constraints.semilinear_constraints)
 		#@debug "Matrix line before insertion: ", input_matrix[i+num_linear_input_constraints,:]
@@ -129,8 +126,8 @@ function generate_conjunction(approx :: ApproxNormalizedQuery, bounds :: Vector{
 				@inbounds output_bias[2*i] = -blow+EPSILON
 			end
 			for (i,li) in enumerate(output_conjunction.linear_constraints)
-				@inbounds output_matrix[2*length(all_bounds)+i,:] .= Float32.(@view li.coefficients[1:num_input_vars+num_output_vars])
-				@inbounds output_bias[2*length(all_bounds)+i] = li.bias
+				@inbounds output_matrix[2*length(all_bounds)+i,:] .= round_minimize.(@view li.coefficients[1:num_input_vars+num_output_vars])
+				@inbounds output_bias[2*length(all_bounds)+i] = round_maximize(li.bias)
 			end
 			for (i,ni) in enumerate(output_conjunction.semilinear_constraints)
 				#@debug "Adding nonlinear constraint"

@@ -2,16 +2,13 @@ module LP
 	using JuMP
 	using GLPK
 
+	using ..Util
 	using ..AST
 
 	export is_infeasible
 
-	#TODO(steuber): FLOAT INCORRECTNESS
-
 	function to_linear_constraint(c :: LinearConstraint)
-		# TODO(steuber): Fix rounding...
-		#setrounding(BigFloat, Base.Rounding.RoundToZero)
-		return map(Float32, c.coefficients), Float32(c.bias)
+		return round_minimize.(c.coefficients), round_maximize(c.bias)
 	end
 
 	function is_infeasible(linear_constraints :: Vector{LinearConstraint})
@@ -21,7 +18,7 @@ module LP
 		constraints = Array{Float32}(undef,(length(linear_constraints),var_num))
 		biases = Array{Float32}(undef,(length(linear_constraints),1))
 		for (i,c) in enumerate(linear_constraints)
-			constraints[i,:], biases[i] = to_linear_constraint(c)
+			constraints[i,:], biases[i] .= to_linear_constraint(c)
 		end
 		@debug "Checking feasibility of ", constraints, " * x <= ", biases
 		@constraint(model, constraints * x .<= biases)

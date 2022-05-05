@@ -6,42 +6,24 @@ module Z3Interface
 
 	export z3_context, nl_feasible
 
+	include("Base.jl")
 	include("AST2Z3.jl")
 
-	function z3_context(varnum :: Int64)
-		ctx = Context()
-		variables = []
-		for i in 1:varnum
-			push!(variables, real_const(ctx, "x"*string(i)))
-		end
-		set_param("timeout", 100)
-		return ctx, variables
-	end
 
 	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables)
-		# ctx = Context()
-		# variables = []
-		# for i in 1:varnum
-		# 	push!(variables, real_const(ctx, "x"*string(i)))
-		# end
-
-		s = Solver(ctx, "QF_NRA")
-		for c in constraints
-			translated = ast2z3(c, variables)
-			#println(translated)
-			add(s, translated)
+		res = z3_solver(ctx) do s
+			for c in constraints
+				translated = ast2z3(c, variables)
+				#println(translated)
+				add(s, translated)
+			end
+			
+			return check(s)
 		end
 		
-		res = check(s)
-		# if first(constraints) isa LinearConstraint
-			# print("------------------------------------------------------")
-			# print(s)
-			# print(res == Z3.unsat)
-			# print("------------------------------------------------------")
-			# sleep(5)
-		# end
-		
-		
+		if res!=Z3.sat && res!=Z3.unsat
+			@info "Z3 returned status: "*string(res)
+		end
 		return res != Z3.unsat
 	end
 end

@@ -3,8 +3,7 @@ function verify_approximation(approx_query :: ApproxQuery, new_approx::Approxima
 	num_vars = length(new_approx.bounds)
 	for b in bounds_iterator(new_approx.bounds)
 		linear_term = get_linear_term(b, new_approx)
-		begin
-			ctx, variables = z3_context(num_vars)
+		z3_context(num_vars;timeout=0) do (ctx, variables)
 			constraints = Formula[]
 			# Variable bounds
 			for (i,(blow,bhigh)) in enumerate(b)
@@ -36,6 +35,5 @@ function verify_approximation(approx_query :: ApproxQuery, new_approx::Approxima
 				@error "Found error in approximation of "*AST.term_to_string(approx_query.term)*": Linear Term "*AST.term_to_string(linear_term)*" may be below/above allowed threshold in interval "*string(b)
 			end
 		end
-		GC.gc(true)
 	end
 end

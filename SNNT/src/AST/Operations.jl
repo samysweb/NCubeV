@@ -59,17 +59,7 @@ function +(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 	args = Term[t1]
 	append!(args, t2)
 	if all(x->x isa TermNumber, args)
-		try
-			return TermNumber(+(map(x->x.value, args)...))
-		catch e
-			#TODO(steuber): FLOAT INCORRECTNESS
-			if e isa InexactError || e isa OverflowError
-				# @warn "Inexact/Overflow error on rational addition -> fallback to floats may impede correctness"
-				return TermNumber(Rational{BigInt}(+(map(x->Float64(x.value), args)...)))
-			else
-				rethrow(e)
-			end
-		end
+		return TermNumber(+(map(x->x.value, args)...))
 	else
 		CompositeTerm(Add,args)
 	end
@@ -89,17 +79,7 @@ function *(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 	if all(x->x isa Number, args)
 		return Base.*(args...)
 	elseif all(x->x isa TermNumber, args)
-		try
-			result = TermNumber(*(map(x->x.value, args)...))
-		catch e
-			#TODO(steuber): FLOAT INCORRECTNESS
-			if e isa InexactError || e isa OverflowError
-				# @warn "Inexact/Overflow error on rational multiplication -> fallback to floats may impede correctness"
-				result = TermNumber(Rational{BigInt}(*(map(x->Float64(x.value), args)...)))
-			else
-				rethrow(e)
-			end
-		end
+		result = TermNumber(*(map(x->x.value, args)...))
 	else
 		result = CompositeTerm(Mul,args)
 	end

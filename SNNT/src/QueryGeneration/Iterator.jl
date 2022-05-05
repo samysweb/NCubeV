@@ -86,9 +86,7 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 	end
 	# We need this block (and the subsequent garbage collector call) to ensure that
 	# ctx and variables are correctly freed.
-	begin
-	# TODO(steuber): Refactor z3 context creation (maybe same for LP)
-		ctx, variables = z3_context(query.num_input_vars+query.num_output_vars)
+	z3_context(query.num_input_vars+query.num_output_vars) do (ctx, variables)
 		@assert (Z3Interface.nl_feasible(Formula[query.formula], ctx, variables))
 		solution = solve(state.sat_instance)
 		input = nothing
@@ -168,7 +166,6 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 			solution = solve(state.sat_instance)
 		end
 	end
-	GC.gc(true)
 	pop(state.sat_instance)
 	# Dump infeasibility_cache into clause database
 	add_clauses(state.sat_instance, infeasibility_cache)

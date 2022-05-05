@@ -5,6 +5,7 @@ module Approx
 	using OVERT
 	using SymbolicUtils
 
+	using ..Util
 	using ..Config
 	using ..AST
 	using ..Analysis
