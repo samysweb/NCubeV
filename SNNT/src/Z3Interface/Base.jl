@@ -18,10 +18,7 @@ end
 
 function z3_solver(f, ctx)
 	res = nothing
-	begin
-		s = Solver(ctx, "QF_NRA")
-		res = f(s)
-	end
-	GC.gc(true)
+	s = Solver(ctx, "QF_NRA")
+	res = f(s)
 	return res
 end
