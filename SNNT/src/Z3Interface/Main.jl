@@ -3,11 +3,13 @@ module Z3Interface
 	using MLStyle
 
 	using ..AST
+	using ..VerifierInterface
 
 	export z3_context, nl_feasible
 
 	include("Base.jl")
 	include("AST2Z3.jl")
+	include("StarFilter.jl")
 
 
 	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables)

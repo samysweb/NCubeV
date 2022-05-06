@@ -84,15 +84,14 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 	if isnothing(state)
 		state = BooleanSkeleton(query.formula)
 	end
-	# We need this block (and the subsequent garbage collector call) to ensure that
-	# ctx and variables are correctly freed.
+	
+	infeasibility_cache = []
+	solution = solve(state.sat_instance)
+	input = nothing
+	disjunction = Vector{Vector{Formula}}()
+	nonlinearities_set = Set{ApproxQuery}()
 	z3_context(query.num_input_vars+query.num_output_vars) do (ctx, variables)
 		@assert (Z3Interface.nl_feasible(Formula[query.formula], ctx, variables))
-		solution = solve(state.sat_instance)
-		input = nothing
-		disjunction = Vector{Vector{Formula}}()
-		infeasibility_cache = []
-		nonlinearities_set = Set{ApproxQuery}()
 		push(state.sat_instance)
 		while solution != :unsatisfiable
 			conjunction = get_atoms(state, solution)

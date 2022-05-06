@@ -140,5 +140,6 @@ function generate_conjunction(approx :: ApproxNormalizedQuery, bounds :: Vector{
 	end
 	@info "# Conjunctions over output: ", length(output_disjunction)
 	bounds = map(b -> (b[1]-EPSILON, b[2]+EPSILON), bounds)
-	return OlnnvQuery(bounds, input_matrix, input_bias, output_disjunction)
+	res =  OlnnvQuery(bounds, input_matrix, input_bias, output_disjunction)
+	return res
 end
