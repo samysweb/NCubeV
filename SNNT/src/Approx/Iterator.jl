@@ -36,13 +36,14 @@ function iterate(approx :: ApproxNormalizedQuery, state)
 end
 
 function iterate(approx :: ApproxNormalizedQuery)
+	all_bounds = [approx.input_bounds;approx.output_bounds]
 	# Initialization...
-	init_pwl_bounds(approx.nonlinear_query.input_constraints, approx.approximations)
+	init_pwl_bounds(approx.nonlinear_query.input_constraints, approx.approximations, all_bounds)
 	for output_conjunciton in approx.nonlinear_query.mixed_constraints
 		for (i, cur_bounds) in enumerate(approx.nonlinear_query.input_constraints.bounds)
 			@inbounds append!(output_conjunciton.bounds[i],cur_bounds)
 		end
-		init_pwl_bounds(output_conjunciton, approx.approximations)
+		init_pwl_bounds(output_conjunciton, approx.approximations, all_bounds)
 		#@info "Initialized bounds for disjunction: ", output_conjunciton.bounds
 	end
 	# Iterator...
@@ -70,19 +71,16 @@ function generate_linear_constraint(
 	bounds :: Vector{Tuple{Float64, Float64}}, semi :: SemiLinearConstraint, approximations :: Dict{ApproxQuery,Approximation},startpos,endpos)
 	coefficient_matrix[row,:] .= 0.0
 	bias_vector[row] = 0.0
-	if Config.INCLUDE_APPROXIMATIONS
-		coefficient_matrix[row,startpos:endpos] .= round_minimize.(@view semi.coefficients[startpos:endpos])
-		bias_vector[row] = semi.bias
-		for (query, coeff) in semi.semilinears
-			linear_term = get_linear_term(bounds, approximations[query])
-			#@debug "Linear term: ", linear_term
-			#@debug "Coefficients before: ", coefficient_matrix[row,startpos:endpos]
-			coefficient_matrix[row,startpos:endpos] .+= round_minimize.(coeff .* @view linear_term.coefficients[startpos:endpos])
-			#@debug "Coefficients after: ", coefficient_matrix[row,startpos:endpos]
-			bias_vector[row] -= round_maximize(coeff * linear_term.bias)
-		end
-	else
-		@info "Skipping nonlinear approximation constraints"
+	
+	coefficient_matrix[row,startpos:endpos] .= round_minimize.(@view semi.coefficients[startpos:endpos])
+	bias_vector[row] = semi.bias
+	for (query, coeff) in semi.semilinears
+		linear_term = get_linear_term(bounds, approximations[query])
+		#@debug "Linear term: ", linear_term
+		#@debug "Coefficients before: ", coefficient_matrix[row,startpos:endpos]
+		coefficient_matrix[row,startpos:endpos] .+= round_minimize.(coeff .* @view linear_term.coefficients[startpos:endpos])
+		#@debug "Coefficients after: ", coefficient_matrix[row,startpos:endpos]
+		bias_vector[row] -= round_maximize(coeff * linear_term.bias)
 	end
 end
 

@@ -104,12 +104,14 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 			if !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],linear)),ctx, variables)
 				#println("Z3 says it's infeasible")
 				infeasible_combination = map(x -> -x[1], linear)
-			elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
-				#println("Z3 says it's infeasible")
-				infeasible_combination = map(x -> -x[1], nonlinear)
-			elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],conjunction)),ctx, variables)
-				#println("Z3 says it's infeasible")
-				infeasible_combination = map(x -> -x[1], conjunction)
+			elseif Config.INCLUDE_APPROXIMATIONS
+				if !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
+					#println("Z3 says it's infeasible")
+					infeasible_combination = map(x -> -x[1], nonlinear)
+				elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],conjunction)),ctx, variables)
+					#println("Z3 says it's infeasible")
+					infeasible_combination = map(x -> -x[1], conjunction)
+				end
 			end
 			if !isnothing(infeasible_combination)
 				#print("_")
@@ -127,17 +129,19 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 			#@debug "Resolving nonlinearities:"
 			for cur_f  in conjunction
 				if cur_f[2] isa ApproxNode
-					#TODO(steuber): Do we *ever* have UnderApprox? I feel like we might be able to simplify this...
-					@assert cur_f[2].formula.right isa TermNumber
-					approx_direction = (cur_f[2] isa OverApprox) ? Lower : Upper
-					# Generate term which has all nonlinearities replaced by Nonlinear Substitutions
-					approx_queries, semilinear = handle_nonlinearity(approx_direction, cur_f[2].formula.left)
-					nonlinearities_set = union(nonlinearities_set, approx_queries)
-					#@debug "Old semilinear constraint: ", cur_f[2].formula
-					# Convert from term semilinear (contains nonlinear substitutions) to semilinear term (i.e. linear term with some additions)
-					new_formula = make_linear(semilinear, cur_f[2].formula.right, cur_f[2].formula.comparator, varnum)
-					#@debug "New semilinear constraint: ", new_formula
-					push!(new_conjunction, (cur_f[1], new_formula ))
+					if Config.INCLUDE_APPROXIMATIONS
+						#TODO(steuber): Do we *ever* have UnderApprox? I feel like we might be able to simplify this...
+						@assert cur_f[2].formula.right isa TermNumber
+						approx_direction = (cur_f[2] isa OverApprox) ? Lower : Upper
+						# Generate term which has all nonlinearities replaced by Nonlinear Substitutions
+						approx_queries, semilinear = handle_nonlinearity(approx_direction, cur_f[2].formula.left)
+						nonlinearities_set = union(nonlinearities_set, approx_queries)
+						#@debug "Old semilinear constraint: ", cur_f[2].formula
+						# Convert from term semilinear (contains nonlinear substitutions) to semilinear term (i.e. linear term with some additions)
+						new_formula = make_linear(semilinear, cur_f[2].formula.right, cur_f[2].formula.comparator, varnum)
+						#@debug "New semilinear constraint: ", new_formula
+						push!(new_conjunction, (cur_f[1], new_formula ))
+					end
 				else
 					push!(new_conjunction, cur_f)
 				end

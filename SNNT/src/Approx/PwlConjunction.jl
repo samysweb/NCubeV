@@ -1,5 +1,8 @@
-function init_pwl_bounds(conjunction :: PwlConjunction, approximations :: Dict{ApproxQuery, Approximation})
+function init_pwl_bounds(conjunction :: PwlConjunction, approximations :: Dict{ApproxQuery, Approximation}, init_bounds :: Vector{Vector{Float64}})
 	num_vars = length(conjunction.bounds)
+	for i in 1:num_vars
+		conjunction.bounds[i] = union(conjunction.bounds[i], init_bounds[i])
+	end
 	for semilinear in conjunction.semilinear_constraints
 		for (approx_query,_) in semilinear.semilinears
 			additional_bounds = approximations[approx_query].bounds

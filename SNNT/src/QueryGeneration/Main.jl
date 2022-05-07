@@ -5,6 +5,7 @@ module QueryGeneration
 	using MLStyle
 	using SymbolicUtils
 
+	using ..Config
 	using ..AST
 	using ..LP
 	using ..Z3Interface
