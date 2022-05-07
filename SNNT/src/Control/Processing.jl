@@ -24,6 +24,7 @@ function prepare_for_olnnv(query :: Query)
 end
 
 function run_query(f, query :: Query)
+	approx_cache = ApproxCache()
 	@info "Iterating over conjunctions..."
 	for current_conjunction in query
 		@info "Considering conjunction with ",
@@ -34,7 +35,7 @@ function run_query(f, query :: Query)
 		#for mixed in current_conjunction.mixed_constraints
 		#	@info mixed
 		#end
-		approx_normalized = get_approx_normalized_query(current_conjunction)
+		approx_normalized = get_approx_normalized_query(current_conjunction, approx_cache)
 		#@info "Initiating iterator"
 		for linear_query in approx_normalized
 			f(linear_query)

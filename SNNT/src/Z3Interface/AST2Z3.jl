@@ -8,6 +8,7 @@ function ast2z3(f :: CompositeFormula, variables)
 		Implies => return Z3.implies(arguments[1],arguments[2])
 	end
 end
+#TODO(steuber): FLOAT INCORRECTNESS
 function ast2z3(f :: LinearConstraint, variables)
 	formula = 0.0
 	for (i,c) in enumerate(f.coefficients)
@@ -19,6 +20,15 @@ function ast2z3(f :: LinearConstraint, variables)
 		return formula < Float32(f.bias)
 	end
 end
+
+function ast2z3(t :: LinearTerm, variables)
+	term = rationalize(Int32,BigFloat(t.bias))
+	for (i,c) in enumerate(t.coefficients)
+		term = term + rationalize(Int32,BigFloat(c)) * variables[i]
+	end
+	return term
+end
+
 function ast2z3(f :: ApproxNode, variables)
 	return ast2z3(f.formula, variables)
 end

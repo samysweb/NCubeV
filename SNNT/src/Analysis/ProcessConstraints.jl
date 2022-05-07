@@ -154,7 +154,6 @@ function make_linear(left :: T1, right :: T2, comp :: Comparator, var_number :: 
 	else
 		C = LinearConstraint
 	end
-	#bias = convert(Float64, bias)
 	if comp == AST.LessEq
 		return C(constraint_row, bias, true)
 	elseif comp == AST.Less

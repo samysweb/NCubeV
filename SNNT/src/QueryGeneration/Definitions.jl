@@ -44,10 +44,10 @@ struct NormalizedQuery
 	mixed_constraints :: Vector{PwlConjunction}
 	approx_queries :: Dict{Term, Vector{BoundType}}
 	function NormalizedQuery(
-		input :: Vector{Formula},
-		disjunction :: Vector{Vector{Formula}},
+		input :: Vector{T1},
+		disjunction :: Vector{Vector{T2}},
 		approx_queries :: Set{ApproxQuery},
-		query :: Query)
+		query :: Query) where {T1 <: Formula, T2 <: Formula}
 		# Initiate properties
 		input_bounds = Vector{Vector{Float64}}()
 		for _ in 1:query.num_input_vars

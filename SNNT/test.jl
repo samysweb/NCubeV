@@ -6,8 +6,14 @@ test=load_query("test/parsing/examples/example3",fixed_vars,mapping)
 test2=prepare_for_olnnv(test)
 
 results = []
-@time run_query(test2) do linear_term
-	#println("Generated terms")
-	push!(results, SNNT.Verifiers.NNEnum.verify("../../jsc/all_ppo_acc_3000000_steps-renamed.onnx",linear_term))
-	#SNNT.Verifiers.NNEnum.verify("../../jsc/all_ppo_acc_3000000_steps-renamed.onnx",linear_term)
+SNNT.Z3Interface.z3_context(test2.num_input_vars+test2.num_output_vars;timeout=0) do (ctx, variables)
+	Z3Filter = SNNT.Z3Interface.get_star_filter(ctx, variables, test2.formula)
+	@time run_query(test2) do linear_term
+		#println("Generated terms")
+		res = ( SNNT.Verifiers.NNEnum.verify(
+					"../../jsc/all_ppo_acc_3000000_steps-renamed.onnx",
+					linear_term) |>
+				Z3Filter )
+		push!(results, res)
+	end
 end

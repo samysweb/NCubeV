@@ -30,6 +30,7 @@ function to_expr(op :: Operation; var_map :: Union{Nothing, Dict{Variable, Expr}
 end
 
 function from_expr(e :: Number) :: TermNumber
+	#TODO(steuber): FLOAT INCORRECTNESS?
 	return TermNumber(rationalize(convert(Float32,e)))
 end
 

@@ -59,17 +59,7 @@ function +(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 	args = Term[t1]
 	append!(args, t2)
 	if all(x->x isa TermNumber, args)
-		try
-			return TermNumber(+(map(x->x.value, args)...))
-		catch e
-			#TODO(steuber): Remove again
-			if e isa InexactError || e isa OverflowError
-				# @warn "Inexact/Overflow error on rational addition -> fallback to floats may impede correctness"
-				return TermNumber(Rational{BigInt}(+(map(x->Float64(x.value), args)...)))
-			else
-				rethrow(e)
-			end
-		end
+		return TermNumber(+(map(x->x.value, args)...))
 	else
 		CompositeTerm(Add,args)
 	end
@@ -89,17 +79,7 @@ function *(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 	if all(x->x isa Number, args)
 		return Base.*(args...)
 	elseif all(x->x isa TermNumber, args)
-		try
-			result = TermNumber(*(map(x->x.value, args)...))
-		catch e
-			#TODO(steuber): Remove again
-			if e isa InexactError || e isa OverflowError
-				# @warn "Inexact/Overflow error on rational multiplication -> fallback to floats may impede correctness"
-				result = TermNumber(Rational{BigInt}(*(map(x->Float64(x.value), args)...)))
-			else
-				rethrow(e)
-			end
-		end
+		result = TermNumber(*(map(x->x.value, args)...))
 	else
 		result = CompositeTerm(Mul,args)
 	end
@@ -158,40 +138,3 @@ end
 function negate(a :: LinearConstraint)
 	return LinearConstraint(-a.coefficients, -a.bias, !a.equality)
 end
-
-# function reduce_precision(p :: ParsedNode;digits=3)
-# 	return Postwalk(PassThrough(If(
-# 		x -> x isa TermNumber,
-# 		x -> TermNumber(Rational{BigInt}(round(Float64(x.value),digits=digits)))
-# 	)))(p)
-# end
-
-# correct_mul(x,y) = Base.*(x,y)
-
-# function *(x :: Rational{BigInt}, y :: Rational{BigInt})
-# 	try
-# 		return correct_mul(x, y)
-# 	catch
-# 		return rationalize(BigInt,Float64(x)*Float64(y))
-# 	end
-# end
-
-# correct_add(x,y) = Base.+(x,y)
-
-# function +(x :: Rational{BigInt}, y :: Rational{BigInt})
-# 	try
-# 		return correct_add(x, y)
-# 	catch
-# 		return rationalize(BigInt,Float64(x)+Float64(y))
-# 	end
-# end
-
-# correct_sub(x,y) = Base.-(x,y)
-
-# function -(x :: Rational{BigInt}, y :: Rational{BigInt})
-# 	try
-# 		return correct_sub(x, y)
-# 	catch
-# 		return rationalize(BigInt,Float64(x)-Float64(y))
-# 	end
-# end
