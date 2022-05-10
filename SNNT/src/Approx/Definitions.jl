@@ -56,9 +56,6 @@ struct ApproxNormalizedQueryPrototype{T <: ApproximationPrototype}
 	end
 end
 
-ApproxNormalizedQuery = ApproxNormalizedQueryPrototype{Approximation}
-IncompleteApproxNormalizedQuery = ApproxNormalizedQueryPrototype{IncompleteApproximation}
-
 struct ApproxCacheObject
 	query :: ApproxQuery
 	bounds :: Vector{Tuple{Float64,Float64}}

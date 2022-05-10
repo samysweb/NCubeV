@@ -26,7 +26,7 @@ function get_approx_normalized_query(initial_query :: NormalizedQuery, approx_ca
 		end
 	end
 	@info "Constructing Approximation"
-	incomplete_query=IncompleteApproxNormalizedQuery(initial_query)
+	incomplete_query=ApproxNormalizedQueryPrototype{IncompleteApproximation}(initial_query)
 	@info "Resolving approximation"
 	for (approx_query, incomplete_approx) in incomplete_query.approximations
 		new_approx = resolve_approximation(incomplete_approx, approx_query.bound)
@@ -40,7 +40,7 @@ function get_approx_normalized_query(initial_query :: NormalizedQuery, approx_ca
 		cache_needle = ApproxCacheObject(approx_query, cur_bounds)
 		approx_cache[cache_needle] = new_approx
 	end
-	return ApproxNormalizedQuery(incomplete_query, ready_approximations)
+	return ApproxNormalizedQueryPrototype{Approximation}(incomplete_query, ready_approximations)
 end
 
 function generate_bounds(term :: Term, bounds :: Vector{Tuple{Float64,Float64}})

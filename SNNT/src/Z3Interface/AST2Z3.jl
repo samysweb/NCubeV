@@ -12,12 +12,12 @@ end
 function ast2z3(f :: LinearConstraint, variables)
 	formula = 0.0
 	for (i,c) in enumerate(f.coefficients)
-		formula = formula + Float32(c) * variables[i]
+		formula = formula + rationalize(Int32,Float32(c)) * variables[i]
 	end
 	if f.equality
-		return formula <= Float32(f.bias)
+		return formula <= rationalize(Int32,Float32(f.bias))
 	else
-		return formula < Float32(f.bias)
+		return formula < rationalize(Int32,Float32(f.bias))
 	end
 end
 
@@ -61,5 +61,5 @@ end
 function ast2z3(n :: TermNumber, variables)
 	#value32 = Float32(n.value)
 	#return rationalize(value32)
-	return Float32(n.value)
+	return rationalize(Int32,Float32(n.value))
 end
