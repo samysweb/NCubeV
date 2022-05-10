@@ -4,7 +4,7 @@ function get_star_filter(ctx, variables, formula)
 		add(solver, translated)
 		@assert check(solver)==Z3.sat
 		return function(result :: OlnnvResult)
-			if result.result_str != "unsafe"
+			if result.result_str == "safe"
 				return result
 			else
 				filtered_stars = filter(star_concrete_filter(solver, variables),result.stars)
@@ -12,7 +12,7 @@ function get_star_filter(ctx, variables, formula)
 				if length(filtered_stars) == 0
 					return OlnnvResult("safe", result.metadata, filtered_stars)
 				else
-					return OlnnvResult("unsafe", result.metadata, filtered_stars)
+					return OlnnvResult(result.result_str, result.metadata, filtered_stars)
 				end
 			end
 		end

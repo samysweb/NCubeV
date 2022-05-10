@@ -31,5 +31,6 @@ module Approx
 
 	export ApproxCache
 	export get_approx_normalized_query
+	export ApproxNormalizedQueryPrototype, IncompleteApproximation, Approximation
 
 end

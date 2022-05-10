@@ -25,7 +25,7 @@ function bounds_iterator(bounds :: AbstractArray{Vector{Float64}};limit_bounds :
 		)
 end
 
-function iterate(approx :: ApproxNormalizedQuery, state)
+function iterate(approx :: ApproxNormalizedQueryPrototype{Approximation}, state)
 	iter = state[1]
 	iter_res = iterate(iter, state[2])
 	if isnothing(iter_res)
@@ -35,7 +35,7 @@ function iterate(approx :: ApproxNormalizedQuery, state)
 	end
 end
 
-function iterate(approx :: ApproxNormalizedQuery)
+function iterate(approx :: ApproxNormalizedQueryPrototype{Approximation})
 	all_bounds = [approx.input_bounds;approx.output_bounds]
 	# Initialization...
 	init_pwl_bounds(approx.nonlinear_query.input_constraints, approx.approximations, all_bounds)
@@ -84,7 +84,7 @@ function generate_linear_constraint(
 	end
 end
 
-function generate_conjunction(approx :: ApproxNormalizedQuery, bounds :: Vector{Tuple{Float64, Float64}})
+function generate_conjunction(approx :: ApproxNormalizedQueryPrototype{Approximation}, bounds :: Vector{Tuple{Float64, Float64}})
 	num_input_vars = length(approx.input_bounds)
 	num_output_vars = length(approx.output_bounds)
 	num_linear_input_constraints = length(approx.nonlinear_query.input_constraints.linear_constraints)
