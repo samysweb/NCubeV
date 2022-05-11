@@ -11,7 +11,8 @@ SNNT.Z3Interface.z3_context(test2.num_input_vars+test2.num_output_vars;timeout=0
 	@time run_query(test2) do linear_term
 		#println("Generated terms")
 		res = ( SNNT.Verifiers.NNEnum.verify(
-					"../../jsc/ppo_acc_evenbigger_300000_steps.onnx",
+					#"../../jsc/ppo_acc_evenbigger_300000_steps.onnx",
+					"../../jsc/ppo_acc_200000_steps-improve.onnx",
 					linear_term) |>
 				Z3Filter )
 		push!(results, res)
