@@ -2,6 +2,7 @@ module Cmd
 	using ArgParse
 	using JLD
 
+	using ..Config
 	using ..AST
 	using ..Z3Interface
 	using ..Control
@@ -35,16 +36,24 @@ module Cmd
 				help = "Verifier to use (currently only supports NNEnum)"
 				arg_type = String
 				default = "NNEnum"
-			"--debug"
-				help = "Run in Debug Mode"
+			"--linear"
+				help = "Calls OLNNV tool without any non-linear constraint approximations"
+				action = :store_true
+			"--rigorous"
+				help = "Prove that approximation is correct using Z3"
 				action = :store_true
 		end
 		return parse_args(cmd_args,s)
 	end
 	
 	function run_internal(args)
-		if args["debug"]
-			# Activate debug
+		if args["linear"]
+			@info "Running without any non-linear constraint approximations"
+			Config.set_include_approximations(false)
+		end
+		if args["rigorous"]
+			@info "Running in rigorous mode"
+			Config.set_rigorous_approximations(true)
 		end
 		# Load fixed variables
 		fixed_vars_content = open(args["fixed"], "r") do f

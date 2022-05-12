@@ -1,0 +1,3 @@
+"rPos"=>(Input,1),
+"rVel"=>(Input,2),
+"rAccpost"=>(Output,1)

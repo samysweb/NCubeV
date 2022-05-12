@@ -1,2 +1,4 @@
 *.mem
 *.mem-backup
+bin/
+*.so
