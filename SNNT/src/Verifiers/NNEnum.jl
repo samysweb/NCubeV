@@ -97,9 +97,19 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction):
 			))
 		return (result.result_str, result.total_stars, (cex, counterex_stars))
 	else:
-		return None
+		return (result.result_str, result.total_stars, (None, []))
 """
 		global run_nnenum = py"run_nnenum"
+	end
+
+	function to_status(status :: String)
+		if status == "safe"
+			return Safe
+		elseif startswith(status,"unsafe")
+			return Unsafe
+		else
+			return Unknown
+		end
 	end
 
 	function verify(model, olnnv_query :: OlnnvQuery)
@@ -112,7 +122,7 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction):
 		if isnothing(res)
 			return OlnnvResult()
 		else
-			return OlnnvResult(res[1],res[2],map(Star,res[3][2]))
+			return OlnnvResult(to_status(res[1]),res[2],map(Star,res[3][2]))
 		end
 	end
 

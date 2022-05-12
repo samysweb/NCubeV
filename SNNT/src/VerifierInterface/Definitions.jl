@@ -23,14 +23,16 @@ struct Star
 	end
 end
 
+@enum ResultStatus Safe=0 Unsafe=1 Unknown=2
+
 struct OlnnvResult
-	result_str :: String
+	status :: ResultStatus
 	metadata :: Any
 	stars :: Vector{Star}
-	function OlnnvResult(result_str, metadata, stars)
-		return new(result_str, metadata, stars)
+	function OlnnvResult(status, metadata, stars)
+		return new(status, metadata, stars)
 	end
 	function OlnnvResult()
-		return new("none", nothing, Star[])
+		return new(Unknown, nothing, Star[])
 	end
 end

@@ -29,14 +29,22 @@ include("Verifiers/Main.jl")
 
 # Bringing it all together
 include("Control/Main.jl")
+
+# Cmd Interface
+include("Cmd/Main.jl")
+
 using .AST
-export not, and, or, implies, <, <=, >, >=, ==, !=, +, -, *, /, ^
-export istree, exprhead, operation, arguments,similarterm, symtype, promote_symtype
+#export not, and, or, implies, <, <=, >, >=, ==, !=, +, -, *, /, ^
+#export istree, exprhead, operation, arguments,similarterm, symtype, promote_symtype
 
 using .Control
-export load_query, run_query, prepare_for_olnnv
+#export load_query, run_query, prepare_for_olnnv
 
 using .Verifiers
-export VERIFIER_CALLBACKS
+#export VERIFIER_CALLBACKS
+
+using .Cmd
+
+export run_cmd
 
 end # module

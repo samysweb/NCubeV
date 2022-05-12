@@ -26,6 +26,7 @@ end
 function run_query(f, query :: Query)
 	approx_cache :: ApproxCache = ApproxCache()
 	@info "Iterating over conjunctions..."
+	results = []
 	for current_conjunction in query
 		@info "Considering conjunction with ",
 			length(current_conjunction.input_constraints.linear_constraints)+length(current_conjunction.input_constraints.semilinear_constraints),
@@ -38,7 +39,8 @@ function run_query(f, query :: Query)
 		approx_normalized :: ApproxNormalizedQueryPrototype{Approximation} = get_approx_normalized_query(current_conjunction, approx_cache)
 		#@info "Initiating iterator"
 		for linear_query in approx_normalized
-			f(linear_query)
+			push!(results,f(linear_query))
 		end
 	end
+	return results
 end

@@ -1,18 +1,24 @@
+struct Z3FilterMeta
+	original_meta :: Any
+	filtered_out :: Int64
+end
+
 function get_star_filter(ctx, variables, formula)
 	return z3_solver(ctx) do solver
 		translated = ast2z3(formula, variables)
 		add(solver, translated)
 		@assert check(solver)==Z3.sat
 		return function(result :: OlnnvResult)
-			if result.result_str == "safe"
+			if result.status == "safe"
 				return result
 			else
 				filtered_stars = filter(star_concrete_filter(solver, variables),result.stars)
-				@info "Z3 filtered out ",length(result.stars)-length(filtered_stars)," stars (out of ",length(result.stars),")."
+				filtered_out = length(result.stars)-length(filtered_stars)
+				@info "Z3 filtered out ",filtered_out," stars (out of ",length(result.stars),")."
 				if length(filtered_stars) == 0
-					return OlnnvResult("safe", result.metadata, filtered_stars)
+					return OlnnvResult(Safe, Z3FilterMeta(result.metadata,filtered_out), filtered_stars)
 				else
-					return OlnnvResult(result.result_str, result.metadata, filtered_stars)
+					return OlnnvResult(result.status, Z3FilterMeta(result.metadata,filtered_out), filtered_stars)
 				end
 			end
 		end
