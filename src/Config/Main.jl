@@ -3,6 +3,11 @@ module Config
 
 	RIGOROUS_APPROXIMATIONS = false
 
+	function __init__()
+		global INCLUDE_APPROXIMATIONS = true
+		global RIGOROUS_APPROXIMATIONS = false
+	end
+
 	function set_include_approximations(flag :: Bool)
 		global INCLUDE_APPROXIMATIONS = flag
 	end
