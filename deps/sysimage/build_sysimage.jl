@@ -37,7 +37,7 @@ function build_sysimage()
 	rm("/tmp/snnt_trace.jl")
 	# Now we need to do the linking...
 	gcc_lib_path = abspath(Sys.BINDIR, Base.LIBDIR)
-	cmd_gcc = `gcc -shared -o sys.so -Wl,--whole-archive $dep_dir/snnt_sys.o -Wl,--no-whole-archive -L"$gcc_lib_path" -ljulia`
+	cmd_gcc = `gcc -shared -o $dep_dir/sys.so -Wl,--whole-archive $dep_dir/snnt_sys.o -Wl,--no-whole-archive -L"$gcc_lib_path" -ljulia`
 	run_cmd(cmd_gcc)
 	rm("$dep_dir/snnt_sys.o")
 end
@@ -51,7 +51,7 @@ function create_callable()
 		@info "Failed to remove bin directory: ", e
 	end
 	mkdir(joinpath(dep_dir,"../../bin"))
-	mv("sys.so",sysimg_path)
+	mv(joinpath(dep_dir,"sys.so"),sysimg_path)
 	open(joinpath(dep_dir,"../../bin/SNNT"), "w") do f
 		println(f, "#!/usr/bin/julia -J$sysimg_path")
 		println(f, "using SNNT")
