@@ -39,6 +39,19 @@ function handle_nonlinearity_internal(b :: BoundType, f ::Term) :: Tuple{Set{App
 					res = ApproxQuery(b, f)
 					return Set{ApproxQuery}((res,)), NonLinearSubstitution(res)
 				end
+				Div => begin
+					if args[2] isa TermNumber
+						if args[2].value < 0
+							b = flip(b)
+						end
+						@assert length(args) == 2
+						res, new_arg = handle_nonlinearity_internal(b, args[1])
+						return res, CompositeTerm(AST.Mul,[TermNumber(1/args[2].value), new_arg])
+					else
+						res = ApproxQuery(b, f)
+						return Set{ApproxQuery}((res,)), NonLinearSubstitution(res)
+					end
+				end
 			end
 		end
 		Variable() => (Set{ApproxQuery}(), f)

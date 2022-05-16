@@ -18,7 +18,7 @@ end
 
 function z3_solver(f, ctx)
 	res = nothing
-	s = Solver(ctx, "QF_NRA")
+	s = Solver(ctx) # , "QF_NRA")
 	res = f(s)
 	return res
 end

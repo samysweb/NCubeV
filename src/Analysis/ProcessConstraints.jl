@@ -43,7 +43,9 @@ function fix_variables(f :: Formula, mapping::Dict{String, Union{String, Number}
 	replacement_map = Dict{Variable, Term}()
 	for (k, v) in mapping
 		if v isa String
-			replacement_map[Variable(k)] = Variable(v)
+			content_io = IOBuffer(v)
+			parsed :: Term = Parsing.parse_constraint_from_io(content_io;parse_entry=Parsing.parse_term)
+			replacement_map[Variable(k)] = parsed
 		else
 			replacement_map[Variable(k)] = TermNumber(v)
 		end

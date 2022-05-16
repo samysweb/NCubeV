@@ -24,7 +24,7 @@ module Z3Interface
 		end
 		
 		if res!=Z3.sat && res!=Z3.unsat
-			@info "Z3 returned status: "*string(res)
+			@info "Z3 returned status: ", res
 		end
 		return res != Z3.unsat
 	end

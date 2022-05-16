@@ -45,15 +45,19 @@ end
 
 function parse_constraint(filename :: String)
 	open(filename, "r") do file_io
-		tokens = TokenManager(tokenize(file_io))
-		result = parse_composite(tokens)
-		current_token = next(tokens)
-		if Tokens.kind(current_token) == Tokens.ENDMARKER
-			return result
-		else
-			throw_syntax_error("Expected end of file got "*untokenize(current_token),current_token)
-		end
+		return parse_constraint_from_io(file_io)
 	end;
+end
+
+function parse_constraint_from_io(io :: IO; parse_entry=parse_composite)
+	tokens = TokenManager(tokenize(io))
+	result = parse_entry(tokens)
+	current_token = next(tokens)
+	if Tokens.kind(current_token) == Tokens.ENDMARKER
+		return result
+	else
+		throw_syntax_error("Expected end of file got "*untokenize(current_token),current_token)
+	end
 end
 
 function parse_composite(tokenmanager :: TokenManager)
@@ -122,13 +126,13 @@ function parse_elementary(tokenmanager :: TokenManager)
 	@debug "Parsing elementary"
 	next_token = peek_token(tokenmanager)
 	@debug "Next char is ", next_token
-	if Tokens.exactkind(next_token) == Tokens.LPAREN
+	if Tokens.exactkind(next_token) == Tokens.LSQUARE
 		@debug "Parsing bracket expression (start)"
 		next(tokenmanager)
 		result = parse_composite(tokenmanager)
 		current_token = next(tokenmanager)
-		if Tokens.kind(current_token) != Tokens.RPAREN
-			throw_syntax_error("Expected ')'",Tokens.startpos(current_token))
+		if Tokens.kind(current_token) != Tokens.RSQUARE
+			throw_syntax_error("Expected ']'",Tokens.startpos(current_token))
 		end
 		@debug "Parsing bracket expression (end)"
 		return result
@@ -163,7 +167,7 @@ function parse_atom(tokenmanager :: TokenManager)
 			throw_syntax_error("Expected comparison operator",Tokens.startpos(current_token))
 		end
 	else
-		throw_syntax_error("Expected comparison operator",Tokens.startpos(current_token))
+		throw_syntax_error("Expected comparison operator after "*string(term1)*" but got "*string(current_token),Tokens.startpos(current_token))
 	end
 	term2 = parse_term(tokenmanager)
 	return Atom(operator, term1, term2)
