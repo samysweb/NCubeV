@@ -4,7 +4,7 @@ module Cmd
 
 	using ..Config
 	using ..AST
-	using ..Z3Interface
+	using ..SMTInterface
 	using ..Control
 	using ..Verifiers
 	using ..VerifierInterface
@@ -36,11 +36,15 @@ module Cmd
 				help = "Verifier to use (currently only supports NNEnum)"
 				arg_type = String
 				default = "NNEnum"
+			"--smt"
+				help = "SMT solver to use (currently only supports Z3 and CVC5)"
+				arg_type = String
+				default = "Z3"
 			"--linear"
 				help = "Calls OLNNV tool without any non-linear constraint approximations"
 				action = :store_true
 			"--rigorous"
-				help = "Prove that approximation is correct using Z3"
+				help = "Prove that approximation is correct using SMT Solver"
 				action = :store_true
 		end
 		return parse_args(cmd_args,s)
@@ -55,6 +59,8 @@ module Cmd
 			@info "Running in rigorous mode"
 			Config.set_rigorous_approximations(true)
 		end
+		@info "Using SMT solver: ", args["smt"]
+		Config.set_smt_solver(args["smt"])
 		# Load fixed variables
 		fixed_vars_content = open(args["fixed"], "r") do f
 			return read(f, String)
@@ -69,9 +75,10 @@ module Cmd
 		mapping = Dict{String,Tuple{VariableType,Int64}}(eval(mapping_parsed))
 		# Load formula
 		initial_query=load_query(args["formula"],fixed_vars,mapping)
+		@info "Parsed initial query: ",initial_query
 		prepared_query=prepare_for_olnnv(initial_query)
-		result = (Z3Interface.z3_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=0) do (ctx, variables)
-			Z3Filter = Z3Interface.get_star_filter(ctx, variables, prepared_query.formula)
+		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=100000) do (ctx, variables)
+			Z3Filter = SMTInterface.get_star_filter(ctx, variables, prepared_query.formula)
 			return @time Control.run_query(prepared_query) do linear_term
 				#println("Generated terms")
 				( Verifiers.VERIFIER_CALLBACKS[args["verifier"]](

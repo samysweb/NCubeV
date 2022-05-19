@@ -1,6 +1,6 @@
 # TODO(steuber): Floating Point Correctness?
-function ast2z3(f :: CompositeFormula, variables)
-	arguments = map(x -> ast2z3(x, variables), f.args)
+function ast2smt(f :: CompositeFormula, variables, additional)
+	arguments = map(x -> ast2smt(x, variables, additional), f.args)
 	return @match f.connective begin
 		Not => return Z3.not(arguments[1])
 		And => return Z3.and(arguments...)
@@ -9,7 +9,7 @@ function ast2z3(f :: CompositeFormula, variables)
 	end
 end
 #TODO(steuber): FLOAT INCORRECTNESS
-function ast2z3(f :: LinearConstraint, variables)
+function ast2smt(f :: LinearConstraint, variables, additional)
 	formula = 0.0
 	for (i,c) in enumerate(f.coefficients)
 		formula = formula + rationalize(Int32,Float32(c)) * variables[i]
@@ -21,7 +21,7 @@ function ast2z3(f :: LinearConstraint, variables)
 	end
 end
 
-function ast2z3(t :: LinearTerm, variables)
+function ast2smt(t :: LinearTerm, variables, additional)
 	term = rationalize(Int32,BigFloat(t.bias))
 	for (i,c) in enumerate(t.coefficients)
 		term = term + rationalize(Int32,BigFloat(c)) * variables[i]
@@ -29,12 +29,12 @@ function ast2z3(t :: LinearTerm, variables)
 	return term
 end
 
-function ast2z3(f :: ApproxNode, variables)
-	return ast2z3(f.formula, variables)
+function ast2smt(f :: ApproxNode, variables, additional)
+	return ast2smt(f.formula, variables, additional)
 end
-function ast2z3(f :: Atom, variables)
-	termLeft = ast2z3(f.left, variables)
-	termRight = ast2z3(f.right, variables)
+function ast2smt(f :: Atom, variables, additional)
+	termLeft = ast2smt(f.left, variables, additional)
+	termRight = ast2smt(f.right, variables, additional)
 	return @match f.comparator begin
 		Less => return termLeft < termRight
 		LessEq => return termLeft <= termRight
@@ -44,21 +44,37 @@ function ast2z3(f :: Atom, variables)
 		Neq => return termLeft != termRight
 	end
 end
-function ast2z3(f :: CompositeTerm, variables)
-	arguments = map(x -> ast2z3(x, variables), f.args)
+function ast2smt(f :: CompositeTerm, variables, additional)
+	arguments = map(x -> ast2smt(x, variables, additional), f.args)
+	ctx = Z3.ctx(variables[1])
 	return @match f.operation begin
 		Add => return +(arguments...)
 		Sub => return -(arguments...)
 		Mul => return *(arguments...)
 		Div => return /(arguments...)
-		Pow => return ^(arguments...)
+		Pow => begin
+			@assert length(arguments) == 2
+			exp = arguments[2]
+			if exp.den == 1
+				return ^(arguments...)
+			else
+				exp = 1//exp
+				@assert exp.den == 1
+				new_var = smt_internal_variable(ctx, "pow"*string(hash(f)))
+				push!(additional, Z3.and(
+					^(new_var, exp) == (arguments[1]),
+					0 <= new_var
+				))
+				return new_var
+			end
+		end
 		Neg => return -arguments[1]
 	end
 end
-function ast2z3(v :: Variable, variables)
+function ast2smt(v :: Variable, variables, additional)
 	return variables[v.position]
 end
-function ast2z3(n :: TermNumber, variables)
+function ast2smt(n :: TermNumber, variables, additional)
 	#value32 = Float32(n.value)
 	#return rationalize(value32)
 	return rationalize(Int32,Float32(n.value))

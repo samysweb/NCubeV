@@ -34,12 +34,12 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction):
 	Settings.UNDERFLOW_BEHAVIOR = "warn"
 	# TODO(steuber): Seem to have numerical issue here?
 	Settings.SKIP_CONSTRAINT_NORMALIZATION = True
-	Settings.PRINT_PROGRESS = False
+	Settings.PRINT_PROGRESS = True
 	Settings.PRINT_OUTPUT = False
 	Settings.RESULT_SAVE_COUNTER_STARS = True
 	#Settings.INPUT_SPACE_MINIMIZATION = False
 	Settings.FIND_CONCRETE_COUNTEREXAMPLES = True
-	Settings.BRANCH_MODE = Settings.BRANCH_EXACT
+	Settings.BRANCH_MODE = Settings.BRANCH_OVERAPPROX
 	Settings.NUM_PROCESSES = 1
 	
 	network = load_onnx_network(model)

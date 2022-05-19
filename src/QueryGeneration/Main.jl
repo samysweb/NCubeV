@@ -8,7 +8,7 @@ module QueryGeneration
 	using ..Config
 	using ..AST
 	using ..LP
-	using ..Z3Interface
+	using ..SMTInterface
 	using ..Analysis
 	include("Definitions.jl")
 	include("Skeleton.jl")

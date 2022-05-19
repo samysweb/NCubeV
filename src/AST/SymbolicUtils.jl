@@ -68,11 +68,14 @@ TIMES_RULES = [
 POW_RULES = [
 	#@rule(^(*(~~x), ~y::SymbolicUtils._isinteger) => *(map(a->pow(a, ~y), ~~x)...))
 	#@rule((((~x)^(~p::SymbolicUtils._isinteger))^(~q::SymbolicUtils._isinteger)) => (~x)^((~p)*(~q)))
-	@rule(^(~x, ~z::_iszero) => 1)
+	@rule(^(~x, ~z::_iszero) => TermNumber(1))
 	@rule(^(~x, ~z::_isone) => ~x)
+	@rule(^(~x::_isone, ~y) => TermNumber(1))
 	@rule (^(~a::is_literal_number, ~b::is_literal_number) => ^(~a, ~b))
 	@rule(^(+(~x,~y), ~z::_istwo) => +(^(~x, ~z), *(~z, ~x, ~y), ^(~y, ~z)))
+	@rule( ( (~x) / (~y)  ) ^ (~z) => ( ( (~x)^(~z) )/( (~y)^(~z) ) ) )
 	@rule(^(*(~~x),~y) => *(map(a->^(a,~y), ~~x)...))
+	@rule(^(^(~x,~y::is_literal_number), ~z::is_literal_number) => ^(~x, ~y*~z))
 	@rule(inv(~x) => 1/(~x))
 ]
 
@@ -93,6 +96,7 @@ ASSORTED_RULES = [
 	@acrule (~a/~b)*(~c/~d) => (~a*~c)/(~b*~d)
 	@acrule (~a/~b::_isone) => ~a
 	@rule (~a::is_literal_number / ~b::is_literal_number => ~a / ~b)
+	@acrule ( *((~z / ~y), ~y) => ~z )
 	# TODO(steuber): Push even further outwards by multiplying other parts...
 ]
 MINMAX_RULES = [

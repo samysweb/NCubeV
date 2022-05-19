@@ -17,11 +17,20 @@ function construct_approx(nonlinear_query :: NormalizedQuery) :: Dict{ApproxQuer
 		val_ranges = get_val_ranges(0, nonlinear_query.input_bounds)
 		val_ranges = union(val_ranges, get_val_ranges(length(val_ranges), nonlinear_query.output_bounds))
 		@info "Computing approximation for ",approx_expr
+		#try
 		overapprox_result = overapprox(approx_expr, Dict(val_ranges), N=N, ϵ=epsilon)
 		for cur_bound in bound_types
 			formula = generate_bound_from_overapprox(overapprox_result.output,overapprox_result, cur_bound)
 			approximations[ApproxQuery(cur_bound, approx_term)] = IncompleteApproximation(deepcopy(bounds), from_expr(formula))
 		end
+		# catch e
+		# 	# TODO(steuber): This is wrong
+		# 	@error "Overapproximation failed for ",approx_expr, ": ",e, " RESULT WILL BE ERRONOUS"
+		# 	var_nums = length(bounds)
+		# 	for cur_bound in bound_types
+		# 		approximations[ApproxQuery(cur_bound, approx_term)] = IncompleteApproximation(deepcopy(bounds), convert(Term,LinearTerm(zeros(var_nums), 0)))
+		# 	end
+		# end
 	end
 	return approximations
 end

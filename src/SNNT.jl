@@ -16,7 +16,7 @@ include("Analysis/Main.jl")
 
 # Constraint Solvers
 include("LP/Main.jl")
-include("Z3Interface/Main.jl")
+include("SMTInterface/Main.jl")
 
 # Query Generation
 include("QueryGeneration/Main.jl")

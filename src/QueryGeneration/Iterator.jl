@@ -90,8 +90,8 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 	input = nothing
 	disjunction = Vector{Vector{Formula}}()
 	nonlinearities_set = Set{ApproxQuery}()
-	z3_context(query.num_input_vars+query.num_output_vars) do (ctx, variables)
-		@assert (Z3Interface.nl_feasible(Formula[query.formula], ctx, variables))
+	smt_context(query.num_input_vars+query.num_output_vars) do (ctx, variables)
+		@assert (SMTInterface.nl_feasible(Formula[query.formula], ctx, variables))
 		push(state.sat_instance)
 		while solution != :unsatisfiable
 			conjunction = get_atoms(state, solution)
@@ -101,14 +101,14 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 			# Flag combination of linear constraints as infeasible and continue...
 			#	infeasible_combination = map(x -> -x[1], linear)
 			# TODO(steuber): How many checks here are the optimal choice?
-			if !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],linear)),ctx, variables)
+			if !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],linear)),ctx, variables)
 				#println("Z3 says it's infeasible")
 				infeasible_combination = map(x -> -x[1], linear)
 			elseif Config.INCLUDE_APPROXIMATIONS
-				if !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
+				if !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
 					#println("Z3 says it's infeasible")
 					infeasible_combination = map(x -> -x[1], nonlinear)
-				elseif !Z3Interface.nl_feasible(convert(Vector{Formula},map(x->x[2],conjunction)),ctx, variables)
+				elseif !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],conjunction)),ctx, variables)
 					#println("Z3 says it's infeasible")
 					infeasible_combination = map(x -> -x[1], conjunction)
 				end

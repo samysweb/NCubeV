@@ -12,7 +12,7 @@ module Approx
 	using ..LP
 	using ..VerifierInterface
 	using ..QueryGeneration
-	using ..Z3Interface
+	using ..SMTInterface
 
 	# OVERT configuration
 	N = 2
