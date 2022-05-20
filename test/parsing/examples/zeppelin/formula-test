@@ -1,0 +1,25 @@
+[
+	[
+		-400 <= x1 & x1 <= 400 &
+		-400 <= x2 & x2 <= 400 &
+		-400 <= g1 & g1 <= 400 &
+		-400 <= g2 & g2 <= 400 &
+		0 < cpost & cpost <= 40 &
+		0 < vstrength & vstrength <= 30 &
+		-1 <= y1post & y1post <= 1 &
+		-1 <= y2post & y2post <= 1
+	]
+	& [
+		p  <  r + vstrength &
+		cpost > 0 &
+		[x1 > cpost | x1 < -cpost | x2 > cpost | x2 < -cpost]
+	]
+] -> [
+	y1post^2 + y2post^2 <= 1 &
+	[
+		x2 > cpost & x2 < (vstrength*cpost)/(p-r) & x1 < -cpost * ((vstrength*cpost)/(p-r)-x2)
+		|
+		x2 > cpost & x2 < (vstrength*cpost)/(p-r) & x1 > cpost * ((vstrength*cpost)/(p-r)-x2)
+	] &
+	0 <= T & tpost = 0 & x1post = x1 & x2post = x2
+]
