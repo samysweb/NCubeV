@@ -8,7 +8,7 @@ pkg"build PyCall"
 using Conda
 @info "Installing packages necessary for NNEnum"
 Conda.pip("install",["numpy","scipy","threadpoolctl","onnx==1.9.0","onnxruntime==1.8.0","skl2onnx==1.7.0","swiglpk","termcolor"])
-
+Conda.pip("install",["cvc5"])
 @info "Building Sysimage..."
 include("sysimage/build_sysimage.jl")
 
