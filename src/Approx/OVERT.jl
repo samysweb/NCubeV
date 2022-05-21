@@ -7,16 +7,13 @@ function get_val_ranges(offset :: Int64, bounds :: Vector{Vector{Float64}})
 end
 
 function construct_approx(nonlinear_query :: NormalizedQuery) :: Dict{ApproxQuery, IncompleteApproximation}
-	@info "construct_approx"
 	approximations = Dict{ApproxQuery, IncompleteApproximation}()
 	bounds = [nonlinear_query.input_bounds;nonlinear_query.output_bounds]
 	for (approx_term, bound_types) in nonlinear_query.approx_queries
-		@info "Generating expression for ", approx_term,"..."
+		println("[APPROX] Generating expression for ", approx_term,"...")
 		approx_expr = to_expr(approx_term)
-		@info "Generating value ranges..."
 		val_ranges = get_val_ranges(0, nonlinear_query.input_bounds)
 		val_ranges = union(val_ranges, get_val_ranges(length(val_ranges), nonlinear_query.output_bounds))
-		@info "Computing approximation for ",approx_expr
 		#try
 		overapprox_result = overapprox(approx_expr, Dict(val_ranges), N=N, ϵ=epsilon)
 		for cur_bound in bound_types

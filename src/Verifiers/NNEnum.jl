@@ -33,7 +33,7 @@ from nnenum.specification import MixedSpecification, DisjunctiveSpec
 def run_nnenum(model, lb, ub, A_input, b_input, disjunction):
 	Settings.UNDERFLOW_BEHAVIOR = "warn"
 	# TODO(steuber): Seem to have numerical issue here?
-	Settings.SKIP_CONSTRAINT_NORMALIZATION = True
+	Settings.SKIP_CONSTRAINT_NORMALIZATION = False
 	Settings.PRINT_PROGRESS = True
 	Settings.PRINT_OUTPUT = False
 	Settings.RESULT_SAVE_COUNTER_STARS = True
@@ -62,12 +62,12 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction):
 	spec_list = []
 	for (A_mixed, b_mixed) in disjunction:
 		spec_list.append(MixedSpecification(A_mixed, b_mixed, ninputs))
-	print("Spec list length: ", len(spec_list))
+	print("[NNENUM] Spec list length: ", len(spec_list))
 	spec = DisjunctiveSpec(spec_list)
 
-	print("Enumeration in progress... ",end="")
+	print("[NNENUM] Enumeration in progress... ",end="")
 	result = enumerate_network(init_star, network, spec)
-	print("Enumeration finished.")
+	print("[NNENUM] Enumeration finished.")
 	print(result.result_str)
 	cex = None
 	counterex_stars = []
@@ -77,7 +77,7 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction):
 			.astype(np.float32)
 			.reshape(network.get_input_shape())
 		)
-		print(f"Found counter-example stars: {len(result.stars)}")
+		print(f"[NNENUM] Found counter-example stars: {len(result.stars)}")
 		for star in result.stars:
 			# Extract Ax <= b
 			A = star.lpi.get_constraints_csr().todense()
@@ -113,11 +113,11 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction):
 	end
 
 	function verify(model, olnnv_query :: OlnnvQuery)
-		@info "Running nnenum now..."
+		println("[NNENUM] Running nnenum now...")
 		lb = [b[1] for b in olnnv_query.bounds]
 		ub = [b[2] for b in olnnv_query.bounds]
-		@info "lb: ", lb
-		@info "ub: ", ub
+		println("[NNENUM] lb: ", lb)
+		println("[NNENUM] ub: ", ub)
 		res = run_nnenum(model, lb, ub, olnnv_query.input_matrix, olnnv_query.input_bias, olnnv_query.disjunction)
 		if isnothing(res)
 			return OlnnvResult()

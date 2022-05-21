@@ -52,14 +52,14 @@ module Cmd
 	
 	function run_internal(args)
 		if args["linear"]
-			@info "Running without any non-linear constraint approximations"
+			prinln("[CMD] Running without any non-linear constraint approximations")
 			Config.set_include_approximations(false)
 		end
 		if args["rigorous"]
-			@info "Running in rigorous mode"
+			println("[CMD] Running in rigorous mode")
 			Config.set_rigorous_approximations(true)
 		end
-		@info "Using SMT solver: ", args["smt"]
+		println("[CMD] Using SMT solver: ", args["smt"])
 		Config.set_smt_solver(args["smt"])
 		# Load fixed variables
 		fixed_vars_content = open(args["fixed"], "r") do f
@@ -75,7 +75,7 @@ module Cmd
 		mapping = Dict{String,Tuple{VariableType,Int64}}(eval(mapping_parsed))
 		# Load formula
 		initial_query=load_query(args["formula"],fixed_vars,mapping)
-		@info "Parsed initial query: ",initial_query
+		println("[CMD] Parsed initial query: ",initial_query)
 		prepared_query=prepare_for_olnnv(initial_query)
 		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=100000) do (ctx, variables)
 			Z3Filter = SMTInterface.get_star_filter(ctx, variables, prepared_query.formula)

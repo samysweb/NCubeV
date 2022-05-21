@@ -17,7 +17,7 @@ function smt_internal_solver(ctx, theory)
 	for (k,v) in ctx[1]
 		current = s.getOption(k)
 		if string(current) != string(v)
-			@info "Setting SMT solver option: ",k," = ",v, " (current value: ",current,")"
+			println("[CVC5] Setting SMT solver option: ",k," = ",v, " (current value: ",current,")")
 			s.setOption(k,v)
 		end
 	end
@@ -43,7 +43,7 @@ function smt_internal_pop(solver)
 end
 
 function smt_internal_debug(solver, res)
-	print("Found unsolved SMT")
+	println("[CVC5] Found unsolved SMT")
 	#println(to_smt2(solver,"unknown"))
 	#println(reasonunknown(solver))
 	# params = get_param_descrs(solver)

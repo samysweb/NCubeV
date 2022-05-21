@@ -43,7 +43,6 @@ module LP
 		@objective(model, Min, 0)
 		optimize!(model)
 		status = termination_status(model)
-		@info "Checked feasibility of matrix: ", status
 		return status == MOI.INFEASIBLE
 	end
 end

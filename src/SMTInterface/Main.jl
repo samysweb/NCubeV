@@ -36,7 +36,7 @@ module SMTInterface
 		end
 		
 		if !smt_internal_is_sat(res) && !smt_internal_is_unsat(res)
-			@info "SMT returned status: ", res
+			println("[SMT] SMT returned status: ", res)
 		end
 		return !smt_internal_is_unsat(res)
 	end

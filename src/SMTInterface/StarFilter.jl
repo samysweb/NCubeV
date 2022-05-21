@@ -22,7 +22,7 @@ function get_star_filter(ctx, variables, formula)
 			else
 				filtered_stars = filter(star_concrete_filter(solver, variables),result.stars)
 				filtered_out = length(result.stars)-length(filtered_stars)
-				@info "SMT filtered out ",filtered_out," stars (out of ",length(result.stars),")."
+				println("[SMT] SMT filtered out ",filtered_out," stars (out of ",length(result.stars),").")
 				if length(filtered_stars) == 0
 					return OlnnvResult(Safe, SmtFilterMeta(result.metadata,filtered_out), filtered_stars)
 				else

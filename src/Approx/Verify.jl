@@ -1,5 +1,5 @@
 function verify_approximation(approx_query :: ApproxQuery, new_approx::Approximation)
-	@info "Verifying correctness of approximation for term ", approx_query.term
+	prinln("[APPROX] Verifying correctness of approximation for term ", approx_query.term)
 	num_vars = length(new_approx.bounds)
 	for b in bounds_iterator(new_approx.bounds)
 		linear_term = get_linear_term(b, new_approx)

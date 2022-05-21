@@ -90,7 +90,7 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 	input = nothing
 	disjunction = Vector{Vector{Formula}}()
 	nonlinearities_set = Set{ApproxQuery}()
-	smt_context(query.num_input_vars+query.num_output_vars) do (ctx, variables)
+	smt_context(query.num_input_vars+query.num_output_vars;timeout=100000) do (ctx, variables)
 		@assert (SMTInterface.nl_feasible(Formula[query.formula], ctx, variables))
 		push(state.sat_instance)
 		while solution != :unsatisfiable

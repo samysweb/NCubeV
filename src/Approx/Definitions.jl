@@ -27,7 +27,6 @@ struct ApproxNormalizedQueryPrototype{T <: ApproximationPrototype}
 	output_bounds :: Vector{Vector{Float64}}
 	approximations :: Dict{ApproxQuery, T}
 	function ApproxNormalizedQueryPrototype{IncompleteApproximation}(nonlinear_query :: NormalizedQuery)
-		@info "Constructor"
 		input_bounds = nonlinear_query.input_bounds
 		output_bounds = nonlinear_query.output_bounds
 		approximations = construct_approx(nonlinear_query)

@@ -25,12 +25,12 @@ end
 
 function run_query(f, query :: Query)
 	approx_cache :: ApproxCache = ApproxCache()
-	@info "Iterating over conjunctions..."
+	println("[CTRL] Iterating over conjunctions...")
 	results = []
 	for current_conjunction in query
-		@info "Considering conjunction with ",
+		println("[CTRL] Considering conjunction with ",
 			length(current_conjunction.input_constraints.linear_constraints)+length(current_conjunction.input_constraints.semilinear_constraints),
-			" input constraints and a disjunction of size ",length(current_conjunction.mixed_constraints)
+			" input constraints and a disjunction of size ",length(current_conjunction.mixed_constraints))
 		#@info "Input Constraints:",current_conjunction.input_constraints
 		#@info "Mixed:"
 		#for mixed in current_conjunction.mixed_constraints

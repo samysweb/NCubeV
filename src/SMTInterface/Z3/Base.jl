@@ -34,7 +34,7 @@ function smt_internal_pop(solver)
 end
 
 function smt_internal_debug(solver, res)
-	print("Found unsolved SMT: ")
+	println("[Z3] Found unsolved SMT: ")
 	println(to_smt2(solver,"unknown"))
 	println(reason_unknown(solver))
 	# params = get_param_descrs(solver)

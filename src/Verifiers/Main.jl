@@ -13,13 +13,13 @@ function __init__()
 end
 
 function no_verify(model, olnnv_query :: OlnnvQuery)
-	@info "Running nnenum now..."
+	println("[NOVERY] Running NoVerify now...")
 	lb = [b[1] for b in olnnv_query.bounds]
 	ub = [b[2] for b in olnnv_query.bounds]
-	@info "lb: ", lb
-	@info "ub: ", ub
-	@info "# Input Constraint Matrix Size: ", size(olnnv_query.input_matrix)
-	@info "# Mixed Conjunctions: ", length(olnnv_query.disjunction)
+	println("[NOVERY] lb: ", lb)
+	println("[NOVERY] ub: ", ub)
+	println("[NOVERY] # Input Constraint Matrix Size: ", size(olnnv_query.input_matrix))
+	println("[NOVERY] # Mixed Conjunctions: ", length(olnnv_query.disjunction))
 	@warn "Skipping run since you chose NoVerify"
 	return OlnnvResult()
 end
