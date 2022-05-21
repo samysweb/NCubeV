@@ -2,14 +2,18 @@ function run_cmd(cmd)
 	cmd = detach(cmd)
 	err_io = IOBuffer(append=true)
 	cmd =pipeline(cmd,stderr=err_io)
-	open(cmd) do std_out
-		for cur_line in eachline(std_out)
-			@info "[OUT]", cur_line
-			err_cache = readchomp(err_io)
-			if length(err_cache) > 0
-				@info "[ERR]", err_cache
+	try
+		open(cmd) do std_out
+			for cur_line in eachline(std_out)
+				@info "[OUT]", cur_line
+				err_cache = readchomp(err_io)
+				if length(err_cache) > 0
+					@info "[ERR]", err_cache
+				end
 			end
 		end
+	catch e
+		@info "[ERR] Proccess execution failed: ", e
 	end
 	if !isnothing(err_io)
 		err_cache = readchomp(err_io)
