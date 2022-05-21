@@ -2,4 +2,4 @@
 "r"=>5,
 "p"=>20,
 "y1post"=>"ystr*y1dir",
-"y2post"=>"ystr*(1.01-y1dir^2)^(1/2)"
+"y2post"=>"ystr*(1.011-y1dir^2)^(1/2)"
