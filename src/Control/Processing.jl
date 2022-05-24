@@ -23,7 +23,7 @@ function prepare_for_olnnv(query :: Query)
 	return Query(olnnv_formula, variable_set)
 end
 
-function run_query(f, query :: Query)
+function run_query(f, query :: Query, ctx, variables)
 	approx_cache :: ApproxCache = ApproxCache()
 	println("[CTRL] Iterating over conjunctions...")
 	results = []
@@ -36,10 +36,11 @@ function run_query(f, query :: Query)
 		#for mixed in current_conjunction.mixed_constraints
 		#	@info mixed
 		#end
+		SMTFilter = SMTInterface.get_star_filter(ctx, variables, current_conjunction)
 		approx_normalized :: ApproxNormalizedQueryPrototype{Approximation} = get_approx_normalized_query(current_conjunction, approx_cache)
 		#@info "Initiating iterator"
 		for linear_query in approx_normalized
-			push!(results,f(linear_query))
+			push!(results,f((linear_query, SMTFilter)))
 		end
 	end
 	return results

@@ -40,6 +40,10 @@ module Cmd
 				help = "SMT solver to use (currently only supports Z3 and CVC5)"
 				arg_type = String
 				default = "Z3"
+			"--smtfilter-timeout"
+				help = "Timeout for SMT filter in seconds (unsolved SMT queries will be considered as possibly sat)"
+				arg_type = Int
+				default = 100
 			"--linear"
 				help = "Calls OLNNV tool without any non-linear constraint approximations"
 				action = :store_true
@@ -77,14 +81,13 @@ module Cmd
 		initial_query=load_query(args["formula"],fixed_vars,mapping)
 		println("[CMD] Parsed initial query: ",initial_query)
 		prepared_query=prepare_for_olnnv(initial_query)
-		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=100000) do (ctx, variables)
-			Z3Filter = SMTInterface.get_star_filter(ctx, variables, prepared_query.formula)
-			return @time Control.run_query(prepared_query) do linear_term
+		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=convert(Int32,args["smtfilter-timeout"])) do (ctx, variables)
+			return @time Control.run_query(prepared_query, ctx, variables) do (linear_term,SMTFilter)
 				#println("Generated terms")
-				( Verifiers.VERIFIER_CALLBACKS[args["verifier"]](
+				return Verifiers.VERIFIER_CALLBACKS[args["verifier"]](
 						args["network"],
-						linear_term) |>
-					Z3Filter )
+						SMTFilter,
+						linear_term)
 			end
 		end) |> VerifierInterface.reduce_results
 		return result

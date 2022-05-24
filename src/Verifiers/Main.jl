@@ -1,18 +1,21 @@
 module Verifiers
+
+include("Registry.jl")
+
 include("NNEnum.jl")
 
+using ..AST
 using ..VerifierInterface
+
+using .Registry
 
 import .NNEnum: verify as nnenum_verify
 
-VERIFIER_CALLBACKS = Dict{String, Any}()
-
 function __init__()
-	global VERIFIER_CALLBACKS["NNEnum"] = nnenum_verify
-	global VERIFIER_CALLBACKS["NoVerify"] = no_verify
+	register_verifier("NoVerify",no_verify)
 end
 
-function no_verify(model, olnnv_query :: OlnnvQuery)
+function no_verify(model, SMTFilter, olnnv_query :: OlnnvQuery)
 	println("[NOVERY] Running NoVerify now...")
 	lb = [b[1] for b in olnnv_query.bounds]
 	ub = [b[2] for b in olnnv_query.bounds]

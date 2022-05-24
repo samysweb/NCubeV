@@ -5,6 +5,7 @@ end
 
 function get_star_filter(ctx, variables, formula)
 	return smt_solver(ctx) do solver
+		#set(solver,"ctrl_c",  true)
 		additional = []
 		translated = ast2smt(formula, variables, additional)
 		smt_internal_add(solver, translated)
@@ -20,7 +21,7 @@ function get_star_filter(ctx, variables, formula)
 			if result.status == "safe"
 				return result
 			else
-				filtered_stars = filter(star_concrete_filter(solver, variables),result.stars)
+				filtered_stars = filter(!=(nothing),map(star_concrete_filter(solver, variables),result.stars))
 				filtered_out = length(result.stars)-length(filtered_stars)
 				println("[SMT] SMT filtered out ",filtered_out," stars (out of ",length(result.stars),").")
 				if length(filtered_stars) == 0
@@ -52,13 +53,27 @@ function star_concrete_filter(solver, variables)
 		for a in additional
 			smt_internal_add(solver, a)
 		end
-		result = smt_internal_check(solver)
+		result = nothing
+		smt_time = @elapsed begin
+			try
+				result = smt_internal_check(solver)
+			catch e
+				throw(e)
+			end
+		end
+		println("[SMT] Filter took ",smt_time," seconds.")
 		# @info "AFTER:"
 		# print(solver)
 		#@info "SMT Result: ", result
 		smt_internal_pop(solver)
 		# @info "AFTER POP:"
 		# print(solver)
-		return !smt_internal_is_unsat(result)
+		if !isnothing(result) && smt_internal_is_unsat(result)
+			return nothing
+		elseif !isnothing(result) && smt_internal_is_sat(result)
+			return Star(star,true)
+		else
+			return Star(star,false)
+		end
 	end
 end

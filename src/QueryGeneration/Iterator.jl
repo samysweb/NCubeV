@@ -62,9 +62,9 @@ function has_output_variables(f :: ParsedNode, query :: Query)
 	end
 end
 
-function split_by_variables(atoms :: Vector{Tuple{Int64,Union{SemiLinearConstraint,LinearConstraint}}}, query :: Query)
-	input_atoms = Tuple{Int64,Union{SemiLinearConstraint,LinearConstraint}}[]
-	mixed_atoms = Tuple{Int64,Union{SemiLinearConstraint,LinearConstraint}}[]
+function split_by_variables(atoms :: Vector{Tuple{Int64,ParsedNode}}, query :: Query)
+	input_atoms = Tuple{Int64,ParsedNode}[]
+	mixed_atoms = Tuple{Int64,ParsedNode}[]
 	for (s,a) in atoms
 		if has_output_variables(a, query)
 			push!(mixed_atoms, (s,a))
@@ -123,6 +123,11 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 				solution = solve(state.sat_instance)
 				continue
 			end
+			# input, mixed = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},conjunction), query)
+			# println("-------------------------------------------------------")
+			# println("Input: ", input)
+			# println("Mixed: ", mixed)
+			# println("-------------------------------------------------------")
 			new_conjunction = Tuple{Int64,Union{SemiLinearConstraint,LinearConstraint}}[]
 			# Resolve nonlinearities to semi-linear constraints
 			varnum = query.num_input_vars+query.num_output_vars
@@ -148,7 +153,7 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 			end
 			#print("|")
 			# OK, our combination is feasible...
-			input, mixed = split_by_variables(new_conjunction,query)
+			input, mixed = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},new_conjunction),query)
 			# Store non-linearities of current combination in set
 			# for a in nonlinear
 			# 	@assert a[2].formula.right isa TermNumber

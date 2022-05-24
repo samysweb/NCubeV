@@ -79,3 +79,57 @@ function ast2smt(n :: TermNumber, variables, additional)
 	#return rationalize(value32)
 	return rationalize(Int32,Float32(n.value))
 end
+function ast2smt(q :: NormalizedQuery, variables, additional)
+	conjunction = []
+	num_inputs = length(q.input_bounds)
+	num_outputs = length(q.output_bounds)
+	for (i,b) in enumerate(q.input_bounds)
+		push!(conjunction, b[1] <= variables[i])
+		push!(conjunction, variables[i] <= b[end])
+	end
+	for (i,b) in enumerate(q.output_bounds)
+		push!(conjunction, b[1] <= variables[num_inputs + i])
+		push!(conjunction, variables[num_inputs + i] <= b[end])
+	end
+	push!(conjunction, ast2smt(q.input_constraints, variables, additional))
+	disjuntion = []
+	for c in q.mixed_constraints
+		push!(disjuntion, ast2smt(c, variables, additional))
+	end
+	push!(conjunction, Z3.or(disjuntion...))
+	return Z3.and(conjunction...)
+end
+
+function ast2smt(pwl :: PwlConjunction, variables, additional)
+	conjunction = []
+	for (i,b) in enumerate(pwl.bounds)
+		if length(b) < 2
+			# Skip if no bounds available
+			continue
+		end
+		push!(conjunction, b[1] <= variables[i])
+		push!(conjunction, variables[i] <= b[end])
+	end
+	for c in pwl.linear_constraints
+		push!(conjunction, ast2smt(c, variables, additional))
+	end
+	for c in pwl.semilinear_constraints
+		push!(conjunction, ast2smt(c, variables, additional))
+	end
+	return Z3.and(conjunction...)
+end
+
+function ast2smt(semi :: SemiLinearConstraint, variables, additional)
+	term = 0.0
+	for (i,c) in enumerate(semi.coefficients)
+		term = term + rationalize(Int32,BigFloat(c)) * variables[i]
+	end
+	for (approx_query, coeff) in semi.semilinears
+		term = term + rationalize(Int32,BigFloat(coeff)) * ast2smt(approx_query.term, variables, additional)
+	end
+	if semi.equality
+		return term <= rationalize(Int32,BigFloat(semi.bias))
+	else
+		return term < rationalize(Int32,BigFloat(semi.bias))
+	end
+end

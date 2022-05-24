@@ -43,11 +43,18 @@ function term_to_string(a :: FalseAtom)
 	return "false"
 end
 function term_to_string(a :: LinearConstraint)
-	if a.equality
-		return string(a.coefficients)*"<="*string(a.bias)
-	else
-		return string(a.coefficients)*"<"*string(a.bias)
+	res = ""
+	for (i,c) in enumerate(a.coefficients)
+		if !iszero(c)
+			res *= string(round(convert(Float32,c);digits=2,base=10))*"*x"*string(i)
+		end
 	end
+	if a.equality
+		res*="<="*string(a.bias)
+	else
+		res*="<"*string(a.bias)
+	end
+	return res
 end
 function term_to_string(a :: LinearTerm)
 	return string(a.coefficients)*"+"*string(a.bias)

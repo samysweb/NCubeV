@@ -64,7 +64,6 @@ function ast2smt(f :: CompositeTerm, variables, additional)
 				push!(additional, PY_CVC5.And(
 					PY_CVC5.Pow(new_var, exp).__eq__(arguments[1]),
 					PY_CVC5.Leq(0, new_var),
-					PY_CVC5.Leq(0, arguments[1])
 				))
 				return new_var
 			end
