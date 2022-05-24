@@ -96,7 +96,11 @@ function ast2smt(q :: NormalizedQuery, variables, additional)
 	for c in q.mixed_constraints
 		push!(disjuntion, ast2smt(c, variables, additional))
 	end
-	push!(conjunction, Z3.or(disjuntion...))
+	if length(disjuntion) > 1
+		push!(conjunction, Z3.or(disjuntion...))
+	else
+		push!(conjunction, disjuntion[1])
+	end
 	return Z3.and(conjunction...)
 end
 

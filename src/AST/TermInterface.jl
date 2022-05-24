@@ -172,9 +172,9 @@ function similarterm(t::CompositeTerm, f, args, symtype=CompositeTerm;metadata=n
 	# @debug "metadata: ", metadata
 	# @debug "exprhead: ", exprhead
 	if args[1]==(*)
-		println("Weird case")
-		println(args[1])
-		println(args[1]==(*))
+		print_msg("Weird case")
+		print_msg(args[1])
+		print_msg(args[1]==(*))
 		args = args[2:end]
 		throw("Weird case")
 	end

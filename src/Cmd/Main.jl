@@ -2,6 +2,7 @@ module Cmd
 	using ArgParse
 	using JLD
 
+	using ..Util
 	using ..Config
 	using ..AST
 	using ..SMTInterface
@@ -60,10 +61,10 @@ module Cmd
 			Config.set_include_approximations(false)
 		end
 		if args["rigorous"]
-			println("[CMD] Running in rigorous mode")
+			print_msg("[CMD] Running in rigorous mode")
 			Config.set_rigorous_approximations(true)
 		end
-		println("[CMD] Using SMT solver: ", args["smt"])
+		print_msg("[CMD] Using SMT solver: ", args["smt"])
 		Config.set_smt_solver(args["smt"])
 		# Load fixed variables
 		fixed_vars_content = open(args["fixed"], "r") do f
@@ -79,11 +80,11 @@ module Cmd
 		mapping = Dict{String,Tuple{VariableType,Int64}}(eval(mapping_parsed))
 		# Load formula
 		initial_query=load_query(args["formula"],fixed_vars,mapping)
-		println("[CMD] Parsed initial query: ",initial_query)
+		print_msg("[CMD] Parsed initial query: ",initial_query)
 		prepared_query=prepare_for_olnnv(initial_query)
 		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=convert(Int32,args["smtfilter-timeout"])) do (ctx, variables)
-			return @time Control.run_query(prepared_query, ctx, variables) do (linear_term,SMTFilter)
-				#println("Generated terms")
+			return @time Control.run_query(prepared_query, ctx, variables, backup=args["output"],backup_meta=args) do (linear_term,SMTFilter)
+				#print_msg("Generated terms")
 				return Verifiers.VERIFIER_CALLBACKS[args["verifier"]](
 						args["network"],
 						SMTFilter,
@@ -98,10 +99,10 @@ module Cmd
 		
 		@time result = run_internal(args)
 
-		println("----------------------------------------------------------")
-		println("Status: "*string(result.status))
+		print_msg("----------------------------------------------------------")
+		print_msg("Status: "*string(result.status))
 		print("Saving result in "*string(args["output"])*"...")
-		save(args["output"],"result",result)
-		println(" Done")
+		save(args["output"],"result",result,"args",args)
+		print_msg(" Done")
 	end
 end

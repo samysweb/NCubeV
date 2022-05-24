@@ -5,6 +5,7 @@ module QueryGeneration
 	using MLStyle
 	using SymbolicUtils
 
+	using ..Util
 	using ..Config
 	using ..AST
 	using ..LP

@@ -23,7 +23,7 @@ function get_star_filter(ctx, variables, formula)
 			else
 				filtered_stars = filter(!=(nothing),map(star_concrete_filter(solver, variables),result.stars))
 				filtered_out = length(result.stars)-length(filtered_stars)
-				println("[SMT] SMT filtered out ",filtered_out," stars (out of ",length(result.stars),").")
+				print_msg("[SMT] SMT filtered out ",filtered_out," stars (out of ",length(result.stars),").")
 				if length(filtered_stars) == 0
 					return OlnnvResult(Safe, SmtFilterMeta(result.metadata,filtered_out), filtered_stars)
 				else
@@ -58,10 +58,10 @@ function star_concrete_filter(solver, variables)
 			try
 				result = smt_internal_check(solver)
 			catch e
-				throw(e)
+				print("[SMT] solver threw error: ",e)
 			end
 		end
-		println("[SMT] Filter took ",smt_time," seconds.")
+		print_msg("[SMT] Filter took ",smt_time," seconds.")
 		# @info "AFTER:"
 		# print(solver)
 		#@info "SMT Result: ", result

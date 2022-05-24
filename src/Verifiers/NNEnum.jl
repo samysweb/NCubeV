@@ -1,6 +1,7 @@
 module NNEnum
 	using PyCall
 
+	using ....Util
 	using ....AST
 	using ....VerifierInterface
 
@@ -132,11 +133,11 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 	end
 
 	function verify_enumerative(model, olnnv_query :: OlnnvQuery)
-		println("[NNENUM] Running nnenum now...")
+		print_msg("[NNENUM] Running nnenum now...")
 		lb = [b[1] for b in olnnv_query.bounds]
 		ub = [b[2] for b in olnnv_query.bounds]
-		println("[NNENUM] lb: ", lb)
-		println("[NNENUM] ub: ", ub)
+		print_msg("[NNENUM] lb: ", lb)
+		print_msg("[NNENUM] ub: ", ub)
 		res, _ = iterate(run_nnenum(model, lb, ub, olnnv_query.input_matrix, olnnv_query.input_bias, olnnv_query.disjunction, false))
 		if isnothing(res)
 			return OlnnvResult()
@@ -147,16 +148,16 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 
 	function verify_enumerative_filtered(model, SMTFilter, olnnv_query :: OlnnvQuery)
 		res = verify_enumerative(model, olnnv_query)
-		println("[NNENUM] Filtering result using SMT solver...")
+		print_msg("[NNENUM] Filtering result using SMT solver...")
 		return SMTFilter(res)
 	end
 
 	function verify_iterative_filtered(model, SMTFilter, olnnv_query :: OlnnvQuery)
-		println("[NNENUM] Running iterative nnenum...")
+		print_msg("[NNENUM] Running iterative nnenum...")
 		lb = [b[1] for b in olnnv_query.bounds]
 		ub = [b[2] for b in olnnv_query.bounds]
-		println("[NNENUM] lb: ", lb)
-		println("[NNENUM] ub: ", ub)
+		print_msg("[NNENUM] lb: ", lb)
+		print_msg("[NNENUM] ub: ", ub)
 		uncertain_stars = Star[]
 		for star in run_nnenum(model, lb, ub, olnnv_query.input_matrix, olnnv_query.input_bias, olnnv_query.disjunction, true)
 			res = SMTFilter(OlnnvResult(Unsafe, nothing, [Star(star)]))

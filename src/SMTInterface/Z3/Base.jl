@@ -41,18 +41,18 @@ function smt_internal_check(solver)
 	return res
 	# else
 	# 	wid = get_wid()
-	# 	println("[SMT] timeout of ", timeout/1000, " seconds")
+	# 	print_msg("[SMT] timeout of ", timeout/1000, " seconds")
 	# 	result = RemoteChannel(()->Channel{Any}(0))
 	# 	#remotecall(process_check, wid, result, solver)
 	# 	sendto(wid; result=result, solver=solver)
 	# 	call_future = remotecall(Main.eval, wid, quote
-	# 		println("[SMT] Test!!!!", solver, result)
+	# 		print_msg("[SMT] Test!!!!", solver, result)
 	# 		res = Z3.check(solver)
 	# 		print("[SMT] Worker found result: ", res)
 	# 		put!(result, res)
 	# 	end)
 	# 	# call_future = @spawnat wid eval(Main,quote
-	# 	# 	println("[SMT] Starting check...")
+	# 	# 	print_msg("[SMT] Starting check...")
 	# 	# 	# res = Z3.check(solver)
 	# 	# 	# print("[SMT] Worker found result: ", res)
 	# 	# 	# put!(result, res)
@@ -62,8 +62,8 @@ function smt_internal_check(solver)
 	# 		return res
 	# 	end, timeout/1000;pollint=1)
 	# 	if !isready(result)
-	# 		println("Computation at $wid will be terminated")
-	# 		println("Result: ", fetch(call_future))
+	# 		print_msg("Computation at $wid will be terminated")
+	# 		print_msg("Result: ", fetch(call_future))
 	# 		try
 	# 			rmprocs(wid;waitfor=1)
 	# 		catch e
@@ -71,7 +71,7 @@ function smt_internal_check(solver)
 	# 		end
 	# 		return Z3.unknown
 	# 	else
-	# 		println("Result: ", fetch(call_future))
+	# 		print_msg("Result: ", fetch(call_future))
 	# 		return take!(result)
 	# 	end
 	# end
@@ -90,12 +90,12 @@ function smt_internal_pop(solver)
 end
 
 function smt_internal_debug(solver, res)
-	println("[Z3] Found unsolved SMT: ")
-	println(to_smt2(solver,"unknown"))
-	println(reason_unknown(solver))
+	print_msg("[Z3] Found unsolved SMT: ")
+	print_msg(to_smt2(solver,"unknown"))
+	print_msg(reason_unknown(solver))
 	# params = get_param_descrs(solver)
 	# for i in 0:(size(params)-1)
 	# 	pname = name(params,i)
-	# 	println(pname,": ",documentation(params,pname))
+	# 	print_msg(pname,": ",documentation(params,pname))
 	# end
 end

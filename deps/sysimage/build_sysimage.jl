@@ -57,7 +57,9 @@ function create_callable()
 	mkdir(joinpath(dep_dir,"../../bin"))
 	mv(joinpath(dep_dir,"sys.so"),sysimg_path)
 	open(joinpath(dep_dir,"../../bin/SNNT"), "w") do f
-		println(f, "#!/usr/bin/julia -J$sysimg_path")
+		julia_path = readchomp(`which julia`)
+		println(f, "#!$julia_path -J$sysimg_path")
+		println(f, "Base.reinit_stdio()")
 		println(f, "using SNNT")
 		println(f, "SNNT.run_cmd(ARGS)")
 	end

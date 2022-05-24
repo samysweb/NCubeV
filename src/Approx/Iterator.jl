@@ -136,7 +136,7 @@ function generate_conjunction(approx :: ApproxNormalizedQueryPrototype{Approxima
 			push!(output_disjunction, (output_matrix, output_bias))
 		end
 	end
-	println("[APPROX] # Conjunctions over output: ", length(output_disjunction))
+	print_msg("[APPROX] # Conjunctions over output: ", length(output_disjunction))
 	bounds = map(b -> (b[1]-EPSILON, b[2]+EPSILON), bounds)
 	res =  OlnnvQuery(bounds, input_matrix, input_bias, output_disjunction)
 	return res

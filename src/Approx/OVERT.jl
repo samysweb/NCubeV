@@ -10,7 +10,7 @@ function construct_approx(nonlinear_query :: NormalizedQuery) :: Dict{ApproxQuer
 	approximations = Dict{ApproxQuery, IncompleteApproximation}()
 	bounds = [nonlinear_query.input_bounds;nonlinear_query.output_bounds]
 	for (approx_term, bound_types) in nonlinear_query.approx_queries
-		println("[APPROX] Generating expression for ", approx_term,"...")
+		print_msg("[APPROX] Generating expression for ", approx_term,"...")
 		approx_expr = to_expr(approx_term)
 		val_ranges = get_val_ranges(0, nonlinear_query.input_bounds)
 		val_ranges = union(val_ranges, get_val_ranges(length(val_ranges), nonlinear_query.output_bounds))

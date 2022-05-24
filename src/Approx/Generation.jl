@@ -2,19 +2,19 @@ function get_approx_normalized_query(initial_query :: NormalizedQuery, approx_ca
 	bounds = map(x->(x[1],x[end]), initial_query.input_bounds)
 	append!(bounds, map(x->(x[1],x[end]), initial_query.output_bounds))
 	ready_approximations = Dict{ApproxQuery, Approximation}()
-	println("[APPROX] Checking cache: ",[k for (k,v) in approx_cache])
+	print_msg("[APPROX] Checking cache: ",[k for (k,v) in approx_cache])
 	for (approx_term,all_bound_types) in initial_query.approx_queries
 		cur_bounds = generate_bounds(approx_term, bounds)
 		needed_bound_types = []
 		for bound_type in all_bound_types
 			cache_needle = ApproxCacheObject(ApproxQuery(bound_type, approx_term), cur_bounds)
 			if haskey(approx_cache,cache_needle)
-				println("[APPROX] Reusing approximation for query: ", cache_needle)
+				print_msg("[APPROX] Reusing approximation for query: ", cache_needle)
 				update_bounds(approx_term, bounds, approx_cache[cache_needle].bounds)
 				ready_approximations[cache_needle.query] = approx_cache[cache_needle]
 				delete!(initial_query.approx_queries, approx_term)
 			else
-				println("[APPROX] Not found: ", cache_needle)
+				print_msg("[APPROX] Not found: ", cache_needle)
 				push!(needed_bound_types, bound_type)
 			end
 		end
@@ -24,15 +24,15 @@ function get_approx_normalized_query(initial_query :: NormalizedQuery, approx_ca
 			initial_query.approx_queries[approx_term] = needed_bound_types
 		end
 	end
-	println("[APPROX] Constructing Approximation")
+	print_msg("[APPROX] Constructing Approximation")
 	incomplete_query=ApproxNormalizedQueryPrototype{IncompleteApproximation}(initial_query)
-	println("[APPROX] Resolving approximation")
+	print_msg("[APPROX] Resolving approximation")
 	for (approx_query, incomplete_approx) in incomplete_query.approximations
 		new_approx = resolve_approximation(incomplete_approx, approx_query.bound)
 		if Config.RIGOROUS_APPROXIMATIONS
 			verify_approximation(approx_query, new_approx)
 		else
-			println("[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))")
+			print_msg("[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))")
 		end
 		ready_approximations[approx_query] = new_approx
 		cur_bounds = generate_bounds(approx_query.term, bounds)

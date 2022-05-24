@@ -102,14 +102,14 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 			#	infeasible_combination = map(x -> -x[1], linear)
 			# TODO(steuber): How many checks here are the optimal choice?
 			if !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],linear)),ctx, variables)
-				#println("Z3 says it's infeasible")
+				#print_msg("Z3 says it's infeasible")
 				infeasible_combination = map(x -> -x[1], linear)
 			elseif Config.INCLUDE_APPROXIMATIONS
 				if !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
-					#println("Z3 says it's infeasible")
+					#print_msg("Z3 says it's infeasible")
 					infeasible_combination = map(x -> -x[1], nonlinear)
 				elseif !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],conjunction)),ctx, variables)
-					#println("Z3 says it's infeasible")
+					#print_msg("Z3 says it's infeasible")
 					infeasible_combination = map(x -> -x[1], conjunction)
 				end
 			end
@@ -124,10 +124,10 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 				continue
 			end
 			# input, mixed = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},conjunction), query)
-			# println("-------------------------------------------------------")
-			# println("Input: ", input)
-			# println("Mixed: ", mixed)
-			# println("-------------------------------------------------------")
+			# print_msg("-------------------------------------------------------")
+			# print_msg("Input: ", input)
+			# print_msg("Mixed: ", mixed)
+			# print_msg("-------------------------------------------------------")
 			new_conjunction = Tuple{Int64,Union{SemiLinearConstraint,LinearConstraint}}[]
 			# Resolve nonlinearities to semi-linear constraints
 			varnum = query.num_input_vars+query.num_output_vars
@@ -183,14 +183,14 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 				state.sat_instance,
 				map(x -> -x[1], input)
 			)
-		# println("Input: ", map(x -> AST.term_to_string(x[2]), input))
-		# println("#Mixed: ", length(disjunction))
-		# println("#Nonlinear",length(nonlinearities_set))
-		# println("---------------------")
+		# print_msg("Input: ", map(x -> AST.term_to_string(x[2]), input))
+		# print_msg("#Mixed: ", length(disjunction))
+		# print_msg("#Nonlinear",length(nonlinearities_set))
+		# print_msg("---------------------")
 		# for x in nonlinearities_set
-		# 	println(x.bound," -> ",AST.term_to_string(x.term))
+		# 	print_msg(x.bound," -> ",AST.term_to_string(x.term))
 		# end
-		# println("---------------------")
+		# print_msg("---------------------")
 		#@debug "Input:", map(x->x[2],input)
 		#@debug "Disjunction: ", disjunction
 		return NormalizedQuery(map(x->x[2],input), disjunction, nonlinearities_set, query), state
@@ -201,9 +201,9 @@ end
 
 # 		add_clause(skeleton.sat_instance, map(x->-x, solution))
 # 		solution = solve(skeleton.sat_instance)
-# 		println("--------------------------------------------------------------")
+# 		print_msg("--------------------------------------------------------------")
 # 	end
-# 	println("Found ", i, " solutions")
+# 	print_msg("Found ", i, " solutions")
 # end
 # for each solution s
 #   conjunction = get_atoms(s, skeleton) # tuples of variable number and atom

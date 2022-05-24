@@ -23,12 +23,12 @@ function prepare_for_olnnv(query :: Query)
 	return Query(olnnv_formula, variable_set)
 end
 
-function run_query(f, query :: Query, ctx, variables)
+function run_query(f, query :: Query, ctx, variables; backup=nothing,backup_meta=nothing)
 	approx_cache :: ApproxCache = ApproxCache()
-	println("[CTRL] Iterating over conjunctions...")
+	print_msg("[CTRL] Iterating over conjunctions...")
 	results = []
 	for current_conjunction in query
-		println("[CTRL] Considering conjunction with ",
+		print_msg("[CTRL] Considering conjunction with ",
 			length(current_conjunction.input_constraints.linear_constraints)+length(current_conjunction.input_constraints.semilinear_constraints),
 			" input constraints and a disjunction of size ",length(current_conjunction.mixed_constraints))
 		#@info "Input Constraints:",current_conjunction.input_constraints
@@ -41,6 +41,10 @@ function run_query(f, query :: Query, ctx, variables)
 		#@info "Initiating iterator"
 		for linear_query in approx_normalized
 			push!(results,f((linear_query, SMTFilter)))
+			if !isnothing(backup)
+				print_msg("[CTRL] Saving current state of verification...")
+				save(backup,"result",results,"backup_meta",backup_meta)
+			end
 		end
 	end
 	return results

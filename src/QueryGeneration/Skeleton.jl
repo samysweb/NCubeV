@@ -68,8 +68,8 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 			OverApprox(internal_formula) || UnderApprox(internal_formula) => begin
 				#@debug "OverApprox or UnderApprox => propagating from below"
 				# print("Encountered ")
-				# println(formula)
-				# println(internal)
+				# print_msg(formula)
+				# print_msg(internal)
 				return @match skeleton.variable_mapping[internal_formula.variable_number] begin
 					ConstraintVariable(internal) => begin
 						# May have already happened at other location...

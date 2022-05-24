@@ -1,6 +1,7 @@
 module SMTInterface
 	using MLStyle
 
+	using ..Util
 	using ..AST
 	using ..VerifierInterface
 	using ..Config
@@ -25,7 +26,7 @@ module SMTInterface
 			for c in constraints
 				additional = []
 				translated = ast2smt(c, variables, additional)
-				#println(translated)
+				#print_msg(translated)
 				smt_internal_add(s, translated)
 				for a in additional
 					smt_internal_add(s, a)
@@ -36,7 +37,7 @@ module SMTInterface
 		end
 		
 		if !smt_internal_is_sat(res) && !smt_internal_is_unsat(res)
-			println("[SMT] SMT returned status: ", res)
+			print_msg("[SMT] SMT returned status: ", res)
 		end
 		return !smt_internal_is_unsat(res)
 	end
