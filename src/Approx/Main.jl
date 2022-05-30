@@ -15,7 +15,7 @@ module Approx
 	using ..SMTInterface
 
 	# OVERT configuration
-	N = 1
+	N = 3
 	epsilon = 0.01
 	# Pwl bound epsilon
 	EPSILON=1e-3

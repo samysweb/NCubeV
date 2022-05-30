@@ -17,5 +17,9 @@ function init_pwl_bounds(conjunction :: PwlConjunction, approximations :: Dict{A
 	for i in 1: num_vars
 		sort!(conjunction.bounds[i])
 		conjunction.bounds[i] = filter_single_bound(conjunction.bounds[i])
+		if length(conjunction.bounds[i]) == 1
+			# Always need beginning and end of interval (even if interval is single number)
+			push!(conjunction.bounds[i], conjunction.bounds[i][1])
+		end
 	end
 end

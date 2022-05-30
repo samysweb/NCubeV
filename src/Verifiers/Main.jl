@@ -10,8 +10,6 @@ using ..VerifierInterface
 
 using .Registry
 
-import .NNEnum: verify as nnenum_verify
-
 function __init__()
 	register_verifier("NoVerify",no_verify)
 end

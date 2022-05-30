@@ -15,7 +15,7 @@ function construct_approx(nonlinear_query :: NormalizedQuery) :: Dict{ApproxQuer
 		val_ranges = get_val_ranges(0, nonlinear_query.input_bounds)
 		val_ranges = union(val_ranges, get_val_ranges(length(val_ranges), nonlinear_query.output_bounds))
 		#try
-		overapprox_result = overapprox(approx_expr, Dict(val_ranges), N=N, ϵ=epsilon)
+		overapprox_result = overapprox(approx_expr, Dict(val_ranges), N=N, ϵ=0.0)#epsilon)
 		for cur_bound in bound_types
 			formula = generate_bound_from_overapprox(overapprox_result.output,overapprox_result, cur_bound)
 			approximations[ApproxQuery(cur_bound, approx_term)] = IncompleteApproximation(deepcopy(bounds), from_expr(formula))

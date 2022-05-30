@@ -164,6 +164,7 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 			if res.status != Safe
 				filtered_star = res.stars[1]
 				if filtered_star.certain
+					print_msg("[SMT] Query returned UNSAFE: Found SMT checked counter-example.")
 					A = olnnv_query.input_matrix
 					b = olnnv_query.input_bias
 					M = Matrix{Float32}(undef,0,0)
@@ -176,7 +177,8 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 						bounds[i,3] = b[2]
 					end
 					counter_example = (Vector{Float32}(undef,0),Vector{Float32}(undef,0))
-					return OlnnvResult(res.status, res.metadata, Star[uncertain_stars;Star((A,b,M,c,bounds,counter_example))])
+					counter_star = Star((A,b,M,c,bounds,counter_example))
+					return OlnnvResult(res.status, res.metadata, Star[uncertain_stars;Star(counter_star, true)])
 				else
 					push!(uncertain_stars,filtered_star)
 				end

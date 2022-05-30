@@ -43,6 +43,7 @@ module LP
 		@objective(model, Min, 0)
 		optimize!(model)
 		status = termination_status(model)
+		@debug "Status: ", status
 		return status == MOI.INFEASIBLE
 	end
 end

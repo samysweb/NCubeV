@@ -51,6 +51,7 @@ struct ApproxNormalizedQueryPrototype{T <: ApproximationPrototype}
 		map(x->sort!(x),output_bounds)
 		input_bounds = filter_bounds(input_bounds)
 		output_bounds = filter_bounds(output_bounds)
+		@debug "Generating ApproxNormalizedQueryPrototype{Approximation} with bounds: ", input_bounds, output_bounds
 		return new{Approximation}(incomplete.nonlinear_query, input_bounds, output_bounds, approximations)
 	end
 end
