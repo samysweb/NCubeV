@@ -1,0 +1,9 @@
+"x1"=>(Input,1),
+"x2"=>(Input,2),
+"g1"=>(Input,3),
+"g2"=>(Input,4),
+"c1Fix"=>(Input,5),
+"c2Fix"=>(Input,6),
+"w"=>(Input,7),
+"ystr"=>(Output,1),
+"y1dir"=>(Output,2)
