@@ -2,6 +2,7 @@ module Cmd
 	using ArgParse
 	using JLD
 
+	using ..Approx
 	using ..Util
 	using ..Config
 	using ..AST
@@ -51,6 +52,10 @@ module Cmd
 			"--rigorous"
 				help = "Prove that approximation is correct using SMT Solver"
 				action = :store_true
+			"--approx"
+				help = "Number of approximation points to use"
+				arg_type = Int
+				default = 1
 		end
 		return parse_args(cmd_args,s)
 	end
@@ -64,6 +69,7 @@ module Cmd
 			print_msg("[CMD] Running in rigorous mode")
 			Config.set_rigorous_approximations(true)
 		end
+		set_approx_density(args["approx"])
 		print_msg("[CMD] Using SMT solver: ", args["smt"])
 		Config.set_smt_solver(args["smt"])
 		# Load fixed variables

@@ -31,6 +31,10 @@ module Approx
 
 	export ApproxCache
 	export get_approx_normalized_query
-	export ApproxNormalizedQueryPrototype, IncompleteApproximation, Approximation
+	export ApproxNormalizedQueryPrototype, IncompleteApproximation, Approximation, set_approx_density
+
+	function set_approx_density(Nparam)
+		global N = Nparam
+	end
 
 end
