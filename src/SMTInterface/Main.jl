@@ -21,7 +21,7 @@ module SMTInterface
 	include("StarFilter.jl")
 
 
-	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables)
+	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables;print_model=false)
 		res = smt_solver(ctx) do s
 			for c in constraints
 				additional = []
@@ -33,11 +33,16 @@ module SMTInterface
 				end
 			end
 			
-			return smt_internal_check(s)
-		end
-		
-		if !smt_internal_is_sat(res) && !smt_internal_is_unsat(res)
-			print_msg("[SMT] SMT returned status: ", res)
+			res = smt_internal_check(s)
+			if smt_internal_is_sat(res)
+				if print_model
+					smt_print_model(s)
+				end
+			elseif !smt_internal_is_unsat(res)
+				print_msg("[SMT] SMT returned status: ", res)
+			end
+
+			return res
 		end
 		return !smt_internal_is_unsat(res)
 	end

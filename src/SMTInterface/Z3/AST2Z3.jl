@@ -91,7 +91,10 @@ function ast2smt(q :: NormalizedQuery, variables, additional)
 		push!(conjunction, b[1] <= variables[num_inputs + i])
 		push!(conjunction, variables[num_inputs + i] <= b[end])
 	end
-	push!(conjunction, ast2smt(q.input_constraints, variables, additional))
+	encoded_input =ast2smt(q.input_constraints, variables, additional)
+	if !isnothing(encoded_input)
+		push!(conjunction, encoded_input)
+	end
 	disjuntion = []
 	for c in q.mixed_constraints
 		push!(disjuntion, ast2smt(c, variables, additional))
@@ -120,7 +123,11 @@ function ast2smt(pwl :: PwlConjunction, variables, additional)
 	for c in pwl.semilinear_constraints
 		push!(conjunction, ast2smt(c, variables, additional))
 	end
-	return Z3.and(conjunction...)
+	if length(conjunction)>0
+		return Z3.and(conjunction...)
+	else
+		return nothing
+	end
 end
 
 function ast2smt(semi :: SemiLinearConstraint, variables, additional)

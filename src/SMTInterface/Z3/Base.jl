@@ -99,3 +99,9 @@ function smt_internal_debug(solver, res)
 	# 	print_msg(pname,": ",documentation(params,pname))
 	# end
 end
+
+function smt_print_model(solver)
+	model = get_model(solver)
+	print_msg("[Z3] Model: ")
+	print_msg(model)
+end

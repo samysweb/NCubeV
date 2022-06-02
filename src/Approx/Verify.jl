@@ -1,5 +1,5 @@
 function verify_approximation(approx_query :: ApproxQuery, new_approx::Approximation)
-	prinln("[APPROX] Verifying correctness of approximation for term ", approx_query.term)
+	println("[APPROX] Verifying correctness of approximation for term ", approx_query.term)
 	num_vars = length(new_approx.bounds)
 	for b in bounds_iterator(new_approx.bounds)
 		linear_term = get_linear_term(b, new_approx)
@@ -11,27 +11,29 @@ function verify_approximation(approx_query :: ApproxQuery, new_approx::Approxima
 				c[i] = 1
 				push!(
 					constraints,
-					LinearConstraint(c,bhigh,true)
+					LinearConstraint(c,bhigh-EPSILON,true)
 				)
 				c = zeros(Rational{BigInt}, num_vars)
 				c[i] = -1
 				push!(
 					constraints,
-					LinearConstraint(c,-blow,true)
+					LinearConstraint(c,-blow-EPSILON,true)
 				)
 			end
 			# Search for opposite of what bound is supposed to be
-			# Lower => term < linear_term
-			# Upper => term > linear_term
+			# Lower => term < linear_term-eps
+			# Upper => term > linear_term+eps
+			eps = -epsilon
 			operator = AST.Less
 			if approx_query.bound == AST.Upper
 				operator = AST.Greater
+				eps = epsilon
 			end
 			push!(
 				constraints,
-				Atom(operator,approx_query.term,linear_term)
+				Atom(operator,approx_query.term,linear_term+eps)
 			)
-			if SMTInterface.nl_feasible(constraints, ctx, variables)
+			if SMTInterface.nl_feasible(constraints, ctx, variables;print_model=true)
 				@error "Found error in approximation of "*AST.term_to_string(approx_query.term)*": Linear Term "*AST.term_to_string(linear_term)*" may be below/above allowed threshold in interval "*string(b)
 			end
 		end
