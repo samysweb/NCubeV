@@ -28,6 +28,7 @@ import argparse
 import numpy as np
 import pickle
 import os
+import sys
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
@@ -115,8 +116,10 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 			print(f"[NNENUM] Found counter-example stars: {len(result.stars)}")
 			for star in result.stars:
 				counterex_stars.append(prepare_star(star))
+			sys.stdout.flush()
 			yield (result.result_str, result.total_stars, (cex, counterex_stars))
 		else:
+			sys.stdout.flush()
 			yield (result.result_str, result.total_stars, (None, []))
 """
 		global run_nnenum = py"run_nnenum"

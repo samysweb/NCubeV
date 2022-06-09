@@ -88,8 +88,9 @@ module Cmd
 		initial_query=load_query(args["formula"],fixed_vars,mapping)
 		print_msg("[CMD] Parsed initial query: ",initial_query)
 		prepared_query=prepare_for_olnnv(initial_query)
-		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=convert(Int32,args["smtfilter-timeout"])) do (ctx, variables)
-			return @time Control.run_query(prepared_query, ctx, variables, backup=args["output"],backup_meta=args) do (linear_term,SMTFilter)
+		smt_timeout = convert(Int32,args["smtfilter-timeout"])
+		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=smt_timeout) do (ctx, variables)
+			return @time Control.run_query(prepared_query, ctx, smt_timeout, variables, backup=args["output"],backup_meta=args) do (linear_term,SMTFilter)
 				#print_msg("Generated terms")
 				return Verifiers.VERIFIER_CALLBACKS[args["verifier"]](
 						args["network"],
