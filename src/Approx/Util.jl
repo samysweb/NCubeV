@@ -19,6 +19,27 @@ function evaluate(x :: Vector{Float64}, approximation :: IncompleteApproximation
 	end
 end
 
+function evaluate(x :: Vector{Float64}, approximation :: Approximation)
+	pos = 0
+	subst = Dict{Term,Term}()
+	for (i,x_i) in enumerate(x)
+		pos *= length(approximation.bounds[i])-1
+		@assert approximation.bounds[i][1] <= x_i && x_i <= approximation.bounds[i][length(approximation.bounds[i])]
+		j = get_position(approximation.bounds[i], x_i)
+		pos += j-1
+		subst[Variable("x"*string(i))] = TermNumber(x_i)
+	end
+	try
+		if approximation.linear_constraints[pos+1] isa LinearTerm
+			return dot(x, approximation.linear_constraints[pos+1].coefficients) + approximation.linear_constraints[pos+1].bias
+		else
+			return simplify(substitute(approximation.linear_constraints[pos+1], subst, fold=false)).value
+		end
+	catch e
+		@assert false
+	end
+end
+
 function get_linear_term_position(approximation :: ApproximationPrototype, bounds :: Vector{Tuple{Float64, Float64}})
 	pos = 0
 	for (i, b) in enumerate(bounds)

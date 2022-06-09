@@ -72,10 +72,14 @@ function find_minmax_generic(cur_term :: Term, check; direction=AST.Upper)
 				return (vars, argres, res_dir)
 			end
 		end
-		if vars && (operation(cur_term) == min || operation(cur_term) == max)
+		if (operation(cur_term) == min || operation(cur_term) == max)
 			#@debug "Found min/max: ", cur_term
 			#@debug "Flip bound: ", direction != Upper
-			return (true, cur_term, direction != Upper)
+			if vars
+				return (true, cur_term, direction != Upper)
+			else
+				return (vars, nothing, false)
+			end
 		else
 			return (vars, nothing, false)
 		end
@@ -85,6 +89,14 @@ function find_minmax_generic(cur_term :: Term, check; direction=AST.Upper)
 		else
 			return false, nothing, false
 		end
+	elseif cur_term isa LinearTerm
+		for (i,c) in enumerate(cur_term.coefficients)
+			# If cur_term mentions variable i and check fails...
+			if !iszero(c) && !check(Variable("x",nothing,i))
+				return false, nothing, false
+			end
+		end
+		return true, nothing, false
 	else
 		return true,nothing, false
 	end
@@ -220,11 +232,13 @@ function resolve_or_approx(op :: AST.Operation, bounds :: Vector{Tuple{Float64,F
 	(split_min, xg), (split_max, xf) = optimize_term(bounds, split_term)
 	#@debug "Bounds:"
 	#@debug bounds
-	if split_max <= 0.0
+	if split_max <= EPSILON
+		#print("No split at ",split_max)
 		#@debug "No need for approximation, returning "
 		#@debug term2
 		return term2
-	elseif split_min >= 0.0
+	elseif split_min >= -EPSILON
+		#print("No split at ",split_min)
 		#@debug "No need for approximation, returning "
 		#@debug term1
 		return term1
@@ -232,7 +246,11 @@ function resolve_or_approx(op :: AST.Operation, bounds :: Vector{Tuple{Float64,F
 		# Do approximation
 		if bound_direction == AST.Lower
 			#@debug "Generating lower bound"
-			return LinearTerm(0.5*term1.coefficients + 0.5*term2.coefficients, 0.5*term1.bias + 0.5*term2.bias)
+			range = split_max-split_min
+			@assert split_min < 0
+			# The share of it being larger 0 is the share of term1
+			mu = split_max / range
+			return LinearTerm(mu*term1.coefficients + (1-mu)*term2.coefficients, mu*term1.bias + (1-mu)*term2.bias)
 		else
 			#@debug "Generating upper bound"
 			fxf = dot(xf, term1.coefficients) + term1.bias
