@@ -1,0 +1,2 @@
+This experiment concerns the Repo version `59786514934d690811b568e103d89ce806605029`
+Command run was: `OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./bin/SNNT "test/parsing/examples/zeppelin/formula" "test/parsing/examples/zeppelin/fixed" "test/parsing/examples/zeppelin/mapping" "test/networks/zeppelin-2000000-64-64.onnx" "experiments/zeppelin-1/result.jld" 2> experiments/zeppelin-1/err.log > experiments/zeppelin-1/out.log`
