@@ -69,7 +69,8 @@ function star_concrete_filter(solver, variables, smt_timeout)
 			smt_internal_pop(solver)
 		 	return nothing
 		elseif smt_time > (smt_timeout/1000.0)
-		 	print_msg("[SMT] Filter took ",smt_time," seconds (TO).")
+		 	print_msg("[SMT] Filter took ",smt_time," seconds (pre TO).")
+			smt_internal_debug(solver, result)
 			smt_internal_pop(solver)
 		 	return Star(star,false)
 		end
@@ -87,10 +88,13 @@ function star_concrete_filter(solver, variables, smt_timeout)
 			end
 		end
 		not_known = isnothing(result) || (!smt_internal_is_unsat(result) && !smt_internal_is_sat(result))
-		print_msg("[SMT] Filter took ",smt_time," seconds (",((not_known) ? "TO" : "full"),").")
+		print_msg("[SMT] Filter took ",smt_time," seconds (",((not_known) ? "post TO" : "full"),").")
 		# @info "AFTER:"
 		# print(solver)
 		#@info "SMT Result: ", result
+		if not_known
+			smt_internal_debug(solver, result)
+		end
 		smt_internal_pop(solver)
 		# @info "AFTER POP:"
 		# print(solver)

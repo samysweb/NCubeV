@@ -2,10 +2,10 @@
 function ast2smt(f :: CompositeFormula, variables, additional)
 	arguments = map(x -> ast2smt(x, variables, additional), f.args)
 	return @match f.connective begin
-		Not => return Z3.not(arguments[1])
-		And => return Z3.and(arguments...)
-		Or => return Z3.or(arguments...)
-		Implies => return Z3.implies(arguments[1],arguments[2])
+		Not => return PY_DREAL.Not(arguments[1])
+		And => return PY_DREAL.And(arguments...)
+		Or => return PY_DREAL.Or(arguments...)
+		Implies => return PY_DREAL.Implies(arguments[1],arguments[2])
 	end
 end
 #TODO(steuber): FLOAT INCORRECTNESS
@@ -40,29 +40,29 @@ function ast2smt(f :: Atom, variables, additional)
 		LessEq => return termLeft <= termRight
 		Greater => return termLeft > termRight
 		GreaterEq => return termLeft >= termRight
-		Eq => return termLeft == termRight
-		Neq => return termLeft != termRight
+		Eq => return termLeft.__eq__(termRight)
+		Neq => return termLeft.__ne__(termRight)
 	end
 end
 function ast2smt(f :: CompositeTerm, variables, additional)
 	arguments = map(x -> ast2smt(x, variables, additional), f.args)
-	ctx = Z3.ctx(variables[1])
+	ctx = variables[1].ctx
 	return @match f.operation begin
-		Add => return +(arguments...)
-		Sub => return -(arguments...)
-		Mul => return *(arguments...)
-		Div => return /(arguments...)
+		Add => return foldl(+,arguments)
+		Sub => return foldl(+,arguments)
+		Mul => return foldl(*,arguments)
+		Div => return foldl(/,arguments)
 		Pow => begin
 			@assert length(arguments) == 2
-			exp = arguments[2]
-			if exp.den == 1
-				return ^(arguments...)
+			exp = arguments[2].as_fraction()
+			if exp.denominator == 1
+				return foldl(^,arguments)
 			else
-				exp = 1//exp
-				@assert exp.den == 1
-				new_var = smt_internal_variable(ctx, "pow"*string(hash(f)))
-				push!(additional, Z3.and(
-					^(new_var, exp) == (arguments[1]),
+				exp = 1/exp
+				@assert exp.denominator == 1
+				new_var = smt_internal_variable((nothing,ctx), "pow"*string(hash(f)))
+				push!(additional, PY_DREAL.And(
+					new_var^exp.__eq__(arguments[1]),
 					0 <= new_var
 				))
 				return new_var
@@ -77,5 +77,6 @@ end
 function ast2smt(n :: TermNumber, variables, additional)
 	#value32 = Float32(n.value)
 	#return rationalize(value32)
-	return rationalize(Int32,Float32(n.value))
+	num =  rationalize(Int32,Float32(n.value))
+	return num
 end

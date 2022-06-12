@@ -12,11 +12,14 @@ module SMTInterface
 		include("Z3/Main.jl")
 	elseif Config.SMT_SOLVER == "CVC5"
 		include("CVC5/Main.jl")
+	#elseif Config.SMT_SOLVER == "dreal"
+	#	include("dreal/Main.jl")
 	else
 		error("Unknown SMT solver: " + Config.SMT_SOLVER)
 	end
 
 
+	include("AST2SMT.jl")
 	include("Base.jl")
 	include("StarFilter.jl")
 

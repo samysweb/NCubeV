@@ -108,6 +108,7 @@ module Cmd
 
 		print_msg("----------------------------------------------------------")
 		print_msg("Status: "*string(result.status))
+		print_msg("# Unsafe Stars: "*string(length(result.stars)))
 		print("Saving result in "*string(args["output"])*"...")
 		save(args["output"],"result",result,"args",args)
 		print_msg(" Done")

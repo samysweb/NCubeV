@@ -135,9 +135,9 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 			for cur_f  in conjunction
 				if cur_f[2] isa ApproxNode
 					if Config.INCLUDE_APPROXIMATIONS
-						#TODO(steuber): Do we *ever* have UnderApprox? I feel like we might be able to simplify this...
 						@assert cur_f[2].formula.right isa TermNumber
-						approx_direction = (cur_f[2] isa OverApprox) ? Lower : Upper
+						#TODO(steuber): Remove the whole OverApprox/UnderApprox node thing...
+						approx_direction = Lower # Old/Wrong: (cur_f[2] isa OverApprox) ? Lower : Lower
 						# Generate term which has all nonlinearities replaced by Nonlinear Substitutions
 						approx_queries, semilinear = handle_nonlinearity(approx_direction, cur_f[2].formula.left)
 						nonlinearities_set = union(nonlinearities_set, approx_queries)
