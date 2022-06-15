@@ -62,7 +62,7 @@ module Cmd
 	
 	function run_internal(args)
 		if args["linear"]
-			prinln("[CMD] Running without any non-linear constraint approximations")
+			println("[CMD] Running without any non-linear constraint approximations")
 			Config.set_include_approximations(false)
 		end
 		if args["rigorous"]
