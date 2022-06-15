@@ -36,7 +36,11 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 		#for mixed in current_conjunction.mixed_constraints
 		#	@info mixed
 		#end
-		SMTFilter = SMTInterface.get_star_filter(ctx, variables, current_conjunction, smt_timeout)
+		if Config.INCLUDE_APPROXIMATIONS
+			SMTFilter = SMTInterface.get_star_filter(ctx, variables, current_conjunction, smt_timeout)
+		else
+			SMTFilter = SMTInterface.get_star_filter(ctx, variables, query.formula, smt_timeout)
+		end
 		approx_normalized :: ApproxNormalizedQueryPrototype{Approximation} = get_approx_normalized_query(current_conjunction, approx_cache)
 		#@info "Initiating iterator"
 		for linear_query in approx_normalized
