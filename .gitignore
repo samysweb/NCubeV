@@ -2,3 +2,4 @@
 *.mem-backup
 bin/
 *.so
+**/.ipynb_checkpoints
