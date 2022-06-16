@@ -1,0 +1,2081 @@
+[runlim] version:		1.10
+[runlim] time limit:		311040000 seconds
+[runlim] real time limit:	311040000 seconds
+[runlim] space limit:		7976 MB
+[runlim] argv[0]:		./bin/SNNT
+[runlim] argv[1]:		--linear
+[runlim] argv[2]:		--rigorous
+[runlim] argv[3]:		--smtfilter-timeout=10000
+[runlim] argv[4]:		test/parsing/examples/acc/formula
+[runlim] argv[5]:		test/parsing/examples/acc/fixed
+[runlim] argv[6]:		test/parsing/examples/acc/mapping
+[runlim] argv[7]:		test/networks/acc-3000000-64-64.onnx
+[runlim] argv[8]:		experiments/acc-3000000-64-64/result-linear.jld
+[runlim] start:			Wed Jun 15 22:44:48 2022
+[runlim] main pid:		19245
+[runlim] sample:		3.1 time, 10.5 real, 589.4 MB
+[CMD] Running without any non-linear constraint approximations
+[CMD] Running in rigorous mode
+[CMD] Using SMT solver: Z3
+[runlim] sample:		8.8 time, 20.5 real, 1215.0 MB
+[CMD] Parsed initial query: SNNT.AST.Query((((-1.0*x1<=0//1&1.0*x1<=100//1&-1.0*x2<=200//1&1.0*x2<=200//1&-1.0*x3<=100//1&1.0*x3<=100//1)&(-1.0*x1<0//1&((-1.0*rPos)+(0.005*(rVel^2.0)))<=0.0))->((1.0*x3<=100//1&-1.0*x3<=-100//1)|(-1.0*x3<=100//1&1.0*x3<100//1&(1.0*x3<0//1|-1.0*x3<0//1)&(((1.0*x20.1*x3<0//1|-1.0*x2<0//1)&((-0.1*rVel)+(-1.0*rPos)+(5.0e-5*(rAccpost^2.0))+(-0.0050000004*rAccpost)+(0.005*(rVel^2.0))+(0.0009999999*rAccpost*rVel))<0.0)|(((-0.1*rVel)+(-1.0*rPos)+(5.0e-5*(rAccpost^2.0))+(-0.0050000004*rAccpost)+(0.005*(rVel^2.0))+(0.0009999999*rAccpost*rVel))<0.0&((0.5*(rVel^2.0))+(-1.0*rAccpost*rPos))<0.0)))|(((-0.1*rVel)+(-1.0*rPos)+(0.005*(rVel^2.0)))<0.0&(1.0*x3<=0//1&-1.0*x3<=0//1)))), Set(SNNT.AST.Variable[rAccpost, rVel, rPos]), 2, 1)
+[CTRL] Iterating over conjunctions...
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 5
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[APPROX] # Conjunctions over output: 5
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, -200.0]
+[NNENUM] ub: [100.0, 0.0]
+[runlim] sample:		18.1 time, 30.5 real, 1244.1 MB
+[NNENUM] Spec list length:  5
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 1/6  (3.125%) CEs: 4 ETA: 5.3 sec (expected 32 stars)   
+(0.3 sec) Q: 0, Sets: 8/17  (25.098%) CEs: 11 ETA: 0.8 sec (expected 32 stars)   (0.4 sec) Q: 0, Sets: 17/27  (25.165%) CEs: 20 ETA: 1.2 sec (expected 68 stars)   
+(0.5 sec) Q: 0, Sets: 26/36  (25.452%) CEs: 28 ETA: 1.4 sec (expected 102 stars)   (0.6 sec) Q: 0, Sets: 34/44  (25.522%) CEs: 36 ETA: 1.7 sec (expected 133 stars)   (0.7 sec) Q: 0, Sets: 43/51  (25.562%) CEs: 44 ETA: 2.1 sec (expected 168 stars)   (0.8 sec) Q: 0, Sets: 50/59  (25.647%) CEs: 51 ETA: 2.3 sec (expected 195 stars)   
+(0.9 sec) Q: 0, Sets: 58/66  (25.879%) CEs: 58 ETA: 2.6 sec (expected 224 stars)   (1.0 sec) Q: 0, Sets: 67/74  (26.904%) CEs: 67 ETA: 2.8 sec (expected 249 stars)   (1.1 sec) Q: 0, Sets: 76/81  (28.027%) CEs: 76 ETA: 2.9 sec (expected 271 stars)   (1.2 sec) Q: 0, Sets: 83/90  (28.467%) CEs: 83 ETA: 3.1 sec (expected 292 stars)   (1.3 sec) Q: 0, Sets: 87/95  (28.955%) CEs: 92 ETA: 3.3 sec (expected 300 stars)   (1.4 sec) Q: 0, Sets: 96/101  (30.078%) CEs: 99 ETA: 3.3 sec (expected 319 stars)   (1.5 sec) Q: 0, Sets: 104/111  (35.229%) CEs: 108 ETA: 2.8 sec (expected 295 stars)   (1.6 sec) Q: 0, Sets: 114/123  (35.553%) CEs: 117 ETA: 3.0 sec (expected 321 stars)   
+(1.8 sec) Q: 0, Sets: 123/131  (35.66%) CEs: 125 ETA: 3.2 sec (expected 345 stars)   (1.9 sec) Q: 0, Sets: 130/137  (35.684%) CEs: 132 ETA: 3.4 sec (expected 364 stars)   (2.0 sec) Q: 0, Sets: 139/143  (35.742%) CEs: 140 ETA: 3.5 sec (expected 389 stars)   (2.1 sec) Q: 0, Sets: 147/151  (35.889%) CEs: 148 ETA: 3.7 sec (expected 410 stars)   (2.2 sec) Q: 0, Sets: 155/160  (36.133%) CEs: 155 ETA: 3.8 sec (expected 429 stars)   (2.3 sec) Q: 0, Sets: 165/170  (36.279%) CEs: 165 ETA: 4.0 sec (expected 455 stars)   (2.4 sec) Q: 0, Sets: 169/176  (36.365%) CEs: 172 ETA: 4.2 sec (expected 465 stars)   (2.5 sec) Q: 0, Sets: 177/183  (36.45%) CEs: 179 ETA: 4.3 sec (expected 486 stars)   (2.6 sec) Q: 0, Sets: 183/188  (36.816%) CEs: 185 ETA: 4.4 sec (expected 497 stars)   (2.7 sec) Q: 0, Sets: 190/192  (37.5%) CEs: 192 ETA: 4.5 sec (expected 507 stars)   (2.8 sec) Q: 0, Sets: 197/203  (40.039%) CEs: 199 ETA: 4.2 sec (expected 492 stars)   (2.9 sec) Q: 0, Sets: 205/209  (42.969%) CEs: 207 ETA: 3.9 sec (expected 477 stars)   (3.0 sec) Q: 0, Sets: 214/217  (49.414%) CEs: 216 ETA: 3.1 sec (expected 433 stars)   (3.1 sec) Q: 0, Sets: 222/226  (53.125%) CEs: 224 ETA: 2.8 sec (expected 418 stars)   (3.2 sec) Q: 0, Sets: 230/234  (55.859%) CEs: 231 ETA: 2.5 sec (expected 412 stars)   (3.3 sec) Q: 0, Sets: 238/243  (63.281%) CEs: 239 ETA: 1.9 sec (expected 376 stars)   
+(3.4 sec) Q: 0, Sets: 246/251  (64.746%) CEs: 246 ETA: 1.9 sec (expected 380 stars)   (3.5 sec) Q: 0, Sets: 253/255  (68.75%) CEs: 253 ETA: 1.6 sec (expected 368 stars)   (3.7 sec) Q: 0, Sets: 256/258  (71.875%) CEs: 258 ETA: 1.4 sec (expected 356 stars)   (3.8 sec) Q: 0, Sets: 263/265  (75.0%) CEs: 263 ETA: 1.3 sec (expected 351 stars)   (3.9 sec) Q: 0, Sets: 270/276  (75.586%) CEs: 270 ETA: 1.2 sec (expected 357 stars)   (4.0 sec) Q: 0, Sets: 278/289  (75.792%) CEs: 278 ETA: 1.3 sec (expected 367 stars)   (4.1 sec) Q: 0, Sets: 287/299  (75.801%) CEs: 287 ETA: 1.3 sec (expected 379 stars)   (4.2 sec) Q: 0, Sets: 297/307  (75.839%) CEs: 297 ETA: 1.3 sec (expected 392 stars)   (4.3 sec) Q: 0, Sets: 301/310  (75.842%) CEs: 303 ETA: 1.4 sec (expected 397 stars)   (4.4 sec) Q: 0, Sets: 308/319  (75.845%) CEs: 311 ETA: 1.4 sec (expected 406 stars)   (4.5 sec) Q: 0, Sets: 317/328  (75.846%) CEs: 320 ETA: 1.4 sec (expected 418 stars)   (4.6 sec) Q: 0, Sets: 325/334  (75.853%) CEs: 329 ETA: 1.5 sec (expected 428 stars)   (4.7 sec) Q: 0, Sets: 334/343  (75.866%) CEs: 337 ETA: 1.5 sec (expected 440 stars)   (4.8 sec) Q: 0, Sets: 345/355  (75.894%) CEs: 345 ETA: 1.5 sec (expected 455 stars)   (4.9 sec) Q: 0, Sets: 350/358  (75.903%) CEs: 352 ETA: 1.6 sec (expected 461 stars)   (5.0 sec) Q: 0, Sets: 356/366  (75.909%) CEs: 358 ETA: 1.6 sec (expected 469 stars)   (5.1 sec) Q: 0, Sets: 364/373  (75.923%) CEs: 366 ETA: 1.6 sec (expected 479 stars)   (5.3 sec) Q: 0, Sets: 372/381  (75.943%) CEs: 374 ETA: 1.7 sec (expected 490 stars)   (5.4 sec) Q: 0, Sets: 380/389  (75.957%) CEs: 382 ETA: 1.7 sec (expected 500 stars)   (5.5 sec) Q: 0, Sets: 388/396  (75.967%) CEs: 390 ETA: 1.7 sec (expected 511 stars)   (5.6 sec) Q: 0, Sets: 397/403  (76.27%) CEs: 399 ETA: 1.7 sec (expected 521 stars)   (5.7 sec) Q: 0, Sets: 405/409  (77.344%) CEs: 406 ETA: 1.7 sec (expected 524 stars)   (5.8 sec) Q: 0, Sets: 414/422  (77.463%) CEs: 415 ETA: 1.7 sec (expected 534 stars)   (5.9 sec) Q: 0, Sets: 422/430  (77.505%) CEs: 423 ETA: 1.7 sec (expected 544 stars)   (6.0 sec) Q: 0, Sets: 431/440  (77.517%) CEs: 432 ETA: 1.7 sec (expected 556 stars)   (6.1 sec) Q: 0, Sets: 440/447  (77.53%) CEs: 441 ETA: 1.8 sec (expected 568 stars)   (6.2 sec) Q: 0, Sets: 448/455  (77.795%) CEs: 449 ETA: 1.8 sec (expected 576 stars)   (6.3 sec) Q: 0, Sets: 457/464  (78.036%) CEs: 457 ETA: 1.8 sec (expected 586 stars)   (6.4 sec) Q: 0, Sets: 462/468  (78.049%) CEs: 466 ETA: 1.8 sec (expected 592 stars)   (6.5 sec) Q: 0, Sets: 472/480  (78.198%) CEs: 472 ETA: 1.8 sec (expected 604 stars)   (6.6 sec) Q: 0, Sets: 481/488  (78.394%) CEs: 481 ETA: 1.8 sec (expected 614 stars)   (6.8 sec) Q: 0, Sets: 486/493  (78.442%) CEs: 490 ETA: 1.9 sec (expected 620 stars)   
+(6.9 sec) Q: 0, Sets: 495/502  (78.506%) CEs: 498 ETA: 1.9 sec (expected 631 stars)   (7.0 sec) Q: 0, Sets: 504/510  (78.76%) CEs: 506 ETA: 1.9 sec (expected 640 stars)   (7.1 sec) Q: 0, Sets: 513/519  (79.053%) CEs: 515 ETA: 1.9 sec (expected 649 stars)   (7.2 sec) Q: 0, Sets: 523/526  (80.469%) CEs: 525 ETA: 1.7 sec (expected 650 stars)   (7.3 sec) Q: 0, Sets: 531/542  (81.261%) CEs: 533 ETA: 1.7 sec (expected 653 stars)   (7.4 sec) Q: 0, Sets: 542/551  (81.274%) CEs: 543 ETA: 1.7 sec (expected 667 stars)   (7.5 sec) Q: 0, Sets: 546/557  (81.303%) CEs: 550 ETA: 1.7 sec (expected 672 stars)   (7.6 sec) Q: 0, Sets: 556/565  (81.339%) CEs: 558 ETA: 1.7 sec (expected 684 stars)   (7.7 sec) Q: 0, Sets: 563/575  (81.35%) CEs: 565 ETA: 1.8 sec (expected 692 stars)   (7.8 sec) Q: 0, Sets: 572/584  (81.361%) CEs: 573 ETA: 1.8 sec (expected 703 stars)   (7.9 sec) Q: 0, Sets: 581/590  (81.366%) CEs: 581 ETA: 1.8 sec (expected 714 stars)   (8.0 sec) Q: 0, Sets: 585/594  (81.381%) CEs: 589 ETA: 1.8 sec (expected 719 stars)   (8.1 sec) Q: 0, Sets: 594/601  (81.421%) CEs: 596 ETA: 1.8 sec (expected 730 stars)   (8.2 sec) Q: 0, Sets: 602/611  (81.467%) CEs: 606 ETA: 1.9 sec (expected 739 stars)   (8.3 sec) Q: 0, Sets: 612/621  (81.525%) CEs: 615 ETA: 1.9 sec (expected 751 stars)   (8.4 sec) Q: 0, Sets: 620/626  (81.738%) CEs: 623 ETA: 1.9 sec (expected 759 stars)   (8.5 sec) Q: 0, Sets: 630/636  (82.031%) CEs: 633 ETA: 1.9 sec (expected 768 stars)   (8.6 sec) Q: 0, Sets: 638/642  (82.715%) CEs: 641 ETA: 1.8 sec (expected 771 stars)   (8.7 sec) Q: 0, Sets: 647/654  (82.764%) CEs: 650 ETA: 1.8 sec (expected 782 stars)   (8.8 sec) Q: 0, Sets: 656/660  (82.788%) CEs: 658 ETA: 1.8 sec (expected 792 stars)   (8.9 sec) Q: 0, Sets: 665/673  (82.792%) CEs: 667 ETA: 1.9 sec (expected 803 stars)   (9.0 sec) Q: 0, Sets: 674/678  (82.8%) CEs: 675 ETA: 1.9 sec (expected 814 stars)   (9.2 sec) Q: 0, Sets: 681/687  (82.803%) CEs: 683 ETA: 1.9 sec (expected 822 stars)   (9.3 sec) Q: 0, Sets: 686/691  (82.808%) CEs: 688 ETA: 1.9 sec (expected 828 stars)   (9.4 sec) Q: 0, Sets: 691/698  (83.228%) CEs: 693 ETA: 1.9 sec (expected 830 stars)   (9.5 sec) Q: 0, Sets: 696/705  (83.594%) CEs: 698 ETA: 1.9 sec (expected 833 stars)   (9.6 sec) Q: 0, Sets: 703/709  (83.691%) CEs: 705 ETA: 1.9 sec (expected 840 stars)   (9.7 sec) Q: 0, Sets: 712/718  (83.728%) CEs: 713 ETA: 1.9 sec (expected 850 stars)   (9.8 sec) Q: 0, Sets: 720/725  (83.765%) CEs: 721 ETA: 1.9 sec (expected 860 stars)   (9.9 sec) Q: 0, Sets: 728/734  (83.85%) CEs: 729 ETA: 1.9 sec (expected 868 stars)   (10.0 sec) Q: 0, Sets: 735/739  (83.936%) CEs: 735 ETA: 1.9 sec (expected 876 stars)   (10.1 sec) Q: 0, Sets: 739/745  (83.951%) CEs: 743 ETA: 1.9 sec (expected 880 stars)   (10.2 sec) Q: 0, Sets: 748/751  (83.984%) CEs: 750 ETA: 1.9 sec (expected 891 stars)   (10.3 sec) Q: 0, Sets: 757/759  (87.5%) CEs: 759 ETA: 1.5 sec (expected 865 stars)   (10.4 sec) Q: 0, Sets: 763/771  (93.848%) CEs: 765 ETA: 0.7 sec (expected 813 stars)   (10.5 sec) Q: 0, Sets: 772/778  (94.019%) CEs: 774 ETA: 0.7 sec (expected 821 stars)   (10.6 sec) Q: 0, Sets: 782/787  (94.385%) CEs: 783 ETA: 0.6 sec (expected 829 stars)   (10.7 sec) Q: 0, Sets: 791/796  (96.875%) CEs: 792 ETA: 0.3 sec (expected 817 stars)   (10.8 sec) Q: 0, Sets: 801/803  (99.023%) CEs: 801 ETA: 0.1 sec (expected 809 stars)   (10.9 sec) Q: 0, Sets: 805/808  (99.316%) CEs: 809 ETA: 0.1 sec (expected 811 stars)   (11.0 sec) Q: 0, Sets: 814/816  (99.609%) CEs: 817 ETA: 0.0 sec (expected 817 stars)   (11.1 sec) Q: 0, Sets: 822/826  (99.707%) CEs: 826 ETA: 0.0 sec (expected 824 stars)   (11.3 sec) Q: 0, Sets: 831/834  (99.829%) CEs: 834 ETA: 0.0 sec (expected 832 stars)   (11.4 sec) Q: 0, Sets: 842/842  (100.0%) CEs: 842 ETA: 0.0 sec (expected 842 stars)   
+Total Stars: 842 (842 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 11.4 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 12532
+Total Num Lps: 12532
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [0.0, 0.0]
+Output: [2.7605559825897217]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7fd173043700>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 842
+[NNENUM] Filtering result using SMT solver...
+[SMT] Filter took 0.020817372 seconds (pre).
+[SMT] Filter took 0.026703123 seconds (pre).
+[SMT] Filter took 0.009191267 seconds (pre).
+[SMT] Filter took 0.030710281 seconds (full).
+[SMT] Filter took 0.012126408 seconds (pre).
+[SMT] Filter took 0.004917446 seconds (pre).
+[SMT] Filter took 0.00635047 seconds (pre).
+[SMT] Filter took 0.006178189 seconds (pre).
+[SMT] Filter took 0.032037269 seconds (full).
+[SMT] Filter took 0.041714282 seconds (full).
+[SMT] Filter took 0.036583883 seconds (full).
+[SMT] Filter took 0.026352577999999998 seconds (full).
+[SMT] Filter took 0.026677027 seconds (full).
+[SMT] Filter took 0.030409287 seconds (full).
+[SMT] Filter took 0.033145047999999996 seconds (full).
+[SMT] Filter took 0.021843561 seconds (full).
+[SMT] Filter took 0.025983502000000002 seconds (full).
+[SMT] Filter took 0.029585347999999997 seconds (full).
+[SMT] Filter took 0.02839352 seconds (full).
+[SMT] Filter took 0.025630082999999998 seconds (full).
+[SMT] Filter took 0.034607126 seconds (full).
+[SMT] Filter took 0.043016548 seconds (full).
+[SMT] Filter took 0.006147942 seconds (pre).
+[SMT] Filter took 0.009066747 seconds (pre).
+[SMT] Filter took 0.009487155 seconds (pre).
+[SMT] Filter took 0.007532301 seconds (pre).
+[SMT] Filter took 0.006877816 seconds (pre).
+[SMT] Filter took 0.005143312 seconds (pre).
+[SMT] Filter took 0.00855614 seconds (pre).
+[SMT] Filter took 0.012568449 seconds (pre).
+[SMT] Filter took 0.033853255 seconds (full).
+[SMT] Filter took 0.033043713 seconds (full).
+[SMT] Filter took 0.027911476999999997 seconds (full).
+[SMT] Filter took 0.033722922 seconds (full).
+[SMT] Filter took 0.045956563000000006 seconds (full).
+[SMT] Filter took 0.038146002 seconds (full).
+[SMT] Filter took 0.050733351 seconds (full).
+[SMT] Filter took 0.031645927 seconds (full).
+[SMT] Filter took 0.030127404000000003 seconds (full).
+[SMT] Filter took 0.033088873 seconds (full).
+[SMT] Filter took 0.025978074 seconds (full).
+[SMT] Filter took 0.010566618 seconds (pre).
+[SMT] Filter took 0.021678958999999998 seconds (full).
+[SMT] Filter took 0.008591768 seconds (pre).
+[SMT] Filter took 0.040091944000000004 seconds (full).
+[SMT] Filter took 0.040131791 seconds (full).
+[SMT] Filter took 0.031245594 seconds (full).
+[SMT] Filter took 0.020951198 seconds (full).
+[SMT] Filter took 0.033108978 seconds (full).
+[SMT] Filter took 0.030667759 seconds (full).
+[SMT] Filter took 0.029769545 seconds (full).
+[SMT] Filter took 0.020162677 seconds (full).
+[SMT] Filter took 0.029162214 seconds (full).
+[SMT] Filter took 0.03285538 seconds (full).
+[SMT] Filter took 0.038772258 seconds (full).
+[SMT] Filter took 0.027159793 seconds (full).
+[SMT] Filter took 0.020395815 seconds (full).
+[SMT] Filter took 0.006608442 seconds (pre).
+[SMT] Filter took 0.006201198 seconds (pre).
+[SMT] Filter took 0.007221436 seconds (pre).
+[SMT] Filter took 0.032129361 seconds (full).
+[SMT] Filter took 0.032719186 seconds (full).
+[SMT] Filter took 0.026887665999999998 seconds (full).
+[SMT] Filter took 0.017341551 seconds (full).
+[SMT] Filter took 0.006696789 seconds (pre).
+[SMT] Filter took 0.009989412 seconds (pre).
+[SMT] Filter took 0.021297785 seconds (full).
+[SMT] Filter took 0.023214618 seconds (full).
+[SMT] Filter took 0.018454878 seconds (full).
+[SMT] Filter took 0.024316939000000003 seconds (full).
+[SMT] Filter took 0.006747633 seconds (pre).
+[SMT] Filter took 0.027425056000000003 seconds (full).
+[SMT] Filter took 0.021199397000000002 seconds (full).
+[SMT] Filter took 0.008018181 seconds (pre).
+[SMT] Filter took 0.028964368 seconds (full).
+[SMT] Filter took 0.025258169999999996 seconds (full).
+[SMT] Filter took 0.019334379999999998 seconds (full).
+[SMT] Filter took 0.023154346 seconds (full).
+[SMT] Filter took 0.01867419 seconds (full).
+[SMT] Filter took 0.034136594 seconds (full).
+[SMT] Filter took 0.032314252 seconds (full).
+[SMT] Filter took 0.030189193 seconds (full).
+[SMT] Filter took 0.027632818 seconds (full).
+[SMT] Filter took 0.026724284 seconds (full).
+[SMT] Filter took 0.024415273 seconds (full).
+[SMT] Filter took 0.032290243 seconds (full).
+[SMT] Filter took 0.007399128 seconds (pre).
+[SMT] Filter took 0.005543834 seconds (pre).
+[SMT] Filter took 0.035904959 seconds (full).
+[SMT] Filter took 0.023927558 seconds (full).
+[SMT] Filter took 0.006726677 seconds (pre).
+[SMT] Filter took 0.008992859 seconds (pre).
+[SMT] Filter took 0.019979501 seconds (full).
+[SMT] Filter took 0.028473031000000003 seconds (full).
+[SMT] Filter took 0.023672836 seconds (full).
+[SMT] Filter took 0.023826846000000002 seconds (full).
+[SMT] Filter took 0.024206537 seconds (full).
+[SMT] Filter took 0.018814638 seconds (full).
+[SMT] Filter took 0.015911848 seconds (full).
+[SMT] Filter took 0.021251392 seconds (full).
+[SMT] Filter took 0.028305274999999998 seconds (full).
+[SMT] Filter took 0.021954356 seconds (full).
+[SMT] Filter took 0.007353962 seconds (pre).
+[SMT] Filter took 0.006204321 seconds (pre).
+[SMT] Filter took 0.007228407 seconds (pre).
+[SMT] Filter took 0.008558174 seconds (pre).
+[SMT] Filter took 0.033445666 seconds (full).
+[SMT] Filter took 0.027660014999999996 seconds (full).
+[SMT] Filter took 0.023364121 seconds (full).
+[SMT] Filter took 0.040076922 seconds (full).
+[SMT] Filter took 0.029017574999999997 seconds (full).
+[SMT] Filter took 0.024177776999999998 seconds (full).
+[SMT] Filter took 0.025595549000000002 seconds (full).
+[SMT] Filter took 0.007090516 seconds (pre).
+[SMT] Filter took 0.02395739 seconds (full).
+[SMT] Filter took 0.00861429 seconds (pre).
+[SMT] Filter took 0.034474927 seconds (full).
+[SMT] Filter took 0.034558859 seconds (full).
+[SMT] Filter took 0.025716693000000002 seconds (full).
+[SMT] Filter took 0.032489500000000004 seconds (full).
+[SMT] Filter took 0.027635062 seconds (full).
+[SMT] Filter took 0.031748135999999996 seconds (full).
+[SMT] Filter took 0.037091589 seconds (full).
+[SMT] Filter took 0.032826884 seconds (full).
+[SMT] Filter took 0.039128299 seconds (full).
+[SMT] Filter took 0.030084137 seconds (full).
+[SMT] Filter took 0.018538448 seconds (full).
+[SMT] Filter took 0.026985572 seconds (full).
+[SMT] Filter took 0.020698664 seconds (full).
+[runlim] sample:		27.6 time, 40.5 real, 1274.5 MB
+[SMT] Filter took 0.038868724 seconds (full).
+[SMT] Filter took 0.033687259 seconds (full).
+[SMT] Filter took 0.035436095 seconds (full).
+[SMT] Filter took 0.036933407 seconds (full).
+[SMT] Filter took 0.029450615 seconds (full).
+[SMT] Filter took 0.022673849 seconds (full).
+[SMT] Filter took 0.044471306 seconds (full).
+[SMT] Filter took 0.040585289 seconds (full).
+[SMT] Filter took 0.033126924 seconds (full).
+[SMT] Filter took 0.037483085 seconds (full).
+[SMT] Filter took 0.024035854000000002 seconds (full).
+[SMT] Filter took 0.030647832 seconds (full).
+[SMT] Filter took 0.038875708 seconds (full).
+[SMT] Filter took 0.027521618999999997 seconds (full).
+[SMT] Filter took 0.026037532 seconds (full).
+[SMT] Filter took 0.049107019 seconds (full).
+[SMT] Filter took 0.01199227 seconds (pre).
+[SMT] Filter took 0.031940672 seconds (full).
+[SMT] Filter took 0.041836964 seconds (full).
+[SMT] Filter took 0.027795737 seconds (full).
+[SMT] Filter took 0.025406519 seconds (full).
+[SMT] Filter took 0.019734444 seconds (full).
+[SMT] Filter took 0.033817487 seconds (full).
+[SMT] Filter took 0.032524633 seconds (full).
+[SMT] Filter took 0.037510108 seconds (full).
+[SMT] Filter took 0.025855497999999998 seconds (full).
+[SMT] Filter took 0.024725649000000002 seconds (full).
+[SMT] Filter took 0.031513484 seconds (full).
+[SMT] Filter took 0.021266884 seconds (full).
+[SMT] Filter took 0.022578779 seconds (full).
+[SMT] Filter took 0.041525934 seconds (full).
+[SMT] Filter took 0.007752454 seconds (pre).
+[SMT] Filter took 0.012242676 seconds (pre).
+[SMT] Filter took 0.021024569 seconds (full).
+[SMT] Filter took 0.028756182 seconds (full).
+[SMT] Filter took 0.028354808 seconds (full).
+[SMT] Filter took 0.031343342 seconds (full).
+[SMT] Filter took 0.025053932 seconds (full).
+[SMT] Filter took 0.028385455999999996 seconds (full).
+[SMT] Filter took 0.036344187 seconds (full).
+[SMT] Filter took 0.032444512 seconds (full).
+[SMT] Filter took 0.027588309999999998 seconds (full).
+[SMT] Filter took 0.025672759 seconds (full).
+[SMT] Filter took 0.026247003999999997 seconds (full).
+[SMT] Filter took 0.034349234 seconds (full).
+[SMT] Filter took 0.02938768 seconds (full).
+[SMT] Filter took 0.00506949 seconds (pre).
+[SMT] Filter took 0.026051724999999998 seconds (full).
+[SMT] Filter took 0.008960263 seconds (pre).
+[SMT] Filter took 0.035131427 seconds (full).
+[SMT] Filter took 0.025198373 seconds (full).
+[SMT] Filter took 0.022694483 seconds (full).
+[SMT] Filter took 0.027304382999999998 seconds (full).
+[SMT] Filter took 0.023100313999999997 seconds (full).
+[SMT] Filter took 0.031804239 seconds (full).
+[SMT] Filter took 0.019208957999999998 seconds (full).
+[SMT] Filter took 0.009498133 seconds (pre).
+[SMT] Filter took 0.036052945 seconds (full).
+[SMT] Filter took 0.021784194 seconds (full).
+[SMT] Filter took 0.023318943 seconds (full).
+[SMT] Filter took 0.028885664 seconds (full).
+[SMT] Filter took 0.003969612 seconds (pre).
+[SMT] Filter took 0.00402672 seconds (pre).
+[SMT] Filter took 0.003836027 seconds (pre).
+[SMT] Filter took 0.009920585 seconds (pre).
+[SMT] Filter took 0.005162909 seconds (pre).
+[SMT] Filter took 0.007545849 seconds (pre).
+[SMT] Filter took 0.007668639 seconds (pre).
+[SMT] Filter took 0.010034837 seconds (pre).
+[SMT] Filter took 0.009529133 seconds (pre).
+[SMT] Filter took 0.007837876 seconds (pre).
+[SMT] Filter took 0.007007108 seconds (pre).
+[SMT] Filter took 0.01072974 seconds (pre).
+[SMT] Filter took 0.005329448 seconds (pre).
+[SMT] Filter took 0.005214612 seconds (pre).
+[SMT] Filter took 0.004129173 seconds (pre).
+[SMT] Filter took 0.005841176 seconds (pre).
+[SMT] Filter took 0.014168839 seconds (pre).
+[SMT] Filter took 0.008109921 seconds (pre).
+[SMT] Filter took 0.003629493 seconds (pre).
+[SMT] Filter took 0.00605171 seconds (pre).
+[SMT] Filter took 0.006795918 seconds (pre).
+[SMT] Filter took 0.006969802 seconds (pre).
+[SMT] Filter took 0.00412196 seconds (pre).
+[SMT] Filter took 0.010024884 seconds (pre).
+[SMT] Filter took 0.022549641 seconds (full).
+[SMT] Filter took 0.007248764 seconds (pre).
+[SMT] Filter took 0.009400053 seconds (pre).
+[SMT] Filter took 0.008457357 seconds (pre).
+[SMT] Filter took 0.006682982 seconds (pre).
+[SMT] Filter took 0.029489334 seconds (full).
+[SMT] Filter took 0.008659112 seconds (pre).
+[SMT] Filter took 0.006879807 seconds (pre).
+[SMT] Filter took 0.024917731 seconds (full).
+[SMT] Filter took 0.007053834 seconds (pre).
+[SMT] Filter took 0.023809666 seconds (full).
+[SMT] Filter took 0.016554186 seconds (full).
+[SMT] Filter took 0.010640206 seconds (pre).
+[SMT] Filter took 0.036430831 seconds (full).
+[SMT] Filter took 0.029443569 seconds (full).
+[SMT] Filter took 0.031800548 seconds (full).
+[SMT] Filter took 0.022015666 seconds (full).
+[SMT] Filter took 0.00822856 seconds (pre).
+[SMT] Filter took 0.265895776 seconds (pre).
+[SMT] Filter took 0.012757288 seconds (pre).
+[SMT] Filter took 0.006970739 seconds (pre).
+[SMT] Filter took 0.004987544 seconds (pre).
+[SMT] Filter took 0.005131802 seconds (pre).
+[SMT] Filter took 0.009760289 seconds (pre).
+[SMT] Filter took 0.006608207 seconds (pre).
+[SMT] Filter took 0.007969892 seconds (pre).
+[SMT] Filter took 0.008395259 seconds (pre).
+[SMT] Filter took 0.007613689 seconds (pre).
+[SMT] Filter took 0.007467509 seconds (pre).
+[SMT] Filter took 0.010212296 seconds (pre).
+[SMT] Filter took 0.008154936 seconds (pre).
+[SMT] Filter took 0.014442534 seconds (pre).
+[SMT] Filter took 0.006198404 seconds (pre).
+[SMT] Filter took 0.008161626 seconds (pre).
+[SMT] Filter took 0.010046707 seconds (pre).
+[SMT] Filter took 0.007277683 seconds (pre).
+[SMT] Filter took 0.006814703 seconds (pre).
+[SMT] Filter took 0.009878843 seconds (pre).
+[SMT] Filter took 0.005284889 seconds (pre).
+[SMT] Filter took 0.021915233 seconds (full).
+[SMT] Filter took 0.007742876 seconds (pre).
+[SMT] Filter took 0.009580103 seconds (pre).
+[SMT] Filter took 0.017304215 seconds (pre).
+[SMT] Filter took 0.007479841 seconds (pre).
+[SMT] Filter took 0.010623716 seconds (pre).
+[SMT] Filter took 0.006759522 seconds (pre).
+[SMT] Filter took 0.00856534 seconds (pre).
+[SMT] Filter took 0.006412001 seconds (pre).
+[SMT] Filter took 0.005872301 seconds (pre).
+[SMT] Filter took 0.010228702 seconds (pre).
+[SMT] Filter took 0.011515572 seconds (pre).
+[SMT] Filter took 0.009054859 seconds (pre).
+[SMT] Filter took 0.007208595 seconds (pre).
+[SMT] Filter took 0.010074951 seconds (pre).
+[SMT] Filter took 0.008707189 seconds (pre).
+[SMT] Filter took 0.007190496 seconds (pre).
+[SMT] Filter took 0.007809318 seconds (pre).
+[SMT] Filter took 0.012479617 seconds (pre).
+[SMT] Filter took 0.01030798 seconds (pre).
+[SMT] Filter took 0.016845432 seconds (pre).
+[SMT] Filter took 0.013557171 seconds (pre).
+[SMT] Filter took 0.01724524 seconds (pre).
+[SMT] Filter took 0.012484186 seconds (pre).
+[SMT] Filter took 0.010228962 seconds (pre).
+[SMT] Filter took 0.014027077 seconds (pre).
+[SMT] Filter took 0.007777262 seconds (pre).
+[SMT] Filter took 0.011924403 seconds (pre).
+[SMT] Filter took 0.00771765 seconds (pre).
+[SMT] Filter took 0.009351798 seconds (pre).
+[SMT] Filter took 0.016581076 seconds (pre).
+[SMT] Filter took 0.01379498 seconds (pre).
+[SMT] Filter took 0.011289231 seconds (pre).
+[SMT] Filter took 0.010813244 seconds (pre).
+[SMT] Filter took 0.015410512 seconds (pre).
+[SMT] Filter took 0.015309384 seconds (pre).
+[SMT] Filter took 0.010472711 seconds (pre).
+[SMT] Filter took 0.015501539 seconds (pre).
+[SMT] Filter took 0.015325389 seconds (pre).
+[SMT] Filter took 0.009297024 seconds (pre).
+[SMT] Filter took 0.008813957 seconds (pre).
+[SMT] Filter took 0.015637148 seconds (pre).
+[SMT] Filter took 0.011940857 seconds (pre).
+[SMT] Filter took 0.013996907 seconds (pre).
+[SMT] Filter took 0.017215144 seconds (pre).
+[SMT] Filter took 0.014535594 seconds (pre).
+[SMT] Filter took 0.022491237 seconds (pre).
+[SMT] Filter took 0.011482741 seconds (pre).
+[SMT] Filter took 0.010779625 seconds (pre).
+[SMT] Filter took 0.011993104 seconds (pre).
+[SMT] Filter took 0.017740843 seconds (pre).
+[SMT] Filter took 0.016219258 seconds (pre).
+[SMT] Filter took 0.015732563 seconds (pre).
+[SMT] Filter took 0.016983189 seconds (pre).
+[SMT] Filter took 0.016967012 seconds (pre).
+[SMT] Filter took 0.019739671 seconds (pre).
+[SMT] Filter took 0.015593206 seconds (pre).
+[SMT] Filter took 0.013111145 seconds (pre).
+[SMT] Filter took 0.014749169 seconds (pre).
+[SMT] Filter took 0.014050138 seconds (pre).
+[SMT] Filter took 0.011445682 seconds (pre).
+[SMT] Filter took 0.019313891 seconds (pre).
+[SMT] Filter took 0.013733651 seconds (pre).
+[SMT] Filter took 0.017552514 seconds (pre).
+[SMT] Filter took 0.020079471 seconds (pre).
+[SMT] Filter took 0.011211163 seconds (pre).
+[SMT] Filter took 0.010696242 seconds (pre).
+[SMT] Filter took 0.013709845 seconds (pre).
+[SMT] Filter took 0.015276751 seconds (pre).
+[SMT] Filter took 0.011305376 seconds (pre).
+[SMT] Filter took 0.014854475 seconds (pre).
+[SMT] Filter took 0.010637108 seconds (pre).
+[SMT] Filter took 0.01816461 seconds (pre).
+[SMT] Filter took 0.01441945 seconds (pre).
+[SMT] Filter took 0.011644074 seconds (pre).
+[SMT] Filter took 0.010846141 seconds (pre).
+[SMT] Filter took 0.021157442 seconds (pre).
+[SMT] Filter took 0.012871431 seconds (pre).
+[SMT] Filter took 0.015420242 seconds (pre).
+[SMT] Filter took 0.011444696 seconds (pre).
+[SMT] Filter took 0.012716161 seconds (pre).
+[SMT] Filter took 0.012807983 seconds (pre).
+[SMT] Filter took 0.014093185 seconds (pre).
+[SMT] Filter took 0.01325011 seconds (pre).
+[SMT] Filter took 0.011765503 seconds (pre).
+[SMT] Filter took 0.011904212 seconds (pre).
+[SMT] Filter took 0.010266949 seconds (pre).
+[SMT] Filter took 0.012289279 seconds (pre).
+[SMT] Filter took 0.012994362 seconds (pre).
+[SMT] Filter took 0.01792082 seconds (pre).
+[SMT] Filter took 0.013725349 seconds (pre).
+[SMT] Filter took 0.010432008 seconds (pre).
+[SMT] Filter took 0.01145574 seconds (pre).
+[SMT] Filter took 0.017769885 seconds (pre).
+[SMT] Filter took 0.016907094 seconds (pre).
+[SMT] Filter took 0.010187741 seconds (pre).
+[SMT] Filter took 0.012696039 seconds (pre).
+[SMT] Filter took 0.014168231 seconds (pre).
+[SMT] Filter took 0.010990681 seconds (pre).
+[SMT] Filter took 0.012623558 seconds (pre).
+[SMT] Filter took 0.00858283 seconds (pre).
+[SMT] Filter took 0.012070267 seconds (pre).
+[SMT] Filter took 0.019028285 seconds (pre).
+[SMT] Filter took 0.013346682 seconds (pre).
+[SMT] Filter took 0.014154006 seconds (pre).
+[SMT] Filter took 0.012376466 seconds (pre).
+[SMT] Filter took 0.034587598 seconds (full).
+[SMT] Filter took 0.037720383999999996 seconds (full).
+[SMT] Filter took 0.0122089 seconds (pre).
+[SMT] Filter took 0.052060074 seconds (full).
+[SMT] Filter took 0.034417912999999994 seconds (full).
+[SMT] Filter took 0.03892763 seconds (full).
+[SMT] Filter took 0.011871478 seconds (pre).
+[SMT] Filter took 0.041877238 seconds (full).
+[SMT] Filter took 0.01908681 seconds (pre).
+[SMT] Filter took 0.034605993 seconds (full).
+[SMT] Filter took 0.020358565000000002 seconds (full).
+[SMT] Filter took 0.024071416999999998 seconds (full).
+[SMT] Filter took 0.020370677 seconds (full).
+[SMT] Filter took 0.037257308 seconds (full).
+[SMT] Filter took 0.034033578999999994 seconds (full).
+[SMT] Filter took 0.043150574 seconds (full).
+[SMT] Filter took 0.03540264 seconds (full).
+[SMT] Filter took 0.030643662999999998 seconds (full).
+[SMT] Filter took 0.041618744 seconds (full).
+[SMT] Filter took 0.041603112 seconds (full).
+[SMT] Filter took 0.040608821 seconds (full).
+[SMT] Filter took 0.049468014000000005 seconds (full).
+[SMT] Filter took 0.035576844999999996 seconds (full).
+[SMT] Filter took 0.036632517 seconds (full).
+[SMT] Filter took 0.038176613 seconds (full).
+[SMT] Filter took 0.045984379000000006 seconds (full).
+[SMT] Filter took 0.029875272 seconds (full).
+[SMT] Filter took 0.053887427 seconds (full).
+[SMT] Filter took 0.033236381 seconds (full).
+[SMT] Filter took 0.032258066 seconds (full).
+[SMT] Filter took 0.037840549 seconds (full).
+[SMT] Filter took 0.064166448 seconds (full).
+[SMT] Filter took 0.038198629 seconds (full).
+[SMT] Filter took 0.032559086 seconds (full).
+[SMT] Filter took 0.034377665 seconds (full).
+[SMT] Filter took 0.010602132 seconds (pre).
+[SMT] Filter took 0.01200439 seconds (pre).
+[SMT] Filter took 0.013711294 seconds (pre).
+[SMT] Filter took 0.011699556 seconds (pre).
+[SMT] Filter took 0.012624472 seconds (pre).
+[SMT] Filter took 0.009896475 seconds (pre).
+[SMT] Filter took 0.022130789999999997 seconds (full).
+[SMT] Filter took 0.030178567 seconds (full).
+[SMT] Filter took 0.021263147000000003 seconds (full).
+[SMT] Filter took 0.028736895 seconds (full).
+[SMT] Filter took 0.024772254 seconds (full).
+[SMT] Filter took 0.016003029 seconds (pre).
+[SMT] Filter took 0.009756072 seconds (pre).
+[SMT] Filter took 0.019629435 seconds (pre).
+[SMT] Filter took 0.010824465 seconds (pre).
+[SMT] Filter took 0.010416005 seconds (pre).
+[SMT] Filter took 0.017238597 seconds (pre).
+[SMT] Filter took 0.01634812 seconds (pre).
+[SMT] Filter took 0.021014097 seconds (pre).
+[SMT] Filter took 0.009635792 seconds (pre).
+[SMT] Filter took 0.005956562 seconds (pre).
+[SMT] Filter took 0.010651936 seconds (pre).
+[SMT] Filter took 0.012228987 seconds (pre).
+[SMT] Filter took 0.011294514 seconds (pre).
+[SMT] Filter took 0.01065902 seconds (pre).
+[SMT] Filter took 0.010908713 seconds (pre).
+[SMT] Filter took 0.008502663 seconds (pre).
+[SMT] Filter took 0.009620632 seconds (pre).
+[SMT] Filter took 0.013941254 seconds (pre).
+[SMT] Filter took 0.015149771 seconds (pre).
+[SMT] Filter took 0.017070188 seconds (pre).
+[SMT] Filter took 0.014804234 seconds (pre).
+[SMT] Filter took 0.021721066 seconds (pre).
+[SMT] Filter took 0.013757855 seconds (pre).
+[SMT] Filter took 0.011711229 seconds (pre).
+[SMT] Filter took 0.015481743 seconds (pre).
+[SMT] Filter took 0.013768302 seconds (pre).
+[SMT] Filter took 0.014936888 seconds (pre).
+[SMT] Filter took 0.009112599 seconds (pre).
+[SMT] Filter took 0.013178916 seconds (pre).
+[SMT] Filter took 0.014646178 seconds (pre).
+[SMT] Filter took 0.023462989 seconds (pre).
+[SMT] Filter took 0.023669052 seconds (pre).
+[SMT] Filter took 0.012218108 seconds (pre).
+[SMT] Filter took 0.011458667 seconds (pre).
+[SMT] Filter took 0.011553298 seconds (pre).
+[SMT] Filter took 0.012661574 seconds (pre).
+[SMT] Filter took 0.012435387 seconds (pre).
+[SMT] Filter took 0.012752065 seconds (pre).
+[SMT] Filter took 0.009921485 seconds (pre).
+[SMT] Filter took 0.013581847 seconds (pre).
+[SMT] Filter took 0.009167559 seconds (pre).
+[SMT] Filter took 0.01080811 seconds (pre).
+[SMT] Filter took 0.010417687 seconds (pre).
+[SMT] Filter took 0.012261888 seconds (pre).
+[SMT] Filter took 0.017826203 seconds (pre).
+[SMT] Filter took 0.010625987 seconds (pre).
+[SMT] Filter took 0.010533449 seconds (pre).
+[SMT] Filter took 0.011192324 seconds (pre).
+[SMT] Filter took 0.009724849 seconds (pre).
+[SMT] Filter took 0.034565774 seconds (full).
+[SMT] Filter took 0.014067673 seconds (pre).
+[SMT] Filter took 0.018128745 seconds (pre).
+[SMT] Filter took 0.022379693 seconds (pre).
+[SMT] Filter took 0.039298806 seconds (full).
+[SMT] Filter took 0.021668736 seconds (full).
+[SMT] Filter took 0.042377216999999995 seconds (full).
+[SMT] Filter took 0.054851885 seconds (full).
+[SMT] Filter took 0.016044453 seconds (pre).
+[SMT] Filter took 0.038827385 seconds (full).
+[SMT] Filter took 0.026537205 seconds (full).
+[SMT] Filter took 0.023235562 seconds (full).
+[SMT] Filter took 0.026952340999999998 seconds (full).
+[SMT] Filter took 0.034406970999999995 seconds (full).
+[SMT] Filter took 0.034828932 seconds (full).
+[SMT] Filter took 0.012061309 seconds (pre).
+[SMT] Filter took 0.015675266 seconds (pre).
+[SMT] Filter took 0.018145143 seconds (pre).
+[SMT] Filter took 0.014575582 seconds (pre).
+[SMT] Filter took 0.013315872 seconds (pre).
+[SMT] Filter took 0.006257646 seconds (pre).
+[SMT] Filter took 0.012552377 seconds (pre).
+[SMT] Filter took 0.020158684 seconds (pre).
+[SMT] Filter took 0.012215474 seconds (pre).
+[SMT] Filter took 0.010513618 seconds (pre).
+[SMT] Filter took 0.008706455 seconds (pre).
+[SMT] Filter took 0.011633205 seconds (pre).
+[SMT] Filter took 0.009167945 seconds (pre).
+[SMT] Filter took 0.011525345 seconds (pre).
+[SMT] Filter took 0.009088841 seconds (pre).
+[SMT] Filter took 0.010389072 seconds (pre).
+[SMT] Filter took 0.010848833 seconds (pre).
+[SMT] Filter took 0.010190053 seconds (pre).
+[SMT] Filter took 0.012938076 seconds (pre).
+[SMT] Filter took 0.0096174 seconds (pre).
+[SMT] Filter took 0.008930612 seconds (pre).
+[SMT] Filter took 0.00853319 seconds (pre).
+[SMT] Filter took 0.011431951 seconds (pre).
+[SMT] Filter took 0.016007853 seconds (pre).
+[SMT] Filter took 0.007434416 seconds (pre).
+[SMT] Filter took 0.012330327 seconds (pre).
+[SMT] Filter took 0.010773021 seconds (pre).
+[SMT] Filter took 0.012422004 seconds (pre).
+[SMT] Filter took 0.013548411 seconds (pre).
+[SMT] Filter took 0.011292846 seconds (pre).
+[SMT] Filter took 0.00698694 seconds (pre).
+[SMT] Filter took 0.021428445999999997 seconds (full).
+[SMT] Filter took 0.043965544 seconds (full).
+[SMT] Filter took 0.034300998 seconds (full).
+[SMT] Filter took 0.010744044 seconds (pre).
+[SMT] Filter took 0.021173962 seconds (full).
+[SMT] Filter took 0.040322178 seconds (full).
+[SMT] Filter took 0.033615194 seconds (full).
+[SMT] Filter took 0.029938644 seconds (full).
+[SMT] Filter took 0.031474701 seconds (full).
+[SMT] Filter took 0.025200706000000003 seconds (full).
+[SMT] Filter took 0.025396751000000002 seconds (full).
+[SMT] Filter took 0.025149179 seconds (full).
+[SMT] Filter took 0.025902872 seconds (full).
+[SMT] Filter took 0.023934614 seconds (full).
+[SMT] Filter took 0.025044251 seconds (full).
+[SMT] Filter took 0.028487314 seconds (full).
+[SMT] Filter took 0.055708302 seconds (full).
+[SMT] Filter took 0.026947763 seconds (full).
+[SMT] Filter took 0.023898324999999998 seconds (full).
+[SMT] Filter took 0.025648829999999997 seconds (full).
+[SMT] Filter took 0.021341126000000002 seconds (full).
+[SMT] Filter took 0.024915081000000002 seconds (full).
+[SMT] Filter took 0.033694052 seconds (full).
+[SMT] Filter took 0.024855216 seconds (full).
+[SMT] Filter took 0.031629158 seconds (full).
+[SMT] Filter took 0.014488929 seconds (pre).
+[SMT] Filter took 0.008503279 seconds (pre).
+[SMT] Filter took 0.007731865 seconds (pre).
+[SMT] Filter took 0.007641962 seconds (pre).
+[SMT] Filter took 0.017608877 seconds (pre).
+[SMT] Filter took 0.009880443 seconds (pre).
+[SMT] Filter took 0.011327992 seconds (pre).
+[SMT] Filter took 0.013180476 seconds (pre).
+[SMT] Filter took 0.012200174 seconds (pre).
+[SMT] Filter took 0.009852148 seconds (pre).
+[SMT] Filter took 0.009857434 seconds (pre).
+[SMT] Filter took 0.012197062 seconds (pre).
+[SMT] Filter took 0.011007641 seconds (pre).
+[SMT] Filter took 0.007382674 seconds (pre).
+[SMT] Filter took 0.006579647 seconds (pre).
+[SMT] Filter took 0.010151192 seconds (pre).
+[SMT] Filter took 0.009414376 seconds (pre).
+[SMT] Filter took 0.010916442 seconds (pre).
+[SMT] Filter took 0.006552565 seconds (pre).
+[SMT] Filter took 0.01067708 seconds (pre).
+[SMT] Filter took 0.009505592 seconds (pre).
+[SMT] Filter took 0.009646325 seconds (pre).
+[SMT] Filter took 0.013192166 seconds (pre).
+[SMT] Filter took 0.00882141 seconds (pre).
+[SMT] Filter took 0.006662677 seconds (pre).
+[SMT] Filter took 0.015250852 seconds (pre).
+[SMT] Filter took 0.008938723 seconds (pre).
+[SMT] Filter took 0.014199709 seconds (pre).
+[SMT] Filter took 0.006842075 seconds (pre).
+[SMT] Filter took 0.006118909 seconds (pre).
+[SMT] Filter took 0.010595175 seconds (pre).
+[SMT] Filter took 0.010321179 seconds (pre).
+[SMT] Filter took 0.010682676 seconds (pre).
+[SMT] Filter took 0.00918236 seconds (pre).
+[SMT] Filter took 0.008637612 seconds (pre).
+[SMT] Filter took 0.019054277 seconds (pre).
+[SMT] Filter took 0.018618703 seconds (pre).
+[SMT] Filter took 0.024451973 seconds (pre).
+[SMT] Filter took 0.021412331 seconds (pre).
+[SMT] Filter took 0.021009227 seconds (pre).
+[SMT] Filter took 0.017588303 seconds (pre).
+[SMT] Filter took 0.015391941 seconds (pre).
+[SMT] Filter took 0.017425572 seconds (pre).
+[SMT] Filter took 0.008737093 seconds (pre).
+[SMT] Filter took 0.007690282 seconds (pre).
+[SMT] Filter took 0.010892295 seconds (pre).
+[SMT] Filter took 0.013864511 seconds (pre).
+[SMT] Filter took 0.010985754 seconds (pre).
+[SMT] Filter took 0.009673992 seconds (pre).
+[SMT] Filter took 0.009825793 seconds (pre).
+[SMT] Filter took 0.009861881 seconds (pre).
+[SMT] Filter took 0.010843286 seconds (pre).
+[SMT] Filter took 0.014967834 seconds (pre).
+[SMT] Filter took 0.007023187 seconds (pre).
+[SMT] Filter took 0.012301605 seconds (pre).
+[SMT] Filter took 0.01611066 seconds (pre).
+[SMT] Filter took 0.010997061 seconds (pre).
+[SMT] Filter took 0.007611036 seconds (pre).
+[SMT] Filter took 0.009177256 seconds (pre).
+[SMT] Filter took 0.00866701 seconds (pre).
+[SMT] Filter took 0.008945054 seconds (pre).
+[SMT] Filter took 0.013934379 seconds (pre).
+[SMT] Filter took 0.009720344 seconds (pre).
+[SMT] Filter took 0.006577479 seconds (pre).
+[SMT] Filter took 0.008316177 seconds (pre).
+[SMT] Filter took 0.009188849 seconds (pre).
+[SMT] Filter took 0.008584113 seconds (pre).
+[SMT] Filter took 0.01052989 seconds (pre).
+[SMT] Filter took 0.011401225 seconds (pre).
+[SMT] Filter took 0.006205264 seconds (pre).
+[SMT] Filter took 0.011215165 seconds (pre).
+[SMT] Filter took 0.011724815 seconds (pre).
+[SMT] Filter took 0.015174146 seconds (pre).
+[SMT] Filter took 0.009160497 seconds (pre).
+[SMT] Filter took 0.008477994 seconds (pre).
+[SMT] Filter took 0.008496237 seconds (pre).
+[SMT] Filter took 0.018401851 seconds (pre).
+[SMT] Filter took 0.007588803 seconds (pre).
+[SMT] Filter took 0.008121306 seconds (pre).
+[SMT] Filter took 0.011180679 seconds (pre).
+[SMT] Filter took 0.009310424 seconds (pre).
+[SMT] Filter took 0.012697441 seconds (pre).
+[SMT] Filter took 0.007503351 seconds (pre).
+[SMT] Filter took 0.008471918 seconds (pre).
+[SMT] Filter took 0.011503445 seconds (pre).
+[SMT] Filter took 0.007086949 seconds (pre).
+[SMT] Filter took 0.006831799 seconds (pre).
+[SMT] Filter took 0.00817933 seconds (pre).
+[SMT] Filter took 0.015273687 seconds (pre).
+[SMT] Filter took 0.006423107 seconds (pre).
+[SMT] Filter took 0.01140164 seconds (pre).
+[SMT] Filter took 0.014540274 seconds (pre).
+[SMT] Filter took 0.013998003 seconds (pre).
+[SMT] Filter took 0.004969509 seconds (pre).
+[SMT] Filter took 0.00784066 seconds (pre).
+[SMT] Filter took 0.013152551 seconds (pre).
+[SMT] Filter took 0.008904232 seconds (pre).
+[SMT] Filter took 0.011673832 seconds (pre).
+[SMT] Filter took 0.009981345 seconds (pre).
+[SMT] Filter took 0.009460707 seconds (pre).
+[SMT] Filter took 0.007876284 seconds (pre).
+[SMT] Filter took 0.007994903 seconds (pre).
+[SMT] Filter took 0.012506057 seconds (pre).
+[SMT] Filter took 0.010186852 seconds (pre).
+[SMT] Filter took 0.008035297 seconds (pre).
+[SMT] Filter took 0.005863051 seconds (pre).
+[SMT] Filter took 0.009276143 seconds (pre).
+[SMT] Filter took 0.01055639 seconds (pre).
+[SMT] Filter took 0.011819706 seconds (pre).
+[SMT] Filter took 0.01432985 seconds (pre).
+[SMT] Filter took 0.01074266 seconds (pre).
+[SMT] Filter took 0.007811459 seconds (pre).
+[SMT] Filter took 0.011841378 seconds (pre).
+[SMT] Filter took 0.015221055 seconds (pre).
+[SMT] Filter took 0.015887946 seconds (pre).
+[SMT] Filter took 0.010028877 seconds (pre).
+[SMT] Filter took 0.011489332 seconds (pre).
+[SMT] Filter took 0.011301583 seconds (pre).
+[SMT] Filter took 0.012743033 seconds (pre).
+[SMT] Filter took 0.013751538 seconds (pre).
+[SMT] Filter took 0.010908182 seconds (pre).
+[SMT] Filter took 0.011443731 seconds (pre).
+[SMT] Filter took 0.012231214 seconds (pre).
+[SMT] Filter took 0.00943087 seconds (pre).
+[SMT] Filter took 0.008159881 seconds (pre).
+[SMT] Filter took 0.010636768 seconds (pre).
+[SMT] Filter took 0.011506734 seconds (pre).
+[SMT] Filter took 0.010478452 seconds (pre).
+[SMT] Filter took 0.012068176 seconds (pre).
+[SMT] Filter took 0.014057684 seconds (pre).
+[SMT] Filter took 0.009875089 seconds (pre).
+[SMT] Filter took 0.013887535 seconds (pre).
+[SMT] Filter took 0.010413706 seconds (pre).
+[SMT] Filter took 0.014357101 seconds (pre).
+[SMT] Filter took 0.017416948 seconds (pre).
+[SMT] Filter took 0.036245247 seconds (full).
+[SMT] Filter took 0.069403803 seconds (full).
+[SMT] Filter took 0.022140963 seconds (pre).
+[SMT] Filter took 0.063375383 seconds (full).
+[SMT] Filter took 0.039373385999999996 seconds (full).
+[SMT] Filter took 0.031748073 seconds (full).
+[runlim] sample:		37.4 time, 50.5 real, 1277.0 MB
+[SMT] Filter took 0.052112491999999996 seconds (full).
+[SMT] Filter took 0.056331431 seconds (full).
+[SMT] Filter took 0.032992966 seconds (full).
+[SMT] Filter took 0.035507796 seconds (full).
+[SMT] Filter took 0.021102894 seconds (full).
+[SMT] Filter took 0.006977514 seconds (pre).
+[SMT] Filter took 0.013397081 seconds (pre).
+[SMT] Filter took 0.01008561 seconds (pre).
+[SMT] Filter took 0.015639671 seconds (pre).
+[SMT] Filter took 0.016696478 seconds (pre).
+[SMT] Filter took 0.013907264 seconds (pre).
+[SMT] Filter took 0.015295418 seconds (pre).
+[SMT] Filter took 0.011292041 seconds (pre).
+[SMT] Filter took 0.012979609 seconds (pre).
+[SMT] Filter took 0.013940928 seconds (pre).
+[SMT] Filter took 0.015366494 seconds (pre).
+[SMT] Filter took 0.013601634 seconds (pre).
+[SMT] Filter took 0.01246398 seconds (pre).
+[SMT] Filter took 0.027856681 seconds (full).
+[SMT] Filter took 0.039612593 seconds (full).
+[SMT] Filter took 0.012659034 seconds (pre).
+[SMT] Filter took 0.010235561 seconds (pre).
+[SMT] Filter took 0.007284708 seconds (pre).
+[SMT] Filter took 0.005874033 seconds (pre).
+[SMT] Filter took 0.007150812 seconds (pre).
+[SMT] Filter took 0.015165365 seconds (pre).
+[SMT] Filter took 0.009559221 seconds (pre).
+[SMT] Filter took 0.005346111 seconds (pre).
+[SMT] Filter took 0.004809108 seconds (pre).
+[SMT] Filter took 0.006604684 seconds (pre).
+[SMT] Filter took 0.011731124 seconds (pre).
+[SMT] Filter took 0.010741057 seconds (pre).
+[SMT] Filter took 0.009857393 seconds (pre).
+[SMT] Filter took 0.011588259 seconds (pre).
+[SMT] Filter took 0.011845702 seconds (pre).
+[SMT] Filter took 0.015092754 seconds (pre).
+[SMT] Filter took 0.009270061 seconds (pre).
+[SMT] Filter took 0.009454866 seconds (pre).
+[SMT] Filter took 0.012072344 seconds (pre).
+[SMT] Filter took 0.010789398 seconds (pre).
+[SMT] Filter took 0.011551877 seconds (pre).
+[SMT] Filter took 0.01304696 seconds (pre).
+[SMT] Filter took 0.014695011 seconds (pre).
+[SMT] Filter took 0.01071961 seconds (pre).
+[SMT] Filter took 0.010047185 seconds (pre).
+[SMT] Filter took 0.012236283 seconds (pre).
+[SMT] Filter took 0.009493786 seconds (pre).
+[SMT] Filter took 0.012281269 seconds (pre).
+[SMT] Filter took 0.01248083 seconds (pre).
+[SMT] Filter took 0.012688065 seconds (pre).
+[SMT] Filter took 0.009778325 seconds (pre).
+[SMT] Filter took 0.01015099 seconds (pre).
+[SMT] Filter took 0.015032011 seconds (pre).
+[SMT] Filter took 0.010413495 seconds (pre).
+[SMT] Filter took 0.008759171 seconds (pre).
+[SMT] Filter took 0.014095971 seconds (pre).
+[SMT] Filter took 0.009140329 seconds (pre).
+[SMT] Filter took 0.009407846 seconds (pre).
+[SMT] Filter took 0.00778378 seconds (pre).
+[SMT] Filter took 0.009291674 seconds (pre).
+[SMT] Filter took 0.007914167 seconds (pre).
+[SMT] Filter took 0.014281315 seconds (pre).
+[SMT] Filter took 0.012166276 seconds (pre).
+[SMT] Filter took 0.009943345 seconds (pre).
+[SMT] Filter took 0.026362035 seconds (full).
+[SMT] Filter took 0.039420296 seconds (full).
+[SMT] Filter took 0.015014533 seconds (pre).
+[SMT] Filter took 0.011207943 seconds (pre).
+[SMT] Filter took 0.006510769 seconds (pre).
+[SMT] Filter took 0.026086222 seconds (full).
+[SMT] Filter took 0.036624038 seconds (full).
+[SMT] Filter took 0.02953548 seconds (full).
+[SMT] Filter took 0.028502458 seconds (full).
+[SMT] Filter took 0.027363685999999998 seconds (full).
+[SMT] Filter took 0.032987131 seconds (full).
+[SMT] Filter took 0.03815836 seconds (full).
+[SMT] Filter took 0.031490437999999996 seconds (full).
+[SMT] Filter took 0.042961822999999996 seconds (full).
+[SMT] Filter took 0.027333086 seconds (full).
+[SMT] Filter took 0.038297972 seconds (full).
+[SMT] Filter took 0.022009291 seconds (full).
+[SMT] Filter took 0.034182165 seconds (full).
+[SMT] Filter took 0.00633242 seconds (pre).
+[SMT] Filter took 0.027150392 seconds (full).
+[SMT] Filter took 0.027962630000000002 seconds (full).
+[SMT] Filter took 0.026651486 seconds (full).
+[SMT] Filter took 0.023935612 seconds (full).
+[SMT] Filter took 0.023988747999999997 seconds (full).
+[SMT] Filter took 0.02967054 seconds (full).
+[SMT] Filter took 0.018134199 seconds (full).
+[SMT] Filter took 0.016239191 seconds (full).
+[SMT] Filter took 0.022360662 seconds (full).
+[SMT] Filter took 0.018288673 seconds (full).
+[SMT] Filter took 0.01713925 seconds (full).
+[SMT] Filter took 0.007311643 seconds (pre).
+[SMT] Filter took 0.011713182 seconds (pre).
+[SMT] Filter took 0.01012184 seconds (pre).
+[SMT] Filter took 0.009484818 seconds (pre).
+[SMT] Filter took 0.012834137 seconds (pre).
+[SMT] Filter took 0.009692452 seconds (pre).
+[SMT] Filter took 0.010798806 seconds (pre).
+[SMT] Filter took 0.007769759 seconds (pre).
+[SMT] Filter took 0.006980717 seconds (pre).
+[SMT] Filter took 0.010408665 seconds (pre).
+[SMT] Filter took 0.009985671 seconds (pre).
+[SMT] Filter took 0.011634536 seconds (pre).
+[SMT] Filter took 0.012411165 seconds (pre).
+[SMT] Filter took 0.010627934 seconds (pre).
+[SMT] Filter took 0.012231234 seconds (pre).
+[SMT] Filter took 0.014522205 seconds (pre).
+[SMT] Filter took 0.00746153 seconds (pre).
+[SMT] Filter took 0.009926782 seconds (pre).
+[SMT] Filter took 0.01064121 seconds (pre).
+[SMT] Filter took 0.008687537 seconds (pre).
+[SMT] Filter took 0.009750942 seconds (pre).
+[SMT] Filter took 0.010779698 seconds (pre).
+[SMT] Filter took 0.011022869 seconds (pre).
+[SMT] Filter took 0.010789226 seconds (pre).
+[SMT] Filter took 0.015144391 seconds (pre).
+[SMT] Filter took 0.008832035 seconds (pre).
+[SMT] Filter took 0.012936252 seconds (pre).
+[SMT] Filter took 0.009715643 seconds (pre).
+[SMT] Filter took 0.013124277 seconds (pre).
+[SMT] Filter took 0.010149644 seconds (pre).
+[SMT] Filter took 0.010296838 seconds (pre).
+[SMT] Filter took 0.009912214 seconds (pre).
+[SMT] Filter took 0.011188027 seconds (pre).
+[SMT] Filter took 0.00986416 seconds (pre).
+[SMT] Filter took 0.01093482 seconds (pre).
+[SMT] Filter took 0.010369487 seconds (pre).
+[SMT] Filter took 0.013257457 seconds (pre).
+[SMT] Filter took 0.009488286 seconds (pre).
+[SMT] Filter took 0.010964609 seconds (pre).
+[SMT] Filter took 0.006980456 seconds (pre).
+[SMT] Filter took 0.012212028 seconds (pre).
+[SMT] Filter took 0.008980765 seconds (pre).
+[SMT] Filter took 0.010854405 seconds (pre).
+[SMT] Filter took 0.010748773 seconds (pre).
+[SMT] Filter took 0.013743016 seconds (pre).
+[SMT] Filter took 0.012025556 seconds (pre).
+[SMT] Filter took 0.010771 seconds (pre).
+[SMT] Filter took 0.009609645 seconds (pre).
+[SMT] Filter took 0.025285339 seconds (full).
+[SMT] Filter took 0.017065153 seconds (pre).
+[SMT] Filter took 0.010567581 seconds (pre).
+[SMT] Filter took 0.008434341 seconds (pre).
+[SMT] Filter took 0.010259988 seconds (pre).
+[SMT] Filter took 0.007920399 seconds (pre).
+[SMT] Filter took 0.010339964 seconds (pre).
+[SMT] Filter took 0.011664869 seconds (pre).
+[SMT] Filter took 0.03107188 seconds (full).
+[SMT] Filter took 0.027573656 seconds (full).
+[SMT] Filter took 0.032786592 seconds (full).
+[SMT] Filter took 0.024956349000000003 seconds (full).
+[SMT] Filter took 0.039869082 seconds (full).
+[SMT] Filter took 0.034380126999999996 seconds (full).
+[SMT] Filter took 0.013833748 seconds (pre).
+[SMT] Filter took 0.008930916 seconds (pre).
+[SMT] Filter took 0.011694605 seconds (pre).
+[SMT] Filter took 0.017501488 seconds (pre).
+[SMT] Filter took 0.014123697 seconds (pre).
+[SMT] Filter took 0.044662809 seconds (full).
+[SMT] Filter took 0.034131859 seconds (full).
+[SMT] Filter took 0.031641126 seconds (full).
+[SMT] Filter took 0.026951734999999997 seconds (full).
+[SMT] Filter took 0.041905721 seconds (full).
+[SMT] Filter took 0.026959224 seconds (full).
+[SMT] Filter took 0.023896529 seconds (full).
+[SMT] Filter took 0.035713571 seconds (full).
+[SMT] Filter took 0.020782805 seconds (full).
+[SMT] Filter took 0.032092722 seconds (full).
+[SMT] Filter took 0.016655047 seconds (full).
+[SMT] Filter took 0.033694562000000004 seconds (full).
+[SMT] Filter took 0.028007994 seconds (full).
+[SMT] Filter took 0.036072453000000004 seconds (full).
+[SMT] Filter took 0.03484157 seconds (full).
+[SMT] SMT filtered out 762 stars (out of 842).
+[CTRL] Saving current state of verification...
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 4
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[APPROX] # Conjunctions over output: 4
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, 0.0]
+[NNENUM] ub: [100.0, 200.0]
+[runlim] sample:		47.5 time, 60.5 real, 1270.9 MB
+[NNENUM] Spec list length:  4
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 1/11  (0.098%) CEs: 4 ETA: 2.32 min (expected 1024 stars)   
+(0.2 sec) Q: 0, Sets: 9/17  (0.684%) CEs: 11 ETA: 35.2 sec (expected 1317 stars)   (0.3 sec) Q: 0, Sets: 16/27  (0.824%) CEs: 20 ETA: 41.4 sec (expected 1942 stars)   
+(0.5 sec) Q: 0, Sets: 26/34  (1.123%) CEs: 29 ETA: 39.9 sec (expected 2315 stars)   (0.6 sec) Q: 0, Sets: 35/45  (1.636%) CEs: 37 ETA: 33.4 sec (expected 2140 stars)   (0.7 sec) Q: 0, Sets: 44/51  (1.953%) CEs: 46 ETA: 33.0 sec (expected 2253 stars)   (0.8 sec) Q: 0, Sets: 54/61  (2.979%) CEs: 56 ETA: 24.8 sec (expected 1813 stars)   
+(0.9 sec) Q: 0, Sets: 63/69  (6.25%) CEs: 64 ETA: 13.1 sec (expected 1008 stars)   (1.0 sec) Q: 0, Sets: 71/82  (6.311%) CEs: 73 ETA: 14.6 sec (expected 1125 stars)   (1.1 sec) Q: 0, Sets: 80/90  (6.342%) CEs: 82 ETA: 16.2 sec (expected 1262 stars)   (1.2 sec) Q: 0, Sets: 89/100  (6.403%) CEs: 91 ETA: 17.5 sec (expected 1390 stars)   (1.3 sec) Q: 0, Sets: 98/108  (6.494%) CEs: 100 ETA: 18.8 sec (expected 1509 stars)   (1.4 sec) Q: 0, Sets: 105/118  (6.741%) CEs: 107 ETA: 19.5 sec (expected 1558 stars)   (1.5 sec) Q: 0, Sets: 114/123  (6.86%) CEs: 115 ETA: 20.6 sec (expected 1662 stars)   (1.6 sec) Q: 0, Sets: 123/130  (6.982%) CEs: 123 ETA: 21.5 sec (expected 1762 stars)   
+(1.7 sec) Q: 0, Sets: 128/138  (7.092%) CEs: 133 ETA: 22.5 sec (expected 1805 stars)   (1.8 sec) Q: 0, Sets: 138/147  (7.153%) CEs: 142 ETA: 23.6 sec (expected 1929 stars)   (1.9 sec) Q: 0, Sets: 148/157  (7.251%) CEs: 151 ETA: 24.6 sec (expected 2041 stars)   (2.0 sec) Q: 0, Sets: 157/168  (7.332%) CEs: 158 ETA: 25.6 sec (expected 2141 stars)   (2.1 sec) Q: 0, Sets: 162/170  (7.361%) CEs: 166 ETA: 26.8 sec (expected 2201 stars)   (2.2 sec) Q: 0, Sets: 170/177  (7.422%) CEs: 173 ETA: 27.9 sec (expected 2291 stars)   (2.3 sec) Q: 0, Sets: 178/188  (7.535%) CEs: 180 ETA: 28.7 sec (expected 2362 stars)   (2.4 sec) Q: 0, Sets: 185/196  (7.57%) CEs: 185 ETA: 29.8 sec (expected 2444 stars)   (2.6 sec) Q: 0, Sets: 191/200  (7.579%) CEs: 191 ETA: 31.2 sec (expected 2520 stars)   (2.7 sec) Q: 0, Sets: 197/207  (7.594%) CEs: 197 ETA: 32.5 sec (expected 2594 stars)   (2.8 sec) Q: 0, Sets: 203/212  (7.605%) CEs: 203 ETA: 33.7 sec (expected 2669 stars)   (2.9 sec) Q: 0, Sets: 210/217  (7.614%) CEs: 210 ETA: 34.9 sec (expected 2758 stars)   (3.0 sec) Q: 0, Sets: 214/220  (7.764%) CEs: 218 ETA: 35.4 sec (expected 2756 stars)   (3.1 sec) Q: 0, Sets: 223/229  (8.789%) CEs: 225 ETA: 32.0 sec (expected 2537 stars)   (3.2 sec) Q: 0, Sets: 232/238  (9.253%) CEs: 234 ETA: 31.2 sec (expected 2507 stars)   (3.3 sec) Q: 0, Sets: 241/248  (9.668%) CEs: 242 ETA: 30.7 sec (expected 2493 stars)   
+(3.4 sec) Q: 0, Sets: 249/256  (10.352%) CEs: 250 ETA: 29.3 sec (expected 2405 stars)   (3.5 sec) Q: 0, Sets: 257/266  (11.34%) CEs: 257 ETA: 27.3 sec (expected 2266 stars)   (3.6 sec) Q: 0, Sets: 266/272  (11.426%) CEs: 266 ETA: 27.8 sec (expected 2328 stars)   (3.7 sec) Q: 0, Sets: 270/276  (11.499%) CEs: 274 ETA: 28.4 sec (expected 2348 stars)   (3.8 sec) Q: 0, Sets: 279/284  (11.694%) CEs: 281 ETA: 28.6 sec (expected 2386 stars)   (3.9 sec) Q: 0, Sets: 287/291  (12.109%) CEs: 289 ETA: 28.2 sec (expected 2370 stars)   (4.0 sec) Q: 0, Sets: 296/301  (26.562%) CEs: 297 ETA: 11.0 sec (expected 1114 stars)   (4.1 sec) Q: 0, Sets: 306/314  (37.671%) CEs: 306 ETA: 6.8 sec (expected 812 stars)   (4.2 sec) Q: 0, Sets: 317/326  (37.805%) CEs: 317 ETA: 6.9 sec (expected 839 stars)   (4.3 sec) Q: 0, Sets: 327/336  (37.952%) CEs: 327 ETA: 7.0 sec (expected 862 stars)   (4.4 sec) Q: 0, Sets: 336/343  (38.037%) CEs: 336 ETA: 7.2 sec (expected 883 stars)   (4.5 sec) Q: 0, Sets: 340/348  (38.11%) CEs: 344 ETA: 7.3 sec (expected 892 stars)   (4.6 sec) Q: 0, Sets: 349/355  (38.477%) CEs: 352 ETA: 7.4 sec (expected 907 stars)   (4.7 sec) Q: 0, Sets: 360/366  (38.916%) CEs: 362 ETA: 7.4 sec (expected 925 stars)   (4.8 sec) Q: 0, Sets: 371/376  (39.453%) CEs: 371 ETA: 7.4 sec (expected 940 stars)   (4.9 sec) Q: 0, Sets: 381/388  (39.685%) CEs: 381 ETA: 7.5 sec (expected 960 stars)   (5.0 sec) Q: 0, Sets: 393/397  (40.234%) CEs: 393 ETA: 7.5 sec (expected 977 stars)   (5.1 sec) Q: 0, Sets: 399/403  (40.527%) CEs: 404 ETA: 7.5 sec (expected 985 stars)   (5.2 sec) Q: 0, Sets: 410/417  (41.602%) CEs: 416 ETA: 7.4 sec (expected 986 stars)   (5.3 sec) Q: 0, Sets: 422/426  (43.164%) CEs: 425 ETA: 7.0 sec (expected 978 stars)   (5.5 sec) Q: 0, Sets: 432/435  (43.652%) CEs: 435 ETA: 7.0 sec (expected 990 stars)   (5.6 sec) Q: 0, Sets: 442/446  (44.922%) CEs: 445 ETA: 6.8 sec (expected 984 stars)   (5.7 sec) Q: 0, Sets: 452/456  (47.461%) CEs: 457 ETA: 6.3 sec (expected 952 stars)   (5.8 sec) Q: 0, Sets: 462/469  (50.0%) CEs: 465 ETA: 5.8 sec (expected 924 stars)   (5.9 sec) Q: 0, Sets: 469/478  (50.513%) CEs: 473 ETA: 5.8 sec (expected 928 stars)   (6.0 sec) Q: 0, Sets: 479/488  (50.635%) CEs: 482 ETA: 5.8 sec (expected 946 stars)   (6.1 sec) Q: 0, Sets: 487/497  (50.806%) CEs: 490 ETA: 5.9 sec (expected 959 stars)   (6.2 sec) Q: 0, Sets: 496/503  (50.977%) CEs: 499 ETA: 6.0 sec (expected 973 stars)   (6.3 sec) Q: 0, Sets: 505/511  (51.172%) CEs: 507 ETA: 6.0 sec (expected 987 stars)   (6.4 sec) Q: 0, Sets: 515/522  (53.125%) CEs: 518 ETA: 5.6 sec (expected 969 stars)   (6.5 sec) Q: 0, Sets: 525/534  (53.369%) CEs: 527 ETA: 5.7 sec (expected 984 stars)   (6.6 sec) Q: 0, Sets: 535/542  (53.503%) CEs: 537 ETA: 5.7 sec (expected 1000 stars)   
+(6.7 sec) Q: 0, Sets: 546/550  (54.688%) CEs: 546 ETA: 5.6 sec (expected 998 stars)   (6.8 sec) Q: 0, Sets: 553/561  (54.785%) CEs: 554 ETA: 5.6 sec (expected 1009 stars)   (6.9 sec) Q: 0, Sets: 562/569  (54.956%) CEs: 563 ETA: 5.7 sec (expected 1023 stars)   (7.0 sec) Q: 0, Sets: 572/578  (55.066%) CEs: 573 ETA: 5.7 sec (expected 1039 stars)   (7.1 sec) Q: 0, Sets: 580/587  (55.237%) CEs: 582 ETA: 5.8 sec (expected 1050 stars)   (7.3 sec) Q: 0, Sets: 589/596  (55.432%) CEs: 591 ETA: 5.8 sec (expected 1063 stars)   (7.4 sec) Q: 0, Sets: 598/604  (55.664%) CEs: 600 ETA: 5.9 sec (expected 1074 stars)   (7.5 sec) Q: 0, Sets: 607/615  (56.348%) CEs: 609 ETA: 5.8 sec (expected 1077 stars)   (7.6 sec) Q: 0, Sets: 619/625  (57.52%) CEs: 620 ETA: 5.6 sec (expected 1076 stars)   (7.7 sec) Q: 0, Sets: 627/638  (57.819%) CEs: 628 ETA: 5.6 sec (expected 1084 stars)   (7.8 sec) Q: 0, Sets: 636/643  (57.91%) CEs: 636 ETA: 5.7 sec (expected 1098 stars)   (7.9 sec) Q: 0, Sets: 641/648  (58.057%) CEs: 645 ETA: 5.7 sec (expected 1104 stars)   (8.0 sec) Q: 0, Sets: 651/658  (58.167%) CEs: 654 ETA: 5.8 sec (expected 1119 stars)   (8.1 sec) Q: 0, Sets: 660/666  (58.447%) CEs: 663 ETA: 5.8 sec (expected 1129 stars)   (8.2 sec) Q: 0, Sets: 668/673  (58.594%) CEs: 670 ETA: 5.8 sec (expected 1140 stars)   (8.3 sec) Q: 0, Sets: 675/685  (58.614%) CEs: 678 ETA: 5.9 sec (expected 1152 stars)   (8.4 sec) Q: 0, Sets: 683/690  (58.679%) CEs: 686 ETA: 5.9 sec (expected 1164 stars)   (8.5 sec) Q: 0, Sets: 692/699  (58.734%) CEs: 695 ETA: 6.0 sec (expected 1178 stars)   (8.6 sec) Q: 0, Sets: 700/709  (58.795%) CEs: 703 ETA: 6.1 sec (expected 1191 stars)   (8.7 sec) Q: 0, Sets: 709/717  (58.829%) CEs: 711 ETA: 6.1 sec (expected 1205 stars)   (8.8 sec) Q: 0, Sets: 716/723  (58.859%) CEs: 717 ETA: 6.2 sec (expected 1216 stars)   (9.0 sec) Q: 0, Sets: 725/733  (58.943%) CEs: 725 ETA: 6.2 sec (expected 1230 stars)   (9.1 sec) Q: 0, Sets: 729/734  (58.96%) CEs: 732 ETA: 6.3 sec (expected 1236 stars)   (9.2 sec) Q: 0, Sets: 738/746  (59.007%) CEs: 741 ETA: 6.4 sec (expected 1251 stars)   (9.3 sec) Q: 0, Sets: 747/754  (59.045%) CEs: 750 ETA: 6.4 sec (expected 1265 stars)   (9.4 sec) Q: 0, Sets: 755/762  (59.122%) CEs: 758 ETA: 6.5 sec (expected 1277 stars)   (9.5 sec) Q: 0, Sets: 765/770  (59.229%) CEs: 766 ETA: 6.5 sec (expected 1292 stars)   (9.6 sec) Q: 0, Sets: 773/782  (59.237%) CEs: 775 ETA: 6.6 sec (expected 1305 stars)   (9.7 sec) Q: 0, Sets: 782/788  (59.247%) CEs: 784 ETA: 6.7 sec (expected 1320 stars)   [runlim] sample:		57.5 time, 70.5 real, 1271.4 MB
+(9.8 sec) Q: 0, Sets: 792/800  (59.285%) CEs: 793 ETA: 6.7 sec (expected 1336 stars)   (9.9 sec) Q: 0, Sets: 799/806  (59.294%) CEs: 799 ETA: 6.8 sec (expected 1348 stars)   (10.0 sec) Q: 0, Sets: 802/808  (59.302%) CEs: 805 ETA: 6.9 sec (expected 1352 stars)   (10.1 sec) Q: 0, Sets: 810/816  (59.332%) CEs: 812 ETA: 6.9 sec (expected 1365 stars)   (10.2 sec) Q: 0, Sets: 816/821  (59.348%) CEs: 818 ETA: 7.0 sec (expected 1375 stars)   (10.3 sec) Q: 0, Sets: 824/830  (59.57%) CEs: 826 ETA: 7.0 sec (expected 1383 stars)   (10.4 sec) Q: 0, Sets: 834/836  (62.5%) CEs: 835 ETA: 6.2 sec (expected 1334 stars)   (10.5 sec) Q: 0, Sets: 842/850  (68.884%) CEs: 843 ETA: 4.8 sec (expected 1222 stars)   (10.6 sec) Q: 0, Sets: 851/860  (69.543%) CEs: 851 ETA: 4.7 sec (expected 1224 stars)   (10.7 sec) Q: 0, Sets: 856/865  (69.635%) CEs: 859 ETA: 4.7 sec (expected 1229 stars)   (10.8 sec) Q: 0, Sets: 864/874  (69.644%) CEs: 867 ETA: 4.7 sec (expected 1241 stars)   (10.9 sec) Q: 0, Sets: 873/881  (69.653%) CEs: 876 ETA: 4.8 sec (expected 1253 stars)   (11.0 sec) Q: 0, Sets: 883/893  (69.656%) CEs: 885 ETA: 4.8 sec (expected 1268 stars)   (11.1 sec) Q: 0, Sets: 891/900  (69.663%) CEs: 893 ETA: 4.9 sec (expected 1279 stars)   (11.2 sec) Q: 0, Sets: 901/909  (69.684%) CEs: 902 ETA: 4.9 sec (expected 1293 stars)   (11.3 sec) Q: 0, Sets: 910/917  (69.696%) CEs: 910 ETA: 4.9 sec (expected 1306 stars)   (11.5 sec) Q: 0, Sets: 918/927  (69.704%) CEs: 919 ETA: 5.0 sec (expected 1317 stars)   (11.6 sec) Q: 0, Sets: 925/934  (69.709%) CEs: 926 ETA: 5.0 sec (expected 1327 stars)   (11.7 sec) Q: 0, Sets: 935/941  (69.714%) CEs: 935 ETA: 5.1 sec (expected 1341 stars)   (11.8 sec) Q: 0, Sets: 943/948  (69.727%) CEs: 943 ETA: 5.1 sec (expected 1352 stars)   (11.9 sec) Q: 0, Sets: 949/955  (69.775%) CEs: 953 ETA: 5.1 sec (expected 1360 stars)   (12.0 sec) Q: 0, Sets: 960/967  (69.958%) CEs: 960 ETA: 5.1 sec (expected 1372 stars)   (12.1 sec) Q: 0, Sets: 969/975  (70.016%) CEs: 969 ETA: 5.2 sec (expected 1384 stars)   (12.2 sec) Q: 0, Sets: 978/985  (70.053%) CEs: 978 ETA: 5.2 sec (expected 1396 stars)   (12.3 sec) Q: 0, Sets: 983/989  (70.067%) CEs: 986 ETA: 5.3 sec (expected 1403 stars)   (12.4 sec) Q: 0, Sets: 992/998  (70.09%) CEs: 994 ETA: 5.3 sec (expected 1415 stars)   (12.5 sec) Q: 0, Sets: 1001/1009  (70.106%) CEs: 1003 ETA: 5.3 sec (expected 1428 stars)   (12.6 sec) Q: 0, Sets: 1010/1017  (70.115%) CEs: 1013 ETA: 5.4 sec (expected 1441 stars)   (12.7 sec) Q: 0, Sets: 1018/1026  (70.126%) CEs: 1021 ETA: 5.4 sec (expected 1452 stars)   (12.8 sec) Q: 0, Sets: 1027/1033  (70.154%) CEs: 1029 ETA: 5.5 sec (expected 1464 stars)   (12.9 sec) Q: 0, Sets: 1035/1041  (70.197%) CEs: 1038 ETA: 5.5 sec (expected 1474 stars)   (13.0 sec) Q: 0, Sets: 1044/1050  (70.233%) CEs: 1045 ETA: 5.5 sec (expected 1486 stars)   (13.1 sec) Q: 0, Sets: 1051/1056  (70.261%) CEs: 1052 ETA: 5.6 sec (expected 1496 stars)   (13.3 sec) Q: 0, Sets: 1059/1064  (70.303%) CEs: 1060 ETA: 5.6 sec (expected 1506 stars)   (13.4 sec) Q: 0, Sets: 1067/1072  (70.508%) CEs: 1068 ETA: 5.6 sec (expected 1513 stars)   
+(13.5 sec) Q: 0, Sets: 1078/1084  (70.776%) CEs: 1079 ETA: 5.6 sec (expected 1523 stars)   (13.6 sec) Q: 0, Sets: 1089/1094  (71.094%) CEs: 1090 ETA: 5.5 sec (expected 1532 stars)   (13.7 sec) Q: 0, Sets: 1099/1106  (71.924%) CEs: 1100 ETA: 5.3 sec (expected 1528 stars)   (13.8 sec) Q: 0, Sets: 1110/1114  (72.852%) CEs: 1110 ETA: 5.1 sec (expected 1524 stars)   
+Total Stars: 1118 (1118 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 13.9 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 14887
+Total Num Lps: 14887
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [0.0, 0.0]
+Output: [2.7605559825897217]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7fd1730639d0>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 1118
+[NNENUM] Filtering result using SMT solver...
+[SMT] Filter took 0.029930705000000002 seconds (full).
+[SMT] Filter took 0.024872818999999997 seconds (full).
+[SMT] Filter took 0.025585141 seconds (full).
+[SMT] Filter took 0.030863771999999998 seconds (full).
+[SMT] Filter took 0.033160033 seconds (full).
+[SMT] Filter took 0.007933127 seconds (pre).
+[SMT] Filter took 0.023616580999999998 seconds (full).
+[SMT] Filter took 0.02480125 seconds (full).
+[SMT] Filter took 0.022542228999999997 seconds (full).
+[SMT] Filter took 0.023871701000000002 seconds (full).
+[SMT] Filter took 0.031526297 seconds (full).
+[SMT] Filter took 0.035246421 seconds (full).
+[SMT] Filter took 0.028578971999999998 seconds (full).
+[SMT] Filter took 0.041402377000000004 seconds (full).
+[SMT] Filter took 0.032376142999999996 seconds (full).
+[SMT] Filter took 0.019635872 seconds (pre).
+[SMT] Filter took 0.010894099 seconds (pre).
+[SMT] Filter took 0.009032529 seconds (pre).
+[SMT] Filter took 0.010622676 seconds (pre).
+[SMT] Filter took 0.019597984 seconds (pre).
+[SMT] Filter took 0.013965092 seconds (pre).
+[SMT] Filter took 0.013137409 seconds (pre).
+[SMT] Filter took 0.013589689 seconds (pre).
+[SMT] Filter took 0.015589417 seconds (pre).
+[SMT] Filter took 0.011397355 seconds (pre).
+[SMT] Filter took 0.010809366 seconds (pre).
+[SMT] Filter took 0.019596034 seconds (pre).
+[SMT] Filter took 0.020483928999999998 seconds (full).
+[SMT] Filter took 0.023794458 seconds (full).
+[SMT] Filter took 0.022989654999999998 seconds (full).
+[SMT] Filter took 0.029493560000000002 seconds (full).
+[SMT] Filter took 0.026351663 seconds (full).
+[SMT] Filter took 0.028425941000000003 seconds (full).
+[SMT] Filter took 0.024565309 seconds (full).
+[SMT] Filter took 0.03183046 seconds (full).
+[SMT] Filter took 0.019758709 seconds (full).
+[SMT] Filter took 0.029381087 seconds (full).
+[SMT] Filter took 0.031355325 seconds (full).
+[SMT] Filter took 0.03337223 seconds (full).
+[SMT] Filter took 0.026252767000000003 seconds (full).
+[SMT] Filter took 0.04052369 seconds (full).
+[SMT] Filter took 0.046227752 seconds (full).
+[SMT] Filter took 0.014687533 seconds (pre).
+[SMT] Filter took 0.019686376 seconds (full).
+[SMT] Filter took 0.011899863 seconds (pre).
+[SMT] Filter took 0.009907203 seconds (pre).
+[SMT] Filter took 0.026980185999999996 seconds (full).
+[SMT] Filter took 0.044278962 seconds (full).
+[SMT] Filter took 0.025526869 seconds (full).
+[SMT] Filter took 0.035203468 seconds (full).
+[SMT] Filter took 0.010225148 seconds (pre).
+[SMT] Filter took 0.015391766 seconds (pre).
+[SMT] Filter took 0.013457402 seconds (pre).
+[SMT] Filter took 0.01068016 seconds (pre).
+[SMT] Filter took 0.015917832 seconds (pre).
+[SMT] Filter took 0.030034926 seconds (pre).
+[SMT] Filter took 0.017840024 seconds (pre).
+[SMT] Filter took 0.014219893 seconds (pre).
+[SMT] Filter took 0.01971504 seconds (pre).
+[SMT] Filter took 0.026848095000000002 seconds (full).
+[SMT] Filter took 0.030979685 seconds (full).
+[SMT] Filter took 0.029443342 seconds (full).
+[SMT] Filter took 0.029884453999999998 seconds (full).
+[SMT] Filter took 0.047577833 seconds (full).
+[SMT] Filter took 0.032281691 seconds (full).
+[SMT] Filter took 0.029285058000000003 seconds (full).
+[SMT] Filter took 0.0436169 seconds (full).
+[SMT] Filter took 0.022191043 seconds (full).
+[SMT] Filter took 0.051659532999999994 seconds (full).
+[SMT] Filter took 0.029584213 seconds (full).
+[SMT] Filter took 0.029391273000000002 seconds (full).
+[SMT] Filter took 0.030831782000000002 seconds (full).
+[SMT] Filter took 0.036212194 seconds (full).
+[SMT] Filter took 0.028836199 seconds (full).
+[SMT] Filter took 0.036156816 seconds (full).
+[SMT] Filter took 0.030162664999999998 seconds (full).
+[SMT] Filter took 0.037701733 seconds (full).
+[SMT] Filter took 0.026041645 seconds (full).
+[SMT] Filter took 0.033163855 seconds (full).
+[SMT] Filter took 0.041762657 seconds (full).
+[SMT] Filter took 0.032415123 seconds (full).
+[SMT] Filter took 0.050707418000000004 seconds (full).
+[SMT] Filter took 0.025249204 seconds (full).
+[SMT] Filter took 0.036257576 seconds (full).
+[SMT] Filter took 0.031381451000000005 seconds (full).
+[SMT] Filter took 0.043714018 seconds (full).
+[SMT] Filter took 0.029865635 seconds (full).
+[SMT] Filter took 0.027837997000000003 seconds (full).
+[SMT] Filter took 0.040458295 seconds (full).
+[SMT] Filter took 0.024957350000000003 seconds (full).
+[SMT] Filter took 0.055470332 seconds (full).
+[SMT] Filter took 0.025625903 seconds (full).
+[SMT] Filter took 0.042957409 seconds (full).
+[SMT] Filter took 0.029599317 seconds (full).
+[SMT] Filter took 0.034565757 seconds (full).
+[SMT] Filter took 0.039356537 seconds (full).
+[SMT] Filter took 0.025865129 seconds (full).
+[SMT] Filter took 0.032512549 seconds (full).
+[SMT] Filter took 0.026869922999999997 seconds (full).
+[SMT] Filter took 0.027437376 seconds (full).
+[SMT] Filter took 0.026135035 seconds (full).
+[SMT] Filter took 0.035348950999999997 seconds (full).
+[SMT] Filter took 0.025251218 seconds (full).
+[SMT] Filter took 0.026823461 seconds (full).
+[SMT] Filter took 0.045047888999999994 seconds (full).
+[SMT] Filter took 0.038556334 seconds (full).
+[SMT] Filter took 0.032444326 seconds (full).
+[SMT] Filter took 0.026627085 seconds (full).
+[SMT] Filter took 0.031421483 seconds (full).
+[SMT] Filter took 0.019422902 seconds (full).
+[SMT] Filter took 0.025393131 seconds (full).
+[SMT] Filter took 0.018610582 seconds (full).
+[SMT] Filter took 0.031061393 seconds (full).
+[SMT] Filter took 0.035691488 seconds (full).
+[SMT] Filter took 0.03885708 seconds (full).
+[SMT] Filter took 0.030430020000000002 seconds (full).
+[SMT] Filter took 0.030656355 seconds (full).
+[SMT] Filter took 0.027633472 seconds (full).
+[SMT] Filter took 0.031674339 seconds (full).
+[SMT] Filter took 0.027692528 seconds (full).
+[SMT] Filter took 0.031305929999999996 seconds (full).
+[SMT] Filter took 0.039369427 seconds (full).
+[SMT] Filter took 0.021249735 seconds (full).
+[SMT] Filter took 0.032117364 seconds (full).
+[SMT] Filter took 0.033425423999999995 seconds (full).
+[SMT] Filter took 0.030698029 seconds (full).
+[SMT] Filter took 0.035734095 seconds (full).
+[SMT] Filter took 0.022952412 seconds (full).
+[SMT] Filter took 0.023083875 seconds (full).
+[SMT] Filter took 0.037011577000000004 seconds (full).
+[SMT] Filter took 0.026631942 seconds (full).
+[SMT] Filter took 0.029983194999999997 seconds (full).
+[SMT] Filter took 0.022625735 seconds (full).
+[SMT] Filter took 0.046315008000000005 seconds (full).
+[SMT] Filter took 0.030712153 seconds (full).
+[SMT] Filter took 0.030909264 seconds (full).
+[SMT] Filter took 0.027022103999999998 seconds (full).
+[SMT] Filter took 0.025869899000000002 seconds (full).
+[SMT] Filter took 0.039535150000000005 seconds (full).
+[SMT] Filter took 0.022722331 seconds (full).
+[SMT] Filter took 0.041029963 seconds (full).
+[SMT] Filter took 0.029568266000000003 seconds (full).
+[SMT] Filter took 0.031012620999999997 seconds (full).
+[SMT] Filter took 0.035644167 seconds (full).
+[SMT] Filter took 0.031955465 seconds (full).
+[SMT] Filter took 0.019700613 seconds (full).
+[SMT] Filter took 0.030605434 seconds (full).
+[SMT] Filter took 0.02798244 seconds (full).
+[SMT] Filter took 0.025415818 seconds (full).
+[SMT] Filter took 0.023320091 seconds (full).
+[SMT] Filter took 0.028754309 seconds (full).
+[SMT] Filter took 0.022094494 seconds (full).
+[SMT] Filter took 0.043350041 seconds (full).
+[SMT] Filter took 0.037099908 seconds (full).
+[SMT] Filter took 0.027340397 seconds (full).
+[SMT] Filter took 0.035596252 seconds (full).
+[SMT] Filter took 0.033072073 seconds (full).
+[SMT] Filter took 0.045124581 seconds (full).
+[SMT] Filter took 0.048956712 seconds (full).
+[SMT] Filter took 0.036424326 seconds (full).
+[SMT] Filter took 0.028998167999999998 seconds (full).
+[SMT] Filter took 0.027884249 seconds (full).
+[SMT] Filter took 0.035628125999999996 seconds (full).
+[SMT] Filter took 0.028801965 seconds (full).
+[SMT] Filter took 0.027480028999999996 seconds (full).
+[SMT] Filter took 0.041475223 seconds (full).
+[SMT] Filter took 0.032789198 seconds (full).
+[SMT] Filter took 0.036980110000000004 seconds (full).
+[SMT] Filter took 0.042683179 seconds (full).
+[SMT] Filter took 0.027982175999999997 seconds (full).
+[SMT] Filter took 0.048395928000000005 seconds (full).
+[SMT] Filter took 0.027236508 seconds (full).
+[SMT] Filter took 0.023973165999999997 seconds (full).
+[SMT] Filter took 0.028345029 seconds (full).
+[SMT] Filter took 0.030299639 seconds (full).
+[SMT] Filter took 0.024654509999999998 seconds (full).
+[SMT] Filter took 0.030743185 seconds (full).
+[SMT] Filter took 0.035124805999999995 seconds (full).
+[SMT] Filter took 0.036484158 seconds (full).
+[SMT] Filter took 0.031986086999999996 seconds (full).
+[SMT] Filter took 0.034619443 seconds (full).
+[SMT] Filter took 0.036371748 seconds (full).
+[SMT] Filter took 0.025923867 seconds (full).
+[SMT] Filter took 0.039697762 seconds (full).
+[SMT] Filter took 0.065890716 seconds (full).
+[SMT] Filter took 0.026431163 seconds (full).
+[SMT] Filter took 0.032870902 seconds (full).
+[SMT] Filter took 0.035352359 seconds (full).
+[SMT] Filter took 0.041690273 seconds (full).
+[SMT] Filter took 0.024274266000000003 seconds (full).
+[SMT] Filter took 0.047050462 seconds (full).
+[SMT] Filter took 0.06333256200000001 seconds (full).
+[SMT] Filter took 0.031214946 seconds (full).
+[SMT] Filter took 0.046701808 seconds (full).
+[SMT] Filter took 0.035063322 seconds (full).
+[SMT] Filter took 0.05356511 seconds (full).
+[SMT] Filter took 0.041258286000000005 seconds (full).
+[SMT] Filter took 0.038129319 seconds (full).
+[SMT] Filter took 0.041682781 seconds (full).
+[SMT] Filter took 0.035765111 seconds (full).
+[SMT] Filter took 0.033957667999999996 seconds (full).
+[SMT] Filter took 0.028618729 seconds (full).
+[SMT] Filter took 0.033136686 seconds (full).
+[SMT] Filter took 0.034096844 seconds (full).
+[SMT] Filter took 0.048359324 seconds (full).
+[SMT] Filter took 0.029198103 seconds (full).
+[SMT] Filter took 0.029057871 seconds (full).
+[SMT] Filter took 0.048396843 seconds (full).
+[SMT] Filter took 0.032421051 seconds (full).
+[SMT] Filter took 0.03031805 seconds (full).
+[SMT] Filter took 0.038145756 seconds (full).
+[SMT] Filter took 0.030568862999999998 seconds (full).
+[SMT] Filter took 0.020069268 seconds (full).
+[SMT] Filter took 0.02496454 seconds (full).
+[SMT] Filter took 0.030840973 seconds (full).
+[SMT] Filter took 0.026607091 seconds (full).
+[SMT] Filter took 0.020219321999999998 seconds (full).
+[SMT] Filter took 0.029704554 seconds (full).
+[SMT] Filter took 0.028294445 seconds (full).
+[SMT] Filter took 0.029450225 seconds (full).
+[SMT] Filter took 0.022910973 seconds (full).
+[SMT] Filter took 0.021302967 seconds (full).
+[SMT] Filter took 0.029294077 seconds (full).
+[SMT] Filter took 0.02819301 seconds (full).
+[SMT] Filter took 0.029743551 seconds (full).
+[SMT] Filter took 0.022039 seconds (full).
+[SMT] Filter took 0.039599425 seconds (full).
+[SMT] Filter took 0.019661551 seconds (full).
+[SMT] Filter took 0.03297866 seconds (full).
+[SMT] Filter took 0.022477221 seconds (full).
+[SMT] Filter took 0.028350012 seconds (full).
+[SMT] Filter took 0.025319095 seconds (full).
+[SMT] Filter took 0.030991196999999998 seconds (full).
+[SMT] Filter took 0.031686818 seconds (full).
+[SMT] Filter took 0.026289279999999998 seconds (full).
+[runlim] sample:		67.6 time, 80.5 real, 1287.7 MB
+[SMT] Filter took 0.019537629 seconds (full).
+[SMT] Filter took 0.027754104 seconds (full).
+[SMT] Filter took 0.032263886000000006 seconds (full).
+[SMT] Filter took 0.006465657 seconds (pre).
+[SMT] Filter took 0.024197131 seconds (full).
+[SMT] Filter took 0.020507083000000002 seconds (full).
+[SMT] Filter took 0.022757546 seconds (full).
+[SMT] Filter took 0.007570053 seconds (pre).
+[SMT] Filter took 0.028628803 seconds (full).
+[SMT] Filter took 0.020003697 seconds (full).
+[SMT] Filter took 0.027967991 seconds (full).
+[SMT] Filter took 0.028080261000000002 seconds (full).
+[SMT] Filter took 0.029340147 seconds (full).
+[SMT] Filter took 0.027408586999999998 seconds (full).
+[SMT] Filter took 0.026250422000000002 seconds (full).
+[SMT] Filter took 0.043871566 seconds (full).
+[SMT] Filter took 0.038358852 seconds (full).
+[SMT] Filter took 0.026089045 seconds (full).
+[SMT] Filter took 0.018287843999999998 seconds (full).
+[SMT] Filter took 0.024633079000000002 seconds (full).
+[SMT] Filter took 0.019526483 seconds (full).
+[SMT] Filter took 0.036426505 seconds (full).
+[SMT] Filter took 0.039832854 seconds (full).
+[SMT] Filter took 0.022462298999999998 seconds (full).
+[SMT] Filter took 0.027946558000000003 seconds (full).
+[SMT] Filter took 0.042184311 seconds (full).
+[SMT] Filter took 0.022482791000000002 seconds (full).
+[SMT] Filter took 0.025358428 seconds (full).
+[SMT] Filter took 0.031755611 seconds (full).
+[SMT] Filter took 0.028722497 seconds (full).
+[SMT] Filter took 0.022966082999999998 seconds (full).
+[SMT] Filter took 0.024468516000000003 seconds (full).
+[SMT] Filter took 0.040280245000000006 seconds (full).
+[SMT] Filter took 0.020728665 seconds (full).
+[SMT] Filter took 0.042702567 seconds (full).
+[SMT] Filter took 0.024784017999999998 seconds (full).
+[SMT] Filter took 0.026711215 seconds (full).
+[SMT] Filter took 0.030200792 seconds (full).
+[SMT] Filter took 0.043082038 seconds (full).
+[SMT] Filter took 0.027658947 seconds (full).
+[SMT] Filter took 0.030432802999999998 seconds (full).
+[SMT] Filter took 0.027718347 seconds (full).
+[SMT] Filter took 0.038500908 seconds (full).
+[SMT] Filter took 0.030188088999999998 seconds (full).
+[SMT] Filter took 0.025424532 seconds (full).
+[SMT] Filter took 0.027888802999999997 seconds (full).
+[SMT] Filter took 0.022073059 seconds (full).
+[SMT] Filter took 0.027776024 seconds (full).
+[SMT] Filter took 0.025148022 seconds (full).
+[SMT] Filter took 0.031337102 seconds (full).
+[SMT] Filter took 0.028298936999999996 seconds (full).
+[SMT] Filter took 0.024091196000000002 seconds (full).
+[SMT] Filter took 0.01906544 seconds (full).
+[SMT] Filter took 0.00892273 seconds (pre).
+[SMT] Filter took 0.006364298 seconds (pre).
+[SMT] Filter took 0.01589862 seconds (pre).
+[SMT] Filter took 0.009895125 seconds (pre).
+[SMT] Filter took 0.007246752 seconds (pre).
+[SMT] Filter took 0.006561656 seconds (pre).
+[SMT] Filter took 0.007859889 seconds (pre).
+[SMT] Filter took 0.026654095 seconds (full).
+[SMT] Filter took 0.019279266 seconds (full).
+[SMT] Filter took 0.014321676 seconds (full).
+[SMT] Filter took 0.02288321 seconds (full).
+[SMT] Filter took 0.015867100000000002 seconds (full).
+[SMT] Filter took 0.009056587 seconds (pre).
+[SMT] Filter took 0.037752371 seconds (full).
+[SMT] Filter took 0.029947974000000002 seconds (full).
+[SMT] Filter took 0.031668543 seconds (full).
+[SMT] Filter took 0.027521567000000004 seconds (full).
+[SMT] Filter took 0.021778294 seconds (full).
+[SMT] Filter took 0.032317527 seconds (full).
+[SMT] Filter took 0.021345173000000002 seconds (full).
+[SMT] Filter took 0.019868061 seconds (full).
+[SMT] Filter took 0.027051536 seconds (full).
+[SMT] Filter took 0.020846764 seconds (full).
+[SMT] Filter took 0.032596571000000005 seconds (full).
+[SMT] Filter took 0.051504374 seconds (full).
+[SMT] Filter took 0.042593342 seconds (full).
+[SMT] Filter took 0.015909698 seconds (pre).
+[SMT] Filter took 0.017956281 seconds (pre).
+[SMT] Filter took 0.032108391 seconds (full).
+[SMT] Filter took 0.028513707 seconds (full).
+[SMT] Filter took 0.025970404 seconds (full).
+[SMT] Filter took 0.012388697 seconds (pre).
+[SMT] Filter took 0.013391071 seconds (pre).
+[SMT] Filter took 0.015755174 seconds (pre).
+[SMT] Filter took 0.013553476 seconds (pre).
+[SMT] Filter took 0.009670187 seconds (pre).
+[SMT] Filter took 0.005302697 seconds (pre).
+[SMT] Filter took 0.00846024 seconds (pre).
+[SMT] Filter took 0.009341719 seconds (pre).
+[SMT] Filter took 0.028069948999999997 seconds (full).
+[SMT] Filter took 0.009433445 seconds (pre).
+[SMT] Filter took 0.036367716 seconds (full).
+[SMT] Filter took 0.02734439 seconds (full).
+[SMT] Filter took 0.028506276 seconds (full).
+[SMT] Filter took 0.030215088 seconds (full).
+[SMT] Filter took 0.034133776 seconds (full).
+[SMT] Filter took 0.028044566 seconds (full).
+[SMT] Filter took 0.028970756 seconds (full).
+[SMT] Filter took 0.03689007 seconds (full).
+[SMT] Filter took 0.02694534 seconds (full).
+[SMT] Filter took 0.021121584 seconds (full).
+[SMT] Filter took 0.036244034 seconds (full).
+[SMT] Filter took 0.016116045 seconds (full).
+[SMT] Filter took 0.007287887 seconds (pre).
+[SMT] Filter took 0.026960503 seconds (full).
+[SMT] Filter took 0.025919833000000003 seconds (full).
+[SMT] Filter took 0.031558083 seconds (full).
+[SMT] Filter took 0.038396018 seconds (full).
+[SMT] Filter took 0.029695369 seconds (full).
+[SMT] Filter took 0.007947537 seconds (pre).
+[SMT] Filter took 0.007834816 seconds (pre).
+[SMT] Filter took 0.021666459 seconds (full).
+[SMT] Filter took 0.028279779999999997 seconds (full).
+[SMT] Filter took 0.019866726 seconds (full).
+[SMT] Filter took 0.008036263 seconds (pre).
+[SMT] Filter took 0.010242972 seconds (pre).
+[SMT] Filter took 0.01087117 seconds (pre).
+[SMT] Filter took 0.012717792 seconds (pre).
+[SMT] Filter took 0.023653268999999998 seconds (full).
+[SMT] Filter took 0.025692972 seconds (full).
+[SMT] Filter took 0.011699783 seconds (pre).
+[SMT] Filter took 0.009181351 seconds (pre).
+[SMT] Filter took 0.00936918 seconds (pre).
+[SMT] Filter took 0.016685182 seconds (pre).
+[SMT] Filter took 0.013093101 seconds (pre).
+[SMT] Filter took 0.010186476 seconds (pre).
+[SMT] Filter took 0.010808889 seconds (pre).
+[SMT] Filter took 0.006945397 seconds (pre).
+[SMT] Filter took 0.01486123 seconds (pre).
+[SMT] Filter took 0.008504474 seconds (pre).
+[SMT] Filter took 0.011101336 seconds (pre).
+[SMT] Filter took 0.010326332 seconds (pre).
+[SMT] Filter took 0.012264317 seconds (pre).
+[SMT] Filter took 0.010175623 seconds (pre).
+[SMT] Filter took 0.013435962 seconds (pre).
+[SMT] Filter took 0.011328005 seconds (pre).
+[SMT] Filter took 0.008930456 seconds (pre).
+[SMT] Filter took 0.011292106 seconds (pre).
+[SMT] Filter took 0.014305759 seconds (pre).
+[SMT] Filter took 0.012795864 seconds (pre).
+[SMT] Filter took 0.015091325 seconds (pre).
+[SMT] Filter took 0.005938798 seconds (pre).
+[SMT] Filter took 0.020530882 seconds (pre).
+[SMT] Filter took 0.022931811 seconds (pre).
+[SMT] Filter took 0.011383197 seconds (pre).
+[SMT] Filter took 0.015434423 seconds (pre).
+[SMT] Filter took 0.018849348 seconds (pre).
+[SMT] Filter took 0.01095532 seconds (pre).
+[SMT] Filter took 0.021779103 seconds (pre).
+[SMT] Filter took 0.017704693 seconds (pre).
+[SMT] Filter took 0.01200074 seconds (pre).
+[SMT] Filter took 0.018262159 seconds (pre).
+[SMT] Filter took 0.007788319 seconds (pre).
+[SMT] Filter took 0.023379317 seconds (full).
+[SMT] Filter took 0.022998413000000002 seconds (full).
+[SMT] Filter took 0.011810026 seconds (pre).
+[SMT] Filter took 0.009624245 seconds (pre).
+[SMT] Filter took 0.01033111 seconds (pre).
+[SMT] Filter took 0.010588618 seconds (pre).
+[SMT] Filter took 0.006108688 seconds (pre).
+[SMT] Filter took 0.007892243 seconds (pre).
+[SMT] Filter took 0.007077865 seconds (pre).
+[SMT] Filter took 0.006770243 seconds (pre).
+[SMT] Filter took 0.008280687 seconds (pre).
+[SMT] Filter took 0.004648171 seconds (pre).
+[SMT] Filter took 0.002942782 seconds (pre).
+[SMT] Filter took 0.004522773 seconds (pre).
+[SMT] Filter took 0.004797585 seconds (pre).
+[SMT] Filter took 0.008052599 seconds (pre).
+[SMT] Filter took 0.015764171 seconds (pre).
+[SMT] Filter took 0.00745263 seconds (pre).
+[SMT] Filter took 0.011882243 seconds (pre).
+[SMT] Filter took 0.007728439 seconds (pre).
+[SMT] Filter took 0.012914369 seconds (pre).
+[SMT] Filter took 0.007931855 seconds (pre).
+[SMT] Filter took 0.007642581 seconds (pre).
+[SMT] Filter took 0.008350625 seconds (pre).
+[SMT] Filter took 0.008998507 seconds (pre).
+[SMT] Filter took 0.009193696 seconds (pre).
+[SMT] Filter took 0.011190601 seconds (pre).
+[SMT] Filter took 0.004945549 seconds (pre).
+[SMT] Filter took 0.008576744 seconds (pre).
+[SMT] Filter took 0.009462147 seconds (pre).
+[SMT] Filter took 0.008874888 seconds (pre).
+[SMT] Filter took 0.009457259 seconds (pre).
+[SMT] Filter took 0.014340133 seconds (pre).
+[SMT] Filter took 0.014071102 seconds (pre).
+[SMT] Filter took 0.009898622 seconds (pre).
+[SMT] Filter took 0.008801793 seconds (pre).
+[SMT] Filter took 0.017500307 seconds (pre).
+[SMT] Filter took 0.009635321 seconds (pre).
+[SMT] Filter took 0.014260895 seconds (pre).
+[SMT] Filter took 0.011669903 seconds (pre).
+[SMT] Filter took 0.016896633 seconds (pre).
+[SMT] Filter took 0.008556063 seconds (pre).
+[SMT] Filter took 0.020537048 seconds (pre).
+[SMT] Filter took 0.005953973 seconds (pre).
+[SMT] Filter took 0.01132744 seconds (pre).
+[SMT] Filter took 0.0073422 seconds (pre).
+[SMT] Filter took 0.009630299 seconds (pre).
+[SMT] Filter took 0.015827831 seconds (pre).
+[SMT] Filter took 0.011495557 seconds (pre).
+[SMT] Filter took 0.012806319 seconds (pre).
+[SMT] Filter took 0.01031343 seconds (pre).
+[SMT] Filter took 0.009422508 seconds (pre).
+[SMT] Filter took 0.013912983 seconds (pre).
+[SMT] Filter took 0.023609458 seconds (pre).
+[SMT] Filter took 0.010169326 seconds (pre).
+[SMT] Filter took 0.009225083 seconds (pre).
+[SMT] Filter took 0.010975572 seconds (pre).
+[SMT] Filter took 0.015690737 seconds (pre).
+[SMT] Filter took 0.010677997 seconds (pre).
+[SMT] Filter took 0.009489939 seconds (pre).
+[SMT] Filter took 0.012225587 seconds (pre).
+[SMT] Filter took 0.009984626 seconds (pre).
+[SMT] Filter took 0.009794415 seconds (pre).
+[SMT] Filter took 0.010148168 seconds (pre).
+[SMT] Filter took 0.007877267 seconds (pre).
+[SMT] Filter took 0.01799122 seconds (pre).
+[SMT] Filter took 0.028012484 seconds (pre).
+[SMT] Filter took 0.016865991 seconds (pre).
+[SMT] Filter took 0.022476798 seconds (pre).
+[SMT] Filter took 0.017135247 seconds (pre).
+[SMT] Filter took 0.027564304 seconds (pre).
+[SMT] Filter took 0.025815372 seconds (full).
+[SMT] Filter took 0.009893059 seconds (pre).
+[SMT] Filter took 0.022289077 seconds (full).
+[SMT] Filter took 0.016204729 seconds (pre).
+[SMT] Filter took 0.0098062 seconds (pre).
+[SMT] Filter took 0.013764639 seconds (pre).
+[SMT] Filter took 0.009360301 seconds (pre).
+[SMT] Filter took 0.011647832 seconds (pre).
+[SMT] Filter took 0.013865724 seconds (pre).
+[SMT] Filter took 0.013520853 seconds (pre).
+[SMT] Filter took 0.011098532 seconds (pre).
+[SMT] Filter took 0.030223902 seconds (full).
+[SMT] Filter took 0.016482361 seconds (pre).
+[SMT] Filter took 0.036545877 seconds (full).
+[SMT] Filter took 0.039570965 seconds (full).
+[SMT] Filter took 0.016215353 seconds (pre).
+[SMT] Filter took 0.011962542 seconds (pre).
+[SMT] Filter took 0.012391738 seconds (pre).
+[SMT] Filter took 0.014391508 seconds (pre).
+[SMT] Filter took 0.031462624 seconds (full).
+[SMT] Filter took 0.025095075 seconds (full).
+[SMT] Filter took 0.025624897 seconds (full).
+[SMT] Filter took 0.036028616 seconds (full).
+[SMT] Filter took 0.048648626 seconds (full).
+[SMT] Filter took 0.027022802999999998 seconds (full).
+[SMT] Filter took 0.018768775 seconds (full).
+[SMT] Filter took 0.033277525 seconds (full).
+[SMT] Filter took 0.033824951 seconds (full).
+[SMT] Filter took 0.026776302000000002 seconds (full).
+[SMT] Filter took 0.03794288 seconds (full).
+[SMT] Filter took 0.025679689 seconds (full).
+[SMT] Filter took 0.02256575 seconds (full).
+[SMT] Filter took 0.047934635 seconds (full).
+[SMT] Filter took 0.045372447 seconds (full).
+[SMT] Filter took 0.032101713000000004 seconds (full).
+[SMT] Filter took 0.044988639999999996 seconds (full).
+[SMT] Filter took 0.025474066 seconds (full).
+[SMT] Filter took 0.027843802 seconds (full).
+[SMT] Filter took 0.033032627 seconds (full).
+[SMT] Filter took 0.02303345 seconds (full).
+[SMT] Filter took 0.033599989999999996 seconds (full).
+[SMT] Filter took 0.037509873 seconds (full).
+[SMT] Filter took 0.026553954 seconds (full).
+[SMT] Filter took 0.024804088000000002 seconds (full).
+[SMT] Filter took 0.008899872 seconds (pre).
+[SMT] Filter took 0.011054307 seconds (pre).
+[SMT] Filter took 0.012038825 seconds (pre).
+[SMT] Filter took 0.009842283 seconds (pre).
+[SMT] Filter took 0.011814048 seconds (pre).
+[SMT] Filter took 0.010693172 seconds (pre).
+[SMT] Filter took 0.01523879 seconds (pre).
+[SMT] Filter took 0.010921292 seconds (pre).
+[SMT] Filter took 0.011821975 seconds (pre).
+[SMT] Filter took 0.009792198 seconds (pre).
+[SMT] Filter took 0.015043784 seconds (pre).
+[SMT] Filter took 0.011645004 seconds (pre).
+[SMT] Filter took 0.012370852 seconds (pre).
+[SMT] Filter took 0.016792327 seconds (pre).
+[SMT] Filter took 0.026509654 seconds (pre).
+[SMT] Filter took 0.01620929 seconds (pre).
+[SMT] Filter took 0.025272317 seconds (pre).
+[SMT] Filter took 0.013171027 seconds (pre).
+[SMT] Filter took 0.008988992 seconds (pre).
+[SMT] Filter took 0.011009026 seconds (pre).
+[SMT] Filter took 0.013258714 seconds (pre).
+[SMT] Filter took 0.011521238 seconds (pre).
+[SMT] Filter took 0.008760196 seconds (pre).
+[SMT] Filter took 0.016300495 seconds (pre).
+[SMT] Filter took 0.009845327 seconds (pre).
+[SMT] Filter took 0.010640848 seconds (pre).
+[SMT] Filter took 0.011765364 seconds (pre).
+[SMT] Filter took 0.0116024 seconds (pre).
+[SMT] Filter took 0.023237215 seconds (pre).
+[SMT] Filter took 0.011744822 seconds (pre).
+[SMT] Filter took 0.007129109 seconds (pre).
+[SMT] Filter took 0.00929443 seconds (pre).
+[SMT] Filter took 0.010573513 seconds (pre).
+[SMT] Filter took 0.017172649 seconds (pre).
+[SMT] Filter took 0.016173736 seconds (pre).
+[SMT] Filter took 0.011812057 seconds (pre).
+[SMT] Filter took 0.012136944 seconds (pre).
+[SMT] Filter took 0.011133669 seconds (pre).
+[SMT] Filter took 0.011642359 seconds (pre).
+[SMT] Filter took 0.007674244 seconds (pre).
+[SMT] Filter took 0.016119339 seconds (pre).
+[SMT] Filter took 0.010521603 seconds (pre).
+[SMT] Filter took 0.02635133 seconds (full).
+[SMT] Filter took 0.011641666 seconds (pre).
+[SMT] Filter took 0.023046107 seconds (pre).
+[SMT] Filter took 0.012556762 seconds (pre).
+[SMT] Filter took 0.01131244 seconds (pre).
+[SMT] Filter took 0.011431061 seconds (pre).
+[SMT] Filter took 0.016075147 seconds (pre).
+[SMT] Filter took 0.012665786 seconds (pre).
+[SMT] Filter took 0.012478356 seconds (pre).
+[SMT] Filter took 0.015486383 seconds (pre).
+[SMT] Filter took 0.021862027 seconds (full).
+[SMT] Filter took 0.033907777 seconds (full).
+[SMT] Filter took 0.033116429 seconds (full).
+[SMT] Filter took 0.031057635 seconds (full).
+[SMT] Filter took 0.029202437999999997 seconds (full).
+[SMT] Filter took 0.035955924 seconds (full).
+[SMT] Filter took 0.033683936 seconds (full).
+[SMT] Filter took 0.039016044 seconds (full).
+[SMT] Filter took 0.026629003 seconds (full).
+[SMT] Filter took 0.010193111 seconds (pre).
+[SMT] Filter took 0.025962476999999998 seconds (full).
+[SMT] Filter took 0.031774049 seconds (full).
+[SMT] Filter took 0.034847158 seconds (full).
+[SMT] Filter took 0.035468196 seconds (full).
+[SMT] Filter took 0.034748785000000004 seconds (full).
+[SMT] Filter took 0.048703251 seconds (full).
+[SMT] Filter took 0.028582271 seconds (full).
+[SMT] Filter took 0.009975265 seconds (pre).
+[SMT] Filter took 0.012896536 seconds (pre).
+[SMT] Filter took 0.011133287 seconds (pre).
+[SMT] Filter took 0.014491346 seconds (pre).
+[SMT] Filter took 0.012810804 seconds (pre).
+[SMT] Filter took 0.015643115 seconds (pre).
+[SMT] Filter took 0.016666874 seconds (pre).
+[SMT] Filter took 0.013592942 seconds (pre).
+[SMT] Filter took 0.012445742 seconds (pre).
+[SMT] Filter took 0.013126471 seconds (pre).
+[SMT] Filter took 0.008858058 seconds (pre).
+[SMT] Filter took 0.012374069 seconds (pre).
+[SMT] Filter took 0.014520666 seconds (pre).
+[SMT] Filter took 0.012977067 seconds (pre).
+[SMT] Filter took 0.013775751 seconds (pre).
+[SMT] Filter took 0.016689177 seconds (pre).
+[SMT] Filter took 0.011793064 seconds (pre).
+[SMT] Filter took 0.015495391 seconds (pre).
+[SMT] Filter took 0.020313161 seconds (pre).
+[SMT] Filter took 0.020947156 seconds (pre).
+[SMT] Filter took 0.012008785 seconds (pre).
+[SMT] Filter took 0.012724298 seconds (pre).
+[SMT] Filter took 0.011891211 seconds (pre).
+[SMT] Filter took 0.012055141 seconds (pre).
+[SMT] Filter took 0.012751783 seconds (pre).
+[SMT] Filter took 0.010059759 seconds (pre).
+[SMT] Filter took 0.010191892 seconds (pre).
+[SMT] Filter took 0.018228517 seconds (pre).
+[SMT] Filter took 0.010328807 seconds (pre).
+[SMT] Filter took 0.007908654 seconds (pre).
+[SMT] Filter took 0.011121042 seconds (pre).
+[SMT] Filter took 0.011316434 seconds (pre).
+[SMT] Filter took 0.010792643 seconds (pre).
+[SMT] Filter took 0.012797006 seconds (pre).
+[SMT] Filter took 0.011779713 seconds (pre).
+[SMT] Filter took 0.011585713 seconds (pre).
+[SMT] Filter took 0.008610428 seconds (pre).
+[SMT] Filter took 0.010463059 seconds (pre).
+[SMT] Filter took 0.012456161 seconds (pre).
+[SMT] Filter took 0.009547194 seconds (pre).
+[SMT] Filter took 0.012357128 seconds (pre).
+[SMT] Filter took 0.01502847 seconds (pre).
+[SMT] Filter took 0.009511328 seconds (pre).
+[SMT] Filter took 0.011257381 seconds (pre).
+[SMT] Filter took 0.010546121 seconds (pre).
+[SMT] Filter took 0.016203538 seconds (pre).
+[SMT] Filter took 0.016581177 seconds (pre).
+[SMT] Filter took 0.018874284 seconds (pre).
+[SMT] Filter took 0.013849683 seconds (pre).
+[SMT] Filter took 0.015093633 seconds (pre).
+[SMT] Filter took 0.007105257 seconds (pre).
+[SMT] Filter took 0.031740318000000003 seconds (full).
+[SMT] Filter took 0.028646762 seconds (full).
+[SMT] Filter took 0.033175353000000005 seconds (full).
+[SMT] Filter took 0.04626346 seconds (full).
+[SMT] Filter took 0.035405310999999995 seconds (full).
+[SMT] Filter took 0.042194307 seconds (full).
+[SMT] Filter took 0.029233421000000002 seconds (full).
+[SMT] Filter took 0.030765269999999997 seconds (full).
+[SMT] Filter took 0.0378589 seconds (full).
+[SMT] Filter took 0.035990186 seconds (full).
+[SMT] Filter took 0.033139472 seconds (full).
+[SMT] Filter took 0.03705237 seconds (full).
+[SMT] Filter took 0.022918835999999998 seconds (full).
+[SMT] Filter took 0.029537024000000002 seconds (full).
+[SMT] Filter took 0.026082446 seconds (full).
+[SMT] Filter took 0.030649172000000002 seconds (full).
+[SMT] Filter took 0.016990416 seconds (pre).
+[SMT] Filter took 0.014758942 seconds (pre).
+[SMT] Filter took 0.013198029 seconds (pre).
+[SMT] Filter took 0.014322821 seconds (pre).
+[SMT] Filter took 0.013948154 seconds (pre).
+[SMT] Filter took 0.015651775 seconds (pre).
+[SMT] Filter took 0.014267018 seconds (pre).
+[SMT] Filter took 0.039146066 seconds (full).
+[SMT] Filter took 0.029743134 seconds (full).
+[SMT] Filter took 0.034818705000000005 seconds (full).
+[SMT] Filter took 0.036660788 seconds (full).
+[SMT] Filter took 0.014352339 seconds (pre).
+[SMT] Filter took 0.013944058 seconds (pre).
+[SMT] Filter took 0.008369129 seconds (pre).
+[SMT] Filter took 0.00998557 seconds (pre).
+[SMT] Filter took 0.011589976 seconds (pre).
+[SMT] Filter took 0.017906614 seconds (full).
+[SMT] Filter took 0.030890498000000002 seconds (full).
+[SMT] Filter took 0.030136906 seconds (full).
+[SMT] Filter took 0.026301375000000002 seconds (full).
+[SMT] Filter took 0.028131994 seconds (full).
+[SMT] Filter took 0.023370909000000002 seconds (full).
+[SMT] Filter took 0.029345446 seconds (full).
+[SMT] Filter took 0.033268046 seconds (full).
+[SMT] Filter took 0.032265762 seconds (full).
+[SMT] Filter took 0.006487087 seconds (pre).
+[SMT] Filter took 0.027544011 seconds (full).
+[SMT] Filter took 0.046854518 seconds (full).
+[SMT] Filter took 0.039096739 seconds (full).
+[SMT] Filter took 0.038020164 seconds (full).
+[SMT] Filter took 0.032528207 seconds (full).
+[SMT] Filter took 0.047183559 seconds (full).
+[SMT] Filter took 0.048535026 seconds (full).
+[SMT] Filter took 0.035557148 seconds (full).
+[SMT] Filter took 0.026953202000000002 seconds (full).
+[SMT] Filter took 0.025367265 seconds (full).
+[SMT] Filter took 0.025887955 seconds (full).
+[SMT] Filter took 0.03579095 seconds (full).
+[SMT] Filter took 0.032245300000000005 seconds (full).
+[SMT] Filter took 0.028417712999999997 seconds (full).
+[SMT] Filter took 0.031749526 seconds (full).
+[SMT] Filter took 0.035989185 seconds (full).
+[SMT] Filter took 0.037345474000000004 seconds (full).
+[SMT] Filter took 0.048300711 seconds (full).
+[SMT] Filter took 0.022354455 seconds (full).
+[SMT] Filter took 0.030745143000000003 seconds (full).
+[SMT] Filter took 0.028823277 seconds (full).
+[SMT] Filter took 0.039995864 seconds (full).
+[SMT] Filter took 0.037527667 seconds (full).
+[SMT] Filter took 0.030279719 seconds (full).
+[SMT] Filter took 0.028171709 seconds (full).
+[SMT] Filter took 0.031633088000000004 seconds (full).
+[SMT] Filter took 0.029296069 seconds (full).
+[SMT] Filter took 0.032224001 seconds (full).
+[SMT] Filter took 0.037331216 seconds (full).
+[SMT] Filter took 0.027004083999999998 seconds (full).
+[SMT] Filter took 0.039064219 seconds (full).
+[SMT] Filter took 0.023972081 seconds (full).
+[runlim] sample:		77.7 time, 90.5 real, 1303.9 MB
+[SMT] Filter took 0.035926209 seconds (full).
+[SMT] Filter took 0.057971907 seconds (full).
+[SMT] Filter took 0.040538164 seconds (full).
+[SMT] Filter took 0.059545560000000004 seconds (full).
+[SMT] Filter took 0.056377385 seconds (full).
+[SMT] Filter took 0.058480459 seconds (full).
+[SMT] Filter took 0.046295570999999994 seconds (full).
+[SMT] Filter took 0.045537916 seconds (full).
+[SMT] Filter took 0.041420899 seconds (full).
+[SMT] Filter took 0.049400728 seconds (full).
+[SMT] Filter took 0.046440224 seconds (full).
+[SMT] Filter took 0.055809212 seconds (full).
+[SMT] Filter took 0.041510643 seconds (full).
+[SMT] Filter took 0.040684359 seconds (full).
+[SMT] Filter took 0.030107084 seconds (full).
+[SMT] Filter took 0.037419573 seconds (full).
+[SMT] Filter took 0.030332117 seconds (full).
+[SMT] Filter took 0.034816281000000004 seconds (full).
+[SMT] Filter took 0.040623746 seconds (full).
+[SMT] Filter took 0.030834141 seconds (full).
+[SMT] Filter took 0.034260452000000004 seconds (full).
+[SMT] Filter took 0.028980450999999997 seconds (full).
+[SMT] Filter took 0.038222132 seconds (full).
+[SMT] Filter took 0.036775271 seconds (full).
+[SMT] Filter took 0.051915473000000004 seconds (full).
+[SMT] Filter took 0.032732162 seconds (full).
+[SMT] Filter took 0.022257045 seconds (full).
+[SMT] Filter took 0.029758334999999997 seconds (full).
+[SMT] Filter took 0.03229865 seconds (full).
+[SMT] Filter took 0.027151429 seconds (full).
+[SMT] Filter took 0.038647208 seconds (full).
+[SMT] Filter took 0.033469326 seconds (full).
+[SMT] Filter took 0.03149661 seconds (full).
+[SMT] Filter took 0.033783518 seconds (full).
+[SMT] Filter took 0.053314452 seconds (full).
+[SMT] Filter took 0.042253582 seconds (full).
+[SMT] Filter took 0.039418005 seconds (full).
+[SMT] Filter took 0.035975757 seconds (full).
+[SMT] Filter took 0.039151639 seconds (full).
+[SMT] Filter took 0.035286195 seconds (full).
+[SMT] Filter took 0.033347615 seconds (full).
+[SMT] Filter took 0.035945248 seconds (full).
+[SMT] Filter took 0.043888998 seconds (full).
+[SMT] Filter took 0.044071165 seconds (full).
+[SMT] Filter took 0.036630894 seconds (full).
+[SMT] Filter took 0.034399868 seconds (full).
+[SMT] Filter took 0.02791117 seconds (full).
+[SMT] Filter took 0.042642215 seconds (full).
+[SMT] Filter took 0.033758165 seconds (full).
+[SMT] Filter took 0.030403034 seconds (full).
+[SMT] Filter took 0.023212698 seconds (full).
+[SMT] Filter took 0.029660282000000003 seconds (full).
+[SMT] Filter took 0.028192451 seconds (full).
+[SMT] Filter took 0.026610922000000002 seconds (full).
+[SMT] Filter took 0.032492637 seconds (full).
+[SMT] Filter took 0.043922262999999996 seconds (full).
+[SMT] Filter took 0.030204375999999998 seconds (full).
+[SMT] Filter took 0.027698269999999997 seconds (full).
+[SMT] Filter took 0.018691881 seconds (full).
+[SMT] Filter took 0.033795113 seconds (full).
+[SMT] Filter took 0.03501947 seconds (full).
+[SMT] Filter took 0.023139969 seconds (full).
+[SMT] Filter took 0.033417565999999996 seconds (full).
+[SMT] Filter took 0.024687799 seconds (full).
+[SMT] Filter took 0.030335127 seconds (full).
+[SMT] Filter took 0.03554988 seconds (full).
+[SMT] Filter took 0.029472777 seconds (full).
+[SMT] Filter took 0.038712691 seconds (full).
+[SMT] Filter took 0.029798251999999997 seconds (full).
+[SMT] Filter took 0.041365834 seconds (full).
+[SMT] Filter took 0.035695798 seconds (full).
+[SMT] Filter took 0.031476858999999996 seconds (full).
+[SMT] Filter took 0.037845043 seconds (full).
+[SMT] Filter took 0.040639435 seconds (full).
+[SMT] Filter took 0.044137365 seconds (full).
+[SMT] Filter took 0.031357329 seconds (full).
+[SMT] Filter took 0.034184357 seconds (full).
+[SMT] Filter took 0.032377239 seconds (full).
+[SMT] Filter took 0.054974450999999994 seconds (full).
+[SMT] Filter took 0.031379787 seconds (full).
+[SMT] Filter took 0.028817726000000002 seconds (full).
+[SMT] Filter took 0.024767056 seconds (full).
+[SMT] Filter took 0.036996402 seconds (full).
+[SMT] Filter took 0.031282547 seconds (full).
+[SMT] Filter took 0.032879164 seconds (full).
+[SMT] Filter took 0.046143747 seconds (full).
+[SMT] Filter took 0.031245211000000002 seconds (full).
+[SMT] Filter took 0.031936016 seconds (full).
+[SMT] Filter took 0.035863877 seconds (full).
+[SMT] Filter took 0.018301075 seconds (full).
+[SMT] Filter took 0.045828153999999996 seconds (full).
+[SMT] Filter took 0.044812463999999996 seconds (full).
+[SMT] Filter took 0.034856056999999996 seconds (full).
+[SMT] Filter took 0.034130158 seconds (full).
+[SMT] Filter took 0.03514528 seconds (full).
+[SMT] Filter took 0.041766847999999995 seconds (full).
+[SMT] Filter took 0.038103729 seconds (full).
+[SMT] Filter took 0.033005251 seconds (full).
+[SMT] Filter took 0.027485174 seconds (full).
+[SMT] Filter took 0.037973637000000005 seconds (full).
+[SMT] Filter took 0.031002302 seconds (full).
+[SMT] Filter took 0.038000621 seconds (full).
+[SMT] Filter took 0.022176798999999997 seconds (full).
+[SMT] Filter took 0.024050732 seconds (full).
+[SMT] Filter took 0.026414967999999997 seconds (full).
+[SMT] Filter took 0.046171482 seconds (full).
+[SMT] Filter took 0.034702429 seconds (full).
+[SMT] Filter took 0.032522608 seconds (full).
+[SMT] Filter took 0.041164029000000005 seconds (full).
+[SMT] Filter took 0.06306236700000001 seconds (full).
+[SMT] Filter took 0.055716981 seconds (full).
+[SMT] Filter took 0.038922411000000004 seconds (full).
+[SMT] Filter took 0.052347311 seconds (full).
+[SMT] Filter took 0.056556895999999995 seconds (full).
+[SMT] Filter took 0.052765326 seconds (full).
+[SMT] Filter took 0.052506144000000005 seconds (full).
+[SMT] Filter took 0.044738468 seconds (full).
+[SMT] Filter took 0.025947906 seconds (full).
+[SMT] Filter took 0.028292526000000002 seconds (full).
+[SMT] Filter took 0.045963513 seconds (full).
+[SMT] Filter took 0.074502754 seconds (full).
+[SMT] Filter took 0.053698134999999994 seconds (full).
+[SMT] Filter took 0.037312992 seconds (full).
+[SMT] Filter took 0.010555061 seconds (pre).
+[SMT] Filter took 0.013269522 seconds (pre).
+[SMT] Filter took 0.008263741 seconds (pre).
+[SMT] Filter took 0.011426706 seconds (pre).
+[SMT] Filter took 0.018106023 seconds (pre).
+[SMT] Filter took 0.020206972 seconds (pre).
+[SMT] Filter took 0.015079933 seconds (pre).
+[SMT] Filter took 0.015779407 seconds (pre).
+[SMT] Filter took 0.008858034 seconds (pre).
+[SMT] Filter took 0.013307139 seconds (pre).
+[SMT] Filter took 0.012346513 seconds (pre).
+[SMT] Filter took 0.012097322 seconds (pre).
+[SMT] Filter took 0.01316546 seconds (pre).
+[SMT] Filter took 0.011182014 seconds (pre).
+[SMT] Filter took 0.009517688 seconds (pre).
+[SMT] Filter took 0.010117282 seconds (pre).
+[SMT] Filter took 0.019122266 seconds (pre).
+[SMT] Filter took 0.011969109 seconds (pre).
+[SMT] Filter took 0.007793099 seconds (pre).
+[SMT] Filter took 0.005420968 seconds (pre).
+[SMT] Filter took 0.005007932 seconds (pre).
+[SMT] Filter took 0.005321666 seconds (pre).
+[SMT] Filter took 0.010109087 seconds (pre).
+[SMT] Filter took 0.008844881 seconds (pre).
+[SMT] Filter took 0.008446111 seconds (pre).
+[SMT] Filter took 0.010631212 seconds (pre).
+[SMT] Filter took 0.014149292 seconds (pre).
+[SMT] Filter took 0.012116023 seconds (pre).
+[SMT] Filter took 0.012091517 seconds (pre).
+[SMT] Filter took 0.014870767 seconds (pre).
+[SMT] Filter took 0.012980781 seconds (pre).
+[SMT] Filter took 0.012200221 seconds (pre).
+[SMT] Filter took 0.010178515 seconds (pre).
+[SMT] Filter took 0.008479781 seconds (pre).
+[SMT] Filter took 0.015946103 seconds (pre).
+[SMT] Filter took 0.013635993 seconds (pre).
+[SMT] Filter took 0.02057343 seconds (pre).
+[SMT] Filter took 0.011244513 seconds (pre).
+[SMT] Filter took 0.013468129 seconds (pre).
+[SMT] Filter took 0.016991543 seconds (pre).
+[SMT] Filter took 0.012880941 seconds (pre).
+[SMT] Filter took 0.02880265 seconds (pre).
+[SMT] Filter took 0.01158113 seconds (pre).
+[SMT] Filter took 0.016247057 seconds (pre).
+[SMT] Filter took 0.015716441 seconds (pre).
+[SMT] Filter took 0.015601691 seconds (pre).
+[SMT] Filter took 0.014017511 seconds (pre).
+[SMT] Filter took 0.01317938 seconds (pre).
+[SMT] Filter took 0.015005463 seconds (pre).
+[SMT] Filter took 0.015781659 seconds (pre).
+[SMT] Filter took 0.01349443 seconds (pre).
+[SMT] Filter took 0.014820638 seconds (pre).
+[SMT] Filter took 0.008683748 seconds (pre).
+[SMT] Filter took 0.015245363 seconds (pre).
+[SMT] Filter took 0.021960252 seconds (pre).
+[SMT] Filter took 0.012991263 seconds (pre).
+[SMT] Filter took 0.012448739 seconds (pre).
+[SMT] Filter took 0.011548195 seconds (pre).
+[SMT] Filter took 0.018108784 seconds (pre).
+[SMT] Filter took 0.015737943 seconds (pre).
+[SMT] Filter took 0.013012141 seconds (pre).
+[SMT] Filter took 0.020011348 seconds (pre).
+[SMT] Filter took 0.016942467 seconds (pre).
+[SMT] Filter took 0.011269635 seconds (pre).
+[SMT] Filter took 0.01051185 seconds (pre).
+[SMT] Filter took 0.016137295 seconds (pre).
+[SMT] Filter took 0.010485951 seconds (pre).
+[SMT] Filter took 0.013257791 seconds (pre).
+[SMT] Filter took 0.018496174 seconds (pre).
+[SMT] Filter took 0.018429199 seconds (pre).
+[SMT] Filter took 0.009274147 seconds (pre).
+[SMT] Filter took 0.010582198 seconds (pre).
+[SMT] Filter took 0.008907966 seconds (pre).
+[SMT] Filter took 0.007628665 seconds (pre).
+[SMT] Filter took 0.011193735 seconds (pre).
+[SMT] Filter took 0.007489124 seconds (pre).
+[SMT] Filter took 0.008478525 seconds (pre).
+[SMT] Filter took 0.009625516 seconds (pre).
+[SMT] Filter took 0.013217602 seconds (pre).
+[SMT] Filter took 0.016134782 seconds (pre).
+[SMT] Filter took 0.019816689 seconds (pre).
+[SMT] Filter took 0.015238918 seconds (pre).
+[SMT] Filter took 0.012598023 seconds (pre).
+[SMT] Filter took 0.022835898 seconds (pre).
+[SMT] Filter took 0.010377741 seconds (pre).
+[SMT] Filter took 0.019366352 seconds (pre).
+[SMT] Filter took 0.01330213 seconds (pre).
+[SMT] Filter took 0.012414339 seconds (pre).
+[SMT] Filter took 0.011172288 seconds (pre).
+[SMT] Filter took 0.010027816 seconds (pre).
+[SMT] Filter took 0.018160746 seconds (pre).
+[SMT] Filter took 0.015747968 seconds (pre).
+[SMT] Filter took 0.01254353 seconds (pre).
+[SMT] Filter took 0.049430989 seconds (full).
+[SMT] Filter took 0.015104524 seconds (pre).
+[SMT] Filter took 0.017159088 seconds (pre).
+[SMT] Filter took 0.011846362 seconds (pre).
+[SMT] Filter took 0.039790612 seconds (full).
+[SMT] Filter took 0.03539641 seconds (full).
+[SMT] Filter took 0.038739428 seconds (full).
+[SMT] Filter took 0.043128434 seconds (full).
+[SMT] Filter took 0.011484815 seconds (pre).
+[SMT] Filter took 0.015442609 seconds (pre).
+[SMT] Filter took 0.036203393 seconds (full).
+[SMT] Filter took 0.034097504 seconds (full).
+[SMT] Filter took 0.017030976 seconds (pre).
+[SMT] Filter took 0.015356802 seconds (pre).
+[SMT] Filter took 0.023999711 seconds (pre).
+[SMT] Filter took 0.010139698 seconds (pre).
+[SMT] Filter took 0.010074004 seconds (pre).
+[SMT] Filter took 0.010640507 seconds (full).
+[SMT] Filter took 0.010443893 seconds (pre).
+[SMT] Filter took 0.020164712 seconds (pre).
+[SMT] Filter took 0.019734387 seconds (pre).
+[SMT] Filter took 0.035619898 seconds (pre).
+[SMT] Filter took 0.01516553 seconds (pre).
+[SMT] Filter took 0.016997792 seconds (pre).
+[SMT] Filter took 0.011125819 seconds (pre).
+[SMT] Filter took 0.011814176 seconds (pre).
+[SMT] Filter took 0.009755498 seconds (pre).
+[SMT] Filter took 0.012588638 seconds (pre).
+[SMT] Filter took 0.022221 seconds (pre).
+[SMT] Filter took 0.018145129 seconds (pre).
+[SMT] Filter took 0.015497265 seconds (pre).
+[SMT] Filter took 0.013788005 seconds (pre).
+[SMT] Filter took 0.011413771 seconds (pre).
+[SMT] Filter took 0.012609684 seconds (pre).
+[SMT] Filter took 0.011817579 seconds (pre).
+[SMT] Filter took 0.013776285 seconds (pre).
+[SMT] Filter took 0.010212426 seconds (pre).
+[SMT] Filter took 0.035085820999999996 seconds (full).
+[SMT] Filter took 0.031949876 seconds (full).
+[SMT] Filter took 0.035644712 seconds (full).
+[SMT] Filter took 0.029288513000000002 seconds (full).
+[SMT] Filter took 0.032835918 seconds (full).
+[SMT] Filter took 0.031948050000000006 seconds (full).
+[SMT] Filter took 0.023625702000000002 seconds (full).
+[SMT] Filter took 0.033878444 seconds (full).
+[SMT] Filter took 0.025643806999999998 seconds (full).
+[SMT] Filter took 0.039721419 seconds (full).
+[SMT] Filter took 0.029874592999999998 seconds (full).
+[SMT] Filter took 0.028095389 seconds (full).
+[SMT] Filter took 0.034061647 seconds (full).
+[SMT] Filter took 0.042546705 seconds (full).
+[SMT] Filter took 0.031314769 seconds (full).
+[SMT] Filter took 0.031357403 seconds (full).
+[SMT] Filter took 0.022938428 seconds (full).
+[SMT] Filter took 0.039104151 seconds (full).
+[SMT] Filter took 0.040451158 seconds (full).
+[SMT] Filter took 0.027280786 seconds (full).
+[SMT] Filter took 0.028840027 seconds (full).
+[SMT] Filter took 0.032336341000000005 seconds (full).
+[SMT] Filter took 0.039263917 seconds (full).
+[SMT] Filter took 0.02602836 seconds (full).
+[SMT] Filter took 0.032265581 seconds (full).
+[SMT] Filter took 0.036956042 seconds (full).
+[SMT] Filter took 0.038213553 seconds (full).
+[SMT] Filter took 0.029941047 seconds (full).
+[SMT] Filter took 0.029366813 seconds (full).
+[SMT] Filter took 0.03585709 seconds (full).
+[SMT] Filter took 0.037823974999999996 seconds (full).
+[SMT] Filter took 0.036632959 seconds (full).
+[SMT] Filter took 0.035665727 seconds (full).
+[SMT] Filter took 0.042187636 seconds (full).
+[SMT] Filter took 0.040605353999999996 seconds (full).
+[SMT] Filter took 0.034484279 seconds (full).
+[SMT] Filter took 0.029916937 seconds (full).
+[SMT] Filter took 0.026014807 seconds (full).
+[SMT] Filter took 0.031403184 seconds (full).
+[SMT] Filter took 0.013559215999999999 seconds (full).
+[SMT] Filter took 0.044062889 seconds (full).
+[SMT] Filter took 0.027367795 seconds (full).
+[SMT] Filter took 0.024210767 seconds (full).
+[SMT] Filter took 0.051830593 seconds (full).
+[SMT] Filter took 0.014780907999999999 seconds (full).
+[SMT] Filter took 0.025786062 seconds (full).
+[SMT] Filter took 0.037745291 seconds (full).
+[SMT] Filter took 0.015237421000000001 seconds (full).
+[SMT] Filter took 0.041752136 seconds (full).
+[SMT] Filter took 0.018756507 seconds (full).
+[SMT] Filter took 0.03289182 seconds (full).
+[SMT] Filter took 0.031411517 seconds (full).
+[SMT] Filter took 0.030233200000000002 seconds (full).
+[SMT] Filter took 0.031764437 seconds (full).
+[SMT] Filter took 0.030586466 seconds (full).
+[SMT] Filter took 0.047903841 seconds (full).
+[SMT] Filter took 0.036365426 seconds (full).
+[SMT] Filter took 0.044611073 seconds (full).
+[SMT] Filter took 0.019935413 seconds (full).
+[SMT] Filter took 0.019772591 seconds (full).
+[SMT] Filter took 0.03610386 seconds (full).
+[SMT] Filter took 0.033422709 seconds (full).
+[SMT] Filter took 0.018452421 seconds (pre).
+[SMT] Filter took 0.020360963 seconds (pre).
+[SMT] Filter took 0.017274353 seconds (pre).
+[SMT] Filter took 0.016044023 seconds (pre).
+[SMT] Filter took 0.010097903 seconds (pre).
+[SMT] Filter took 0.015180669 seconds (pre).
+[SMT] Filter took 0.012097908 seconds (pre).
+[SMT] Filter took 0.013159034 seconds (pre).
+[SMT] Filter took 0.010610315 seconds (pre).
+[SMT] Filter took 0.019241284 seconds (pre).
+[SMT] Filter took 0.017116739 seconds (pre).
+[SMT] Filter took 0.013169585 seconds (pre).
+[SMT] Filter took 0.010228899 seconds (pre).
+[SMT] Filter took 0.018804875 seconds (pre).
+[SMT] Filter took 0.013341366 seconds (pre).
+[SMT] Filter took 0.012573511 seconds (pre).
+[SMT] Filter took 0.012434175 seconds (pre).
+[SMT] Filter took 0.022198227 seconds (pre).
+[SMT] Filter took 0.01112444 seconds (pre).
+[SMT] Filter took 0.011527716 seconds (pre).
+[SMT] Filter took 0.013194536 seconds (pre).
+[SMT] Filter took 0.012136211 seconds (pre).
+[SMT] Filter took 0.019647662 seconds (pre).
+[SMT] Filter took 0.012968824 seconds (pre).
+[SMT] Filter took 0.010732082 seconds (pre).
+[SMT] Filter took 0.032884171999999996 seconds (full).
+[SMT] Filter took 0.019804331 seconds (pre).
+[SMT] Filter took 0.014637446 seconds (pre).
+[SMT] Filter took 0.01787728 seconds (pre).
+[SMT] Filter took 0.011341084 seconds (pre).
+[SMT] Filter took 0.01629 seconds (pre).
+[SMT] Filter took 0.012987626 seconds (pre).
+[SMT] Filter took 0.012275913 seconds (pre).
+[SMT] Filter took 0.019122129 seconds (pre).
+[SMT] Filter took 0.011450559 seconds (pre).
+[SMT] Filter took 0.018978642 seconds (pre).
+[SMT] Filter took 0.011036245 seconds (pre).
+[SMT] Filter took 0.031608981 seconds (full).
+[SMT] Filter took 0.029699582000000002 seconds (full).
+[SMT] Filter took 0.042231859000000004 seconds (full).
+[SMT] Filter took 0.022413807 seconds (full).
+[SMT] Filter took 0.028109727 seconds (full).
+[SMT] Filter took 0.034816223 seconds (full).
+[SMT] Filter took 0.035860353 seconds (full).
+[SMT] Filter took 0.018051483 seconds (pre).
+[SMT] Filter took 0.010685309 seconds (pre).
+[SMT] Filter took 0.014289904 seconds (pre).
+[SMT] Filter took 0.019610921 seconds (pre).
+[SMT] Filter took 0.015976328 seconds (pre).
+[SMT] Filter took 0.01164711 seconds (pre).
+[SMT] Filter took 0.012843593 seconds (pre).
+[SMT] Filter took 0.010224 seconds (pre).
+[SMT] Filter took 0.009098743 seconds (pre).
+[SMT] Filter took 0.019791105 seconds (pre).
+[SMT] Filter took 0.008978593 seconds (pre).
+[SMT] Filter took 0.013025556 seconds (pre).
+[SMT] Filter took 0.011498702 seconds (pre).
+[SMT] Filter took 0.013686479 seconds (pre).
+[runlim] sample:		87.8 time, 100.5 real, 1305.2 MB
+[SMT] Filter took 0.013729794 seconds (pre).
+[SMT] Filter took 0.011070478 seconds (pre).
+[SMT] Filter took 0.017174473 seconds (pre).
+[SMT] Filter took 0.014710092 seconds (pre).
+[SMT] Filter took 0.01252621 seconds (pre).
+[SMT] Filter took 0.011674926 seconds (pre).
+[SMT] Filter took 0.012218834 seconds (pre).
+[SMT] Filter took 0.007417066 seconds (pre).
+[SMT] Filter took 0.012349543 seconds (pre).
+[SMT] Filter took 0.01317396 seconds (pre).
+[SMT] Filter took 0.013641548 seconds (pre).
+[SMT] Filter took 0.013794838 seconds (pre).
+[SMT] Filter took 0.010070868 seconds (pre).
+[SMT] Filter took 0.020331408 seconds (pre).
+[SMT] Filter took 0.008643773 seconds (pre).
+[SMT] Filter took 0.014105957 seconds (pre).
+[SMT] Filter took 0.009048829 seconds (pre).
+[SMT] Filter took 0.010504947 seconds (pre).
+[SMT] Filter took 0.011956994 seconds (pre).
+[SMT] Filter took 0.013433625 seconds (pre).
+[SMT] Filter took 0.008597884 seconds (pre).
+[SMT] Filter took 0.011637801 seconds (pre).
+[SMT] Filter took 0.017830471 seconds (pre).
+[SMT] Filter took 0.009770844 seconds (pre).
+[SMT] Filter took 0.010996134 seconds (pre).
+[SMT] Filter took 0.010728386 seconds (pre).
+[SMT] Filter took 0.016719568 seconds (pre).
+[SMT] Filter took 0.015625305 seconds (pre).
+[SMT] Filter took 0.012951186 seconds (pre).
+[SMT] Filter took 0.008607897 seconds (pre).
+[SMT] Filter took 0.010517436 seconds (pre).
+[SMT] Filter took 0.010691885 seconds (pre).
+[SMT] Filter took 0.010914336 seconds (pre).
+[SMT] Filter took 0.009193762 seconds (pre).
+[SMT] Filter took 0.009520548 seconds (pre).
+[SMT] Filter took 0.012933206 seconds (pre).
+[SMT] Filter took 0.008678422 seconds (pre).
+[SMT] Filter took 0.025262202 seconds (pre).
+[SMT] Filter took 0.015007759 seconds (pre).
+[SMT] Filter took 0.011000578 seconds (pre).
+[SMT] Filter took 0.008623597 seconds (pre).
+[SMT] Filter took 0.00832231 seconds (pre).
+[SMT] Filter took 0.006551838 seconds (pre).
+[SMT] Filter took 0.007992581 seconds (pre).
+[SMT] Filter took 0.016908077 seconds (pre).
+[SMT] SMT filtered out 1118 stars (out of 1118).
+[CTRL] Saving current state of verification...
+ 80.129658 seconds (20.65 M allocations: 929.387 MiB, 2.83% gc time, 3.38% compilation time)
+ 83.796428 seconds (24.73 M allocations: 1.122 GiB, 3.90% gc time, 6.54% compilation time)
+----------------------------------------------------------
+Status: Unsafe
+# Unsafe Stars: 80
+Saving result in experiments/acc-3000000-64-64/result-linear.jld... Done
+[runlim] end:			Wed Jun 15 22:46:30 2022
+[runlim] status:		ok
+[runlim] result:		0
+[runlim] children:		914
+[runlim] real:			102.81 seconds
+[runlim] time:			89.50 seconds
+[runlim] space:			1318.5 MB
+[runlim] samples:		1022
