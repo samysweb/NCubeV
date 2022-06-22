@@ -23,7 +23,11 @@ function ast2smt(q :: NormalizedQuery, variables, additional)
 	else
 		push!(conjunction, disjuntion[1])
 	end
-	return ast2smt(CompositeFormula(And,conjunction), variables, additional)
+	if length(conjunction)==1
+		return ast2smt(conjunction[1], variables, additional)
+	else
+		return ast2smt(CompositeFormula(And,conjunction), variables, additional)
+	end
 end
 
 function pwl2term(pwl :: PwlConjunction)
@@ -42,8 +46,10 @@ function pwl2term(pwl :: PwlConjunction)
 	for c in pwl.semilinear_constraints
 		push!(conjunction, c)
 	end
-	if length(conjunction) > 0
+	if length(conjunction) > 1
 		return CompositeFormula(And,conjunction)
+	elseif length(conjunction)==1
+		return conjunction[1]
 	else
 		return nothing
 	end
