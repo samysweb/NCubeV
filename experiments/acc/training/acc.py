@@ -16,6 +16,50 @@ from gym.utils import seeding
 import numpy as np
 import random
 
+import polytope as pc
+
+from polytope.solvers import lpsolve
+def cheby_ball(poly1):
+    #logger.debug('cheby ball')
+    if (poly1._chebXc is not None) and (poly1._chebR is not None):
+        # In case chebyshev ball already calculated and stored
+        return poly1._chebR, poly1._chebXc
+    if isinstance(poly1, pc.Region):
+        maxr = 0
+        maxx = None
+        for poly in poly1.list_poly:
+            rc, xc = cheby_ball(poly)
+            if rc > maxr:
+                maxr = rc
+                maxx = xc
+        poly1._chebXc = maxx
+        poly1._chebR = maxr
+        return maxr, maxx
+    if pc.is_empty(poly1):
+        return 0, None
+    # `poly1` is nonempty
+    r = 0
+    xc = None
+    A = poly1.A
+    c = np.negative(np.r_[np.zeros(np.shape(A)[1]), 1])
+    norm2 = np.sqrt(np.sum(A * A, axis=1))
+    G = np.c_[A, norm2]
+    h = poly1.b
+    sol = lpsolve(c, G, h)
+    #return sol
+    if sol['status'] == 0 or (sol['status'] == 4 and pc.is_inside(poly1,sol['x'][0:-1])):
+        r = sol['x'][-1]
+        if r < 0:
+            return 0, None
+        xc = sol['x'][0:-1]
+    else:
+        # Polytope is empty
+        poly1 = pc.Polytope(fulldim=False)
+        return 0, None
+    poly1._chebXc = np.array(xc)
+    poly1._chebR = np.double(r)
+    return poly1._chebR, poly1._chebXc
+
 
 logger = logging.getLogger(__name__)
 
@@ -249,6 +293,11 @@ class ACCEnv2(gym.Env):
         self.action_space = spaces.Box(-1.0,1.0,shape=(1,)) # acc = -,0,+
         self.observation_space = spaces.Box(-high, high)
 
+        self.MODEL_RESET_SHARE = 1.0
+        self.POLYTOPES = None
+        self.POLYTOPE_VOLUMES = None
+        self.INCLUDE_UNWINNABLE = True
+
         self._seed()
         self.viewer = None
         self.state = None
@@ -350,23 +399,88 @@ class ACCEnv2(gym.Env):
         return np.array(self.state), reward, done, {'crash': self.state[0] <= 0}
 
     def _reset(self):
+        self.steps = 0
+        r = self.np_random.uniform(low=0.0, high=1.0, size=(1,))[0]
+        if r <= self.MODEL_RESET_SHARE:
+            return self.model_reset()
+        else:
+            return self.polytope_reset()
+
+    def model_reset(self):
         choice = self.np_random.uniform(low=1,high=10)
         pos = self.np_random.uniform(low=4, high=95, size=(1,))[0]
         if choice <= 2:
             vel = -np.sqrt(pos*2*self.A)
         else:
             # pos >= vel^2 / (2*A)
-            if pos < 10:
-                min_velocity = -np.sqrt(pos*2*self.A)
+            if self.INCLUDE_UNWINNABLE:
+                if pos < 10:
+                    min_velocity = -np.sqrt(pos*2*self.A)
+                else:
+                    min_velocity = -100
+                max_velocity = 100
             else:
-                min_velocity = -100
-            max_velocity = 100
+                min_velocity = -np.sqrt(pos*2*self.A)
+                max_velocity = np.sqrt((self.MAX_VALUE-pos)*2*self.B)
             vel = self.np_random.uniform(low=min_velocity,high=max_velocity, size=(1,))[0]
         self.state = (pos, vel)
         #print("Starting separated by ", pos, " meters moving at ", vel, " m/s.")
 
         self.steps_beyond_done = None
         return np.array(self.state)
+    
+    def init_polytopes(self, model_share, polytopes):
+        self.MODEL_RESET_SHARE = model_share
+        volume = []
+        for p in polytopes:
+            volume.append(pc.volume(p))
+        total_volume = sum(volume)
+        
+        self.POLYTOPE_VOLUMES = [0]
+        for v in volume:
+            self.POLYTOPE_VOLUMES.append((self.POLYTOPE_VOLUMES[-1]*total_volume + v)/total_volume)
+        self.POLYTOPES = []
+        for p in polytopes:
+            cheby_ball(p)
+            self.POLYTOPES.append(p)
+
+    def sample_from_poly(self):
+        while True:
+            #print(">", end="")
+            r = self.np_random.uniform(low=0.0, high=1.0, size=(1,))[0]
+            poly = self.POLYTOPES[-1]
+            # TODO(steuber): Could be more efficient through binary search
+            for i in range(len(self.POLYTOPE_VOLUMES)):
+                if r > self.POLYTOPE_VOLUMES[i]:
+                    poly = self.POLYTOPES[i-1]
+            l_b, u_b = poly.bounding_box
+            l_b = l_b.flatten()
+            u_b = u_b.flatten()
+            x = None
+            n = poly.A.shape[1]
+            for i in range(400):
+                #print(".", end="")
+                x = self.np_random.uniform(low=l_b,high=u_b,size=(n,))
+                if x in poly:
+                    break
+            # Fallback if random sampling doesn't work
+            if x is None:
+                x = poly.chebXc
+            # Fallback if polytope looks empty
+            if x is None:
+                continue
+            return x
+    
+    def polytope_reset(self):
+        while True:
+            #print("|",end="")
+            res = self.sample_from_poly()
+            if -np.sqrt(res[0]*2*self.A)<=res[1] and res[1]<=np.sqrt((self.MAX_VALUE-res[0])*2*self.B) and not (self.is_crash(res) or res[0] > self.MAX_VALUE):
+                self.state = res
+                rv = res
+                break
+        #print("Starting separated by ", rv[0], " meters moving at ", rv[1], " m/s.")
+        return rv
 
     def _render(self, mode='human', close=False):
         if close:
