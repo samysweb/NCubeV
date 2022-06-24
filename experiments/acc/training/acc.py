@@ -409,7 +409,7 @@ class ACCEnv2(gym.Env):
     def model_reset(self):
         choice = self.np_random.uniform(low=1,high=10)
         pos = self.np_random.uniform(low=4, high=95, size=(1,))[0]
-        if choice <= 2:
+        if choice <= 2 and self.INCLUDE_UNWINNABLE:
             vel = -np.sqrt(pos*2*self.A)
         else:
             # pos >= vel^2 / (2*A)
@@ -420,8 +420,8 @@ class ACCEnv2(gym.Env):
                     min_velocity = -100
                 max_velocity = 100
             else:
-                min_velocity = -np.sqrt(pos*2*self.A)
-                max_velocity = np.sqrt((self.MAX_VALUE-pos)*2*self.B)
+                min_velocity = -np.sqrt(pos*2*self.A)+1e-3
+                max_velocity = np.sqrt((self.MAX_VALUE-pos)*2*self.B)-1e-3
             vel = self.np_random.uniform(low=min_velocity,high=max_velocity, size=(1,))[0]
         self.state = (pos, vel)
         #print("Starting separated by ", pos, " meters moving at ", vel, " m/s.")
@@ -475,7 +475,7 @@ class ACCEnv2(gym.Env):
         while True:
             #print("|",end="")
             res = self.sample_from_poly()
-            if -np.sqrt(res[0]*2*self.A)<=res[1] and res[1]<=np.sqrt((self.MAX_VALUE-res[0])*2*self.B) and not (self.is_crash(res) or res[0] > self.MAX_VALUE):
+            if -np.sqrt(res[0]*2*self.A)+1e-3<=res[1] and res[1]<=np.sqrt((self.MAX_VALUE-res[0])*2*self.B)-1e-3 and not (self.is_crash(res) or res[0] > self.MAX_VALUE):
                 self.state = res
                 rv = res
                 break
