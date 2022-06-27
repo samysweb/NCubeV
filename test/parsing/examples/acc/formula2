@@ -1,0 +1,17 @@
+[
+  [0<= rPos & rPos <= 100 & -200 <= rVel & rVel <= 200 & -B <= rAccpost & rAccpost <= A+0.01]&
+  [rPos > 0 & rPos >= rVel^2/(2*A)]
+] ->
+[0 <= T & cpost = 0 & rAccpost >= A & rPospost = rPos & rVelpost = rVel |
+rAccpost >= -B &
+rAccpost  <  A &
+rAccpost != 0 &
+[
+  [-rVel/rAccpost  > T | -rVel/rAccpost  <  0] &
+  rPos + rVel * T + rAccpost * T^2 / 2 > (rVel + rAccpost * T)^2 / (2 * A) |
+  rPos + rVel * T + rAccpost * T^2 / 2 > (rVel + rAccpost * T)^2 / (2 * A) &
+  rPos*rAccpost - rVel^2 + rVel^2 / (2) > 0
+] &
+0 <= T & cpost = 0 & rPospost = rPos & rVelpost = rVel |
+rPos + rVel * T > rVel^2 / (2 * A) &
+0 <= T & cpost = 0 & rAccpost = 0 & rPospost = rPos & rVelpost = rVel]
