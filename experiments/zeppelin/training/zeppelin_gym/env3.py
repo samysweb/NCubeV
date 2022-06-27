@@ -137,6 +137,8 @@ class ZeppelinEnv(gym.Env):
         self.MAX_Y = 400 # m
         self.MIN_Y = -400 # m
 
+        self.WORST_CASE_TURBULENCE=False
+
         # self.MIN_C = 20 # m
         # self.MAX_C = 40 # m
         self.MIN_C = 10 # m
@@ -190,11 +192,16 @@ class ZeppelinEnv(gym.Env):
         state = self.state
 
         # Compute turbulence
-        z1_norm = self.np_random.uniform(low=-1.0, high=1.0, size=(1,))[0]
-        z2_norm = np.sqrt(1-z1_norm**2)
-        turbulence_strength = self.np_random.triangular(-self.MAX_TURBULENCE, 0.0 ,self.MAX_TURBULENCE, size=(1,))[0]
-        z1 = z1_norm * turbulence_strength
-        z2 = z2_norm * turbulence_strength
+        z1 = 0.
+        z2 = -1.
+        if self.WORST_CASE_TURBULENCE:
+            z1, z2 = self.get_worst_turbulence(self.state)
+        else:
+            z1_norm = self.np_random.uniform(low=-1.0, high=1.0, size=(1,))[0]
+            z2_norm = np.sqrt(1-z1_norm**2)
+            turbulence_strength = self.np_random.triangular(-self.MAX_TURBULENCE, 0.0 ,self.MAX_TURBULENCE, size=(1,))[0]
+            z1 = z1_norm * turbulence_strength
+            z2 = z2_norm * turbulence_strength
 
         x1 = state[0]
         x2 = state[1]
@@ -289,6 +296,25 @@ class ZeppelinEnv(gym.Env):
             return True
         # If not above/below and not in bermuda triangle, we are out of danger
         return False
+    
+    def get_worst_turbulence(self, state):
+        x1 = state[0]
+        x2 = state[1]
+        c = state[2]
+        w = state[3]
+        x2_min = -c
+        x2_max = (c + w / (self.MAX_VELOCITY - self.MAX_TURBULENCE) * c)
+        x1_min = (- ((self.MAX_VELOCITY - self.MAX_TURBULENCE) / w * (c - x2) + c))
+        #x1_max = ( ((self.MAX_VELOCITY - self.MAX_TURBULENCE) / w * (c - x2) + c))
+        gamma = self.MAX_TURBULENCE/np.sqrt(w**2+(self.MAX_VELOCITY - self.MAX_TURBULENCE)**2)
+        if x2 <= x2_min:
+            return 0., self.MAX_TURBULENCE
+        elif x2 >= x2_max:
+            return 0., -self.MAX_TURBULENCE
+        elif x1 <= x1_min:
+            return gamma*w, -gamma*(self.MAX_VELOCITY - self.MAX_TURBULENCE)
+        else: # Assume x1 >= x1_max:
+            return -gamma*w, -gamma*(self.MAX_VELOCITY - self.MAX_TURBULENCE)
     
     def model_reset(self):
         #print("m")
