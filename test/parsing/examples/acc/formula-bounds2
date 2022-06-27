@@ -1,0 +1,7 @@
+[
+  [0<= rPos & rPos <= 100 & -200 <= rVel & rVel <= 200 & -1000 <= rAccpost & rAccpost <= 1000]&
+  [rPos > 0 & rPos >= rVel^2/(2*A)]
+] ->
+[
+	-B <= rAccpost & rAccpost <= A+0.01
+]

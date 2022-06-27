@@ -1,0 +1,90 @@
+ArchiveEntry "NCubeV/ContinuousACC"
+/*
+ * This model is an extension of the model by
+ * 		Fulton, Nathan, and André Platzer. “Safe Reinforcement Learning via Formal Methods: Toward Safe Control through Proof and Learning.” 32nd AAAI Conference on Artificial Intelligence, AAAI 2018, 2018, pp. 6485–92.
+ * Contrary to the original model this version supports a continuous choice for the relative acceleration.
+ */
+ProgramVariables  
+  Real rPos;
+  Real A;
+  Real B;
+  Real T;
+  Real rVel;
+  Real rAcc;
+End.  
+Problem
+  rPos > 0
+& A > 0 
+& B > 0
+& T > 0
+& rPos > rVel^2 / (2*A)
+->
+    [
+        {
+            {
+                rAcc := A;
+                ++
+                {
+                    rAcc:=*;
+                    ?(rAcc >= -B & rAcc < A & rAcc != 0);
+                    /*
+                    In general the distance between the vehicles evolves along the following function: rPos(t) = rPos_0 + rVel*t + 0.5*rAcc*^2
+                    In this branch of the program we are intererested in arbitrary accelerations within the interval [-B,A].
+                    Thus, it is necessary to ensure that we do not encounter a situation rPos<=0 (or, more importantly for the loop invariant rPos <= rVel^2/2*A).
+                    As can be seen by the defintion of rPos(t) evolves along a parabel. We must thus distinguish two cases:
+                    - Case 1 where we do not encounter the maximum of the parabel during T and thus do not encounter a change of direction
+                    - Case 2 where we do encounter this change of direction
+                    We can distinguish the two cases by checking whether -rVel/rAcc > T
+                    In the first case, it is sufficient to check, whether we have broken the condition at the end (i.e. at T).
+                    In the second case, however, we need to check the condition for both the possibly last state (i.e. T) and the state of direction change (i.e. -rVel/rAcc)
+                    */
+                    ?(
+                        /* Case 1: Monotonous evolution up to T (no change of direction during evolution):
+                           - Assert that change of direction is only after T
+                           - Assert that property is fulfilled at end
+                        */
+                        (
+                            (-rVel/rAcc>T | -rVel/rAcc<0) &
+                            (rPos+rVel*T+(rAcc*T^2)/2) > ((rVel + rAcc*T)^2/(2*A))
+                        )
+                        |
+                        /*
+                          Case 2: Nonmonotonous development
+                          - Assert property is fulfilled in the end
+                          - Assert property is fulfilled at point of direction change during evolution (t=(-rVel/(rAcc)))
+                        */
+                        (
+                            (rPos+rVel*T+(rAcc*T^2)/2) > ((rVel + rAcc*T)^2/(2*A)) &
+                            (rPos - rVel^2/rAcc + rVel^2/(2*rAcc)) > 0
+                        )
+                    );
+                }
+                ++
+                {
+                    ?(rPos+rVel*T > rVel^2 / (2*A));
+                    rAcc := 0;
+                }
+            };
+            c:=0;
+            {
+                rPos'=rVel,
+                rVel'=rAcc,
+                c'=1
+                & c<=T
+            }
+        }*
+    ] rPos > 0
+
+End.
+Tactic "Proof of NCubeV/ContinuousACC"
+implyR('R=="rPos>0&A>0&B>0&T>0&rPos>rVel^2/(2*A)->[{{rAcc:=A;++rAcc:=*;?rAcc>=-B&rAcc < A&rAcc!=0;?(-rVel/rAcc>T|-rVel/rAcc < 0)&rPos+rVel*T+rAcc*T^2/2>(rVel+rAcc*T)^2/(2*A)|rPos+rVel*T+rAcc*T^2/2>(rVel+rAcc*T)^2/(2*A)&rPos-rVel^2/rAcc+rVel^2/(2*rAcc)>0;++?rPos+rVel*T>rVel^2/(2*A);rAcc:=0;}c:=0;{rPos'=rVel,rVel'=rAcc,c'=1&c<=T}}*]rPos>0");
+loop("rPos>rVel^2/(2*A)", 'R=="[{{rAcc:=A;++rAcc:=*;?rAcc>=-B&rAcc < A&rAcc!=0;?(-rVel/rAcc>T|-rVel/rAcc < 0)&rPos+rVel*T+rAcc*T^2/2>(rVel+rAcc*T)^2/(2*A)|rPos+rVel*T+rAcc*T^2/2>(rVel+rAcc*T)^2/(2*A)&rPos-rVel^2/rAcc+rVel^2/(2*rAcc)>0;++?rPos+rVel*T>rVel^2/(2*A);rAcc:=0;}c:=0;{rPos'=rVel,rVel'=rAcc,c'=1&c<=T}}*]rPos>0"); <(
+  "Init":
+    auto,
+  "Post":
+    auto,
+  "Step":
+    auto
+)
+End.
+End.

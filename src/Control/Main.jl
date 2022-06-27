@@ -2,6 +2,7 @@ module Control
 
 using JLD
 
+using ..Config
 using ..Util
 using ..Parsing
 using ..AST
