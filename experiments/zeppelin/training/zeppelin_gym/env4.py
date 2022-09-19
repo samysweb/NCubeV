@@ -205,6 +205,9 @@ class ZeppelinEnv(gym.Env):
 
     def step(self, action):
         return self._stepByModel(action)
+   
+    def outside_space(self, state):
+        return state[0] <= self.MIN_X or self.MAX_X <= state[0] or state[1] <= self.MIN_Y or self.MAX_Y <= self.state[1]
 
     def _stepByModel(self, action):
         assert self.action_space.contains(action), "%s (of type %s) invalid" % (str(action), type(action))
@@ -254,7 +257,7 @@ class ZeppelinEnv(gym.Env):
 
         has_crashed = self.is_crash(self.state)
         reached_goal = self.reached_goal(self.state)
-        done = has_crashed or reached_goal
+        done = has_crashed or reached_goal or self.outside_space(self.state)
         done = bool(done)
 
         # Imaginary fuel -> try to work as fast as possible
@@ -265,7 +268,7 @@ class ZeppelinEnv(gym.Env):
             reward = self.OBSTACLE_REWARD
         elif reached_goal:
             reward = 2*self.DONE_REWARD
-        elif fuel==0:
+        elif self.outside_space(self.state) or fuel==0:
             # Do not run out of fuel
             reward = self.NO_FUEL_REWARD
         else:
@@ -470,7 +473,7 @@ class ZeppelinEnv(gym.Env):
         
         # Set goal size and pos
         self.obstacletrans.set_scale(2*self.GOAL_RADIUS*scale_x,2*self.GOAL_RADIUS*scale_y)
-        self.obstacletrans.set_translation(float(world_offset_x+self.state[0])*scale_x, float(world_offset_y+self.state[1])*scale_y)
+        self.obstacletrans.set_translation(float(world_offset_x+self.state[4])*scale_x, float(world_offset_y+self.state[5])*scale_y)
 
         # Set Zeppelin Position:
         x1 = float(self.state[0]+world_offset_x) * scale_x
