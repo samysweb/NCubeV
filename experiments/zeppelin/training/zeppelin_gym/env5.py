@@ -479,7 +479,7 @@ class ZeppelinEnv(gym.Env):
         
         # Set goal size and pos
         self.obstacletrans.set_scale(2*self.GOAL_RADIUS*scale_x,2*self.GOAL_RADIUS*scale_y)
-        self.obstacletrans.set_translation(float(world_offset_x+self.state[0])*scale_x, float(world_offset_y+self.state[1])*scale_y)
+        self.obstacletrans.set_translation(float(world_offset_x+self.state[4])*scale_x, float(world_offset_y+self.state[5])*scale_y)
 
         # Set Zeppelin Position:
         x1 = float(self.state[0]+world_offset_x) * scale_x
