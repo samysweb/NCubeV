@@ -7,6 +7,8 @@ import numpy as np
 import random
 import polytope as pc
 
+import zeppelin_gym.quant_modelplex as quant_modelplex
+
 from polytope.solvers import lpsolve
 def cheby_ball(poly1):
     #logger.debug('cheby ball')
@@ -239,6 +241,8 @@ class ZeppelinEnv(gym.Env):
         t = self.TIME_STEP
         
         used_emergency=False
+        y1_norm=0.
+        y2_norm=0.
         if action[2] > self.EMERGENCY_THRESHOLD:
             used_emergency=True
             if x1 == 0:
@@ -246,7 +250,9 @@ class ZeppelinEnv(gym.Env):
                 y2=1.
             else:
                 t1,t2 = self.get_worst_turbulence(state)
-                y1,y2 = -self.MAX_VELOCITY*t1, -self.MAX_VELOCITY*t2
+                y1_norm = -t1
+                y2_norm = -t2
+                y1,y2 = self.MAX_VELOCITY*y1_norm, self.MAX_VELOCITY*y2_norm
         else:
             y_strength = np.clip(action[0], -1.0, 1.0)*self.MAX_VELOCITY
             y1_norm = np.clip(action[1], -1.0, 1.0)
@@ -267,6 +273,7 @@ class ZeppelinEnv(gym.Env):
         # Imaginary fuel -> try to work as fast as possible
         fuel = 800-self.steps
 
+        reward = 0.0
         if has_crashed:
             # Penalize for crashing
             reward = self.OBSTACLE_REWARD
@@ -277,10 +284,9 @@ class ZeppelinEnv(gym.Env):
             reward = self.NO_FUEL_REWARD
         elif used_emergency:
             reward = self.EMERGENCY_REWARD
-        else:
-            # Reward for not having crashed yet,
-            # but dependent on efficiency
-            reward = self.TIME_STEP_REWARD
+        
+        reward += min(0.,quant_modelplex.quantitative_modelplex(x1, x2, c, w, y1_norm, y2_norm, self.TIME_STEP, self.MAX_WIND_SPEED, self.MAX_TURBULENCE)+0.01)
+        #print("modelplex:",quant_modelplex.quantitative_modelplex(x1, x2, c, w, y1_norm, y2_norm, self.TIME_STEP, self.MAX_WIND_SPEED, self.MAX_TURBULENCE))
 
         return np.array(self.state), reward, done, {'crash': has_crashed, 'goal': reached_goal}
     
@@ -458,7 +464,7 @@ class ZeppelinEnv(gym.Env):
             
             # Obstacle Circle
             goal = rendering.make_polygon([(-0.5,0.5),(0.5,0.5),(0.5,-0.5),(-0.5,-0.5)])
-            obstacle.set_color(0.0, 1.0, 0.0)
+            goal.set_color(0.0, 1.0, 0.0)
             self.goaltrans = rendering.Transform()
             goal.add_attr(self.goaltrans)
             self.viewer.add_geom(goal)
@@ -478,8 +484,8 @@ class ZeppelinEnv(gym.Env):
         self.obstacletrans.set_scale(2*c*scale_x,2*c*scale_y)
         
         # Set goal size and pos
-        self.obstacletrans.set_scale(2*self.GOAL_RADIUS*scale_x,2*self.GOAL_RADIUS*scale_y)
-        self.obstacletrans.set_translation(float(world_offset_x+self.state[4])*scale_x, float(world_offset_y+self.state[5])*scale_y)
+        self.goaltrans.set_scale(2*self.GOAL_RADIUS*scale_x,2*self.GOAL_RADIUS*scale_y)
+        self.goaltrans.set_translation(float(world_offset_x+self.state[4])*scale_x, float(world_offset_y+self.state[5])*scale_y)
 
         # Set Zeppelin Position:
         x1 = float(self.state[0]+world_offset_x) * scale_x

@@ -193,13 +193,13 @@ class ZeppelinEnv(gym.Env):
         ])
         self.observation_space = spaces.Box(obs_low, obs_high)
 
-        self._seed()
+        self.seed()
         self.viewer = None
         self.state = None
 
         self.steps_beyond_done = None
 
-    def _seed(self, seed=None):
+    def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
