@@ -250,8 +250,8 @@ class ZeppelinEnv(gym.Env):
                 y2=1.
             else:
                 t1,t2 = self.get_worst_turbulence(state)
-                y1_norm = -t1
-                y2_norm = -t2
+                y1_norm = -t1/self.MAX_TURBULENCE
+                y2_norm = -t2/self.MAX_TURBULENCE
                 y1,y2 = self.MAX_VELOCITY*y1_norm, self.MAX_VELOCITY*y2_norm
         else:
             y_strength = np.clip(action[0], -1.0, 1.0)*self.MAX_VELOCITY
@@ -285,7 +285,9 @@ class ZeppelinEnv(gym.Env):
         elif used_emergency:
             reward = self.EMERGENCY_REWARD
         
-        reward += min(0.,quant_modelplex.quantitative_modelplex(x1, x2, c, w, y1_norm, y2_norm, self.TIME_STEP, self.MAX_WIND_SPEED, self.MAX_TURBULENCE)+0.01)
+        if not done:
+            reward += min(0.,quant_modelplex.quantitative_modelplex(x1, x2, c, w, y1_norm, y2_norm, self.TIME_STEP, self.MAX_VELOCITY, self.MAX_TURBULENCE)+0.01)/10.0
+        #print((x1, x2, c, w, y1_norm, y2_norm, self.TIME_STEP, self.MAX_WIND_SPEED, self.MAX_TURBULENCE))
         #print("modelplex:",quant_modelplex.quantitative_modelplex(x1, x2, c, w, y1_norm, y2_norm, self.TIME_STEP, self.MAX_WIND_SPEED, self.MAX_TURBULENCE))
 
         return np.array(self.state), reward, done, {'crash': has_crashed, 'goal': reached_goal}
