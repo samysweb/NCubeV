@@ -30,7 +30,7 @@ function build_sysimage()
 	dep_dir = @__DIR__
 	cmd_trace = `julia --startup-file=no --compile=all --trace-compile=/tmp/snnt_trace.jl $dep_dir/trace_run.jl`
 	@info "Running ", cmd_trace
-	cmd_trace = addenv(cmd_trace,"OPENBLAS_NUM_THREADS" => "1","OMP_NUM_THREADS" => "1","JULIA_DEPOT_PATH" => join(DEPOT_PATH,":"), "JULIA_LOAD_PATH" => join(Base.load_path(),":"))
+	cmd_trace = addenv(cmd_trace,"PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"=>"python","OPENBLAS_NUM_THREADS" => "1","OMP_NUM_THREADS" => "1","JULIA_DEPOT_PATH" => join(DEPOT_PATH,":"), "JULIA_LOAD_PATH" => join(Base.load_path(),":"))
 	run_cmd(cmd_trace)
 	# Now /tmp/snnt_trace.jl should contain all the necessary precompiles...
 	base_sys_image = unsafe_string(Base.JLOptions().image_file)
@@ -56,14 +56,19 @@ function create_callable()
 	end
 	mkdir(joinpath(dep_dir,"../../bin"))
 	mv(joinpath(dep_dir,"sys.so"),sysimg_path)
-	open(joinpath(dep_dir,"../../bin/SNNT"), "w") do f
+	open(joinpath(dep_dir,"../../bin/SNNTjl"), "w") do f
 		julia_path = readchomp(`which julia`)
 		println(f, "#!$julia_path -J$sysimg_path")
 		println(f, "Base.reinit_stdio()")
 		println(f, "using SNNT")
 		println(f, "SNNT.run_cmd(ARGS)")
 	end
+	open(joinpath(dep_dir,"../../bin/SNNT"), "w") do f
+		println(f, "#!/bin/bash")
+		println(f, "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python $(normpath(dep_dir,"../../bin/SNNTjl")) $@")
+	end
 	chmod(joinpath(dep_dir,"../../bin/SNNT"), 0o755)
+	chmod(joinpath(dep_dir,"../../bin/SNNTjl"), 0o755)
 end
 
 build_sysimage()

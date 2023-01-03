@@ -14,10 +14,23 @@ function construct_approx(nonlinear_query :: NormalizedQuery) :: Dict{ApproxQuer
 		approx_expr = to_expr(approx_term)
 		val_ranges = get_val_ranges(0, nonlinear_query.input_bounds)
 		val_ranges = union(val_ranges, get_val_ranges(length(val_ranges), nonlinear_query.output_bounds))
+		for (cur_symbol, cur_bounds) in val_ranges
+			if cur_bounds[1]==cur_bounds[2]
+				println(cur_symbol)
+				println(cur_bounds[1])
+				approx_expr = substitute(approx_expr,Dict(cur_symbol => cur_bounds[1]),fold=false)
+				println(approx_expr)
+			end
+		end
 		#try
 		overapprox_result = overapprox(approx_expr, Dict(val_ranges), N=N, ϵ=0.0)#epsilon)
 		for cur_bound in bound_types
-			formula = generate_bound_from_overapprox(overapprox_result.output,overapprox_result, cur_bound)
+			output = overapprox_result.output
+			if output isa Number
+				formula = output
+			else
+				formula = generate_bound_from_overapprox(output,overapprox_result, cur_bound)
+			end
 			approximations[ApproxQuery(cur_bound, approx_term)] = IncompleteApproximation(deepcopy(bounds), from_expr(formula))
 		end
 		# catch e

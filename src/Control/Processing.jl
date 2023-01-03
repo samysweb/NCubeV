@@ -26,6 +26,11 @@ end
 function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothing,backup_meta=nothing)
 	approx_cache :: ApproxCache = ApproxCache()
 	print_msg("[CTRL] Iterating over conjunctions...")
+	# TODO(steuber):
+	#  - Reintroduce Over/Under formula wrappers
+	#  - Compute variable bounds
+	#  - Compute approximations
+	#  - Substiute Over/Under with approximations AND (bounds -> approx)
 	results = []
 	for current_conjunction in query
 		print_msg("[CTRL] Considering conjunction with ",

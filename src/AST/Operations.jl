@@ -13,7 +13,13 @@ not(f :: T1) where {T1 <: Formula} =  CompositeFormula(Not,Formula[f])
 function and(fs :: T1...) where {T1 <: Formula}
 	return and_construction(fs)
 end
-function and_construction(fs :: Vector{Formula})
+
+function and_construction(fs)
+	if fs isa Formula
+		# In case there is only one element in and
+		return fs
+	end
+	fs = convert(Vector{Formula}, fs)
 	if length(fs) == 0
 		return TrueAtom()
 	elseif length(fs) == 1
@@ -25,7 +31,13 @@ end
 function or(fs :: T1...) where {T1 <: Formula}
 	return or_construction(fs)
 end
-function or_construction(fs :: Vector{Formula})
+
+function or_construction(fs)
+	if fs isa Formula
+		# In case there is only one element in or
+		return fs
+	end
+	fs = convert(Vector{Formula}, fs)
 	if length(fs) == 0
 		return FalseAtom()
 	elseif length(fs) == 1

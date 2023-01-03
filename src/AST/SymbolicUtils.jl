@@ -122,10 +122,12 @@ function composite_formula_simplifier()
 	Postwalk(
 		Chain(
 			[
-				@acrule ((and(~x::_istrue, ~~y)) => (and_construction(convert(Vector{Formula},~~y))))
+				@acrule ((and(~x::_istrue, ~~y)) => (and_construction(~~y)))
 				@acrule ((and(~x::_isfalse, ~~y)) => (FalseAtom()))
 				@acrule ((or(~x::_istrue, ~~y)) => (TrueAtom()))
-				@acrule ((or(~x::_isfalse, ~~y)) => (or_construction(convert(Vector{Formula},~~y...))))
+				@acrule ((or(~x::_isfalse, ~~y)) => (or_construction(~~y)))
+				@rule   ((not(~x::_istrue)) => (FalseAtom()))
+				@rule   ((not(~x::_isfalse)) => (TrueAtom()))
 			]
 		)
 	)

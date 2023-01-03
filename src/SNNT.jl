@@ -1,4 +1,7 @@
 module SNNT
+
+ENV["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"]="python"
+
 #Util
 include("Util/Main.jl")
 # Configuration

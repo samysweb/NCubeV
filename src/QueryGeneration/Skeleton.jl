@@ -82,6 +82,10 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 					_ => throw("ApproxNode is supposed to contain a ConstraintVariable")
 				end
 			end
+			x => begin
+				print(x)
+				throw("Missing case!")
+			end
 		end
 	end
 end
