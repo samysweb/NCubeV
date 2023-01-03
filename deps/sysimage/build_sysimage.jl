@@ -65,7 +65,7 @@ function create_callable()
 	end
 	open(joinpath(dep_dir,"../../bin/SNNT"), "w") do f
 		println(f, "#!/bin/bash")
-		println(f, "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python $(normpath(dep_dir,"../../bin/SNNTjl")) $@")
+		println(f, "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python $(normpath(dep_dir,"../../bin/SNNTjl")) \$@")
 	end
 	chmod(joinpath(dep_dir,"../../bin/SNNT"), 0o755)
 	chmod(joinpath(dep_dir,"../../bin/SNNTjl"), 0o755)
