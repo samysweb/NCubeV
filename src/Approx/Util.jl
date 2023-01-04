@@ -88,3 +88,8 @@ filter_single_bound(x) = foldr(
 	(x,y) -> ( (abs(y[2]-x) < EPSILON) ? y : ([x;y[1]], x) ),
 	x;init=([],Inf))[1]
 filter_bounds(bounds) = map(x -> (length(x)>1) ? x : [x[1],x[1]] ,map(filter_single_bound, bounds))
+function filter_bounds_inplace(bounds)
+	map!(filter_single_bound, bounds, bounds)
+	map!(x -> (length(x)>1) ? x : [x[1],x[1]] ,bounds, bounds)
+end
+

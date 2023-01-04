@@ -5,10 +5,37 @@ module LP
 	using ..Util
 	using ..AST
 
-	export is_infeasible
+	export is_infeasible, get_model, optimize_dim
 
-	function to_linear_constraint(c :: LinearConstraint)
-		return round_minimize.(c.coefficients), round_maximize(c.bias)
+	function to_linear_constraint_coeff(c :: LinearConstraint)
+		return round_minimize.(c.coefficients)
+	end
+
+	function to_linear_constraint_bias(c :: LinearConstraint)
+		return round_maximize(c.bias)
+	end
+
+	function get_model(linear_constraints :: Vector{LinearConstraint})
+		model = Model(GLPK.Optimizer)
+		var_num = length(linear_constraints[1].coefficients)
+		@variable(model, x[1:var_num])
+		constraints = Array{Float32}(undef,(length(linear_constraints),var_num))
+		biases = Array{Float32}(undef,length(linear_constraints))
+		for (i,c) in enumerate(linear_constraints)
+			constraints[i,:] .= to_linear_constraint_coeff(c)
+			biases[i] = to_linear_constraint_bias(c)
+		end
+		@debug "Checking feasibility of ", constraints, " * x <= ", biases
+		@constraint(model, constraints * x .<= biases)
+		return model,x
+	end
+
+	function optimize_dim(dim :: Int, dir :: Float64, model_input)
+		model,x = model_input
+		@assert dir==-1.0 || dir==1.0 "Direction must be -1 or 1"
+		@objective(model, Max, dir*x[dim])
+		res = optimize!(model)
+		return value(x[dim])
 	end
 
 	function is_infeasible(linear_constraints :: Vector{LinearConstraint})
@@ -18,7 +45,8 @@ module LP
 		constraints = Array{Float32}(undef,(length(linear_constraints),var_num))
 		biases = Array{Float32}(undef,(length(linear_constraints),1))
 		for (i,c) in enumerate(linear_constraints)
-			constraints[i,:], biases[i] .= to_linear_constraint(c)
+			constraints[i,:] .= to_linear_constraint_coeff(c)
+			biases[i] = to_linear_constraint_bias(c)
 		end
 		@debug "Checking feasibility of ", constraints, " * x <= ", biases
 		@constraint(model, constraints * x .<= biases)

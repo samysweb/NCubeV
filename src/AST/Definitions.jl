@@ -108,15 +108,37 @@ MLStyle.pattern_uncall(e::Connective, _, _, _, _) = literal(e)
 	CompositeFormula(connective :: Connective, args :: Vector{T}) where {T <: Formula} = new(connective, args, reduce(+,Iterators.map(hash,args)))
 end
 
+abstract type ApproximationPrototype end
+
+struct Approximation <: ApproximationPrototype
+	bounds :: Vector{Vector{Float64}}
+	# Coefficients for linear constraint
+	linear_constraints :: Vector{LinearTerm}
+end
+
+struct IncompleteApproximation <: ApproximationPrototype
+	bounds :: Vector{Vector{Float64}}
+	# [[0,100],[-200,0,200],[-100,100]]
+	constraints :: Vector{Term}
+	# [-vel, vel]
+	function IncompleteApproximation( bounds :: Vector{Vector{Float64}}, formula :: Term)
+		constraints = Term[formula]
+		return new(bounds, constraints)
+	end
+end
+
+
 struct Query
 	formula :: Formula
 	variables :: Set{Variable}
 	num_input_vars :: Int64
 	num_output_vars :: Int64
+	approximations :: Dict{ApproxQuery, Approximation}
+	bounds :: Vector{Vector{Float64}}
 	function Query(formula :: Formula, variables :: Set{Variable})
 		num_input_vars = length(filter(x->x.mapping[1]==Input,variables))
 		num_output_vars = length(variables)-num_input_vars
-		return new(formula, variables, num_input_vars, num_output_vars)
+		return new(formula, variables, num_input_vars, num_output_vars, Dict{ApproxQuery, Approximation}(), Vector{Vector{Float64}}())
 	end
 end
 

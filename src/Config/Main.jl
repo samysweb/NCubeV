@@ -3,6 +3,8 @@ module Config
 
 	RIGOROUS_APPROXIMATIONS = false
 
+	APPROX_FIRST = true
+
 	SMT_SOLVER = "Z3"
 
 	function __init__()

@@ -12,6 +12,8 @@ export NormalizedQuery, PwlConjunction
 export flip
 export istree, exprhead, operation, arguments,similarterm,symtype, promote_symtype
 export to_expr, from_expr
+export ApproximationPrototype, Approximation, IncompleteApproximation
+export get_num_cases, get_bounds_by_id
 
 include("Definitions.jl")
 include("Equality.jl")

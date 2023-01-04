@@ -19,7 +19,7 @@ function prepare_for_olnnv(query :: Query)
 	variable_set = query.variables
 	underapprox_formula :: Formula = get_underapprox(formula)
 	# We are looking for counter-examples so we use the negation...
-	olnnv_formula = CompositeFormula(Not,[underapprox_formula])
+	olnnv_formula = AST.simplify(CompositeFormula(Not,[underapprox_formula]))
 	return Query(olnnv_formula, variable_set)
 end
 
@@ -32,6 +32,10 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 	#  - Compute approximations
 	#  - Substiute Over/Under with approximations AND (bounds -> approx)
 	results = []
+	original_query = query
+	if Config.APPROX_FIRST
+		query = get_approx_query(query)
+	end
 	for current_conjunction in query
 		print_msg("[CTRL] Considering conjunction with ",
 			length(current_conjunction.input_constraints.linear_constraints)+length(current_conjunction.input_constraints.semilinear_constraints),
@@ -41,10 +45,10 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 		#for mixed in current_conjunction.mixed_constraints
 		#	@info mixed
 		#end
-		if Config.INCLUDE_APPROXIMATIONS
+		if Config.INCLUDE_APPROXIMATIONS && !Config.APPROX_FIRST
 			SMTFilter = SMTInterface.get_star_filter(ctx, variables, current_conjunction, smt_timeout)
 		else
-			SMTFilter = SMTInterface.get_star_filter(ctx, variables, query.formula, smt_timeout)
+			SMTFilter = SMTInterface.get_star_filter(ctx, variables, original_query.formula, smt_timeout)
 		end
 		approx_normalized :: ApproxNormalizedQueryPrototype{Approximation} = get_approx_normalized_query(current_conjunction, approx_cache)
 		#@info "Initiating iterator"

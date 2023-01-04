@@ -44,3 +44,21 @@ function is_linear(f :: Term)
 		return false
 	end
 end
+
+function get_num_cases(bounds :: AbstractArray{Vector{Float64}})
+	return reduce(*, map(x -> length(x)-1, bounds))
+end
+
+function get_bounds_by_id(id :: Int64, bounds :: AbstractArray{Vector{Float64}})
+	num_remaining = get_num_cases(bounds)
+	@assert 1 <= id && id <= num_remaining
+	id = id-1
+	bound_res = Vector{Tuple{Float64, Float64}}()
+	for (i,cur_bound) in enumerate(bounds)
+		num_remaining = div(num_remaining, length(cur_bound)-1)
+		cur_i = div(id, num_remaining)+1
+		push!(bound_res, (cur_bound[cur_i], cur_bound[cur_i+1]))
+		id = mod(id, num_remaining)
+	end
+	return bound_res
+end

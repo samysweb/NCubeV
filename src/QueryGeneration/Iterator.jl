@@ -8,7 +8,33 @@ import Base.iterate
 
 function get_atoms(skeleton :: BooleanSkeleton, solution :: Vector{Int64})
 	atoms = Tuple{Int64,Union{ApproxNode,LinearConstraint}}[]
+	bounds = nothing
 	for s in solution
+		if !in(abs(s), keys(skeleton.variable_mapping)) || s < 0
+			continue
+		end
+		var_type = skeleton.variable_mapping[abs(s)]
+		@match var_type begin
+			ApproxCase(case_id) => begin
+				bounds = get_bounds_by_id(case_id, skeleton.query.bounds)
+				#print_msg("[ITERATE] ",s,"; ",case_id,"; ", bounds)
+				for (i,(l,u)) in enumerate(bounds)
+					coeffsl = zeros(length(bounds))
+					coeffsl[i] = -1.0
+					coeffsu = zeros(length(bounds))
+					coeffsu[i] = 1.0
+					push!(atoms,(s,LinearConstraint(coeffsl, -l, true)))
+					push!(atoms,(s,LinearConstraint(coeffsu, u, true)))
+				end
+			end
+			_ => begin end
+		end
+	end
+
+	for s in solution
+		if !in(abs(s), keys(skeleton.variable_mapping))
+			continue
+		end
 		polarity = s > 0
 		if abs(s)>length(skeleton.variable_mapping)
 			continue
@@ -16,12 +42,22 @@ function get_atoms(skeleton :: BooleanSkeleton, solution :: Vector{Int64})
 		var_type = skeleton.variable_mapping[abs(s)]
 		@match var_type begin
 			ConstraintVariable(c) => begin
-				if !polarity
-					c = AST.negate(c)
+				atom = c
+				if c isa ApproxNode
+					term = c.formula.left
+					bound_type = (c isa UnderApprox) ? AST.Upper : AST.Lower
+					approx = skeleton.query.approximations[ApproxQuery(bound_type, term)]
+					i = Approx.get_linear_term_position(approx, bounds)
+					term = approx.linear_constraints[i]
+					atom = LinearConstraint(term.coefficients, -term.bias, c.formula.comparator==AST.LessEq)
+					#push!(atoms, (s,c))
 				end
-				push!(atoms, (s,c))
+				if !polarity
+					atom = AST.negate(atom)
+				end
+				push!(atoms, (s,atom))
 			end
-			IntermediateVariable => begin end
+			_ => begin end
 		end
 	end
 	return atoms
@@ -76,13 +112,13 @@ function split_by_variables(atoms :: Vector{Tuple{Int64,ParsedNode}}, query :: Q
 end
 
 function iterate(query :: Query)
-	state = BooleanSkeleton(query.formula)
+	state = BooleanSkeleton(query)
 	return iterate(query, state)
 end
 
 function iterate(query :: Query, state :: BooleanSkeleton)
 	if isnothing(state)
-		state = BooleanSkeleton(query.formula)
+		state = BooleanSkeleton(query)
 	end
 	
 	infeasibility_cache = []
@@ -96,22 +132,29 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 		while solution != :unsatisfiable
 			conjunction = get_atoms(state, solution)
 			linear, nonlinear = split_by_linearity(conjunction)
+			conjunction = linear
+			@assert length(nonlinear) == 0
 			infeasible_combination = nothing
-			#if !LP.is_feasible(map(x->x[2],linear))
+			#if LP.is_infeasible(map(x->x[2],linear))
+			#	infeasible_combination = map(x -> -x[1], linear)
+			#end
 			# Flag combination of linear constraints as infeasible and continue...
 			#	infeasible_combination = map(x -> -x[1], linear)
 			# TODO(steuber): How many checks here are the optimal choice?
 			if !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],linear)),ctx, variables)
 				#print_msg("Z3 says it's infeasible")
-				infeasible_combination = map(x -> -x[1], linear)
-			elseif Config.INCLUDE_APPROXIMATIONS
-				if !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
-					#print_msg("Z3 says it's infeasible")
-					infeasible_combination = map(x -> -x[1], nonlinear)
-				elseif !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],conjunction)),ctx, variables)
-					#print_msg("Z3 says it's infeasible")
-					infeasible_combination = map(x -> -x[1], conjunction)
-				end
+			 	infeasible_combination = map(x -> -x[1], linear)
+				sort!(infeasible_combination)
+				infeasible_combination = unique!(x->x,infeasible_combination)
+				#print_msg(infeasible_combination)
+			# elseif Config.INCLUDE_APPROXIMATIONS
+			# 	if !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
+			# 		#print_msg("Z3 says it's infeasible")
+			# 		infeasible_combination = map(x -> -x[1], nonlinear)
+			# 	elseif !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],conjunction)),ctx, variables)
+			# 		#print_msg("Z3 says it's infeasible")
+			# 		infeasible_combination = map(x -> -x[1], conjunction)
+			# 	end
 			end
 			if !isnothing(infeasible_combination)
 				#print("_")
@@ -121,6 +164,7 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 					infeasible_combination
 				)
 				solution = solve(state.sat_instance)
+				#print_msg(solution)
 				continue
 			end
 			# input, mixed = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},conjunction), query)

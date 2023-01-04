@@ -11,6 +11,7 @@ module QueryGeneration
 	using ..LP
 	using ..SMTInterface
 	using ..Analysis
+	using ..Approx
 	include("Definitions.jl")
 	include("Skeleton.jl")
 	include("NonLinear.jl")

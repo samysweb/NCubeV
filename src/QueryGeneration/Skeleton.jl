@@ -3,8 +3,29 @@
 function transform_formula(skeleton :: BooleanSkeleton)
 	variable_number_dict = Dict{Union{Atom,LinearConstraint}, Int64}()
 	fun = get_skeleton_generator_function(skeleton, variable_number_dict)
-	res = Postwalk(x -> if typeof(x) <: Formula fun(x) end)(skeleton.formula)
+	res = Postwalk(x -> if typeof(x) <: Formula fun(x) end)(skeleton.query.formula)
 	add_clause(skeleton.sat_instance, [res.variable_number])
+	# Encode approximation cases
+	num_cases = get_num_cases(skeleton.query.bounds)
+	v1 = 0
+	v2 = 0
+	all_cases = []
+	for i in 1:num_cases
+		v1 = next_var(skeleton.sat_instance)
+		v2_new = next_var(skeleton.sat_instance)
+		push!(all_cases, v1)
+		if v2 != 0
+			add_clause(skeleton.sat_instance, [-v2, -v1])
+			add_clause(skeleton.sat_instance, [-v2, v2_new])
+		end
+		v2 = v2_new
+		add_clause(skeleton.sat_instance, [-v1, v2])
+		skeleton.variable_mapping[v1] = ApproxCase(i)
+		skeleton.variable_mapping[v2] = IntermediateVariable
+	end
+	if length(all_cases) > 0
+		add_clause(skeleton.sat_instance, all_cases)
+	end
 end
 
 function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_number_dict :: Dict{Union{Atom,LinearConstraint}, Int64})

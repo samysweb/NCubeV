@@ -30,8 +30,10 @@ module Approx
 	include("Generation.jl")
 
 	export ApproxCache
+	export get_approx_query
 	export get_approx_normalized_query
 	export ApproxNormalizedQueryPrototype, IncompleteApproximation, Approximation, set_approx_density
+	export get_linear_term_position
 
 	function set_approx_density(Nparam)
 		global N = Nparam

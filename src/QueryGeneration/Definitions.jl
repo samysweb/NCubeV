@@ -4,16 +4,17 @@ import Base.hash
 @data BooleanVariableType begin
 	IntermediateVariable
 	ConstraintVariable(::Union{LinearConstraint,Atom,ApproxNode})
+	ApproxCase(case_id)
 end
 
 mutable struct BooleanSkeleton
-	formula :: Formula
+	query :: Query
 	variable_mapping :: Dict{Int64, BooleanVariableType}
 	sat_instance :: PicoPtr
-	function BooleanSkeleton(formula :: F) where {F <: Formula}
+	function BooleanSkeleton(query :: Query)
 		variable_mapping = Dict{Int64, BooleanVariableType}()
 		sat_instance :: PicoPtr = picosat_init()
-		skeleton = new(formula, variable_mapping, sat_instance)
+		skeleton = new(query, variable_mapping, sat_instance)
 		finalizer(x -> picosat_reset(x.sat_instance), skeleton)
 		transform_formula(skeleton)
 		return skeleton

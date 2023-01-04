@@ -1,26 +1,6 @@
 import Base.hash
 import Base.isequal
 
-abstract type ApproximationPrototype end
-
-struct Approximation <: ApproximationPrototype
-	bounds :: Vector{Vector{Float64}}
-	# Coefficients for linear constraint
-	linear_constraints :: Vector{LinearTerm}
-end
-
-struct IncompleteApproximation <: ApproximationPrototype
-	bounds :: Vector{Vector{Float64}}
-	# [[0,100],[-200,0,200],[-100,100]]
-	constraints :: Vector{Term}
-	# [-vel, vel]
-	function IncompleteApproximation( bounds :: Vector{Vector{Float64}}, formula :: Term)
-		constraints = Term[formula]
-		return new(bounds, constraints)
-	end
-end
-
-
 struct ApproxNormalizedQueryPrototype{T <: ApproximationPrototype}
 	nonlinear_query :: NormalizedQuery
 	input_bounds :: Vector{Vector{Float64}}

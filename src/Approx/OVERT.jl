@@ -6,14 +6,12 @@ function get_val_ranges(offset :: Int64, bounds :: Vector{Vector{Float64}})
 	return val_ranges
 end
 
-function construct_approx(nonlinear_query :: NormalizedQuery) :: Dict{ApproxQuery, IncompleteApproximation}
+function construct_approx(approx_queries :: Dict{Term, Vector{BoundType}}, bounds :: Vector{Vector{Float64}})
 	approximations = Dict{ApproxQuery, IncompleteApproximation}()
-	bounds = [nonlinear_query.input_bounds;nonlinear_query.output_bounds]
-	for (approx_term, bound_types) in nonlinear_query.approx_queries
+	for (approx_term, bound_types) in approx_queries
 		print_msg("[APPROX] Generating expression for ", approx_term,"...")
 		approx_expr = to_expr(approx_term)
-		val_ranges = get_val_ranges(0, nonlinear_query.input_bounds)
-		val_ranges = union(val_ranges, get_val_ranges(length(val_ranges), nonlinear_query.output_bounds))
+		val_ranges = get_val_ranges(0, bounds)
 		for (cur_symbol, cur_bounds) in val_ranges
 			if cur_bounds[1]==cur_bounds[2]
 				println(cur_symbol)
@@ -22,7 +20,6 @@ function construct_approx(nonlinear_query :: NormalizedQuery) :: Dict{ApproxQuer
 				println(approx_expr)
 			end
 		end
-		#try
 		overapprox_result = overapprox(approx_expr, Dict(val_ranges), N=N, ϵ=0.0)#epsilon)
 		for cur_bound in bound_types
 			output = overapprox_result.output
@@ -33,16 +30,13 @@ function construct_approx(nonlinear_query :: NormalizedQuery) :: Dict{ApproxQuer
 			end
 			approximations[ApproxQuery(cur_bound, approx_term)] = IncompleteApproximation(deepcopy(bounds), from_expr(formula))
 		end
-		# catch e
-		# 	# TODO(steuber): This is wrong
-		# 	@error "Overapproximation failed for ",approx_expr, ": ",e, " RESULT WILL BE ERRONOUS"
-		# 	var_nums = length(bounds)
-		# 	for cur_bound in bound_types
-		# 		approximations[ApproxQuery(cur_bound, approx_term)] = IncompleteApproximation(deepcopy(bounds), convert(Term,LinearTerm(zeros(var_nums), 0)))
-		# 	end
-		# end
 	end
 	return approximations
+end
+
+function construct_approx(nonlinear_query :: NormalizedQuery) :: Dict{ApproxQuery, IncompleteApproximation}
+	bounds = [nonlinear_query.input_bounds;nonlinear_query.output_bounds]
+	return construct_approx(nonlinear_query.approx_queries, bounds)
 end
 
 function generate_bound_from_overapprox(
