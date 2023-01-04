@@ -15,10 +15,10 @@ module Approx
 	using ..SMTInterface
 
 	# OVERT configuration
-	N = 1
+	N = 2
 	epsilon = 0.01
 	# Pwl bound epsilon
-	EPSILON=1e-3
+	EPSILON=Config.EPSILON
 
 	include("Definitions.jl")
 	include("OVERT.jl")

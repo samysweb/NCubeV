@@ -1,10 +1,11 @@
 import Base.isequal
 import Base.hash
+import ..AST.term_to_string
 
 @data BooleanVariableType begin
 	IntermediateVariable
 	ConstraintVariable(::Union{LinearConstraint,Atom,ApproxNode})
-	ApproxCase(case_id)
+	ApproxCase(dim,case_id)
 end
 
 mutable struct BooleanSkeleton
@@ -23,4 +24,8 @@ end
 
 struct SkeletonFormula <: Formula
 	variable_number :: Int64
+end
+
+function term_to_string(t :: SkeletonFormula)
+	return "SkeletonFormula($(t.variable_number))"
 end

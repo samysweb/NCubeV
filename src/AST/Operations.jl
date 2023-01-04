@@ -117,13 +117,6 @@ end
 
 convert(::Type{Term}, x :: T) where {T <: Number} = TermNumber(x)
 
-# The switch between under/overapprox has happened previously. This is a purely technical switch from one to the other...
-function negate(a :: UnderApprox)
-	return OverApprox(negate(a.formula))
-end
-function negate(a :: OverApprox)
-	return UnderApprox(negate(a.formula))
-end
 
 
 function negate(a :: Atom)

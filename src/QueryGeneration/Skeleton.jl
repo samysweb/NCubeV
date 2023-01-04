@@ -1,34 +1,37 @@
 #import ..AST : And, Or, Not, Implies
 
 function transform_formula(skeleton :: BooleanSkeleton)
-	variable_number_dict = Dict{Union{Atom,LinearConstraint}, Int64}()
+	variable_number_dict = Dict{Union{Atom,LinearConstraint,ApproxNode}, Int64}()
 	fun = get_skeleton_generator_function(skeleton, variable_number_dict)
 	res = Postwalk(x -> if typeof(x) <: Formula fun(x) end)(skeleton.query.formula)
 	add_clause(skeleton.sat_instance, [res.variable_number])
-	# Encode approximation cases
+	# Encode approximation cases for each dimension
 	num_cases = get_num_cases(skeleton.query.bounds)
-	v1 = 0
-	v2 = 0
-	all_cases = []
-	for i in 1:num_cases
-		v1 = next_var(skeleton.sat_instance)
-		v2_new = next_var(skeleton.sat_instance)
-		push!(all_cases, v1)
-		if v2 != 0
-			add_clause(skeleton.sat_instance, [-v2, -v1])
-			add_clause(skeleton.sat_instance, [-v2, v2_new])
+	for (dim,bound_list) in enumerate(skeleton.query.bounds)
+		v1 = 0
+		v2 = 0
+		all_cases = []
+		for i in 1:(length(bound_list)-1)
+			v1 = next_var(skeleton.sat_instance)
+			v2_new = next_var(skeleton.sat_instance)
+			push!(all_cases, v1)
+			if v2 != 0
+				add_clause(skeleton.sat_instance, [-v2, -v1])
+				add_clause(skeleton.sat_instance, [-v2, v2_new])
+			end
+			v2 = v2_new
+			add_clause(skeleton.sat_instance, [-v1, v2])
+			skeleton.variable_mapping[v1] = ApproxCase(dim, i)
+			skeleton.variable_mapping[v2] = IntermediateVariable
 		end
-		v2 = v2_new
-		add_clause(skeleton.sat_instance, [-v1, v2])
-		skeleton.variable_mapping[v1] = ApproxCase(i)
-		skeleton.variable_mapping[v2] = IntermediateVariable
+		if length(all_cases) > 0
+			add_clause(skeleton.sat_instance, all_cases)
+		end
 	end
-	if length(all_cases) > 0
-		add_clause(skeleton.sat_instance, all_cases)
-	end
+	print_msg(variable_number_dict)
 end
 
-function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_number_dict :: Dict{Union{Atom,LinearConstraint}, Int64})
+function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_number_dict :: Dict{Union{Atom,LinearConstraint,ApproxNode}, Int64})
 	return function(formula :: Formula)
 		return @match formula begin
 			Atom() || LinearConstraint() => begin
@@ -87,22 +90,63 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 				return SkeletonFormula(variable_number)
 			end
 			OverApprox(internal_formula) || UnderApprox(internal_formula) => begin
-				#@debug "OverApprox or UnderApprox => propagating from below"
-				# print("Encountered ")
-				# print_msg(formula)
-				# print_msg(internal)
-				return @match skeleton.variable_mapping[internal_formula.variable_number] begin
-					ConstraintVariable(internal) => begin
-						# May have already happened at other location...
-						if !(internal isa UnderApprox || internal isa OverApprox)
-							new_formula = (typeof(formula))(internal)
-							skeleton.variable_mapping[internal_formula.variable_number] = ConstraintVariable(new_formula)
+				#@debug "Atom or LinearConstraint => constraint variable"
+				return_variable = next_var(skeleton.sat_instance)
+				if haskey(variable_number_dict, formula)
+					return SkeletonFormula(variable_number_dict[formula])
+				else
+					new_formula = @match skeleton.variable_mapping[internal_formula.variable_number] begin
+							ConstraintVariable(internal) => (typeof(formula))(internal)
+							_ => nothing
 						end
-						return internal_formula
+					@assert new_formula !== nothing
+					variable_number = next_var(skeleton.sat_instance)
+					# Relation of under/over approx and real atom
+					if formula isa OverApprox
+						# We want (-internal_formula.variable_number) AND (variable_number) <=> return_variable
+						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, -variable_number, return_variable])
+						add_clause(skeleton.sat_instance, [-return_variable, internal_formula.variable_number])
+						add_clause(skeleton.sat_instance, [-return_variable, variable_number])
+						# If formula is true then so is the overapproximation:
+						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, variable_number])
+					elseif formula isa UnderApprox
+						# We want (-internal_formula.variable_number) OR (variable_number) <=> return_variable
+						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, return_variable])
+						add_clause(skeleton.sat_instance, [-variable_number, return_variable])
+						add_clause(skeleton.sat_instance, [-return_variable, internal_formula.variable_number, variable_number])
+						# If underapproximation is true then so is the original formula:
+						add_clause(skeleton.sat_instance, [-variable_number, internal_formula.variable_number])
 					end
-					_ => throw("ApproxNode is supposed to contain a ConstraintVariable")
+					skeleton.variable_mapping[variable_number] = ConstraintVariable(new_formula)
+					variable_number_dict[formula] = variable_number
+					return SkeletonFormula(return_variable)
 				end
 			end
+			# OverApprox(internal_formula) || UnderApprox(internal_formula) => begin
+			# 	#@debug "OverApprox or UnderApprox => propagating from below"
+			# 	# print("Encountered ")
+			# 	# print_msg(formula)
+			# 	# print_msg(internal)
+			# 	if haskey(variable_number_dict, formula)
+			# 		return SkeletonFormula(variable_number_dict[formula])
+			# 	else
+			# 		variable_number = next_var(skeleton.sat_instance)
+			# 		skeleton.variable_mapping[variable_number] = formula
+			# 		variable_number_dict[formula] = variable_number
+			# 		return SkeletonFormula(variable_number)
+			# 	end
+			# 	# return @match skeleton.variable_mapping[internal_formula.variable_number] begin
+			# 	# 	ConstraintVariable(internal) => begin
+			# 	# 		# May have already happened at other location...
+			# 	# 		if !(internal isa UnderApprox || internal isa OverApprox)
+			# 	# 			new_formula = (typeof(formula))(internal)
+			# 	# 			skeleton.variable_mapping[internal_formula.variable_number] = ConstraintVariable(new_formula)
+			# 	# 		end
+			# 	# 		return internal_formula
+			# 	# 	end
+			# 	# 	_ => throw("ApproxNode is supposed to contain a ConstraintVariable")
+			# 	# end
+			# end
 			x => begin
 				print(x)
 				throw("Missing case!")

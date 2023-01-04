@@ -7,6 +7,8 @@ module Config
 
 	SMT_SOLVER = "Z3"
 
+	EPSILON = 1e-3
+
 	function __init__()
 		global INCLUDE_APPROXIMATIONS = true
 		global RIGOROUS_APPROXIMATIONS = false

@@ -50,14 +50,14 @@ function term_to_string(a :: LinearConstraint)
 		end
 	end
 	if a.equality
-		res*="<="*string(a.bias)
+		res*="<="*string(round(convert(Float32,a.bias);digits=2,base=10))
 	else
-		res*="<"*string(a.bias)
+		res*="<"*string(round(convert(Float32,a.bias);digits=2,base=10))
 	end
 	return res
 end
 function term_to_string(a :: LinearTerm)
-	return string(a.coefficients)*"+"*string(a.bias)
+	return string(map(x->round(convert(Float32,x);digits=2,base=10),a.coefficients))*"+"*string(round(convert(Float32,a.bias);digits=2,base=10))
 end
 
 function term_to_string(c :: CompositeFormula)
