@@ -18,6 +18,9 @@ function get_approx_nodes(formula :: Formula, approx_requests :: Dict{Term, Vect
 			if !in(AST.Lower, init)
 				push!(init,AST.Lower)
 			end
+			if !in(AST.Upper, init)
+				push!(init,AST.Upper)
+			end
 			approx_requests[t] = init
 		end
 		UnderApprox(f) => begin
@@ -28,6 +31,9 @@ function get_approx_nodes(formula :: Formula, approx_requests :: Dict{Term, Vect
 				init = approx_requests[t]
 			else
 				init = Vector{BoundType}()
+			end
+			if !in(AST.Lower, init)
+				push!(init,AST.Lower)
 			end
 			if !in(AST.Upper, init)
 				push!(init,AST.Upper)

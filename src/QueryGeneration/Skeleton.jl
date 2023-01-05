@@ -95,30 +95,41 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 				if haskey(variable_number_dict, formula)
 					return SkeletonFormula(variable_number_dict[formula])
 				else
-					new_formula = @match skeleton.variable_mapping[internal_formula.variable_number] begin
-							ConstraintVariable(internal) => (typeof(formula))(internal)
+					internal = @match skeleton.variable_mapping[internal_formula.variable_number] begin
+							ConstraintVariable(internal) => internal
 							_ => nothing
 						end
-					@assert new_formula !== nothing
-					variable_number = next_var(skeleton.sat_instance)
+					new_formula = nothing
+					new_formula_complementary = nothing
+					variable_number_actual = next_var(skeleton.sat_instance)
+					variable_number_complementary = next_var(skeleton.sat_instance)
 					# Relation of under/over approx and real atom
 					if formula isa OverApprox
+						new_formula = OverApprox(internal)
+						new_formula_complementary = UnderApprox(internal)
 						# We want (-internal_formula.variable_number) AND (variable_number) <=> return_variable
-						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, -variable_number, return_variable])
+						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, -variable_number_actual, return_variable])
 						add_clause(skeleton.sat_instance, [-return_variable, internal_formula.variable_number])
-						add_clause(skeleton.sat_instance, [-return_variable, variable_number])
+						add_clause(skeleton.sat_instance, [-return_variable, variable_number_actual])
 						# If formula is true then so is the overapproximation:
-						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, variable_number])
+						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, variable_number_actual])
+						# If underapproximation is true then so is the original formula:
+						add_clause(skeleton.sat_instance, [-variable_number_complementary, internal_formula.variable_number])
 					elseif formula isa UnderApprox
+						new_formula = UnderApprox(internal)
+						new_formula_complementary = OverApprox(internal)
 						# We want (-internal_formula.variable_number) OR (variable_number) <=> return_variable
 						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, return_variable])
-						add_clause(skeleton.sat_instance, [-variable_number, return_variable])
-						add_clause(skeleton.sat_instance, [-return_variable, internal_formula.variable_number, variable_number])
+						add_clause(skeleton.sat_instance, [-variable_number_actual, return_variable])
+						add_clause(skeleton.sat_instance, [-return_variable, internal_formula.variable_number, variable_number_actual])
 						# If underapproximation is true then so is the original formula:
-						add_clause(skeleton.sat_instance, [-variable_number, internal_formula.variable_number])
+						add_clause(skeleton.sat_instance, [-variable_number_actual, internal_formula.variable_number])
+						# If formula is true then so is the overapproximation:
+						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, variable_number_complementary])
 					end
-					skeleton.variable_mapping[variable_number] = ConstraintVariable(new_formula)
-					variable_number_dict[formula] = variable_number
+					skeleton.variable_mapping[variable_number_actual] = ConstraintVariable(new_formula)
+					skeleton.variable_mapping[variable_number_complementary] = ConstraintVariable(new_formula_complementary)
+					variable_number_dict[formula] = return_variable
 					return SkeletonFormula(return_variable)
 				end
 			end
