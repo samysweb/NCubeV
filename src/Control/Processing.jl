@@ -36,7 +36,8 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 	if Config.APPROX_FIRST
 		query = get_approx_query(query)
 	end
-	for current_conjunction in query
+	last_save_time = time_ns()
+	for (nonlinear_conjunction,current_conjunction) in query
 		print_msg("[CTRL] Considering conjunction with ",
 			length(current_conjunction.input_constraints.linear_constraints)+length(current_conjunction.input_constraints.semilinear_constraints),
 			" input constraints and a disjunction of size ",length(current_conjunction.mixed_constraints))
@@ -45,16 +46,18 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 		#for mixed in current_conjunction.mixed_constraints
 		#	@info mixed
 		#end
-		if Config.INCLUDE_APPROXIMATIONS && !Config.APPROX_FIRST
-			SMTFilter = SMTInterface.get_star_filter(ctx, variables, current_conjunction, smt_timeout)
-		else
-			SMTFilter = SMTInterface.get_star_filter(ctx, variables, original_query.formula, smt_timeout)
-		end
+		#if Config.INCLUDE_APPROXIMATIONS
+		#	SMTFilter = SMTInterface.get_star_filter(ctx, variables, nonlinear_conjunction, smt_timeout)
+		#else
+		#SMTFilter = SMTInterface.get_star_filter(ctx, variables, nonlinear_conjunction, smt_timeout)
+		SMTFilter = SMTInterface.get_star_filter(ctx, variables, original_query.formula, smt_timeout)
+		#end
 		approx_normalized :: ApproxNormalizedQueryPrototype{Approximation} = get_approx_normalized_query(current_conjunction, approx_cache)
 		#@info "Initiating iterator"
 		for linear_query in approx_normalized
 			push!(results,f((linear_query, SMTFilter)))
-			if !isnothing(backup)
+			# Save at most every 200s
+			if !isnothing(backup) && (time_ns() - last_save_time) > 200e9
 				print_msg("[CTRL] Saving current state of verification...")
 				save(backup,"result",results,"backup_meta",backup_meta)
 			end
