@@ -7,7 +7,7 @@ module SMTInterface
 	using ..VerifierInterface
 	using ..Config
 
-	export smt_context, nl_feasible
+	export smt_context, nl_feasible, nl_feasible_init
 
 	if Config.SMT_SOLVER == "Z3"
 		include("Z3/Main.jl")
@@ -23,6 +23,33 @@ module SMTInterface
 	include("AST2SMT.jl")
 	include("Base.jl")
 	include("StarFilter.jl")
+
+	function nl_feasible_init(full_ctx)
+		ctx, _ = full_ctx
+		s = smt_internal_solver(ctx, "QF_NRA")
+		d = smt_internal_formula_dict(s,full_ctx)
+		return (s,d)
+	end
+
+	function nl_feasible(constraints, feasibility_solver)
+		s,d = feasibility_solver
+		smt_formulas = []
+		additional = []
+		for c in constraints
+			i, f = c
+			push!(smt_formulas, smt_internal_add_to_dict(d, i, f, additional))
+		end
+		smt_internal_push(s)
+		for a in additional
+			smt_internal_add(s, a)
+		end
+		for f in smt_formulas
+			smt_internal_add(s, f)
+		end
+		res = smt_internal_check(s)
+		smt_internal_pop(s)
+		return !smt_internal_is_unsat(res)
+	end
 
 
 	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables;print_model=false)

@@ -107,3 +107,27 @@ function smt_print_model(solver)
 	print_msg("[Z3] Model: ")
 	print_msg(model)
 end
+
+function smt_internal_formula_dict(solver, full_ctx)
+	res = Dict{Int64, Any}()
+	return (solver, full_ctx, res)
+end
+
+function smt_internal_add_to_dict(dict, i, formula, additional)
+	(solver, full_ctx, res) = dict
+	ctx, variables = full_ctx
+	if i == 0
+		return ast2smt(formula, variables, additional)
+	elseif haskey(res, i)
+		return res[i]
+	else
+		v = Z3.bool_const(ctx, "b$i")
+		res[i] = v
+		additional = []
+		smt_internal_add(solver, v == ast2smt(formula, variables,additional))
+		for a in additional
+			smt_internal_add(solver, a)
+		end
+		return v
+	end
+end
