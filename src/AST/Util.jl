@@ -72,6 +72,11 @@ function get_position(bounds :: Vector{Float64}, x :: Float64)
 	end
 end
 
+function get_linear_term(bounds :: Vector{Tuple{Float64,Float64}}, approx :: Approximation)
+	pos = get_linear_term_position(approx, bounds)
+	return approx.linear_constraints[pos]
+end
+
 function get_linear_term_position(approximation :: ApproximationPrototype, bounds :: Vector{Tuple{Float64, Float64}})
 	pos = 0
 	for (i, b) in enumerate(bounds)

@@ -1,5 +1,6 @@
 module SMTInterface
 	using MLStyle
+	using TimerOutputs
 
 	using ..Util
 	using ..AST
@@ -26,13 +27,15 @@ module SMTInterface
 
 	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables;print_model=false)
 		res = smt_solver(ctx) do s
-			for c in constraints
-				additional = []
-				translated = ast2smt(c, variables, additional)
-				#print_msg(translated)
-				smt_internal_add(s, translated)
-				for a in additional
-					smt_internal_add(s, a)
+			@timeit Config.TIMER "SMTprep" begin
+				for c in constraints
+					additional = []
+					translated = ast2smt(c, variables, additional)
+					#print_msg(translated)
+					smt_internal_add(s, translated)
+					for a in additional
+						smt_internal_add(s, a)
+					end
 				end
 			end
 			

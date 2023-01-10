@@ -7,66 +7,64 @@ import Base.iterate
 # end
 
 function get_atoms(skeleton :: BooleanSkeleton, solution :: Vector{Int64})
-	atoms = Tuple{Int64,Union{LinearConstraint, Atom, ApproxNode}}[]
-	num_vars = skeleton.query.num_input_vars+skeleton.query.num_output_vars
-	bounds = Vector{Tuple{Int64,Tuple{Float64,Float64}}}(undef,num_vars)
-	for s in solution
-		if !in(abs(s), keys(skeleton.variable_mapping)) || s < 0
-			continue
-		end
-		var_type = skeleton.variable_mapping[abs(s)]
-		@match var_type begin
-			ApproxCase(dim,i) => begin
-				l, u = skeleton.query.bounds[dim][i], skeleton.query.bounds[dim][i+1]
-				bounds[dim] = (s,(l,u))
-			end
-			_ => begin end
-		end
-	end
-
-	for s in solution
-		if !in(abs(s), keys(skeleton.variable_mapping))
-			continue
-		end
-		polarity = s > 0
-		if abs(s)>length(skeleton.variable_mapping)
-			continue
-		end
-		var_type = skeleton.variable_mapping[abs(s)]
-		@match var_type begin
-			ConstraintVariable(c) => begin
-				atom = c
-				# if c isa ApproxNode
-				# 	term = c.formula.left
-				# 	bound_type = (c isa UnderApprox) ? AST.Upper : AST.Lower
-				# 	approx = skeleton.query.approximations[ApproxQuery(bound_type, term)]
-				# 	i = get_linear_term_position(approx, bounds)
-				# 	term = approx.linear_constraints[i]
-				# 	atom = LinearConstraint(term.coefficients, -term.bias, c.formula.comparator==AST.LessEq)
-				# 	#push!(atoms, (s,c))
-				# #elseif c isa Atom
-				# #	# TODO(steuber): Use information on relation of under/over-approximation and atom?
-				# #	continue
-				# end
-				if !(atom isa ApproxNode) && !polarity
-					atom = AST.negate(atom)
+	return @timeit Config.TIMER "atom_recovery" begin
+		atoms = Tuple{Int64,Union{LinearConstraint, Atom, ApproxNode, CompositeFormula}}[]
+		num_vars = skeleton.query.num_input_vars+skeleton.query.num_output_vars
+		variable_mapping_keys = keys(skeleton.variable_mapping)
+		@timeit Config.TIMER "bound_computation" begin
+			bounds = Vector{Tuple{Int64,Tuple{Float64,Float64}}}(undef,num_vars)
+			for s in solution
+				if !in(abs(s), variable_mapping_keys) || s < 0
+					continue
 				end
-				push!(atoms, (s,atom))
+				var_type = skeleton.variable_mapping[abs(s)]
+				@match var_type begin
+					ApproxCase(dim,i) => begin
+						l, u = skeleton.query.bounds[dim][i], skeleton.query.bounds[dim][i+1]
+						bounds[dim] = (s,(l,u))
+					end
+					_ => begin end
+				end
 			end
-			_ => begin end
 		end
+
+		@timeit Config.TIMER "atom_computation" begin
+			num_vars = length(skeleton.variable_mapping)
+			for s in solution
+				if !in(abs(s), variable_mapping_keys)
+					continue
+				end
+				polarity = s > 0
+				if abs(s)>num_vars
+					continue
+				end
+				var_type = skeleton.variable_mapping[abs(s)]
+				@match var_type begin
+					ConstraintVariable(c) => begin
+						atom = c
+						if atom isa LinearConstraint && !polarity
+							atom = AST.negate(atom)
+						elseif atom isa Atom && !polarity
+							atom = CompositeFormula(AST.Not,Atom[atom])
+						end
+						push!(atoms, (s,atom))
+					end
+					_ => begin end
+				end
+			end
+		end
+		return bounds, atoms
 	end
-	return bounds, atoms
 end
 
-function split_by_linearity(atoms :: Vector{Tuple{Int64,Union{LinearConstraint,Atom,ApproxNode}}})
+function split_by_linearity(atoms :: Vector{Tuple{Int64,Union{LinearConstraint,Atom,ApproxNode,CompositeFormula}}})
 	linear_atoms = Tuple{Int64,LinearConstraint}[]
-	nonlinear_atoms = Tuple{Int64,Atom}[]
+	nonlinear_atoms = Tuple{Int64,Union{Atom,CompositeFormula}}[]
 	approx_atoms = Tuple{Int64, ApproxNode}[]
 	for (s,a) in atoms
 		if isa(a,LinearConstraint)
 			push!(linear_atoms, (s,a))
-		elseif a isa Atom
+		elseif a isa Atom || a isa CompositeFormula
 			push!(nonlinear_atoms, (s,a))
 		elseif a isa ApproxNode
 			push!(approx_atoms, (s,a))
@@ -110,9 +108,9 @@ function split_by_variables(atoms :: Vector{Tuple{Int64,ParsedNode}}, query :: Q
 	return input_atoms, mixed_atoms
 end
 
-function iterate(query :: Query)
-	state = BooleanSkeleton(query)
-	return iterate(query, state)
+function iterate(iterquery :: IterableQuery)
+	state = BooleanSkeleton(iterquery.query)
+	return iterate(iterquery, state)
 end
 
 function generate_linear_constraint(bounds :: Vector{Tuple{Float64, Float64}}, semi :: SemiLinearConstraint, approximations :: Dict{ApproxQuery,Approximation})
@@ -128,32 +126,35 @@ function generate_linear_constraint(bounds :: Vector{Tuple{Float64, Float64}}, s
 	return LinearConstraint(coefficients, bias, semi.equality)
 end
 
-function iterate(query :: Query, state :: BooleanSkeleton)
-	if isnothing(state)
-		state = BooleanSkeleton(query)
-	end
-	
-	infeasibility_cache = []
-	solution = solve(state.sat_instance)
-	input = nothing
-	input_nonlinear = nothing
-	disjunction = Vector{Vector{Formula}}()
-	disjunction_nonlinear = Vector{Formula}()
-	nonlinearities_set = Set{ApproxQuery}()
-	num_vars = query.num_input_vars+query.num_output_vars
-	smt_context(query.num_input_vars+query.num_output_vars;timeout=100000) do (ctx, variables)
+function iterate(iterquery :: IterableQuery, state :: BooleanSkeleton)
+	query = iterquery.query
+	ctx, variables = iterquery.smt_state
+	return @timeit Config.TIMER "next_query" begin
+		if isnothing(state)
+			state = BooleanSkeleton(query)
+		end
+		infeasibility_cache = []
+		solution = solve(state.sat_instance)
+		input = nothing
+		disjunction = Vector{Vector{Formula}}()
+		disjunction_nonlinear = Vector{Formula}()
+		nonlinearities_set = Set{ApproxQuery}()
+		num_vars = query.num_input_vars+query.num_output_vars
+		
 		@assert (SMTInterface.nl_feasible(Formula[query.formula], ctx, variables))
 		push(state.sat_instance)
 		while solution != :unsatisfiable
 			bounds, conjunction = get_atoms(state, solution)
-			bound_atoms = Vector{Tuple{Int64,LinearConstraint}}()
-			for (dim,(s,(l,u))) in enumerate(bounds)
-			 	coeffsl = zeros(num_vars)
-			 	coeffsl[dim] = -1.0
-			 	coeffsu = zeros(num_vars)
-			 	coeffsu[dim] = 1.0
-			 	push!(bound_atoms,(s,LinearConstraint(coeffsl, -l, true)))
-			 	push!(bound_atoms,(s,LinearConstraint(coeffsu, u, true)))
+			@timeit Config.TIMER "bound_atoms" begin
+				bound_atoms = Vector{Tuple{Int64,LinearConstraint}}()
+				for (dim,(s,(l,u))) in enumerate(bounds)
+					coeffsl = zeros(num_vars)
+					coeffsl[dim] = -1.0
+					coeffsu = zeros(num_vars)
+					coeffsu[dim] = 1.0
+					push!(bound_atoms,(s,LinearConstraint(coeffsl, -l, true)))
+					push!(bound_atoms,(s,LinearConstraint(coeffsu, u, true)))
+				end
 			end
 			linear, nonlinear, approx_atoms = split_by_linearity(conjunction)
 			# Complete Conjunction:
@@ -166,54 +167,69 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 			# Flag combination of linear constraints as infeasible and continue...
 			#	infeasible_combination = map(x -> -x[1], linear)
 			# TODO(steuber): How many checks here are the optimal choice?
-			if !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],linear)),ctx, variables)
-				# Linear part of conjunction infeasible => skip
-				infeasible_combination = map(x -> -x[1], linear)
-				#print_msg("Linear part of conjunction infeasible: ", infeasible_combination)
-			elseif !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],[bound_atoms;linear])),ctx, variables)
-				# Linear part of conjunction infeasible => skip
-				infeasible_combination = map(x -> -x[1], [bound_atoms;linear])
-				#print_msg("Linear part of conjunction infeasible: ", infeasible_combination)
-			elseif !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],nonlinear)),ctx, variables)
-				# Nonlinear part of conjunction infeasible => skip
-				infeasible_combination = map(x -> -x[1], nonlinear)
-				#print_msg("Nonlinear part of conjunction infeasible: ", infeasible_combination)
-			elseif !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],[bound_atoms;nonlinear])),ctx, variables)
-				# Nonlinear part of conjunction infeasible => skip
-				infeasible_combination = map(x -> -x[1], [bound_atoms;nonlinear])
-				#print_msg("Nonlinear part of conjunction infeasible: ", infeasible_combination)
-			elseif !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],[bound_atoms;linear;nonlinear])),ctx, variables)
-				infeasible_combination = map(x -> -x[1], [bound_atoms;linear;nonlinear])
+			@timeit Config.TIMER "check_infeasibility_prep" begin
+				linear_smt = convert(Vector{Formula},map(x->x[2],linear))
+				bounds_smt = convert(Vector{Formula},map(x->x[2],bound_atoms))
+				nonlinear_smt = convert(Vector{Formula},map(x->x[2],nonlinear))
+			end
+			@timeit Config.TIMER "check_infeasibility" begin
+				if !SMTInterface.nl_feasible(linear_smt,ctx, variables)
+					# Linear part of conjunction infeasible => skip
+					infeasible_combination = map(x -> -x[1], linear)
+					#print_msg("Linear part of conjunction infeasible: ", infeasible_combination)
+				elseif !SMTInterface.nl_feasible([bounds_smt;linear_smt],ctx, variables)
+					# Linear part of conjunction infeasible => skip
+					infeasible_combination = map(x -> -x[1], [bound_atoms;linear])
+					#print_msg("Linear part of conjunction infeasible: ", infeasible_combination)
+				elseif !SMTInterface.nl_feasible(nonlinear_smt,ctx, variables)
+					# Nonlinear part of conjunction infeasible => skip
+					infeasible_combination = map(x -> -x[1], nonlinear)
+					#print_msg("Nonlinear part of conjunction infeasible: ", infeasible_combination)
+				elseif !SMTInterface.nl_feasible([bounds_smt;nonlinear_smt],ctx, variables)
+					# Nonlinear part of conjunction infeasible => skip
+					infeasible_combination = map(x -> -x[1], [bound_atoms;nonlinear])
+					#print_msg("Nonlinear part of conjunction infeasible: ", infeasible_combination)
+				elseif !SMTInterface.nl_feasible([bounds_smt;linear_smt;nonlinear_smt],ctx, variables)
+					infeasible_combination = map(x -> -x[1], [bound_atoms;linear;nonlinear])
+				end
 			end
 			if isnothing(infeasible_combination)
 				approx_resolved = Vector{Tuple{Int64,LinearConstraint}}()
-				approx_bounds = map(x->x[2],bounds)
-				for (s,c) in approx_atoms
-					atom = nothing
-					if c isa UnderApprox
-						atom = generate_linear_constraint(approx_bounds, c.under_approx, query.approximations)
-					elseif c isa OverApprox
-						atom = generate_linear_constraint(approx_bounds, c.over_approx, query.approximations)
-					else
-						@assert false "Neither under nor overapproximation"
+				output_conjunction = nothing
+				@timeit Config.TIMER "approx_resolution" begin
+					approx_bounds = map(x->x[2],bounds)
+					for (s,c) in approx_atoms
+						atom = nothing
+						if c isa UnderApprox
+							atom = generate_linear_constraint(approx_bounds, c.under_approx, query.approximations)
+						elseif c isa OverApprox
+							atom = generate_linear_constraint(approx_bounds, c.over_approx, query.approximations)
+						else
+							@assert false "Neither under nor overapproximation"
+						end
+						if s < 0
+							atom = AST.negate(atom)
+						end
+						push!(approx_resolved,(s,atom))
 					end
-					if s < 0
-						atom = AST.negate(atom)
-					end
-					push!(approx_resolved,(s,atom))
+					output_conjunction = [bound_atoms;linear;approx_resolved]
 				end
-				output_conjunction = [bound_atoms;linear;approx_resolved]
-				if !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],output_conjunction)),ctx, variables)
-					# Linear + Approximate part of conjunction infeasible => skip
-					infeasible_combination = map(x -> -x[1], output_conjunction)
-					#print_msg("Approx of conjunction infeasible: ", infeasible_combination)
-				elseif !SMTInterface.nl_feasible(convert(Vector{Formula},map(x->x[2],[output_conjunction;nonlinear])),ctx, variables)
-					infeasible_combination = map(x -> -x[1], [output_conjunction;nonlinear])
+				@timeit Config.TIMER "check_infeasibility_prep" begin
+					output_conjunction_smt = convert(Vector{Formula},map(x->x[2],output_conjunction))
+				end
+				@timeit Config.TIMER "check_infeasibility" begin
+					if !SMTInterface.nl_feasible(output_conjunction_smt,ctx, variables)
+						# Linear + Approximate part of conjunction infeasible => skip
+						infeasible_combination = map(x -> -x[1], output_conjunction)
+						#print_msg("Approx of conjunction infeasible: ", infeasible_combination)
+					elseif !SMTInterface.nl_feasible([output_conjunction_smt;nonlinear_smt],ctx, variables)
+						infeasible_combination = map(x -> -x[1], [output_conjunction;nonlinear])
+					end
 				end
 			end
 			if !isnothing(infeasible_combination)
-				sort!(infeasible_combination)
-				infeasible_combination = unique!(x->x,infeasible_combination)
+				#sort!(infeasible_combination)
+				#infeasible_combination = unique!(x->x,infeasible_combination)
 				#print("_")
 				push!(infeasibility_cache, infeasible_combination)
 				add_clause(
@@ -224,64 +240,66 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 				#print_msg(solution)
 				continue
 			end
-			# OK, our combination is feasible...
-			input, mixed = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},output_conjunction),query)
-			# Store non-linearities of current combination in set
-			# for a in nonlinear
-			# 	@assert a[2].formula.right isa TermNumber
-			# 	approx_direction = (a[2] isa OverApprox) ? Lower : Upper
-			# 	nonlinearities_set=union(nonlinearities_set, collect_nonlinearities(approx_direction, a[2].formula.left))
-			# end
-			# Add in-out constraints to disjunction
-			#@debug "Adding in-out constraints: ", mixed
-			push!(disjunction, map(x -> x[2], mixed))
-			# TODO(steuber): If we properly "cut out" the star sets when finding them (i.e. add all the linear constraints),
-			# we can omit the linear part of the conjunction here - useful?
-			nonlinear_conjunction = [bound_atoms;linear;nonlinear]
-			#print_msg("[QUERY] Nonlinear variant of conjunction: ", nonlinear_conjunction)
-			#input_nonlinear, mixed_nonlinear = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},nonlinear_conjunction),query)
-		
-			push!(disjunction_nonlinear, AST.and_construction(map(x -> x[2], nonlinear_conjunction)))
-			#[
-			#	map(x -> x[2], input_nonlinear);
-			#	not(AST.and_construction(map(x -> x[2], mixed_nonlinear)))
-			#]))
+			@timeit Config.TIMER "query_construction" begin
+				# OK, our combination is feasible...
+				input, mixed = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},output_conjunction),query)
+				# Store non-linearities of current combination in set
+				# for a in nonlinear
+				# 	@assert a[2].formula.right isa TermNumber
+				# 	approx_direction = (a[2] isa OverApprox) ? Lower : Upper
+				# 	nonlinearities_set=union(nonlinearities_set, collect_nonlinearities(approx_direction, a[2].formula.left))
+				# end
+				# Add in-out constraints to disjunction
+				#@debug "Adding in-out constraints: ", mixed
+				push!(disjunction, map(x -> x[2], mixed))
+				# TODO(steuber): If we properly "cut out" the star sets when finding them (i.e. add all the linear constraints),
+				# we can omit the linear part of the conjunction here - useful?
+				nonlinear_conjunction = [bound_atoms;linear;nonlinear]
+				#print_msg("[QUERY] Nonlinear variant of conjunction: ", nonlinear_conjunction)
+				#input_nonlinear, mixed_nonlinear = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},nonlinear_conjunction),query)
+			
+				push!(disjunction_nonlinear, AST.and_construction(map(x -> x[2], nonlinear_conjunction)))
+				#[
+				#	map(x -> x[2], input_nonlinear);
+				#	not(AST.and_construction(map(x -> x[2], mixed_nonlinear)))
+				#]))
 
-			# Fix input constraints for further search
-			for (v,_) in input
-				add_clause(state.sat_instance, v)
+				# Fix input constraints for further search
+				for (v,_) in input
+					add_clause(state.sat_instance, v)
+				end
+				# Disallow current mixed constraint for further search
+				add_clause(state.sat_instance, map(x -> -x[1], mixed))
 			end
-			# Disallow current mixed constraint for further search
-			add_clause(state.sat_instance, map(x -> -x[1], mixed))
 			# Find new model
 			solution = solve(state.sat_instance)
 		end
-	end
-	pop(state.sat_instance)
-	# Dump infeasibility_cache into clause database
-	add_clauses(state.sat_instance, infeasibility_cache)
-	if !isnothing(input)
-		# Disallow input
-		add_clause(
-				state.sat_instance,
-				map(x -> -x[1], input)
-			)
-		#print_msg("Input: ", map(x -> AST.term_to_string(x[2]), input))
-		#print_msg("Disjunction: ", disjunction)
-		#print_msg("#Mixed: ", length(disjunction))
-		# print_msg("#Nonlinear",length(nonlinearities_set))
-		# print_msg("---------------------")
-		# for x in nonlinearities_set
-		# 	print_msg(x.bound," -> ",AST.term_to_string(x.term))
-		# end
-		# print_msg("---------------------")
-		#@debug "Input:", map(x->x[2],input)
-		#@debug "Disjunction: ", disjunction
-		nonlinear_fml = AST.or_construction(disjunction_nonlinear)
-		#print_msg("[QUERY] Nonlinear variant of conjunction: ", nonlinear_fml)
-		return (nonlinear_fml,NormalizedQuery(map(x->x[2],input), disjunction, nonlinearities_set, query)), state
-	else
-		return nothing
+		pop(state.sat_instance)
+		# Dump infeasibility_cache into clause database
+		add_clauses(state.sat_instance, infeasibility_cache)
+		if !isnothing(input)
+			# Disallow input
+			add_clause(
+					state.sat_instance,
+					map(x -> -x[1], input)
+				)
+			#print_msg("Input: ", map(x -> AST.term_to_string(x[2]), input))
+			#print_msg("Disjunction: ", disjunction)
+			#print_msg("#Mixed: ", length(disjunction))
+			# print_msg("#Nonlinear",length(nonlinearities_set))
+			# print_msg("---------------------")
+			# for x in nonlinearities_set
+			# 	print_msg(x.bound," -> ",AST.term_to_string(x.term))
+			# end
+			# print_msg("---------------------")
+			#@debug "Input:", map(x->x[2],input)
+			#@debug "Disjunction: ", disjunction
+			nonlinear_fml = AST.or_construction(disjunction_nonlinear)
+			#print_msg("[QUERY] Nonlinear variant of conjunction: ", nonlinear_fml)
+			return (nonlinear_fml,NormalizedQuery(map(x->x[2],input), disjunction, nonlinearities_set, query)), state
+		else
+			return nothing
+		end
 	end
 end
 

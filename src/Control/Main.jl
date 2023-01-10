@@ -1,6 +1,7 @@
 module Control
 
 using JLD
+using TimerOutputs
 
 using ..Config
 using ..Util

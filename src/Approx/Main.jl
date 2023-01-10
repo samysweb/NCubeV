@@ -1,5 +1,6 @@
 module Approx
 	using LinearAlgebra
+	using TimerOutputs
 
 	using MLStyle
 	using OVERT

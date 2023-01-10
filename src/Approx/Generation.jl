@@ -25,56 +25,58 @@ function get_approx_nodes(formula :: Formula, approx_requests :: Set{ApproxQuery
 end
 
 function get_approx_query(initial_query :: Query)
-	@assert initial_query.formula.connective == AST.And
-	print_msg("[APPROX] Trying to build approximation...")
-	linear_constraints = Vector{LinearConstraint}()
-	for arg in initial_query.formula.args
-		if arg isa LinearConstraint
-			push!(linear_constraints, arg)
+	return @timeit Config.TIMER "get_approx_query" begin
+		@assert initial_query.formula.connective == AST.And
+		print_msg("[APPROX] Trying to build approximation...")
+		linear_constraints = Vector{LinearConstraint}()
+		for arg in initial_query.formula.args
+			if arg isa LinearConstraint
+				push!(linear_constraints, arg)
+			end
 		end
-	end
-	num_vars = initial_query.num_input_vars + initial_query.num_output_vars
-	query_approximations = Dict{ApproxQuery, Approximation}()
-	query_bounds = Vector{Vector{Float64}}()
-	model = get_model(linear_constraints)
-	for i in 1:num_vars
-		low = optimize_dim(i, -1.0, model)
-		high = optimize_dim(i, 1.0, model)
-		push!(query_bounds, [low, high])
-	end
-	approx_queries = Set{ApproxQuery}()
-	# TODO(steuber): approx_node treatment
-	new_formula = get_approx_nodes(initial_query.formula,approx_queries, num_vars)
-	approxs_by_term = Dict{Term, Vector{BoundType}}()
-	for approx_query in approx_queries
-		if !haskey(approxs_by_term, approx_query.term)
-			approxs_by_term[approx_query.term] = Vector{BoundType}()
-		end
-		push!(approxs_by_term[approx_query.term], approx_query.bound)
-	end
-	incomplete_approximations = construct_approx(approxs_by_term, query_bounds)
-	for (approx_query, incomplete_approx) in incomplete_approximations
-		new_approx = resolve_approximation(incomplete_approx, approx_query.bound)
-		if Config.RIGOROUS_APPROXIMATIONS
-			verify_approximation(approx_query, new_approx)
-		else
-			print_msg("[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))")
-		end
-		query_approximations[approx_query] = new_approx
+		num_vars = initial_query.num_input_vars + initial_query.num_output_vars
+		query_approximations = Dict{ApproxQuery, Approximation}()
+		query_bounds = Vector{Vector{Float64}}()
+		model = get_model(linear_constraints)
 		for i in 1:num_vars
-			query_bounds[i] = union(query_bounds[i], new_approx.bounds[i])
+			low = optimize_dim(i, -1.0, model)
+			high = optimize_dim(i, 1.0, model)
+			push!(query_bounds, [low, high])
 		end
+		approx_queries = Set{ApproxQuery}()
+		# TODO(steuber): approx_node treatment
+		new_formula = get_approx_nodes(initial_query.formula,approx_queries, num_vars)
+		approxs_by_term = Dict{Term, Vector{BoundType}}()
+		for approx_query in approx_queries
+			if !haskey(approxs_by_term, approx_query.term)
+				approxs_by_term[approx_query.term] = Vector{BoundType}()
+			end
+			push!(approxs_by_term[approx_query.term], approx_query.bound)
+		end
+		incomplete_approximations = construct_approx(approxs_by_term, query_bounds)
+		for (approx_query, incomplete_approx) in incomplete_approximations
+			new_approx = resolve_approximation(incomplete_approx, approx_query.bound)
+			if Config.RIGOROUS_APPROXIMATIONS
+				verify_approximation(approx_query, new_approx)
+			else
+				print_msg("[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))")
+			end
+			query_approximations[approx_query] = new_approx
+			for i in 1:num_vars
+				query_bounds[i] = union(query_bounds[i], new_approx.bounds[i])
+			end
+		end
+		map(x->sort!(x),query_bounds)
+		filter_bounds_inplace(query_bounds)
+		print_msg("[APPROX] Approximation Bounds: ", initial_query.bounds)
+		print_msg("[APPROX] Approximations: ", initial_query.approximations)
+		print_msg("[APPROX] Approximation is ready")
+		return Query(
+				new_formula,
+				initial_query.variables,
+				query_approximations,
+				query_bounds)
 	end
-	map(x->sort!(x),query_bounds)
-	filter_bounds_inplace(query_bounds)
-	print_msg("[APPROX] Approximation Bounds: ", initial_query.bounds)
-	print_msg("[APPROX] Approximations: ", initial_query.approximations)
-	print_msg("[APPROX] Approximation is ready")
-	return Query(
-			new_formula,
-			initial_query.variables,
-			query_approximations,
-			query_bounds)
 end
 
 function get_approx_normalized_query(initial_query :: NormalizedQuery, approx_cache :: ApproxCache)

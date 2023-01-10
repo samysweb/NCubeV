@@ -20,7 +20,9 @@ function construct_approx(approx_queries :: Dict{Term, Vector{BoundType}}, bound
 				println(approx_expr)
 			end
 		end
-		overapprox_result = overapprox(approx_expr, Dict(val_ranges), N=N, ϵ=0.0)#epsilon)
+		@timeit Config.TIMER "OVERT" begin
+			overapprox_result =  overapprox(approx_expr, Dict(val_ranges), N=N, ϵ=0.0)#epsilon)
+		end
 		for cur_bound in bound_types
 			output = overapprox_result.output
 			if output isa Number

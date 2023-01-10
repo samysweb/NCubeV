@@ -1,4 +1,6 @@
 module Config
+	using TimerOutputs
+	
 	INCLUDE_APPROXIMATIONS = true
 
 	RIGOROUS_APPROXIMATIONS = false
@@ -9,10 +11,17 @@ module Config
 
 	EPSILON = 1e-3
 
+	TIMER = nothing
+
 	function __init__()
 		global INCLUDE_APPROXIMATIONS = true
 		global RIGOROUS_APPROXIMATIONS = false
 		global SMT_SOLVER = "Z3"
+		reset_timer()
+	end
+
+	function reset_timer()
+		global TIMER = TimerOutput()
 	end
 
 	function set_include_approximations(flag :: Bool)

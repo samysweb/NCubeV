@@ -13,13 +13,20 @@ mutable struct BooleanSkeleton
 	variable_mapping :: Dict{Int64, BooleanVariableType}
 	sat_instance :: PicoPtr
 	function BooleanSkeleton(query :: Query)
-		variable_mapping = Dict{Int64, BooleanVariableType}()
-		sat_instance :: PicoPtr = picosat_init()
-		skeleton = new(query, variable_mapping, sat_instance)
-		finalizer(x -> picosat_reset(x.sat_instance), skeleton)
-		transform_formula(skeleton)
-		return skeleton
+		return @timeit Config.TIMER "boolean_skeleton" begin
+			variable_mapping = Dict{Int64, BooleanVariableType}()
+			sat_instance :: PicoPtr = picosat_init()
+			skeleton = new(query, variable_mapping, sat_instance)
+			finalizer(x -> picosat_reset(x.sat_instance), skeleton)
+			transform_formula(skeleton)
+			return skeleton
+		end
 	end
+end
+
+struct IterableQuery
+	query :: Query
+	smt_state :: Any
 end
 
 struct SkeletonFormula <: Formula

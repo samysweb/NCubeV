@@ -1,6 +1,7 @@
 module Cmd
 	using ArgParse
 	using JLD
+	using TimerOutputs
 
 	using ..Approx
 	using ..Util
@@ -90,18 +91,21 @@ module Cmd
 		prepared_query=prepare_for_olnnv(initial_query)
 		smt_timeout = convert(Int32,args["smtfilter-timeout"])
 		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=smt_timeout) do (ctx, variables)
-			return @time Control.run_query(prepared_query, ctx, smt_timeout, variables, backup=args["output"],backup_meta=args) do (linear_term,SMTFilter)
+			return Control.run_query(prepared_query, ctx, smt_timeout, variables, backup=args["output"],backup_meta=args) do (linear_term,SMTFilter)
 				#print_msg("Generated terms")
-				return Verifiers.VERIFIER_CALLBACKS[args["verifier"]](
-						args["network"],
-						SMTFilter,
-						linear_term)
+				@timeit Config.TIMER "nnv" begin
+					return Verifiers.VERIFIER_CALLBACKS[args["verifier"]](
+							args["network"],
+							SMTFilter,
+							linear_term)
+				end
 			end
 		end) |> VerifierInterface.reduce_results
 		return result
 	end
 
 	function run_cmd(cmd_args)
+		Config.reset_timer()
 		args = parse_commandline(cmd_args)
 		
 		@time result = run_internal(args)
@@ -109,8 +113,9 @@ module Cmd
 		print_msg("----------------------------------------------------------")
 		print_msg("Status: "*string(result.status))
 		print_msg("# Unsafe Stars: "*string(length(result.stars)))
-		print("Saving result in "*string(args["output"])*"...")
+		print_msg("Saving result in "*string(args["output"])*"...")
 		save(args["output"],"result",result,"args",args)
+		show(Config.TIMER)
 		print_msg(" Done")
 	end
 end

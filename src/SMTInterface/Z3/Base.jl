@@ -37,7 +37,9 @@ function smt_internal_add(solver, formula)
 end
 function smt_internal_check(solver)
 	#if timeout==0
-	res = check(solver)
+	@timeit Config.TIMER "z3_check" begin
+		res =  check(solver)
+	end
 	return res
 	# else
 	# 	wid = get_wid()

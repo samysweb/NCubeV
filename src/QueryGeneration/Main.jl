@@ -1,4 +1,5 @@
 module QueryGeneration
+	using TimerOutputs
 
 	include("PicoSAT.jl")
 	using Metatheory.Rewriters
@@ -11,7 +12,6 @@ module QueryGeneration
 	using ..LP
 	using ..SMTInterface
 	using ..Analysis
-	using ..Approx
 	include("Definitions.jl")
 	include("Skeleton.jl")
 	include("NonLinear.jl")
@@ -21,4 +21,5 @@ module QueryGeneration
 	export NormalizedQuery
 	export PwlConjunction
 	export handle_nonlinearity
+	export IterableQuery
 end
