@@ -33,11 +33,13 @@ module SMTInterface
 
 	function nl_feasible(constraints, feasibility_solver)
 		s,d = feasibility_solver
+		all_vars = smt_internal_get_var_dict(d)
 		smt_formulas = []
 		additional = []
 		for c in constraints
 			i, f = c
-			push!(smt_formulas, smt_internal_add_to_dict(d, i, f, additional))
+			var = smt_internal_add_to_dict(d, i, f, additional, all_vars)
+			push!(smt_formulas, var)
 		end
 		smt_internal_push(s)
 		for a in additional
@@ -45,6 +47,9 @@ module SMTInterface
 		end
 		for f in smt_formulas
 			smt_internal_add(s, f)
+		end
+		for f in values(all_vars)
+			smt_internal_add(s, Z3.not(f))
 		end
 		res = smt_internal_check(s)
 		smt_internal_pop(s)

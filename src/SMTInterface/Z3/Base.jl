@@ -113,18 +113,24 @@ function smt_internal_formula_dict(solver, full_ctx)
 	return (solver, full_ctx, res)
 end
 
-function smt_internal_add_to_dict(dict, i, formula, additional)
+function smt_internal_get_var_dict(dict)
+	(solver, full_ctx, res) = dict
+	return copy(res)
+end
+
+function smt_internal_add_to_dict(dict, i, formula, additional, dict_copy)
 	(solver, full_ctx, res) = dict
 	ctx, variables = full_ctx
 	if i == 0
 		return ast2smt(formula, variables, additional)
 	elseif haskey(res, i)
+		delete!(dict_copy, i)
 		return res[i]
 	else
 		v = Z3.bool_const(ctx, "b$i")
 		res[i] = v
 		additional = []
-		smt_internal_add(solver, v == ast2smt(formula, variables,additional))
+		smt_internal_add(solver, Z3.implies(v,ast2smt(formula, variables,additional)))
 		for a in additional
 			smt_internal_add(solver, a)
 		end

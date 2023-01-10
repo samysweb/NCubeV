@@ -168,23 +168,23 @@ function iterate(iterquery :: IterableQuery, state :: BooleanSkeleton)
 			#	infeasible_combination = map(x -> -x[1], linear)
 			# TODO(steuber): How many checks here are the optimal choice?
 			@timeit Config.TIMER "check_infeasibility" begin
-				if !SMTInterface.nl_feasible(linear,state.smt_feasibility)
+				if @timeit Config.TIMER "linear" !SMTInterface.nl_feasible(linear,state.smt_feasibility)
 					# Linear part of conjunction infeasible => skip
 					infeasible_combination = map(x -> -x[1], linear)
 					#print_msg("Linear part of conjunction infeasible: ", infeasible_combination)
-				elseif !SMTInterface.nl_feasible(chain(bound_atoms,linear),state.smt_feasibility)
+				elseif @timeit Config.TIMER "linear_bound" !SMTInterface.nl_feasible(chain(bound_atoms,linear),state.smt_feasibility)
 					# Linear part of conjunction infeasible => skip
 					infeasible_combination = map(x -> -x[1], [bound_atoms;linear])
 					#print_msg("Linear part of conjunction infeasible: ", infeasible_combination)
-				elseif !SMTInterface.nl_feasible(nonlinear,state.smt_feasibility)
+				elseif @timeit Config.TIMER "nonlinear" !SMTInterface.nl_feasible(nonlinear,state.smt_feasibility)
 					# Nonlinear part of conjunction infeasible => skip
 					infeasible_combination = map(x -> -x[1], nonlinear)
 					#print_msg("Nonlinear part of conjunction infeasible: ", infeasible_combination)
-				elseif !SMTInterface.nl_feasible(chain(bound_atoms,nonlinear),state.smt_feasibility)
+				elseif @timeit Config.TIMER "nonlinear_bound" !SMTInterface.nl_feasible(chain(bound_atoms,nonlinear),state.smt_feasibility)
 					# Nonlinear part of conjunction infeasible => skip
 					infeasible_combination = map(x -> -x[1], [bound_atoms;nonlinear])
 					#print_msg("Nonlinear part of conjunction infeasible: ", infeasible_combination)
-				elseif !SMTInterface.nl_feasible(chain(bound_atoms,linear,nonlinear),state.smt_feasibility)
+				elseif @timeit Config.TIMER "all" !SMTInterface.nl_feasible(chain(bound_atoms,linear,nonlinear),state.smt_feasibility)
 					infeasible_combination = map(x -> -x[1], [bound_atoms;linear;nonlinear])
 				end
 			end
@@ -213,11 +213,11 @@ function iterate(iterquery :: IterableQuery, state :: BooleanSkeleton)
 					output_conjunction_smt = convert(Vector{Tuple{Int64, Formula}},map(x->(0,x[2]),approx_resolved))
 				end
 				@timeit Config.TIMER "check_infeasibility" begin
-					if !SMTInterface.nl_feasible(chain(bound_atoms, linear, output_conjunction_smt),state.smt_feasibility)
+					if @timeit Config.TIMER "approx" !SMTInterface.nl_feasible(chain(bound_atoms, linear, output_conjunction_smt),state.smt_feasibility)
 						# Linear + Approximate part of conjunction infeasible => skip
 						infeasible_combination = map(x -> -x[1], output_conjunction)
 						#print_msg("Approx of conjunction infeasible: ", infeasible_combination)
-					elseif !SMTInterface.nl_feasible(chain(bound_atoms, linear, output_conjunction_smt,nonlinear),state.smt_feasibility)
+					elseif @timeit Config.TIMER "approx_nonlinear" !SMTInterface.nl_feasible(chain(bound_atoms, linear, output_conjunction_smt,nonlinear),state.smt_feasibility)
 						infeasible_combination = map(x -> -x[1], [output_conjunction;nonlinear])
 					end
 				end
