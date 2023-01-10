@@ -133,11 +133,11 @@ function term_to_string(comp :: Comparator)
 end
 
 function term_to_string(o :: OverApprox)
-	return "O("*term_to_string(o.formula)*")"
+	return "O("*term_to_string(o.formula)*","*term_to_string(o.under_approx)*","*term_to_string(o.over_approx)*")"
 end
 
 function term_to_string(o :: UnderApprox)
-	return "U("*term_to_string(o.formula)*")"
+	return "U("*term_to_string(o.formula)*","*term_to_string(o.under_approx)*","*term_to_string(o.over_approx)*")"
 end
 
 function term_to_string(v :: NonLinearSubstitution)
@@ -151,6 +151,10 @@ function term_to_string(a :: SemiLinearConstraint)
 	else
 		return string(a.coefficients)*"+N("*nonlinearities*")<"*string(a.bias)
 	end
+end
+
+function term_to_string(n :: Nothing)
+	return "nothing"
 end
 
 function show(io::IO, p :: ParsedNode)

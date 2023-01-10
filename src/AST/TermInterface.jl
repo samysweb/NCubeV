@@ -159,8 +159,8 @@ arguments(x :: Atom) = [x.left, x.right]
 arguments(x :: LinearConstraint) = [x.coefficients, x.bias]
 arguments(x :: LinearTerm) = [x.coefficients, x.bias]
 arguments(x :: CompositeFormula) = x.args
-arguments(x :: OverApprox) = [x.formula]
-arguments(x :: UnderApprox) = [x.formula]
+arguments(x :: OverApprox) = [x.formula, x.under_approx, x.over_approx]
+arguments(x :: UnderApprox) = [x.formula, x.under_approx, x.over_approx]
 
 
 function similarterm(t::CompositeTerm, f, args, symtype=CompositeTerm;metadata=nothing, exprhead=:call)
@@ -188,12 +188,20 @@ end
 
 function similarterm(::Type{OverApprox}, c, args, symtype=OverApprox;metadata=nothing, exprhead=:call)
 	# @debug "similarterm(OverApprox)"
-	return OverApprox(args[1])
+	if length(args)==1 || (isnothing(args[2]) && isnothing(args[3]))
+		return OverApprox(args[1])
+	else
+		return OverApprox(args[1],args[2],args[3])
+	end
 end
 
 function similarterm(::Type{UnderApprox}, c, args, symtype=UnderApprox;metadata=nothing, exprhead=:call)
 	# @debug "similarterm(UnderApprox)"
-	return UnderApprox(args[1])
+	if length(args) == 1 || (isnothing(args[2]) && isnothing(args[3]))
+		return UnderApprox(args[1])
+	else
+		return UnderApprox(args[1],args[2],args[3])
+	end
 end
 
 function similarterm(::Type{Atom}, c, args, symtype=Atom;metadata=nothing, exprhead=:call)

@@ -28,7 +28,6 @@ function transform_formula(skeleton :: BooleanSkeleton)
 			add_clause(skeleton.sat_instance, all_cases)
 		end
 	end
-	print_msg(variable_number_dict)
 end
 
 function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_number_dict :: Dict{Union{Atom,LinearConstraint,ApproxNode}, Int64})
@@ -89,8 +88,9 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 				end
 				return SkeletonFormula(variable_number)
 			end
-			OverApprox(internal_formula) || UnderApprox(internal_formula) => begin
+			OverApprox(internal_formula, under_approx, over_approx) || UnderApprox(internal_formula, under_approx, over_approx) => begin
 				#@debug "Atom or LinearConstraint => constraint variable"
+				@assert !isnothing(under_approx) && !isnothing(over_approx) ("Under/over approx must be defined for " * term_to_string(formula) * " ("* string(skeleton.variable_mapping[internal_formula.variable_number]) *")")
 				return_variable = next_var(skeleton.sat_instance)
 				if haskey(variable_number_dict, formula)
 					return SkeletonFormula(variable_number_dict[formula])
@@ -105,8 +105,8 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 					variable_number_complementary = next_var(skeleton.sat_instance)
 					# Relation of under/over approx and real atom
 					if formula isa OverApprox
-						new_formula = OverApprox(internal)
-						new_formula_complementary = UnderApprox(internal)
+						new_formula = OverApprox(internal, under_approx, over_approx)
+						new_formula_complementary = UnderApprox(internal, under_approx, over_approx)
 						# We want (-internal_formula.variable_number) AND (variable_number) <=> return_variable
 						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, -variable_number_actual, return_variable])
 						add_clause(skeleton.sat_instance, [-return_variable, internal_formula.variable_number])
@@ -116,8 +116,8 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 						# If underapproximation is true then so is the original formula:
 						add_clause(skeleton.sat_instance, [-variable_number_complementary, internal_formula.variable_number])
 					elseif formula isa UnderApprox
-						new_formula = UnderApprox(internal)
-						new_formula_complementary = OverApprox(internal)
+						new_formula = UnderApprox(internal, under_approx, over_approx)
+						new_formula_complementary = OverApprox(internal, under_approx, over_approx)
 						# We want (-internal_formula.variable_number) OR (variable_number) <=> return_variable
 						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, return_variable])
 						add_clause(skeleton.sat_instance, [-variable_number_actual, return_variable])
@@ -133,6 +133,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 					return SkeletonFormula(return_variable)
 				end
 			end
+			SemiLinearConstraint => formula
 			# OverApprox(internal_formula) || UnderApprox(internal_formula) => begin
 			# 	#@debug "OverApprox or UnderApprox => propagating from below"
 			# 	# print("Encountered ")

@@ -55,21 +55,9 @@ MLStyle.pattern_uncall(e::BoundType, _, _, _, _) = literal(e)
 
 flip(b :: BoundType) = if b == Lower Upper else Lower end
 
-@as_record struct OverApprox <: ApproxNode
-	formula :: Formula
-end
-
-@as_record struct UnderApprox <: ApproxNode
-	formula :: Formula
-end
-
 struct ApproxQuery
 	bound :: BoundType
 	term :: Term
-end
-
-@as_record struct NonLinearSubstitution <: Term
-	query :: ApproxQuery
 end
 
 @as_record struct SemiLinearConstraint <: Formula
@@ -82,6 +70,26 @@ end
 			return new(semilinears, coefficients, bias, equality)
 		end
 	end
+end
+
+@as_record struct OverApprox <: ApproxNode
+	formula :: Formula
+	under_approx :: Union{Nothing, SemiLinearConstraint}
+	over_approx :: Union{Nothing, SemiLinearConstraint}
+	OverApprox(formula :: Formula) = new(formula, nothing, nothing)
+	OverApprox(formula :: Formula, under_approx :: SemiLinearConstraint, over_approx :: SemiLinearConstraint) = new(formula, under_approx, over_approx)
+end
+
+@as_record struct UnderApprox <: ApproxNode
+	formula :: Formula
+	under_approx :: Union{Nothing, SemiLinearConstraint}
+	over_approx :: Union{Nothing, SemiLinearConstraint}
+	UnderApprox(formula :: Formula) = new(formula, nothing, nothing)
+	UnderApprox(formula :: Formula, under_approx :: SemiLinearConstraint, over_approx :: SemiLinearConstraint) = new(formula, under_approx, over_approx)
+end
+
+@as_record struct NonLinearSubstitution <: Term
+	query :: ApproxQuery
 end
 
 @as_record struct LinearConstraint <: Formula
@@ -140,6 +148,7 @@ struct Query
 		num_output_vars = length(variables)-num_input_vars
 		return new(formula, variables, num_input_vars, num_output_vars, Dict{ApproxQuery, Approximation}(), Vector{Vector{Float64}}())
 	end
+	Query(formula :: Formula, variables :: Set{Variable}, approximations :: Dict{ApproxQuery, Approximation}, bounds :: Vector{Vector{Float64}}) = new(formula, variables, length(filter(x->x.mapping[1]==Input,variables)), length(variables)-length(filter(x->x.mapping[1]==Input,variables)), approximations, bounds)
 end
 
 struct PwlConjunction

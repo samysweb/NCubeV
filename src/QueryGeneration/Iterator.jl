@@ -115,6 +115,19 @@ function iterate(query :: Query)
 	return iterate(query, state)
 end
 
+function generate_linear_constraint(bounds :: Vector{Tuple{Float64, Float64}}, semi :: SemiLinearConstraint, approximations :: Dict{ApproxQuery,Approximation})
+	coefficients = Vector{Rational{BigInt}}(undef, length(bounds))
+	bias = zero(Rational{BigInt})
+	coefficients .= semi.coefficients
+	bias = semi.bias
+	for (query, coeff) in semi.semilinears
+		linear_term = get_linear_term(bounds, approximations[query])
+		coefficients .+= coeff .* linear_term.coefficients
+		bias -= coeff * linear_term.bias
+	end
+	return LinearConstraint(coefficients, bias, semi.equality)
+end
+
 function iterate(query :: Query, state :: BooleanSkeleton)
 	if isnothing(state)
 		state = BooleanSkeleton(query)
@@ -174,15 +187,16 @@ function iterate(query :: Query, state :: BooleanSkeleton)
 			end
 			if isnothing(infeasible_combination)
 				approx_resolved = Vector{Tuple{Int64,LinearConstraint}}()
+				approx_bounds = map(x->x[2],bounds)
 				for (s,c) in approx_atoms
-					@assert c.formula.comparator == AST.LessEq || c.formula.comparator == AST.Less
-					@assert c.formula.right isa TermNumber
-					term = c.formula.left
-					bound_type = (c isa UnderApprox) ? AST.Upper : AST.Lower
-					approx = query.approximations[ApproxQuery(bound_type, term)]
-					i = get_linear_term_position(approx, map(x->x[2],bounds))
-					term = approx.linear_constraints[i]
-					atom = LinearConstraint(term.coefficients, -term.bias+c.formula.right.value, c.formula.comparator==AST.LessEq)
+					atom = nothing
+					if c isa UnderApprox
+						atom = generate_linear_constraint(approx_bounds, c.under_approx, query.approximations)
+					elseif c isa OverApprox
+						atom = generate_linear_constraint(approx_bounds, c.over_approx, query.approximations)
+					else
+						@assert false "Neither under nor overapproximation"
+					end
 					if s < 0
 						atom = AST.negate(atom)
 					end

@@ -33,9 +33,8 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 	#  - Substiute Over/Under with approximations AND (bounds -> approx)
 	results = []
 	original_query = query
-	if Config.APPROX_FIRST
-		query = get_approx_query(query)
-	end
+	query = get_approx_query(query)
+	#print_msg("[CTRL] Query formula: ",query.formula)
 	last_save_time = time_ns()
 	for (nonlinear_conjunction,current_conjunction) in query
 		print_msg("[CTRL] Considering conjunction with ",
@@ -58,6 +57,7 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 			push!(results,f((linear_query, SMTFilter)))
 			# Save at most every 200s
 			if !isnothing(backup) && (time_ns() - last_save_time) > 200e9
+				last_save_time = time_ns()
 				print_msg("[CTRL] Saving current state of verification...")
 				save(backup,"result",results,"backup_meta",backup_meta)
 			end

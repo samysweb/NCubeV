@@ -1,51 +1,30 @@
-function get_approx_nodes(formula :: Formula, approx_requests :: Dict{Term, Vector{BoundType}})
+function get_approx_nodes(formula :: Formula, approx_requests :: Set{ApproxQuery}, num_vars :: Int64)
 	@match formula begin
 		CompositeFormula(_, args, _) => begin
+			new_args = Formula[]
 			for arg in args
-				get_approx_nodes(arg, approx_requests)
+				push!(new_args,get_approx_nodes(arg, approx_requests, num_vars))
 			end
+			return CompositeFormula(formula.connective, new_args)
 		end
-		LinearConstraint(_, _, _) => return []
-		OverApprox(f) => begin
+		LinearConstraint(_, _, _) => return formula
+		OverApprox(f,_,_) || UnderApprox(f,_,_) => begin
 			@assert f.comparator == AST.Less || f.comparator == AST.LessEq
 			@assert AST._iszero(f.right)
-			t = f.left
-			if haskey(approx_requests, t)
-				init = approx_requests[t]
-			else
-				init = Vector{BoundType}()
-			end
-			if !in(AST.Lower, init)
-				push!(init,AST.Lower)
-			end
-			if !in(AST.Upper, init)
-				push!(init,AST.Upper)
-			end
-			approx_requests[t] = init
-		end
-		UnderApprox(f) => begin
-			@assert f.comparator == AST.Less || f.comparator == AST.LessEq
-			@assert AST._iszero(f.right)
-			t = f.left
-			if haskey(approx_requests, t)
-				init = approx_requests[t]
-			else
-				init = Vector{BoundType}()
-			end
-			if !in(AST.Lower, init)
-				push!(init,AST.Lower)
-			end
-			if !in(AST.Upper, init)
-				push!(init,AST.Upper)
-			end
-			approx_requests[t] = init
+			queries, under_approx = handle_nonlinearity(AST.Upper, f.left)
+			under_approx_f = make_linear(under_approx, f.right, f.comparator, num_vars)
+			union!(approx_requests, queries)
+			queries, over_approx = handle_nonlinearity(AST.Lower, f.left)
+			over_approx_f = make_linear(over_approx, f.right, f.comparator, num_vars)
+			union!(approx_requests, queries)
+			@assert !isnothing(under_approx_f) && !isnothing(over_approx_f)
+			return (typeof(formula))(f, under_approx_f, over_approx_f)
 		end
 		_ => error("Unknown formula type ", typeof(formula))
 	end
 end
 
 function get_approx_query(initial_query :: Query)
-	print_msg(initial_query)
 	@assert initial_query.formula.connective == AST.And
 	print_msg("[APPROX] Trying to build approximation...")
 	linear_constraints = Vector{LinearConstraint}()
@@ -55,19 +34,25 @@ function get_approx_query(initial_query :: Query)
 		end
 	end
 	num_vars = initial_query.num_input_vars + initial_query.num_output_vars
-	empty!(initial_query.bounds)
+	query_approximations = Dict{ApproxQuery, Approximation}()
+	query_bounds = Vector{Vector{Float64}}()
 	model = get_model(linear_constraints)
 	for i in 1:num_vars
 		low = optimize_dim(i, -1.0, model)
 		high = optimize_dim(i, 1.0, model)
-		push!(initial_query.bounds, [low, high])
+		push!(query_bounds, [low, high])
 	end
-	print_msg("[APPROX] Bounds: ", initial_query.bounds)
-	approx_nodes = Dict{Term, Vector{BoundType}}()
-	get_approx_nodes(initial_query.formula,approx_nodes)
-	print_msg("[APPROX] Approx Requests: ", approx_nodes)
-	incomplete_approximations = construct_approx(approx_nodes, initial_query.bounds)
-	ready_approximations = Dict{ApproxQuery, Approximation}()
+	approx_queries = Set{ApproxQuery}()
+	# TODO(steuber): approx_node treatment
+	new_formula = get_approx_nodes(initial_query.formula,approx_queries, num_vars)
+	approxs_by_term = Dict{Term, Vector{BoundType}}()
+	for approx_query in approx_queries
+		if !haskey(approxs_by_term, approx_query.term)
+			approxs_by_term[approx_query.term] = Vector{BoundType}()
+		end
+		push!(approxs_by_term[approx_query.term], approx_query.bound)
+	end
+	incomplete_approximations = construct_approx(approxs_by_term, query_bounds)
 	for (approx_query, incomplete_approx) in incomplete_approximations
 		new_approx = resolve_approximation(incomplete_approx, approx_query.bound)
 		if Config.RIGOROUS_APPROXIMATIONS
@@ -75,17 +60,21 @@ function get_approx_query(initial_query :: Query)
 		else
 			print_msg("[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))")
 		end
-		initial_query.approximations[approx_query] = new_approx
+		query_approximations[approx_query] = new_approx
 		for i in 1:num_vars
-			initial_query.bounds[i] = union(initial_query.bounds[i], new_approx.bounds[i])
+			query_bounds[i] = union(query_bounds[i], new_approx.bounds[i])
 		end
 	end
-	map(x->sort!(x),initial_query.bounds)
-	filter_bounds_inplace(initial_query.bounds)
+	map(x->sort!(x),query_bounds)
+	filter_bounds_inplace(query_bounds)
 	print_msg("[APPROX] Approximation Bounds: ", initial_query.bounds)
 	print_msg("[APPROX] Approximations: ", initial_query.approximations)
 	print_msg("[APPROX] Approximation is ready")
-	return initial_query
+	return Query(
+			new_formula,
+			initial_query.variables,
+			query_approximations,
+			query_bounds)
 end
 
 function get_approx_normalized_query(initial_query :: NormalizedQuery, approx_cache :: ApproxCache)
