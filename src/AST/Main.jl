@@ -7,7 +7,7 @@ using ..Util
 using ..Config
 
 export Query, ParsedNode, Term, VariableType, Variable, NonLinearSubstitution, TermNumber, LinearTerm, Operation, CompositeTerm, Formula, Comparator, Atom, TrueAtom, FalseAtom, Connective, CompositeFormula, BoundType
-export Input, Output, Add, Sub, Mul, Div, Pow, Neg, Less, LessEq, Greater, GreaterEq, Eq, Neq, Not, And, Or, Implies, Lower, Upper
+export Input, Output, Add, Sub, Mul, Div, Pow, Neg, Less, LessEq, Greater, GreaterEq, Eq, Neq, Not, And, Or, Implies, ITE, Lower, Upper
 export ApproxNode, ApproxQuery, OverApprox, UnderApprox, LinearConstraint, SemiLinearConstraint, OlnnvQuery
 export NormalizedQuery, PwlConjunction
 export flip

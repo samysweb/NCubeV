@@ -106,7 +106,7 @@ end
 end
 
 # Composite formulae
-@enum Connective Not=0 And=1 Or=2 Implies=3
+@enum Connective Not=0 And=1 Or=2 Implies=3 ITE=4
 MLStyle.is_enum(::Connective)=true
 MLStyle.pattern_uncall(e::Connective, _, _, _, _) = literal(e)
 @as_record struct CompositeFormula <: Formula

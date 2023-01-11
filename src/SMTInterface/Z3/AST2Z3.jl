@@ -6,7 +6,16 @@ function ast2smt(f :: CompositeFormula, variables, additional)
 		And => return Z3.and(arguments...)
 		Or => return Z3.or(arguments...)
 		Implies => return Z3.implies(arguments[1],arguments[2])
+		ITE => return Z3.ite(arguments[1],arguments[2],arguments[3])
 	end
+end
+function ast2smt(f :: TrueAtom, variables, additional)
+	ctx = Z3.ctx(variables[1])
+	return Z3.bool_val(ctx, true)
+end
+function ast2smt(f :: FalseAtom, variables, additional)
+	ctx = Z3.ctx(variables[1])
+	return Z3.bool_val(ctx, false)
 end
 #TODO(steuber): FLOAT INCORRECTNESS
 function ast2smt(f :: LinearConstraint, variables, additional)

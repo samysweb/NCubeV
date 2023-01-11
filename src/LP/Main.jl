@@ -1,9 +1,11 @@
 module LP
 	using JuMP
 	using GLPK
+	using TimerOutputs
 
 	using ..Util
 	using ..AST
+	using ..Config
 
 	export is_infeasible, get_model, optimize_dim
 
@@ -39,9 +41,12 @@ module LP
 	end
 
 	function is_infeasible(linear_constraints :: Vector{LinearConstraint})
+		@timeit Config.TIMER "LP_create_model" begin
 		model = Model(GLPK.Optimizer)
 		var_num = length(linear_constraints[1].coefficients)
 		@variable(model, x[1:var_num])
+		end
+		@timeit Config.TIMER "LP_populate_constraints" begin
 		constraints = Array{Float32}(undef,(length(linear_constraints),var_num))
 		biases = Array{Float32}(undef,(length(linear_constraints),1))
 		for (i,c) in enumerate(linear_constraints)
@@ -49,9 +54,12 @@ module LP
 			biases[i] = to_linear_constraint_bias(c)
 		end
 		@debug "Checking feasibility of ", constraints, " * x <= ", biases
+		end
+		@timeit Config.TIMER "LP_add_constraints" begin
 		@constraint(model, constraints * x .<= biases)
 		@objective(model, Min, 0)
-		res = optimize!(model)
+		end
+		res = @timeit Config.TIMER "LP_check"  optimize!(model)
 		@debug "Result: ", res
 		@debug "Status: ", primal_status(model)
 		@debug "Value: ", value.(x)

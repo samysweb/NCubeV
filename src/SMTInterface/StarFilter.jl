@@ -81,7 +81,7 @@ function star_concrete_filter(solver, variables, smt_timeout)
 			end
 			# If input is relevant, then we need to check if there exists a counter-example for the current output mapping...
 			for (i,(c,b)) in enumerate(zip(eachrow(star.output_map_matrix),star.output_map_bias))
-				smt_internal_add(solver, ast2smt(Atom(AST.Eq, LinearTerm(c,b), Variable("x"*string(input_vars+i), nothing, input_vars+i)), variables, additional))
+				smt_internal_add(solver, ast2smt(Atom(AST.Eq, Variable("x"*string(input_vars+i), nothing, input_vars+i), LinearTerm(c,b)), variables, additional))
 			end
 			@assert length(additional) == 0
 			result = nothing
