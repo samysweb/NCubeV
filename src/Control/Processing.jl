@@ -64,7 +64,7 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 					@timeit Config.TIMER "olnnv_query_processing" begin
 						push!(results,f((linear_query, SMTFilter)))
 						# Save at most every 200s
-						if !isnothing(backup) && (time_ns() - last_save_time) > 50e9
+						if !isnothing(backup) && (time_ns() - last_save_time) > 200e9
 							last_save_time = time_ns()
 							@timeit Config.TIMER "status_backup" begin
 								print_msg("[CTRL] Saving current state of verification...")

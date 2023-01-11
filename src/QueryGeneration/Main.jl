@@ -5,6 +5,7 @@ module QueryGeneration
 	using Metatheory.Rewriters
 	using MLStyle
 	using SymbolicUtils
+	using IterTools
 
 	using ..Util
 	using ..Config

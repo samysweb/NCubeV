@@ -12,11 +12,12 @@ mutable struct BooleanSkeleton
 	query :: Query
 	variable_mapping :: Dict{Int64, BooleanVariableType}
 	sat_instance :: PicoPtr
-	function BooleanSkeleton(query :: Query)
+	smt_feasibility :: Any
+	function BooleanSkeleton(query :: Query, full_ctx)
 		return @timeit Config.TIMER "boolean_skeleton" begin
 			variable_mapping = Dict{Int64, BooleanVariableType}()
 			sat_instance :: PicoPtr = picosat_init()
-			skeleton = new(query, variable_mapping, sat_instance)
+			skeleton = new(query, variable_mapping, sat_instance, nl_feasible_init(full_ctx))
 			finalizer(x -> picosat_reset(x.sat_instance), skeleton)
 			transform_formula(skeleton)
 			return skeleton

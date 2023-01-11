@@ -109,7 +109,7 @@ function split_by_variables(atoms :: Vector{Tuple{Int64,ParsedNode}}, query :: Q
 end
 
 function iterate(iterquery :: IterableQuery)
-	state = BooleanSkeleton(iterquery.query)
+	state = BooleanSkeleton(iterquery.query, iterquery.smt_state)
 	return iterate(iterquery, state)
 end
 
@@ -131,7 +131,7 @@ function iterate(iterquery :: IterableQuery, state :: BooleanSkeleton)
 	ctx, variables = iterquery.smt_state
 	return @timeit Config.TIMER "next_query" begin
 		if isnothing(state)
-			state = BooleanSkeleton(query)
+			state = BooleanSkeleton(query, iterquery.smt_state)
 		end
 		infeasibility_cache = []
 		solution = solve(state.sat_instance)
@@ -141,7 +141,7 @@ function iterate(iterquery :: IterableQuery, state :: BooleanSkeleton)
 		nonlinearities_set = Set{ApproxQuery}()
 		num_vars = query.num_input_vars+query.num_output_vars
 		
-		@assert (SMTInterface.nl_feasible(Formula[query.formula], ctx, variables))
+		#@assert (SMTInterface.nl_feasible(Formula[query.formula], ctx, variables))
 		push(state.sat_instance)
 		while solution != :unsatisfiable
 			bounds, conjunction = get_atoms(state, solution)
@@ -153,7 +153,7 @@ function iterate(iterquery :: IterableQuery, state :: BooleanSkeleton)
 					coeffsu = zeros(num_vars)
 					coeffsu[dim] = 1.0
 					push!(bound_atoms,(s,LinearConstraint(coeffsl, -l, true)))
-					push!(bound_atoms,(s,LinearConstraint(coeffsu, u, true)))
+					push!(bound_atoms,(0,LinearConstraint(coeffsu, u, true)))
 				end
 			end
 			linear, nonlinear, approx_atoms = split_by_linearity(conjunction)
@@ -193,41 +193,42 @@ function iterate(iterquery :: IterableQuery, state :: BooleanSkeleton)
 			@timeit Config.TIMER "check_infeasibility_prep" begin
 				linear_smt = convert(Vector{LinearConstraint},map(x->x[2],linear))
 				bounds_smt = convert(Vector{LinearConstraint},map(x->x[2],bound_atoms))
-				approx_resolved_smt = convert(Vector{LinearConstraint},map(x->x[2],approx_resolved))
+				approx_resolved_smt = convert(Vector{Tuple{Int64,LinearConstraint}},map(x->(0,x[2]),approx_resolved))
 				nonlinear_smt = convert(Vector{Formula},map(x->x[2],nonlinear))
 			end
 			@timeit Config.TIMER "check_infeasibility" begin
 				if LP.is_infeasible(linear_smt)
 					#!SMTInterface.nl_feasible(linear_smt,ctx, variables)
 					# Linear part of conjunction infeasible => skip
-					push!(infeasible_combination, map(x -> -x[1], linear))
+					push!(infeasible_combination, map(x -> -x[1], filter(x->x[1]!=0,linear)))
 					#print_msg("Linear part of conjunction infeasible: ", infeasible_combination)
 				end
 				if LP.is_infeasible([bounds_smt;linear_smt])
 					#!SMTInterface.nl_feasible([bounds_smt;linear_smt],ctx, variables)
 					# Linear part of conjunction infeasible => skip
-					push!(infeasible_combination, map(x -> -x[1], [bound_atoms;linear]))
+					push!(infeasible_combination, map(x -> -x[1], filter(x->x[1]!=0,[bound_atoms;linear])))
 					#print_msg("Linear part of conjunction infeasible: ", infeasible_combination)
 				end
-				if LP.is_infeasible([bounds_smt;approx_resolved_smt])
+				if LP.is_infeasible([bounds_smt;map(x->x[2],approx_resolved_smt)])
 					#!SMTInterface.nl_feasible(output_conjunction_smt,ctx, variables)
 					# Linear + Approximate part of conjunction infeasible => skip
-					push!(infeasible_combination, map(x -> -x[1], [bound_atoms;approx_resolved]))
+					push!(infeasible_combination, map(x -> -x[1], filter(x->x[1]!=0,[bound_atoms;approx_resolved])))
 					#print_msg("Approx of conjunction infeasible: ", infeasible_combination)
 				end
 				if length(infeasible_combination) == 0
-					if !SMTInterface.nl_feasible(nonlinear_smt,ctx, variables)
+					if !SMTInterface.nl_feasible(nonlinear, state.smt_feasibility)
+						#SMTInterface.nl_feasible(nonlinear_smt,ctx, variables)
 						# Nonlinear part of conjunction infeasible => skip
 						push!(infeasible_combination, map(x -> -x[1], nonlinear))
 						#print_msg("Nonlinear part of conjunction infeasible: ", infeasible_combination)
-					elseif !SMTInterface.nl_feasible([bounds_smt;nonlinear_smt],ctx, variables)
+					elseif !SMTInterface.nl_feasible([bound_atoms;nonlinear], state.smt_feasibility)
 						# Nonlinear part of conjunction infeasible => skip
-						push!(infeasible_combination, map(x -> -x[1], [bound_atoms;nonlinear]))
+						push!(infeasible_combination, map(x -> -x[1], filter(x->x[1]!=0,[bound_atoms;nonlinear])))
 						#print_msg("Nonlinear part of conjunction infeasible: ", infeasible_combination)
-					elseif !SMTInterface.nl_feasible([bounds_smt;linear_smt;nonlinear_smt],ctx, variables)
-						push!(infeasible_combination, map(x -> -x[1], [bound_atoms;linear;nonlinear]))
-					elseif !SMTInterface.nl_feasible([output_conjunction_smt;nonlinear_smt],ctx, variables)
-						push!(infeasible_combination, map(x -> -x[1], [output_conjunction;nonlinear]))
+					elseif !SMTInterface.nl_feasible([bound_atoms;linear;nonlinear], state.smt_feasibility)
+						push!(infeasible_combination, map(x -> -x[1], filter(x->x[1]!=0,[bound_atoms;linear;nonlinear])))
+					elseif !SMTInterface.nl_feasible([bound_atoms;linear;approx_resolved_smt;nonlinear], state.smt_feasibility)
+						push!(infeasible_combination, map(x -> -x[1], filter(x->x[1]!=0,[output_conjunction;nonlinear])))
 					end
 				end
 			end
@@ -279,10 +280,13 @@ function iterate(iterquery :: IterableQuery, state :: BooleanSkeleton)
 
 				# Fix input constraints for further search
 				for (v,_) in input
+					if v == 0
+						continue
+					end
 					add_clause(state.sat_instance, v)
 				end
 				# Disallow current mixed constraint for further search
-				add_clause(state.sat_instance, map(x -> -x[1], [mixed;nonlinear]))
+				add_clause(state.sat_instance, map(x -> -x[1], filter(x->x[1]!=0,[mixed;nonlinear])))
 			end
 			# Find new model
 			solution = solve(state.sat_instance)
@@ -294,7 +298,7 @@ function iterate(iterquery :: IterableQuery, state :: BooleanSkeleton)
 			# Disallow input
 			add_clause(
 					state.sat_instance,
-					map(x -> -x[1], input)
+					map(x -> -x[1], filter(x->x[1]!=0,input))
 				)
 			#print_msg("Input: ", map(x -> AST.term_to_string(x[2]), input))
 			#print_msg("Disjunction: ", disjunction)
