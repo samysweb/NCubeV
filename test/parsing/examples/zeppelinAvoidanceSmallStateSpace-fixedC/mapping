@@ -1,0 +1,6 @@
+"x1"=>(Input,1),
+"x2"=>(Input,2),
+"cIn"=>(Input,3),
+"w"=>(Input,4),
+"ystr"=>(Output,1),
+"y1dir"=>(Output,2)
