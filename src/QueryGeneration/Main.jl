@@ -16,6 +16,7 @@ module QueryGeneration
 	include("Definitions.jl")
 	include("Skeleton.jl")
 	include("NonLinear.jl")
+	include("FeasibilityCache.jl")
 	include("Iterator.jl")
 
 	export iterate
