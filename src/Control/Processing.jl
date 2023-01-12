@@ -37,6 +37,7 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 	#print_msg("[CTRL] Query formula: ",query.formula)
 	last_save_time = time_ns()
 	@timeit Config.TIMER "query_iteration" begin
+		# TODO(steuber): Make SMT timeout for normalization configurable
 		smt_context(query.num_input_vars+query.num_output_vars;timeout=100000) do smt_ctx
 			iterable_query = IterableQuery(query, smt_ctx)
 			for (nonlinear_conjunction,current_conjunction) in iterable_query

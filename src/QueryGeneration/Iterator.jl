@@ -114,7 +114,7 @@ end
 function iterate(iterquery :: IterableQuery)
 	skeleton = BooleanSkeleton(iterquery.query, iterquery.smt_state)
 	max_var = next_var(skeleton.sat_instance)
-	feasibility_cache = FeasibilityCache(max_var)
+	feasibility_cache = FeasibilityCache(convert(Int64,max_var))
 	state = (skeleton, feasibility_cache)
 	return iterate(iterquery, state)
 end
@@ -141,7 +141,7 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Feas
 		if isnothing(state)
 			skeleton = BooleanSkeleton(query, iterquery.smt_state)
 			max_var = next_var(skeleton.sat_instance)
-			feasibility_cache = FeasibilityCache(max_var)
+			feasibility_cache = FeasibilityCache(convert(Int64,max_var))
 			state = (skeleton, feasibility_cache)
 		else
 			skeleton, feasibility_cache = state
