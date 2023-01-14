@@ -305,12 +305,13 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 				#print_msg("[QUERY] Nonlinear variant of conjunction: ", nonlinear_conjunction)
 				#input_nonlinear, mixed_nonlinear = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},nonlinear_conjunction),query)
 			
-				input_nonlin, mixed_nonlin = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},[bound_atoms;linear;nonlinear]),query)
-				push!(disjunction_nonlinear, CompositeFormula(AST.ITE,[
-					AST.and_construction(map(x -> x[2], input_nonlin)),
-					AST.and_construction(map(x -> x[2], mixed_nonlin)),
-					FalseAtom()
-				]))
+				#input_nonlin, mixed_nonlin = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},[bound_atoms;linear;nonlinear]),query)
+				push!(disjunction_nonlinear, AST.and_construction(map(x -> x[2], [bound_atoms;linear;nonlinear])))
+				#CompositeFormula(AST.ITE,[
+				#	AST.and_construction(map(x -> x[2], input_nonlin)),
+				#	AST.and_construction(map(x -> x[2], mixed_nonlin)),
+				#	FalseAtom()
+				#]))
 				#push!(disjunction_nonlinear, AST.and_construction(map(x -> x[2], [bound_atoms;linear;nonlinear])))
 				#AST.and_construction(map(x -> x[2], [mixed;nonlinear])))
 				#[

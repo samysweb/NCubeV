@@ -28,7 +28,28 @@ function smt_internal_set_timeout(ctx, timeout)
 	set_param("timeout", timeout)
 end
 function smt_internal_solver(ctx, theory)
-	s = Solver(ctx, theory)
+	t_solve = Tactic(ctx,"solve-eqs")
+
+	#t_split = Tactic(ctx,"split-clause")
+	#t_skip = Tactic(ctx,"skip")
+	#t_split_all = Z3.repeat(t_split | t_skip, 15)
+
+	#t_degree_shift = Tactic(ctx,"degree-shift")
+
+	#t_simplify = Tactic(ctx,"simplify")
+	#t_propagate = Tactic(ctx,"propagate-ineqs")
+
+	qfnra_tactic = Tactic(ctx,"qfnra")
+	
+	t_overall = par_and_then(
+		t_solve,
+		qfnra_tactic
+	)
+
+	#t_both = par_and_then(t_solve, qfnra_tactic)
+	
+	s = mk_solver(t_overall)
+	#s = Solver(ctx, theory)
 	set(s,"smt.arith.solver",convert(Int32,2))
 	return s
 end
