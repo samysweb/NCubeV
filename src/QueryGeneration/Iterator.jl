@@ -208,7 +208,7 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 				linear_vars = filter(x->x!=0,map(x->x[1],linear))
 				bounds_smt = convert(Vector{LinearConstraint},map(x->x[2],bound_atoms))
 				bounds_vars = filter(x->x!=0,map(x->x[1],bound_atoms))
-				approx_resolved_smt = convert(Vector{Tuple{Int64,LinearConstraint}},map(x->(0,x[2]),approx_resolved))
+				approx_resolved_smt = convert(Vector{LinearConstraint},map(x->x[2],approx_resolved))
 				approx_resolved_vars = filter(x->x!=0,map(x->x[1],approx_resolved))
 				nonlinear_smt = convert(Vector{Formula},map(x->x[2],nonlinear))
 				nonlinear_vars = filter(x->x!=0,map(x->x[1],nonlinear))
@@ -233,7 +233,7 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 					add_feasible(feasibility_cache.bound_linear, [bounds_vars; linear_vars])
 				end
 				not_yet_feasible = !check_feasible(feasibility_cache.approx, [bounds_vars; approx_resolved_vars])
-				if not_yet_feasible && LP.is_infeasible([bounds_smt;map(x->x[2],approx_resolved_smt)])
+				if not_yet_feasible && LP.is_infeasible([bounds_smt;approx_resolved_smt])
 					#!SMTInterface.nl_feasible(output_conjunction_smt,ctx, variables)
 					# Linear + Approximate part of conjunction infeasible => skip
 					push!(infeasible_combination, map(x -> -x[1], filter(x->x[1]!=0,[bound_atoms;approx_resolved])))
@@ -243,8 +243,7 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 				end
 				if length(infeasible_combination) == 0
 					not_yet_feasible = !check_feasible(feasibility_cache.nonlinear, nonlinear_vars)
-					if not_yet_feasible && !SMTInterface.nl_feasible(nonlinear, skeleton.smt_feasibility)
-						#SMTInterface.nl_feasible(nonlinear_smt,ctx, variables)
+					if not_yet_feasible && !SMTInterface.nl_feasible(nonlinear_smt,ctx, variables)
 						# Nonlinear part of conjunction infeasible => skip
 						push!(infeasible_combination, map(x -> -x[1], nonlinear))
 						#print_msg("Nonlinear part of conjunction infeasible: ", infeasible_combination)
@@ -252,7 +251,7 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 						add_feasible(feasibility_cache.nonlinear, nonlinear_vars)
 					end
 					not_yet_feasible = !check_feasible(feasibility_cache.bound_nonlinear, [bounds_vars; nonlinear_vars])
-					if length(infeasible_combination)== 0 && not_yet_feasible && !SMTInterface.nl_feasible([bound_atoms;nonlinear], skeleton.smt_feasibility)
+					if length(infeasible_combination)== 0 && not_yet_feasible && !SMTInterface.nl_feasible([bounds_smt;nonlinear_smt], ctx, variables)
 						# Nonlinear part of conjunction infeasible => skip
 						push!(infeasible_combination, map(x -> -x[1], filter(x->x[1]!=0,[bound_atoms;nonlinear])))
 						#print_msg("Nonlinear part of conjunction infeasible: ", infeasible_combination)
@@ -260,13 +259,13 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 						add_feasible(feasibility_cache.bound_nonlinear, [bounds_vars; nonlinear_vars])
 					end
 					not_yet_feasible = !check_feasible(feasibility_cache.no_approx, [bounds_vars; linear_vars; nonlinear_vars])
-					if length(infeasible_combination)== 0 && not_yet_feasible && !SMTInterface.nl_feasible([bound_atoms;linear;nonlinear], skeleton.smt_feasibility)
+					if length(infeasible_combination)== 0 && not_yet_feasible && !SMTInterface.nl_feasible([bounds_smt;linear_smt;nonlinear_smt], ctx, variables)
 						push!(infeasible_combination, map(x -> -x[1], filter(x->x[1]!=0,[bound_atoms;linear;nonlinear])))
 					elseif not_yet_feasible
 						add_feasible(feasibility_cache.no_approx, [bounds_vars; linear_vars; nonlinear_vars])
 					end
 					not_yet_feasible = !check_feasible(feasibility_cache.all, [bounds_vars; linear_vars; approx_resolved_vars; nonlinear_vars])
-					if length(infeasible_combination)== 0 && not_yet_feasible && !SMTInterface.nl_feasible([bound_atoms;linear;approx_resolved_smt;nonlinear], skeleton.smt_feasibility)
+					if length(infeasible_combination)== 0 && not_yet_feasible && !SMTInterface.nl_feasible([bounds_smt;linear_smt;approx_resolved_smt;nonlinear_smt], ctx, variables)
 						push!(infeasible_combination, map(x -> -x[1], filter(x->x[1]!=0,[output_conjunction;nonlinear])))
 					elseif not_yet_feasible
 						add_feasible(feasibility_cache.all, [bounds_vars; linear_vars; approx_resolved_vars; nonlinear_vars])
