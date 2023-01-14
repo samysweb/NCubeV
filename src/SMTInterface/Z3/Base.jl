@@ -50,7 +50,7 @@ function smt_internal_solver(ctx, theory)
 	
 	s = mk_solver(t_overall)
 	#s = Solver(ctx, theory)
-	set(s,"smt.arith.solver",convert(Int32,2))
+	#set(s,"smt.arith.solver",convert(Int32,2))
 	return s
 end
 function smt_internal_add(solver, formula)
