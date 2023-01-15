@@ -82,6 +82,7 @@ module SMTInterface
 			end
 			
 			res = smt_internal_check(s, vars)
+			@timeit Config.TIMER "SMTprep" begin
 			#conflicts = []
 			if smt_internal_is_sat(res)
 				if print_model
@@ -96,6 +97,7 @@ module SMTInterface
 					#print_msg("[SMT] ", constraints[conflict_clauses[string(c)]])
 					push!(conflicts,conflict_clauses[string(c)])
 				end
+			end
 			end
 
 			return res
