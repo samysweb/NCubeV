@@ -61,27 +61,41 @@ module SMTInterface
 	end
 
 
-	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables;print_model=false)
+	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables,conflicts;print_model=false)
 		res = smt_solver(ctx) do s
+			set(s,"unsat-core",true)
+			conflict_clauses = Dict()
+			vars = ExprVector(ctx)
 			@timeit Config.TIMER "SMTprep" begin
-				for c in constraints
+				for (i,c) in enumerate(constraints)
 					additional = []
 					translated = ast2smt(c, variables, additional)
 					#print_msg(translated)
-					smt_internal_add(s, translated)
+					conflict_var = bool_const(ctx, "c" * string(i))
+					smt_internal_add(s, Z3.implies(conflict_var,translated))
+					conflict_clauses[string(conflict_var)] = i
+					push!(vars, conflict_var)
 					for a in additional
 						smt_internal_add(s, a)
 					end
 				end
 			end
 			
-			res = smt_internal_check(s)
+			res = smt_internal_check(s, vars)
+			#conflicts = []
 			if smt_internal_is_sat(res)
 				if print_model
 					smt_print_model(s)
 				end
 			elseif !smt_internal_is_unsat(res)
 				print_msg("[SMT] SMT returned status: ", res)
+			else # unsat
+				#print_msg("[SMT] Conflict:")
+				for c in unsat_core(s)
+					#print_msg("[SMT] ", c)
+					#print_msg("[SMT] ", constraints[conflict_clauses[string(c)]])
+					push!(conflicts,conflict_clauses[string(c)])
+				end
 			end
 
 			return res

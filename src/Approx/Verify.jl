@@ -33,7 +33,8 @@ function verify_approximation(approx_query :: ApproxQuery, new_approx::Approxima
 				constraints,
 				Atom(operator,approx_query.term,linear_term+eps)
 			)
-			if SMTInterface.nl_feasible(constraints, ctx, variables;print_model=true)
+			conflicts = []
+			if SMTInterface.nl_feasible(constraints, ctx, variables, conflicts;print_model=true)
 				@error "Found error in approximation of "*AST.term_to_string(approx_query.term)*": Linear Term "*AST.term_to_string(linear_term)*" may be below/above allowed threshold in interval "*string(b)
 			end
 		end

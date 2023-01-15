@@ -54,47 +54,16 @@ function smt_internal_add(solver, formula)
 	add(solver, formula)
 end
 function smt_internal_check(solver)
-	#if timeout==0
 	@timeit Config.TIMER "z3_check" begin
 		res =  check(solver)
 	end
 	return res
-	# else
-	# 	wid = get_wid()
-	# 	print_msg("[SMT] timeout of ", timeout/1000, " seconds")
-	# 	result = RemoteChannel(()->Channel{Any}(0))
-	# 	#remotecall(process_check, wid, result, solver)
-	# 	sendto(wid; result=result, solver=solver)
-	# 	call_future = remotecall(Main.eval, wid, quote
-	# 		print_msg("[SMT] Test!!!!", solver, result)
-	# 		res = Z3.check(solver)
-	# 		print("[SMT] Worker found result: ", res)
-	# 		put!(result, res)
-	# 	end)
-	# 	# call_future = @spawnat wid eval(Main,quote
-	# 	# 	print_msg("[SMT] Starting check...")
-	# 	# 	# res = Z3.check(solver)
-	# 	# 	# print("[SMT] Worker found result: ", res)
-	# 	# 	# put!(result, res)
-	# 	# end)
-	# 	timedwait(()->begin
-	# 		res = isready(result)
-	# 		return res
-	# 	end, timeout/1000;pollint=1)
-	# 	if !isready(result)
-	# 		print_msg("Computation at $wid will be terminated")
-	# 		print_msg("Result: ", fetch(call_future))
-	# 		try
-	# 			rmprocs(wid;waitfor=1)
-	# 		catch e
-	# 			print("When terminating worker $wid:", e)
-	# 		end
-	# 		return Z3.unknown
-	# 	else
-	# 		print_msg("Result: ", fetch(call_future))
-	# 		return take!(result)
-	# 	end
-	# end
+end
+function smt_internal_check(solver, exprs)
+	@timeit Config.TIMER "z3_check" begin
+		res =  check(solver, exprs)
+	end
+	return res
 end
 function smt_internal_is_sat(res)
 	return res == Z3.sat
