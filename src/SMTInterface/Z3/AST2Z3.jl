@@ -69,12 +69,8 @@ function ast2smt(f :: CompositeTerm, variables, additional)
 			else
 				exp = 1//exp
 				@assert exp.den == 1
-				new_var = smt_internal_variable(ctx, "pow"*string(hash(f)))
-				push!(additional, Z3.and(
-					^(new_var, exp) == (arguments[1]),
-					0 <= new_var
-				))
-				return new_var
+				result = Z3.ite(arguments[1]>=0, ^(arguments[1], exp), real_val(ctx,0))
+				return result
 			end
 		end
 		Neg => return -arguments[1]

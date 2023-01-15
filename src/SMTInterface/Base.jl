@@ -16,9 +16,9 @@ function smt_context(f, varnum :: Int64; timeout=1000)
 	return res
 end
 
-function smt_solver(f, ctx)
+function smt_solver(f, ctx;stars=false)
 	res = nothing
-	s = smt_internal_solver(ctx, "QF_NRA")
+	s = smt_internal_solver(ctx, "QF_NRA";stars=stars)
 	res = f(s)
 	return res
 end

@@ -6,7 +6,7 @@ struct SmtFilterMeta
 end
 
 function get_star_filter(ctx, variables, formula, smt_timeout)
-	return smt_solver(ctx) do solver
+	return smt_solver(ctx;stars=true) do solver
 		#set(solver,"ctrl_c",  true)
 		additional = []
 		translated = ast2smt(formula, variables, additional)
@@ -73,7 +73,7 @@ function star_concrete_filter(solver, variables, smt_timeout)
 				#print_msg("[SMT] Filter took ",smt_time," seconds (pre).")
 				smt_internal_pop(solver)
 				return nothing
-			elseif smt_time > (smt_timeout/1000.0)
+			elseif smt_time > smt_timeout
 				print_msg("[SMT] Filter took ",smt_time," seconds (pre TO).")
 				smt_internal_debug(solver, result)
 				smt_internal_pop(solver)

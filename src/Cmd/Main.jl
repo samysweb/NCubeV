@@ -46,7 +46,7 @@ module Cmd
 			"--smtfilter-timeout"
 				help = "Timeout for SMT filter in seconds (unsolved SMT queries will be considered as possibly sat)"
 				arg_type = Int
-				default = 100
+				default = 10
 			"--linear"
 				help = "Calls OLNNV tool without any non-linear constraint approximations"
 				action = :store_true
@@ -90,7 +90,7 @@ module Cmd
 		print_msg("[CMD] Parsed initial query: ",initial_query)
 		prepared_query=prepare_for_olnnv(initial_query)
 		smt_timeout = convert(Int32,args["smtfilter-timeout"])
-		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=smt_timeout) do (ctx, variables)
+		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=smt_timeout*1000) do (ctx, variables)
 			return Control.run_query(prepared_query, ctx, smt_timeout, variables, backup=args["output"],backup_meta=args) do (linear_term,SMTFilter)
 				#print_msg("Generated terms")
 				@timeit Config.TIMER "nnv" begin

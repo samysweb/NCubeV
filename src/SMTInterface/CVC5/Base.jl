@@ -11,7 +11,7 @@ end
 function smt_internal_set_timeout(ctx, timeout)
 	ctx[1]["tlimit-per"] = timeout
 end
-function smt_internal_solver(ctx, theory)
+function smt_internal_solver(ctx, theory;stars=false)
 	global SMT_LOG+=1
 	s = PY_CVC5. SolverFor(theory, ctx=ctx[2], logFile="/tmp/smtlog"*string(SMT_LOG)*".smt2")
 	for (k,v) in ctx[1]
