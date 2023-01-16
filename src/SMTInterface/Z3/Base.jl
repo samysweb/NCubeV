@@ -25,7 +25,8 @@ function smt_internal_variable(ctx, name)
 	return var
 end
 function smt_internal_set_timeout(ctx, timeout)
-	set_param("timeout", timeout)
+	#set_param("timeout", timeout)
+	set(ctx, "timeout", timeout)
 end
 function smt_internal_solver(ctx, theory;stars=false)
 	if stars
@@ -36,7 +37,7 @@ function smt_internal_solver(ctx, theory;stars=false)
 		pre_step = Tactic(ctx,"purify-arith")
 	end
 
-	qfnra_tactic = Tactic(ctx,"qfnra")
+	qfnra_tactic = Tactic(ctx,theory)
 	
 	t_overall = par_and_then(
 		pre_step,

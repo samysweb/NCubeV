@@ -8,6 +8,7 @@ end
 function get_star_filter(ctx, variables, formula, smt_timeout)
 	return smt_solver(ctx;stars=true) do solver
 		#set(solver,"ctrl_c",  true)
+		set(solver,"unsat-core",false)
 		additional = []
 		translated = ast2smt(formula, variables, additional)
 		smt_internal_add(solver, translated)

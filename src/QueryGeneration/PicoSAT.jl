@@ -16,11 +16,15 @@ get_solution = PicoSAT.get_solution
 
 export PicoPtr,  picosat_init, picosat_reset, add_clause, add_clauses
 
-export next_var, push, pop, solve
+export next_var, push, pop, solve, picosat_set_more_important_lit
 
 next_var(p::PicoPtr) = ccall((:picosat_inc_max_var, libpicosat), Cint, (PicoPtr,), p)
 push(p::PicoPtr) = ccall((:picosat_push, libpicosat), Cint, (PicoPtr,), p)
 pop(p::PicoPtr) = ccall((:picosat_pop, libpicosat), Cint, (PicoPtr,), p)
+# void picosat_set_more_important_lit (PicoSAT *, int lit);
+picosat_set_more_important_lit(p::PicoPtr, lit::Int) = ccall(
+    (:picosat_set_more_important_lit, libpicosat), Cvoid, (PicoPtr, Cint), p, lit
+)
 
 function solve(p::PicoPtr)
     @timeit Config.TIMER "PicoSAT_solve" begin

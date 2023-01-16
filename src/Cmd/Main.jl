@@ -90,6 +90,7 @@ module Cmd
 		print_msg("[CMD] Parsed initial query: ",initial_query)
 		prepared_query=prepare_for_olnnv(initial_query)
 		smt_timeout = convert(Int32,args["smtfilter-timeout"])
+		print_msg("[CMD] SMT Timeout: ", smt_timeout, "s")
 		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=smt_timeout*1000) do (ctx, variables)
 			return Control.run_query(prepared_query, ctx, smt_timeout, variables, backup=args["output"],backup_meta=args) do (linear_term,SMTFilter)
 				#print_msg("Generated terms")
