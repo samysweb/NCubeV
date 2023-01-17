@@ -20,6 +20,7 @@ function get_approx_nodes(formula :: Formula, approx_requests :: Set{ApproxQuery
 			@assert !isnothing(under_approx_f) && !isnothing(over_approx_f)
 			return (typeof(formula))(f, under_approx_f, over_approx_f)
 		end
+		TrueAtom || FalseAtom => return formula
 		_ => error("Unknown formula type ", typeof(formula))
 	end
 end

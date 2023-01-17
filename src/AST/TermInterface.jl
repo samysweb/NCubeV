@@ -20,12 +20,18 @@ istree(x::Type{LinearConstraint}) = true
 istree(x::Type{CompositeFormula}) = true
 istree(x::Type{OverApprox}) = true
 istree(x::Type{UnderApprox}) = true
+istree(x::Type{TrueAtom}) = false
+istree(x::Type{FalseAtom}) = false
 
 issym(x::Type{TermNumber}) = true
 issym(x::Type{Variable}) = true
+issym(x::Type{TrueAtom}) = true
+issym(x::Type{FalseAtom}) = true
 
 nameof(x :: TermNumber) = x
 nameof(x :: Variable) = x
+nameof(x :: TrueAtom) = :true
+nameof(x :: FalseAtom) = :false
 
 # function similarvariable(p,v::Variable)
 # 	return Variable(v.name)
@@ -253,6 +259,8 @@ symtype(x :: LinearConstraint) = Bool
 symtype(x :: CompositeFormula) = Bool
 symtype(x :: OverApprox) = Bool
 symtype(x :: UnderApprox) = Bool
+symtype(x :: TrueAtom) = Bool
+symtype(x :: FalseAtom) = Bool
 
 
 is_literal_number(x :: TermNumber) = true

@@ -33,6 +33,16 @@ end
 function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_number_dict :: Dict{Union{Atom,LinearConstraint,ApproxNode}, Int64})
 	return function(formula :: Formula)
 		return @match formula begin
+			TrueAtom() => begin
+				variable_number = next_var(skeleton.sat_instance)
+				add_clause(skeleton.sat_instance, [variable_number])
+				return SkeletonFormula(variable_number)
+			end
+			FalseAtom() => begin
+				variable_number = next_var(skeleton.sat_instance)
+				add_clause(skeleton.sat_instance, [-variable_number])
+				return SkeletonFormula(variable_number)
+			end
 			Atom() || LinearConstraint() => begin
 				#@debug "Atom or LinearConstraint => constraint variable"
 				if haskey(variable_number_dict, formula)
@@ -133,7 +143,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 					return SkeletonFormula(internal_formula.variable_number)
 				end
 			end
-			SemiLinearConstraint => formula
+			SemiLinearConstraint() => formula
 			# OverApprox(internal_formula) || UnderApprox(internal_formula) => begin
 			# 	#@debug "OverApprox or UnderApprox => propagating from below"
 			# 	# print("Encountered ")
