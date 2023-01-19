@@ -318,7 +318,8 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 				# end
 				# Add in-out constraints to disjunction
 				#@debug "Adding in-out constraints: ", mixed
-				push!(disjunction, AST.and_construction(map(x -> x[2], mixed)))
+				mixed_smt = AST.and_construction(map(x -> x[2], mixed))
+				push!(disjunction, mixed_smt)
 				# TODO(steuber): If we properly "cut out" the star sets when finding them (i.e. add all the linear constraints),
 				# we can omit the linear part of the conjunction here - useful?
 				#nonlinear_conjunction = [bound_atoms;linear;nonlinear]
@@ -391,7 +392,7 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 				end
 				push!(disjunction_nonlinear,
 					CompositeFormula(AST.Implies,[
-						AST.and_construction(map(x->x[2],mixed)),
+						mixed_smt,
 						AST.or_construction(nonlinear_options)
 					])
 				)

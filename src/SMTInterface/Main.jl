@@ -69,7 +69,8 @@ module SMTInterface
 			@timeit Config.TIMER "SMTprep" begin
 				for (i,c) in enumerate(constraints)
 					additional = []
-					translated = ast2smt(c, variables, additional)
+					smt_cache = Dict()
+					translated = ast2smt(c, variables, additional, smt_cache)
 					#print_msg(translated)
 					conflict_var = bool_const(ctx, "c" * string(i))
 					smt_internal_add(s, Z3.implies(conflict_var,translated))
@@ -114,7 +115,8 @@ module SMTInterface
 			@timeit Config.TIMER "SMTprep" begin
 				for (i,c) in enumerate(constraints)
 					additional = []
-					translated = ast2smt(c, variables, additional)
+					smt_cache = Dict()
+					translated = ast2smt(c, variables, additional, smt_cache)
 					#print_msg(translated)
 					conflict_var = bool_const(ctx, "c" * string(i))
 					smt_internal_add(s, Z3.implies(conflict_var,translated))

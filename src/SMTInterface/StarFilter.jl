@@ -10,7 +10,8 @@ function get_star_filter(ctx, variables, formula, smt_timeout)
 		#set(solver,"ctrl_c",  true)
 		set(solver,"unsat-core",false)
 		additional = []
-		translated = ast2smt(formula, variables, additional)
+		smt_cache = Dict()
+		translated = ast2smt(formula, variables, additional, smt_cache)
 		smt_internal_add(solver, translated)
 		for a in additional
 			smt_internal_add(solver, a)
@@ -45,15 +46,16 @@ function star_concrete_filter(solver, variables, smt_timeout)
 		@timeit Config.TIMER "star_filter_concrete" begin
 			# @info "BEFORE:"
 			# print(solver)
+			smt_cache = Dict()
 			smt_internal_push(solver)
 			input_vars = size(star.constraint_matrix)[2]
 			additional = []
 			for (c,b) in zip(eachrow(star.constraint_matrix),star.constraint_bias)
-				smt_internal_add(solver, ast2smt(LinearConstraint(c,b,true), variables, additional))
+				smt_internal_add(solver, ast2smt(LinearConstraint(c,b,true), variables, additional, smt_cache))
 			end
 			for (i, b) in enumerate(star.bounds)
-				smt_internal_add(solver, ast2smt(Atom(AST.LessEq, TermNumber(b[1]),Variable("x"*string(i), nothing, i)),variables, additional))
-				smt_internal_add(solver, ast2smt(Atom(AST.LessEq, Variable("x"*string(i), nothing, i), TermNumber(b[2])),variables, additional))
+				smt_internal_add(solver, ast2smt(Atom(AST.LessEq, TermNumber(b[1]),Variable("x"*string(i), nothing, i)),variables, additional, smt_cache))
+				smt_internal_add(solver, ast2smt(Atom(AST.LessEq, Variable("x"*string(i), nothing, i), TermNumber(b[2])),variables, additional, smt_cache))
 			end
 			for a in additional
 				smt_internal_add(solver, a)
@@ -82,7 +84,7 @@ function star_concrete_filter(solver, variables, smt_timeout)
 			end
 			# If input is relevant, then we need to check if there exists a counter-example for the current output mapping...
 			for (i,(c,b)) in enumerate(zip(eachrow(star.output_map_matrix),star.output_map_bias))
-				smt_internal_add(solver, ast2smt(Atom(AST.Eq, Variable("x"*string(input_vars+i), nothing, input_vars+i), LinearTerm(c,b)), variables, additional))
+				smt_internal_add(solver, ast2smt(Atom(AST.Eq, Variable("x"*string(input_vars+i), nothing, input_vars+i), LinearTerm(c,b)), variables, additional, smt_cache))
 			end
 			@assert length(additional) == 0
 			result = nothing
