@@ -37,7 +37,7 @@ function smt_internal_solver(ctx, theory;stars=false)
 		pre_step = Tactic(ctx,"purify-arith")
 	end
 
-	qfnra_tactic = Tactic(ctx,theory)
+	qfnra_tactic = par_and_then(Tactic(ctx, "qflra"),Tactic(ctx,theory))
 	
 	t_overall = par_and_then(
 		pre_step,
