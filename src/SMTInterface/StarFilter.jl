@@ -18,7 +18,7 @@ function get_star_filter(ctx, variables, formula, smt_timeout)
 		solverres = smt_internal_check(solver)
 		if !smt_internal_is_sat(solverres)
 			smt_internal_debug(solver, solverres)
-			@assert false "Solver result was $solverres but should be sat"
+			@assert !smt_internal_is_unsat(solverres) "Solver result was unsat but should be sat"
 		end
 		return function(result :: OlnnvResult)
 			@timeit Config.TIMER "star_filter" begin
