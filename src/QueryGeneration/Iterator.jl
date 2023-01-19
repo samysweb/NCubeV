@@ -149,8 +149,8 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 		infeasibility_cache = []
 		solution = solve(skeleton.sat_instance)
 		input = nothing
-		disjunction = Set{CompositeFormula}()
-		disjunction_nonlinear = Set{Formula}()
+		disjunction = Vector{CompositeFormula}()
+		disjunction_nonlinear = Vector{Formula}()
 		nonlinearities_set = Set{ApproxQuery}()
 		num_vars = query.num_input_vars+query.num_output_vars
 		input_literals = []
@@ -325,9 +325,7 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 				#print_msg("[QUERY] Nonlinear variant of conjunction: ", nonlinear_conjunction)
 				#input_nonlinear, mixed_nonlinear = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},nonlinear_conjunction),query)
 			
-				#input_nonlin, mixed_nonlin = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},[bound_atoms;linear;nonlinear]),query)
-				push!(disjunction_nonlinear, AST.and_construction(map(x -> x[2], [bound_atoms;linear;nonlinear])))
-				#CompositeFormula(AST.ITE,[
+								#CompositeFormula(AST.ITE,[
 				#	AST.and_construction(map(x -> x[2], input_nonlin)),
 				#	AST.and_construction(map(x -> x[2], mixed_nonlin)),
 				#	FalseAtom()
@@ -346,8 +344,61 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 					end
 					add_clause(skeleton.sat_instance, v)
 				end
+				secondary_infeasibility_cache = []
+				nonlinear_options = Formula[
+					AST.and_construction(map(x -> x[2], nonlinear))
+				]
+				push(skeleton.sat_instance)
+				for (v,_) in mixed
+					if v == 0
+						continue
+					end
+					add_clause(skeleton.sat_instance, v)
+				end
+				add_clause(skeleton.sat_instance, map(x->-x, nonlinear_vars))
+				# Find new model
+				#print_msg("[QUERY] Looking for nonlinear combinations...")
+				t = solve(skeleton.sat_instance)
+				while t != :unsatisfiable
+					_, _, conjunction = get_atoms(skeleton, t)
+					_, nonlinear, _ = split_by_linearity(conjunction)
+					nonlinear_smt = convert(Vector{Formula},map(x->x[2],nonlinear))
+					nonlinear_vars = filter(x->x!=0,map(x->x[1],nonlinear))
+					not_yet_feasible = !check_feasible(feasibility_cache.all, map(x -> x[1], [bounds;conjunction]))
+					conflicts = []
+					if !SMTInterface.nl_feasible([bounds_smt;linear_smt;approx_resolved_smt;nonlinear_smt], ctx, variables, conflicts)
+						c = map(x->-x,[bounds_vars;([bounds_vars;linear_vars;approx_resolved_vars;nonlinear_vars])[conflicts]])
+						push!(secondary_infeasibility_cache, c)
+						add_clause(
+							skeleton.sat_instance,
+							c
+						)
+						t = solve(skeleton.sat_instance)
+						continue
+					elseif not_yet_feasible
+						add_feasible(feasibility_cache.all, [bounds_vars; linear_vars; approx_resolved_vars; nonlinear_vars])
+					end
+					#print_msg("[QUERY] Found new nonlinear combination")
+					# Add nonlinearities to set
+					push!(nonlinear_options, AST.and_construction(nonlinear_smt))
+					add_clause(skeleton.sat_instance, map(x -> -x, nonlinear_vars))
+					t = solve(skeleton.sat_instance)
+				end
+				pop(skeleton.sat_instance)
+				for c in secondary_infeasibility_cache
+					add_clause(skeleton.sat_instance, c)
+					push!(infeasibility_cache, c)
+				end
+				push!(disjunction_nonlinear,
+					CompositeFormula(AST.Implies,[
+						AST.and_construction(map(x->x[2],mixed)),
+						AST.or_construction(nonlinear_options)
+					])
+				)
+
+
 				# Disallow current mixed constraint for further search
-				add_clause(skeleton.sat_instance, map(x -> -x[1], filter(x->x[1]!=0,[mixed;nonlinear])))
+				add_clause(skeleton.sat_instance, map(x -> -x[1], filter(x->x[1]!=0,mixed)))
 			end
 			# Find new model
 			solution = solve(skeleton.sat_instance)
@@ -378,7 +429,11 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 			# print_msg("---------------------")
 			#@debug "Input:", map(x->x[2],input)
 			#@debug "Disjunction: ", disjunction
-			nonlinear_fml = AST.or_construction(collect(disjunction_nonlinear))
+			nonlinear_fml = CompositeFormula(AST.And,[
+				AST.and_construction(map(x->x[2],input)),
+				AST.or_construction(disjunction),
+				AST.and_construction(disjunction_nonlinear)
+			])
 			#print_msg("[QUERY] Nonlinear variant of conjunction: ", nonlinear_fml)
 			return (nonlinear_fml,NormalizedQuery(map(x->x[2],input), map(x->x.args,collect(disjunction)), nonlinearities_set, query)), state
 		else
