@@ -150,7 +150,7 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 		solution = solve(skeleton.sat_instance)
 		input = nothing
 		disjunction = Vector{CompositeFormula}()
-		disjunction_nonlinear = Vector{Formula}()
+		disjunction_nonlinear = Vector{Tuple{Formula,Formula}}()
 		nonlinearities_set = Set{ApproxQuery}()
 		num_vars = query.num_input_vars+query.num_output_vars
 		input_literals = []
@@ -391,10 +391,10 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 					push!(infeasibility_cache, c)
 				end
 				push!(disjunction_nonlinear,
-					CompositeFormula(AST.Implies,[
+					(
 						mixed_smt,
 						AST.or_construction(nonlinear_options)
-					])
+					)
 				)
 
 
@@ -430,13 +430,13 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 			# print_msg("---------------------")
 			#@debug "Input:", map(x->x[2],input)
 			#@debug "Disjunction: ", disjunction
-			nonlinear_fml = CompositeFormula(AST.And,[
-				AST.and_construction(map(x->x[2],input)),
-				AST.or_construction(disjunction),
-				AST.and_construction(disjunction_nonlinear)
-			])
+			#nonlinear_fml = CompositeFormula(AST.And,[
+			#	AST.and_construction(map(x->x[2],input)),
+			#	AST.or_construction(disjunction),
+			#	AST.and_construction(disjunction_nonlinear)
+			#])
 			#print_msg("[QUERY] Nonlinear variant of conjunction: ", nonlinear_fml)
-			return (nonlinear_fml,NormalizedQuery(map(x->x[2],input), map(x->x.args,collect(disjunction)), nonlinearities_set, query)), state
+			return (disjunction_nonlinear,NormalizedQuery(map(x->x[2],input), map(x->x.args,collect(disjunction)), nonlinearities_set, query)), state
 		else
 			return nothing
 		end

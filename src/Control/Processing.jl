@@ -40,7 +40,7 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 		# TODO(steuber): Make SMT timeout for normalization configurable
 		smt_context(query.num_input_vars+query.num_output_vars;timeout=10000) do smt_ctx
 			iterable_query = IterableQuery(query, smt_ctx)
-			for (nonlinear_conjunction,current_conjunction) in iterable_query
+			for (disjunction_nonlinear,current_conjunction) in iterable_query
 				print_msg("[CTRL] Considering conjunction with ",
 					length(current_conjunction.input_constraints.linear_constraints)+length(current_conjunction.input_constraints.semilinear_constraints),
 					" input constraints and a disjunction of size ",length(current_conjunction.mixed_constraints))
@@ -53,7 +53,7 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 				#	SMTFilter = SMTInterface.get_star_filter(ctx, variables, nonlinear_conjunction, smt_timeout)
 				#else
 				@timeit Config.TIMER "smt_filter_creation" begin
-					SMTFilter = SMTInterface.get_star_filter(ctx, variables, nonlinear_conjunction, smt_timeout)
+					SMTFilter = SMTInterface.get_star_filter(ctx, variables, disjunction_nonlinear, smt_timeout)
 					#SMTFilter = SMTInterface.get_star_filter(ctx, variables, original_query.formula, smt_timeout)
 				end
 				#end
