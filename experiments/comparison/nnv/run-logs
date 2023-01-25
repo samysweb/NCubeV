@@ -1,0 +1,65 @@
+ACC Setting:
+output_mat = [1 0;0 1]; % feedback: relative distance, relative velocity
+A=[0 1;0 0];
+B=[0;1];
+C=[1 0;0 1];
+D=[0;0];
+plant = LinearODE(A,B,C,D);
+....
+
+# Analysis using LinearODE
+lb = [0.1; -4];
+ub = [0.5; -0.3];
+init_set = Star(lb,ub);
+
+reachPRM = 
+
+  struct with fields:
+
+        ref_input: []
+         numSteps: 1
+         init_set: [1×1 Star]
+         numCores: 1
+    controlPeriod: 0.1000
+     plantTimStep: 0.1000
+      reachMethod: 'exact-star'
+
+
+
+The neural network control system is safe  143.2892
+
+
+reachPRM = 
+
+  struct with fields:
+
+        ref_input: []
+         numSteps: 1
+         init_set: [1×1 Star]
+         numCores: 1
+    controlPeriod: 0.1000
+     plantTimStep: 0.1000
+      reachMethod: 'approx-star'
+
+
+
+The neural network control system is safe  158.4215
+
+lb = [0.1; -4];
+ub = [0.5; 0];
+
+reachPRM = 
+
+  struct with fields:
+
+        ref_input: []
+         numSteps: 1
+         init_set: [1×1 Star]
+         numCores: 1
+    controlPeriod: 0.1000
+     plantTimStep: 0.1000
+      reachMethod: 'exact-star'
+
+
+
+The neural network control system is safe  711.7489

@@ -1,0 +1,84 @@
+# Try 1
+
+Time to compute reachable set: 0.70798
+Time to check verification: 0.000971
+         bound_approx: 0
+    polynomial_approx: "lin"
+
+Result: UNKNOWN
+Total Time: 0.70895
+
+# Try 2
+Time to compute reachable set: 0.16813
+Time to check verification: 0.001092
+         bound_approx: 1
+    polynomial_approx: "lin"
+
+Result: UNKNOWN
+Total Time: 0.16922
+
+# Try 3
+         bound_approx: 0
+    polynomial_approx: "quad"
+Error using zeros
+Requested 64x395249848515 (188469.8GB) array exceeds maximum array size preference (30.2GB). This might cause MATLAB to
+become unresponsive.
+
+# Try 4
+         bound_approx: 0
+    polynomial_approx: "quad"
+Error using zeros
+Requested 64x395249848515 (188469.8GB) array exceeds maximum array size preference (30.2GB). This might cause MATLAB to
+become unresponsive.
+
+#Try 5
+Time to compute reachable set: 11.0107
+Time to check verification: 0.003898
+         bound_approx: 0
+    polynomial_approx: "quad"
+       num_generators: 500
+
+Result: UNKNOWN
+Total Time: 11.0146
+
+# Try 6
+Time to compute reachable set: 1.5502
+Time to check verification: 0.00193
+         bound_approx: 1
+    polynomial_approx: "quad"
+       num_generators: 500
+
+Result: UNKNOWN
+Total Time: 1.5521
+
+# Try 7
+         bound_approx: 0
+    polynomial_approx: "cub"
+Error using zeros
+Requested array exceeds the maximum possible variable size.
+
+# Try 8
+         bound_approx: 1
+    polynomial_approx: "cub"
+Error using zeros
+Requested array exceeds the maximum possible variable size.
+
+# Try 9
+Time to compute reachable set: 316.4083
+Time to check verification: 0.002647
+         bound_approx: 0
+    polynomial_approx: "cub"
+       num_generators: 300
+
+Result: UNKNOWN
+Total Time: 316.411
+
+# Try 10
+Time to compute reachable set: 323.4035
+Time to check verification: 0.000858
+         bound_approx: 1
+    polynomial_approx: "cub"
+       num_generators: 300
+
+Result: UNKNOWN
+Total Time: 323.4044
