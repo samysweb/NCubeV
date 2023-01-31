@@ -73,7 +73,7 @@ end
 function get_star_filter(ctx, variables, disjunction_nonlinear, smt_timeout)
 	return function(result :: OlnnvResult)
 		smt_cache = Dict()
-		@timeit Config.TIMER "star_filter" begin
+		@timeit TIMER "star_filter" begin
 			if result.status == "safe"
 				return result
 			else
@@ -114,7 +114,7 @@ end
 # 			@assert !smt_internal_is_unsat(solverres) "Solver result was unsat but should be sat"
 # 		end
 # 		return function(result :: OlnnvResult)
-# 			@timeit Config.TIMER "star_filter" begin
+# 			@timeit TIMER "star_filter" begin
 # 				if result.status == "safe"
 # 					return result
 # 				else
@@ -135,7 +135,7 @@ end
 # end
 # function star_concrete_filter(solver, variables, smt_timeout)
 # 	return function(star :: Star)
-# 		@timeit Config.TIMER "star_filter_concrete" begin
+# 		@timeit TIMER "star_filter_concrete" begin
 # 			# @info "BEFORE:"
 # 			# print(solver)
 # 			smt_cache = Dict()

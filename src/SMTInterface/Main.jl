@@ -5,18 +5,19 @@ module SMTInterface
 	using ..Util
 	using ..AST
 	using ..VerifierInterface
-	using ..Config
+	import ..Config.SMT_SOLVER
+	import ..Config.TIMER
 
 	export smt_context, nl_feasible, nl_feasible_init
 
-	if Config.SMT_SOLVER == "Z3"
+	if SMT_SOLVER == "Z3"
 		include("Z3/Main.jl")
-	elseif Config.SMT_SOLVER == "CVC5"
+	elseif SMT_SOLVER == "CVC5"
 		include("CVC5/Main.jl")
-	#elseif Config.SMT_SOLVER == "dreal"
+	#elseif SMT_SOLVER == "dreal"
 	#	include("dreal/Main.jl")
 	else
-		error("Unknown SMT solver: " + Config.SMT_SOLVER)
+		error("Unknown SMT solver: " + SMT_SOLVER)
 	end
 
 
@@ -32,7 +33,7 @@ module SMTInterface
 	end
 
 	function nl_feasible(constraints, feasibility_solver)
-		@timeit Config.TIMER "SMTprep" begin
+		@timeit TIMER "SMTprep" begin
 			s,d = feasibility_solver
 			all_vars = smt_internal_get_var_dict(d)
 			smt_formulas = []
@@ -54,7 +55,7 @@ module SMTInterface
 			end
 		end
 		res = smt_internal_check(s)
-		@timeit Config.TIMER "SMTprep" begin
+		@timeit TIMER "SMTprep" begin
 			smt_internal_pop(s)
 		end
 		return !smt_internal_is_unsat(res)
@@ -66,7 +67,7 @@ module SMTInterface
 			set(s,"unsat-core",true)
 			conflict_clauses = Dict()
 			vars = ExprVector(ctx)
-			@timeit Config.TIMER "SMTprep" begin
+			@timeit TIMER "SMTprep" begin
 				for (i,c) in enumerate(constraints)
 					additional = []
 					smt_cache = Dict()
@@ -83,7 +84,7 @@ module SMTInterface
 			end
 			
 			res = smt_internal_check(s, vars)
-			@timeit Config.TIMER "SMTprep" begin
+			@timeit TIMER "SMTprep" begin
 			#conflicts = []
 			if smt_internal_is_sat(res)
 				if print_model
@@ -112,7 +113,7 @@ module SMTInterface
 			set(s,"unsat-core",true)
 			conflict_clauses = Dict()
 			vars = ExprVector(ctx)
-			@timeit Config.TIMER "SMTprep" begin
+			@timeit TIMER "SMTprep" begin
 				for (i,c) in enumerate(constraints)
 					additional = []
 					smt_cache = Dict()
@@ -129,7 +130,7 @@ module SMTInterface
 			end
 			
 			res = smt_internal_check(s, vars)
-			@timeit Config.TIMER "SMTprep" begin
+			@timeit TIMER "SMTprep" begin
 			#conflicts = []
 			if smt_internal_is_sat(res)
 				if print_model

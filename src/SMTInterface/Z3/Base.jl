@@ -56,13 +56,13 @@ function smt_internal_add(solver, formula)
 	add(solver, formula)
 end
 function smt_internal_check(solver)
-	@timeit Config.TIMER "z3_check" begin
+	@timeit TIMER "z3_check" begin
 		res =  check(solver)
 	end
 	return res
 end
 function smt_internal_check(solver, exprs)
-	@timeit Config.TIMER "z3_check" begin
+	@timeit TIMER "z3_check" begin
 		res =  check(solver, exprs)
 	end
 	return res
