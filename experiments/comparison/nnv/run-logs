@@ -63,3 +63,56 @@ reachPRM =
 
 
 The neural network control system is safe  711.7489
+
+reachPRM = 
+
+  struct with fields:
+
+        ref_input: []
+         numSteps: 1
+         init_set: [1×1 Star]
+         numCores: 1
+    controlPeriod: 0.1000
+     plantTimStep: 0.1000
+      reachMethod: 'approx-star'
+
+
+
+The neural network control system is safe   1.1898e+03
+
+# Larger State Space 
+lb = [0.1; -4];
+ub = [0.9; 0];
+reachPRM = 
+
+  struct with fields:
+
+        ref_input: []
+         numSteps: 1
+         init_set: [1×1 Star]
+         numCores: 1
+    controlPeriod: 0.1000
+     plantTimStep: 0.1000
+      reachMethod: 'exact-star'
+
+
+
+The neural network control system is safe   1.6535e+03
+
+lb = [0.1; -4];
+ub = [0.9; 4];
+reachPRM = 
+
+  struct with fields:
+
+        ref_input: []
+         numSteps: 1
+         init_set: [1×1 Star]
+         numCores: 1
+    controlPeriod: 0.1000
+     plantTimStep: 0.1000
+      reachMethod: 'exact-star'
+
+
+
+The neural network control system is safe   3.3157e+03
