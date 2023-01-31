@@ -1107,6 +1107,7 @@ version = "1.2.0"
 [[deps.OVERT]]
 deps = ["Calculus", "Interpolations", "LaTeXStrings", "MacroTools", "NLsolve", "PGFPlots", "PlotlyBase", "Plots", "Roots", "SymEngine"]
 git-tree-sha1 = "7fe1554d56d60eeb6b9437eb45aad5b1d07d24ec"
+pinned = true
 repo-rev = "master"
 repo-url = "https://github.com/sisl/OVERT.jl.git"
 uuid = "07e67fc4-eb77-11eb-38c2-1307cbb1fbf4"
