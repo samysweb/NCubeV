@@ -1,2 +1,0 @@
-This run used checked the bounds -A <= rAccpost <= A (with A=B).
-The property is safe, thus all runs are fine.
