@@ -56,9 +56,9 @@ run_zeppelin () {
 
     mkdir -p experiments/zeppelin/$1
 
-    runlim ./bin/SNNT --smtfilter-timeout=4 --approx 1 test/parsing/examples/zeppelinAvoidanceSmallStateSpace/formula-bounds test/parsing/examples/zeppelinAvoidanceSmallStateSpace/fixed test/parsing/examples/zeppelinAvoidanceSmallStateSpace/mapping test/networks/$1.onnx experiments/zeppelin/$1/result-bounds.jld > experiments/zeppelin/$1/result-bounds.out 2>&1
+    runlim ./bin/SNNT --smtfilter-timeout=4 --approx 1 test/parsing/examples/zeppelinAvoidanceSmallStateSpace-fixedC/formula-bounds test/parsing/examples/zeppelinAvoidanceSmallStateSpace-fixedC/fixed test/parsing/examples/zeppelinAvoidanceSmallStateSpace-fixedC/mapping test/networks/$1.onnx experiments/zeppelin/$1/result-bounds.jld > experiments/zeppelin/$1/result-bounds.out 2>&1
 
-    runlim ./bin/SNNT --smtfilter-timeout=4 --approx 1 test/parsing/examples/zeppelinAvoidanceSmallStateSpace/formula-smaller-precise test/parsing/examples/zeppelinAvoidanceSmallStateSpace/fixed test/parsing/examples/zeppelinAvoidanceSmallStateSpace/mapping test/networks/$1.onnx experiments/zeppelin/$1/result-approx-1.jld > experiments/zeppelin/$1/result-approx-1.out 2>&1
+    runlim ./bin/SNNT --smtfilter-timeout=4 --approx 1 test/parsing/examples/zeppelinAvoidanceSmallStateSpace-fixedC/formula-smaller-precise test/parsing/examples/zeppelinAvoidanceSmallStateSpace-fixedC/fixed test/parsing/examples/zeppelinAvoidanceSmallStateSpace-fixedC/mapping test/networks/$1.onnx experiments/zeppelin/$1/result-approx-1.jld > experiments/zeppelin/$1/result-approx-1.out 2>&1
 }
 
 # Requires that SNNT has already been built
