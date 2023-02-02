@@ -38,7 +38,7 @@ function check_star(ctx,variables, disjunction_nonlinear, star :: Star, smt_cach
 					smt_internal_add(lin_solver, a)
 				end
 				lin_solverres = smt_internal_check(lin_solver)
-				if smt_internal_is_sat(lin_solverres)
+				if !smt_internal_is_unsat(lin_solverres)
 					push!(disjunction,
 						CompositeFormula(AST.And,[
 							linear,
@@ -60,12 +60,15 @@ function check_star(ctx,variables, disjunction_nonlinear, star :: Star, smt_cach
 			end
 			solverres = smt_internal_check(solver)
 			if smt_internal_is_sat(solverres)
-				return true
+				return 1
+			elseif !smt_internal_is_unsat(solverres)
+				# SMT solver returned unknown
+				return 2
 			else
-				return false
+				return 0
 			end
 		else
-			return false
+			return 0
 		end
 	end
 end
@@ -79,8 +82,9 @@ function get_star_filter(ctx, variables, disjunction_nonlinear, smt_timeout)
 			else
 				filtered_stars = []
 				for s in result.stars
-					if check_star(ctx,variables, disjunction_nonlinear, s, smt_cache)
-						push!(filtered_stars, s)
+					res = check_star(ctx,variables, disjunction_nonlinear, s, smt_cache)
+					if res > 0
+						push!(filtered_stars, Star(s,res==1))
 					end
 				end
 				filtered_out = length(result.stars)-length(filtered_stars)
