@@ -11,8 +11,8 @@
 [runlim] argv[6]:		test/parsing/examples/acc/mapping
 [runlim] argv[7]:		test/networks/acc-2000000-64-64-64-64.onnx
 [runlim] argv[8]:		experiments/acc/acc-2000000-64-64-64-64/results-bounds.jld
-[runlim] start:			Tue Jan 31 16:03:20 2023
-[runlim] main pid:		95042
+[runlim] start:			Thu Feb  2 17:44:44 2023
+[runlim] main pid:		596772
 [CMD] Using SMT solver: Z3
 [CMD] Parsed initial query: SNNT.AST.Query(((-1.0*x1<0.0&((-1.0*rPos)+(0.005*(rVel^2.0)))<=0.0&-1.0*x1<=0.0&1.0*x1<=100.0&-1.0*x2<=200.0&1.0*x2<=200.0&-1.0*x3<=1000.0&1.0*x3<=1000.0)->(-1.0*x3<=100.0&1.0*x3<=100.0)), Set(SNNT.AST.Variable[rAccpost, rVel, rPos]), 2, 1, Dict{SNNT.AST.ApproxQuery, SNNT.AST.Approximation}(), Vector{Float64}[])
 [CMD] SMT Timeout: 4s
@@ -36,13 +36,13 @@ Using N=1, ϵ=0.0, rel_error_tol=0.005
 [NNENUM] Spec list length:  2
 [NNENUM] Enumeration in progress... 
 (0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
-(0.2 sec) Q: 0, Sets: 5/9  (9.375%) CEs: 0 ETA: 1.5 sec (expected 53 stars)   
-(0.3 sec) Q: 0, Sets: 26/33  (22.461%) CEs: 0 ETA: 0.9 sec (expected 116 stars)   (0.4 sec) Q: 0, Sets: 52/57  (25.0%) CEs: 0 ETA: 1.1 sec (expected 208 stars)   
-(0.5 sec) Q: 0, Sets: 75/79  (32.812%) CEs: 0 ETA: 0.9 sec (expected 229 stars)   (0.6 sec) Q: 0, Sets: 97/104  (39.6%) CEs: 0 ETA: 0.9 sec (expected 245 stars)   (0.7 sec) Q: 0, Sets: 121/124  (43.555%) CEs: 0 ETA: 0.9 sec (expected 278 stars)   (0.8 sec) Q: 0, Sets: 143/152  (43.884%) CEs: 0 ETA: 1.0 sec (expected 326 stars)   
-(0.9 sec) Q: 0, Sets: 164/172  (43.941%) CEs: 0 ETA: 1.1 sec (expected 373 stars)   (1.0 sec) Q: 0, Sets: 189/195  (44.141%) CEs: 0 ETA: 1.2 sec (expected 428 stars)   (1.1 sec) Q: 0, Sets: 209/217  (46.924%) CEs: 0 ETA: 1.2 sec (expected 445 stars)   (1.2 sec) Q: 0, Sets: 238/242  (47.461%) CEs: 0 ETA: 1.3 sec (expected 501 stars)   (1.3 sec) Q: 0, Sets: 263/266  (49.854%) CEs: 0 ETA: 1.3 sec (expected 528 stars)   
+(0.2 sec) Q: 0, Sets: 3/9  (8.203%) CEs: 0 ETA: 1.8 sec (expected 37 stars)   
+(0.3 sec) Q: 0, Sets: 20/28  (21.875%) CEs: 0 ETA: 0.9 sec (expected 91 stars)   (0.4 sec) Q: 0, Sets: 41/48  (24.438%) CEs: 0 ETA: 1.1 sec (expected 168 stars)   
+(0.5 sec) Q: 0, Sets: 62/68  (27.344%) CEs: 0 ETA: 1.2 sec (expected 227 stars)   (0.6 sec) Q: 0, Sets: 82/88  (38.477%) CEs: 0 ETA: 0.9 sec (expected 213 stars)   (0.7 sec) Q: 0, Sets: 103/109  (40.625%) CEs: 0 ETA: 1.0 sec (expected 254 stars)   (0.8 sec) Q: 0, Sets: 130/140  (43.762%) CEs: 0 ETA: 1.0 sec (expected 297 stars)   
+(0.9 sec) Q: 0, Sets: 152/162  (43.928%) CEs: 0 ETA: 1.1 sec (expected 346 stars)   (1.0 sec) Q: 0, Sets: 172/182  (43.945%) CEs: 0 ETA: 1.3 sec (expected 391 stars)   (1.1 sec) Q: 0, Sets: 180/189  (43.988%) CEs: 0 ETA: 1.4 sec (expected 409 stars)   (1.2 sec) Q: 0, Sets: 200/212  (46.875%) CEs: 0 ETA: 1.3 sec (expected 427 stars)   (1.3 sec) Q: 0, Sets: 225/235  (46.982%) CEs: 0 ETA: 1.5 sec (expected 479 stars)   (1.4 sec) Q: 0, Sets: 248/255  (48.517%) CEs: 0 ETA: 1.5 sec (expected 511 stars)   
 Total Stars: 270 (22 exact, 248 approx)
 Unfinished Stars: 0
-Runtime: 1.3 sec
+Runtime: 1.4 sec
 Completed work frac: 1.0
 Num Stars Copied Between Processes: 0
 Num Lps During Enumeration: 845
@@ -51,7 +51,7 @@ Total Num Lps: 845
 Result: network is SAFE
 
 [NNENUM] Result: 
-<nnenum.result.Result object at 0x7f7b50eb9610>
+<nnenum.result.Result object at 0x7fac8dc6efa0>
 [NNENUM] Enumeration finished.
 safe
 [NNENUM] Found counter-example stars: 0
@@ -67,13 +67,14 @@ safe
 [NNENUM] ub: [100.0, 0.0]
 [NNENUM] Spec list length:  2
 [NNENUM] Enumeration in progress... 
-(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
-(0.1 sec) Q: 0, Sets: 15/25  (2.344%) CEs: 0 ETA: 6.2 sec (expected 640 stars)   
-(0.2 sec) Q: 0, Sets: 43/50  (5.176%) CEs: 0 ETA: 4.6 sec (expected 831 stars)   (0.4 sec) Q: 0, Sets: 68/72  (21.094%) CEs: 0 ETA: 1.3 sec (expected 322 stars)   
-(0.5 sec) Q: 0, Sets: 74/78  (21.777%) CEs: 0 ETA: 1.7 sec (expected 340 stars)   (0.6 sec) Q: 0, Sets: 92/96  (28.125%) CEs: 0 ETA: 1.5 sec (expected 327 stars)   (0.7 sec) Q: 0, Sets: 112/118  (38.672%) CEs: 0 ETA: 1.1 sec (expected 290 stars)   
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 13/21  (2.1%) CEs: 0 ETA: 7.4 sec (expected 619 stars)   
+(0.3 sec) Q: 0, Sets: 25/32  (2.734%) CEs: 0 ETA: 9.2 sec (expected 914 stars)   (0.4 sec) Q: 0, Sets: 47/53  (6.25%) CEs: 0 ETA: 5.4 sec (expected 752 stars)   
+(0.5 sec) Q: 0, Sets: 68/72  (21.094%) CEs: 0 ETA: 1.7 sec (expected 322 stars)   (0.6 sec) Q: 0, Sets: 80/88  (22.977%) CEs: 0 ETA: 1.9 sec (expected 348 stars)   (0.7 sec) Q: 0, Sets: 95/103  (31.25%) CEs: 0 ETA: 1.5 sec (expected 304 stars)   (0.8 sec) Q: 0, Sets: 114/119  (38.965%) CEs: 0 ETA: 1.2 sec (expected 293 stars)   
+
 Total Stars: 134 (11 exact, 123 approx)
 Unfinished Stars: 0
-Runtime: 0.7 sec
+Runtime: 0.8 sec
 Completed work frac: 1.0
 Num Stars Copied Between Processes: 0
 Num Lps During Enumeration: 486
@@ -84,7 +85,7 @@ Input: [7.690485000610352, -103.84524536132812]
 Output: [100.0]
 
 [NNENUM] Result: 
-<nnenum.result.Result object at 0x7f7b50bfee20>
+<nnenum.result.Result object at 0x7fac8d9df100>
 [NNENUM] Enumeration finished.
 unsafe
 [NNENUM] Found counter-example stars: 0
@@ -101,13 +102,13 @@ unsafe
 [NNENUM] Spec list length:  2
 [NNENUM] Enumeration in progress... 
 (0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
-(0.2 sec) Q: 0, Sets: 10/15  (63.281%) CEs: 0 ETA: 0.1 sec (expected 16 stars)   
-(0.3 sec) Q: 0, Sets: 34/41  (76.953%) CEs: 0 ETA: 0.1 sec (expected 44 stars)   (0.4 sec) Q: 0, Sets: 60/68  (78.516%) CEs: 0 ETA: 0.1 sec (expected 76 stars)   
-(0.5 sec) Q: 0, Sets: 87/95  (78.821%) CEs: 0 ETA: 0.1 sec (expected 110 stars)   (0.6 sec) Q: 0, Sets: 117/121  (81.25%) CEs: 0 ETA: 0.1 sec (expected 144 stars)   (0.7 sec) Q: 0, Sets: 137/143  (89.844%) CEs: 0 ETA: 0.1 sec (expected 152 stars)   (0.8 sec) Q: 0, Sets: 163/168  (90.625%) CEs: 0 ETA: 0.1 sec (expected 180 stars)   
-(0.9 sec) Q: 0, Sets: 188/192  (91.602%) CEs: 0 ETA: 0.1 sec (expected 205 stars)   (1.0 sec) Q: 0, Sets: 210/217  (91.821%) CEs: 0 ETA: 0.1 sec (expected 229 stars)   
+(0.2 sec) Q: 0, Sets: 7/12  (62.5%) CEs: 0 ETA: 0.1 sec (expected 11 stars)   
+(0.3 sec) Q: 0, Sets: 23/35  (75.063%) CEs: 0 ETA: 0.1 sec (expected 31 stars)   (0.4 sec) Q: 0, Sets: 49/52  (78.125%) CEs: 0 ETA: 0.1 sec (expected 63 stars)   
+(0.5 sec) Q: 0, Sets: 70/79  (78.738%) CEs: 0 ETA: 0.1 sec (expected 89 stars)   (0.6 sec) Q: 0, Sets: 92/101  (78.848%) CEs: 0 ETA: 0.2 sec (expected 117 stars)   (0.7 sec) Q: 0, Sets: 119/124  (82.812%) CEs: 0 ETA: 0.1 sec (expected 144 stars)   (0.8 sec) Q: 0, Sets: 137/141  (89.844%) CEs: 0 ETA: 0.1 sec (expected 152 stars)   
+(0.9 sec) Q: 0, Sets: 160/165  (90.234%) CEs: 0 ETA: 0.1 sec (expected 177 stars)   (1.0 sec) Q: 0, Sets: 181/187  (90.796%) CEs: 0 ETA: 0.1 sec (expected 199 stars)   (1.1 sec) Q: 0, Sets: 200/208  (91.751%) CEs: 0 ETA: 0.1 sec (expected 218 stars)   (1.2 sec) Q: 0, Sets: 221/228  (92.285%) CEs: 0 ETA: 0.1 sec (expected 239 stars)   
 Total Stars: 239 (14 exact, 225 approx)
 Unfinished Stars: 0
-Runtime: 1.0 sec
+Runtime: 1.2 sec
 Completed work frac: 1.0
 Num Stars Copied Between Processes: 0
 Num Lps During Enumeration: 654
@@ -116,7 +117,7 @@ Total Num Lps: 654
 Result: network is SAFE
 
 [NNENUM] Result: 
-<nnenum.result.Result object at 0x7f7b50e43130>
+<nnenum.result.Result object at 0x7fac8d99cfa0>
 [NNENUM] Enumeration finished.
 safe
 [NNENUM] Found counter-example stars: 0
@@ -130,17 +131,17 @@ safe
 [NNENUM] Running nnenum now...
 [NNENUM] lb: [0.0, -200.0]
 [NNENUM] ub: [100.0, 0.0]
-[runlim] sample:		13.6 time, 10.2 real, 1465.2 MB
+[runlim] sample:		13.6 time, 11.0 real, 1461.5 MB
 [NNENUM] Spec list length:  2
 [NNENUM] Enumeration in progress... 
-(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
-(0.2 sec) Q: 0, Sets: 18/22  (25.0%) CEs: 0 ETA: 0.5 sec (expected 72 stars)   
-(0.3 sec) Q: 0, Sets: 25/29  (34.375%) CEs: 0 ETA: 0.6 sec (expected 73 stars)   (0.4 sec) Q: 0, Sets: 25/30  (34.375%) CEs: 0 ETA: 0.8 sec (expected 73 stars)   
-(0.5 sec) Q: 0, Sets: 36/42  (39.355%) CEs: 0 ETA: 0.8 sec (expected 91 stars)   (0.6 sec) Q: 0, Sets: 64/74  (44.147%) CEs: 0 ETA: 0.8 sec (expected 145 stars)   (0.7 sec) Q: 0, Sets: 85/98  (46.974%) CEs: 0 ETA: 0.8 sec (expected 181 stars)   (0.8 sec) Q: 0, Sets: 108/115  (47.116%) CEs: 0 ETA: 0.9 sec (expected 229 stars)   
-(0.9 sec) Q: 0, Sets: 121/125  (47.656%) CEs: 0 ETA: 1.0 sec (expected 254 stars)   (1.0 sec) Q: 0, Sets: 148/152  (49.316%) CEs: 0 ETA: 1.1 sec (expected 300 stars)   (1.1 sec) Q: 0, Sets: 173/175  (62.5%) CEs: 0 ETA: 0.7 sec (expected 277 stars)   
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 5/12  (8.008%) CEs: 0 ETA: 1.8 sec (expected 62 stars)   
+(0.3 sec) Q: 0, Sets: 25/29  (34.375%) CEs: 0 ETA: 0.7 sec (expected 73 stars)   (0.5 sec) Q: 0, Sets: 26/30  (35.156%) CEs: 0 ETA: 0.9 sec (expected 74 stars)   
+(0.6 sec) Q: 0, Sets: 35/41  (39.258%) CEs: 0 ETA: 0.9 sec (expected 89 stars)   (0.7 sec) Q: 0, Sets: 63/74  (44.144%) CEs: 0 ETA: 0.9 sec (expected 143 stars)   (0.8 sec) Q: 0, Sets: 81/87  (46.875%) CEs: 0 ETA: 0.9 sec (expected 173 stars)   (0.9 sec) Q: 0, Sets: 87/98  (46.974%) CEs: 0 ETA: 1.0 sec (expected 185 stars)   
+(1.0 sec) Q: 0, Sets: 108/115  (47.116%) CEs: 0 ETA: 1.1 sec (expected 229 stars)   (1.1 sec) Q: 0, Sets: 130/133  (48.438%) CEs: 0 ETA: 1.2 sec (expected 268 stars)   (1.2 sec) Q: 0, Sets: 152/159  (49.341%) CEs: 0 ETA: 1.2 sec (expected 308 stars)   (1.3 sec) Q: 0, Sets: 174/178  (75.0%) CEs: 0 ETA: 0.4 sec (expected 232 stars)   
 Total Stars: 187 (17 exact, 170 approx)
 Unfinished Stars: 0
-Runtime: 1.2 sec
+Runtime: 1.3 sec
 Completed work frac: 1.0
 Num Stars Copied Between Processes: 0
 Num Lps During Enumeration: 810
@@ -151,13 +152,13 @@ Input: [100.0, -100.0]
 Output: [100.00000762939453]
 
 [NNENUM] Result: 
-<nnenum.result.Result object at 0x7f7b50eab790>
+<nnenum.result.Result object at 0x7fac8d9463a0>
 [NNENUM] Enumeration finished.
 unsafe
 [NNENUM] Found counter-example stars: 0
 [NNENUM] Filtering result using SMT solver...
 [SMT] SMT filtered out 0 stars (out of 0).
-  9.806049 seconds (12.14 M allocations: 641.320 MiB, 15.91% gc time, 45.22% compilation time)
+ 10.903310 seconds (12.14 M allocations: 641.332 MiB, 15.09% gc time, 45.15% compilation time)
 ----------------------------------------------------------
 Status: Safe
 # Unsafe Stars: 0
@@ -165,47 +166,47 @@ Saving result in experiments/acc/acc-2000000-64-64-64-64/results-bounds.jld...
  ────────────────────────────────────────────────────────────────────────────────
                                         Time                    Allocations      
                                ───────────────────────   ────────────────────────
-       Tot / % measured:            11.0s /  74.6%            744MiB /  67.8%    
+       Tot / % measured:            12.2s /  75.0%            744MiB /  67.8%    
 
  Section               ncalls     time    %tot     avg     alloc    %tot      avg
  ────────────────────────────────────────────────────────────────────────────────
- query_iteration            1    5.13s   62.8%   5.13s   19.3MiB    3.8%  19.3MiB
-   olnnv_query_proc...      4    4.59s   56.2%   1.15s   5.33MiB    1.1%  1.33MiB
-     nnv                    4    4.59s   56.2%   1.15s   5.33MiB    1.1%  1.33MiB
-       star_filter          4   58.8μs    0.0%  14.7μs   1.94KiB    0.0%     496B
-   legacy_approx            4    131ms    1.6%  32.8ms   10.5MiB    2.1%  2.64MiB
-   next_query               5   33.3ms    0.4%  6.66ms   1.79MiB    0.4%   367KiB
-     check_infeasib...      9   26.1ms    0.3%  2.90ms   1.02MiB    0.2%   116KiB
-       check_infeas...      9   17.6ms    0.2%  1.95ms    694KiB    0.1%  77.1KiB
-         z3_check          12   10.2ms    0.1%   848μs   6.62KiB    0.0%     565B
-         SMTprep           24   5.09ms    0.1%   212μs    654KiB    0.1%  27.3KiB
-         feasibilit...     16   13.9μs    0.0%   869ns      512B    0.0%    32.0B
-         feasibilit...     12   11.8μs    0.0%   982ns   2.91KiB    0.0%     248B
-       check_infeas...      9   8.52ms    0.1%   946μs    351KiB    0.1%  39.0KiB
-         z3_check           9   5.34ms    0.1%   593μs   1.69KiB    0.0%     192B
-         SMTprep           18   2.61ms    0.0%   145μs    329KiB    0.1%  18.3KiB
-         feasibilit...     18   21.5μs    0.0%  1.19μs      576B    0.0%    32.0B
-         feasibilit...      8   14.5μs    0.0%  1.81μs   1.59KiB    0.0%     204B
-     query_construc...      8   5.23ms    0.1%   654μs    300KiB    0.1%  37.4KiB
-       PicoSAT_solve        8   43.6μs    0.0%  5.45μs      256B    0.0%    32.0B
-     approx_resolution      9    370μs    0.0%  41.1μs   70.4KiB    0.0%  7.82KiB
-     atom_recovery          9    213μs    0.0%  23.6μs   28.6KiB    0.0%  3.18KiB
-       atom_computa...      9    123μs    0.0%  13.7μs   21.9KiB    0.0%  2.44KiB
-       bound_comput...      9   65.2μs    0.0%  7.25μs   3.94KiB    0.0%     448B
-     PicoSAT_solve         14    183μs    0.0%  13.1μs      448B    0.0%    32.0B
-     bound_atoms            9    135μs    0.0%  15.0μs   65.4KiB    0.0%  7.27KiB
-     check_infeasib...     18   54.2μs    0.0%  3.01μs   21.2KiB    0.0%  1.18KiB
-   boolean_skeleton         1   11.7ms    0.1%  11.7ms   1.15MiB    0.2%  1.15MiB
-   olnnv_query_gen          4   2.21ms    0.0%   554μs    394KiB    0.1%  98.5KiB
-   smt_filter_creation      4   3.57μs    0.0%   892ns      128B    0.0%    32.0B
- get_approx_query           1    3.04s   37.2%   3.04s    486MiB   96.2%   486MiB
-   OVERT                    1    2.86s   35.0%   2.86s    457MiB   90.4%   457MiB
+ query_iteration            1    5.75s   62.9%   5.75s   19.3MiB    3.8%  19.3MiB
+   olnnv_query_proc...      4    5.15s   56.4%   1.29s   5.33MiB    1.1%  1.33MiB
+     nnv                    4    5.15s   56.4%   1.29s   5.33MiB    1.1%  1.33MiB
+       star_filter          4   64.6μs    0.0%  16.2μs   1.94KiB    0.0%     496B
+   legacy_approx            4    147ms    1.6%  36.8ms   10.5MiB    2.1%  2.64MiB
+   next_query               5   39.2ms    0.4%  7.85ms   1.80MiB    0.4%   368KiB
+     check_infeasib...      9   30.7ms    0.3%  3.41ms   1.02MiB    0.2%   116KiB
+       check_infeas...      9   20.5ms    0.2%  2.28ms    695KiB    0.1%  77.2KiB
+         z3_check          12   11.7ms    0.1%   979μs   6.62KiB    0.0%     565B
+         SMTprep           24   6.08ms    0.1%   253μs    655KiB    0.1%  27.3KiB
+         feasibilit...     12   21.9μs    0.0%  1.82μs   2.91KiB    0.0%     248B
+         feasibilit...     16   20.1μs    0.0%  1.25μs      512B    0.0%    32.0B
+       check_infeas...      9   10.2ms    0.1%  1.13ms    351KiB    0.1%  39.0KiB
+         z3_check           9   6.36ms    0.1%   707μs   1.69KiB    0.0%     192B
+         SMTprep           18   3.08ms    0.0%   171μs    329KiB    0.1%  18.3KiB
+         feasibilit...     18   27.4μs    0.0%  1.52μs      576B    0.0%    32.0B
+         feasibilit...      8   21.0μs    0.0%  2.63μs   1.59KiB    0.0%     204B
+     query_construc...      8   6.26ms    0.1%   782μs    300KiB    0.1%  37.4KiB
+       PicoSAT_solve        8   80.6μs    0.0%  10.1μs      256B    0.0%    32.0B
+     approx_resolution      9    500μs    0.0%  55.5μs   70.4KiB    0.0%  7.82KiB
+     atom_recovery          9    241μs    0.0%  26.7μs   28.6KiB    0.0%  3.18KiB
+       atom_computa...      9    137μs    0.0%  15.2μs   21.9KiB    0.0%  2.44KiB
+       bound_comput...      9   81.1μs    0.0%  9.01μs   3.94KiB    0.0%     448B
+     PicoSAT_solve         14    210μs    0.0%  15.0μs      448B    0.0%    32.0B
+     bound_atoms            9    149μs    0.0%  16.5μs   65.4KiB    0.0%  7.27KiB
+     check_infeasib...     18   63.7μs    0.0%  3.54μs   21.2KiB    0.0%  1.18KiB
+   boolean_skeleton         1   13.2ms    0.1%  13.2ms   1.15MiB    0.2%  1.15MiB
+   olnnv_query_gen          4   2.53ms    0.0%   633μs    394KiB    0.1%  98.5KiB
+   smt_filter_creation      4   5.53μs    0.0%  1.38μs      128B    0.0%    32.0B
+ get_approx_query           1    3.39s   37.1%   3.39s    486MiB   96.2%   486MiB
+   OVERT                    1    3.18s   34.9%   3.18s    457MiB   90.4%   457MiB
  ──────────────────────────────────────────────────────────────────────────────── Done
-[runlim] end:			Tue Jan 31 16:03:32 2023
+[runlim] end:			Thu Feb  2 17:44:58 2023
 [runlim] status:		ok
 [runlim] result:		0
-[runlim] children:		235
-[runlim] real:			12.53 seconds
-[runlim] time:			15.76 seconds
-[runlim] space:			1465.2 MB
-[runlim] samples:		122
+[runlim] children:		261
+[runlim] real:			14.54 seconds
+[runlim] time:			17.83 seconds
+[runlim] space:			1464.0 MB
+[runlim] samples:		135

@@ -11,8 +11,8 @@
 [runlim] argv[6]:		test/parsing/examples/acc/mapping
 [runlim] argv[7]:		test/networks/acc-improved-2000000-64-64.onnx
 [runlim] argv[8]:		experiments/acc/acc-improved-2000000-64-64/results-bounds.jld
-[runlim] start:			Tue Jan 31 16:00:24 2023
-[runlim] main pid:		87766
+[runlim] start:			Thu Feb  2 17:41:13 2023
+[runlim] main pid:		588049
 [CMD] Using SMT solver: Z3
 [CMD] Parsed initial query: SNNT.AST.Query(((-1.0*x1<0.0&((-1.0*rPos)+(0.005*(rVel^2.0)))<=0.0&-1.0*x1<=0.0&1.0*x1<=100.0&-1.0*x2<=200.0&1.0*x2<=200.0&-1.0*x3<=1000.0&1.0*x3<=1000.0)->(-1.0*x3<=100.0&1.0*x3<=100.0)), Set(SNNT.AST.Variable[rAccpost, rVel, rPos]), 2, 1, Dict{SNNT.AST.ApproxQuery, SNNT.AST.Approximation}(), Vector{Float64}[])
 [CMD] SMT Timeout: 4s
@@ -36,11 +36,11 @@ Using N=1, ϵ=0.0, rel_error_tol=0.005
 [NNENUM] Spec list length:  2
 [NNENUM] Enumeration in progress... 
 (0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
-(0.1 sec) Q: 0, Sets: 16/19  (83.594%) CEs: 0 ETA: 0.0 sec (expected 19 stars)   
-(0.2 sec) Q: 0, Sets: 21/24  (85.938%) CEs: 0 ETA: 0.0 sec (expected 24 stars)   
+(0.1 sec) Q: 0, Sets: 8/12  (54.688%) CEs: 0 ETA: 0.1 sec (expected 15 stars)   
+(0.2 sec) Q: 0, Sets: 30/30  (100.0%) CEs: 0 ETA: 0.0 sec (expected 30 stars)   
 Total Stars: 30 (0 exact, 30 approx)
 Unfinished Stars: 0
-Runtime: 0.3 sec
+Runtime: 0.2 sec
 Completed work frac: 1.0
 Num Stars Copied Between Processes: 0
 Num Lps During Enumeration: 0
@@ -49,7 +49,7 @@ Total Num Lps: 0
 Result: network is SAFE
 
 [NNENUM] Result: 
-<nnenum.result.Result object at 0x7fb25c982eb0>
+<nnenum.result.Result object at 0x7f37bf350b20>
 [NNENUM] Enumeration finished.
 safe
 [NNENUM] Found counter-example stars: 0
@@ -67,7 +67,7 @@ safe
 [NNENUM] Enumeration in progress... 
 (0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
 (0.1 sec) Q: 0, Sets: 14/18  (6.25%) CEs: 0 ETA: 1.8 sec (expected 224 stars)   
-(0.2 sec) Q: 0, Sets: 23/29  (20.312%) CEs: 0 ETA: 0.9 sec (expected 113 stars)   
+(0.2 sec) Q: 0, Sets: 22/27  (18.75%) CEs: 0 ETA: 1.0 sec (expected 117 stars)   
 Total Stars: 38 (2 exact, 36 approx)
 Unfinished Stars: 0
 Runtime: 0.3 sec
@@ -81,7 +81,7 @@ Input: [42.541419982910156, -121.27071380615234]
 Output: [100.0]
 
 [NNENUM] Result: 
-<nnenum.result.Result object at 0x7fb25cc6c3d0>
+<nnenum.result.Result object at 0x7f37bf3fbe80>
 [NNENUM] Enumeration finished.
 unsafe
 [NNENUM] Found counter-example stars: 0
@@ -98,7 +98,7 @@ unsafe
 [NNENUM] Spec list length:  2
 [NNENUM] Enumeration in progress... 
 (0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
-(0.1 sec) Q: 0, Sets: 5/10  (50.0%) CEs: 0 ETA: 0.1 sec (expected 10 stars)   
+(0.1 sec) Q: 0, Sets: 5/11  (50.0%) CEs: 0 ETA: 0.1 sec (expected 10 stars)   
 
 Total Stars: 16 (0 exact, 16 approx)
 Unfinished Stars: 0
@@ -111,7 +111,7 @@ Total Num Lps: 0
 Result: network is SAFE
 
 [NNENUM] Result: 
-<nnenum.result.Result object at 0x7fb25c98e2e0>
+<nnenum.result.Result object at 0x7f37bf375c40>
 [NNENUM] Enumeration finished.
 safe
 [NNENUM] Found counter-example stars: 0
@@ -143,13 +143,13 @@ Input: [100.0, -100.0]
 Output: [100.0]
 
 [NNENUM] Result: 
-<nnenum.result.Result object at 0x7fb25c98e700>
+<nnenum.result.Result object at 0x7f37bf396160>
 [NNENUM] Enumeration finished.
 unsafe
 [NNENUM] Found counter-example stars: 0
 [NNENUM] Filtering result using SMT solver...
 [SMT] SMT filtered out 0 stars (out of 0).
-  6.519562 seconds (12.14 M allocations: 641.320 MiB, 24.29% gc time, 69.30% compilation time)
+  6.440187 seconds (12.14 M allocations: 641.332 MiB, 25.01% gc time, 67.86% compilation time)
 ----------------------------------------------------------
 Status: Safe
 # Unsafe Stars: 0
@@ -157,47 +157,47 @@ Saving result in experiments/acc/acc-improved-2000000-64-64/results-bounds.jld..
  ────────────────────────────────────────────────────────────────────────────────
                                         Time                    Allocations      
                                ───────────────────────   ────────────────────────
-       Tot / % measured:            7.64s /  64.3%            744MiB /  67.8%    
+       Tot / % measured:            7.86s /  62.1%            744MiB /  67.8%    
 
  Section               ncalls     time    %tot     avg     alloc    %tot      avg
  ────────────────────────────────────────────────────────────────────────────────
- get_approx_query           1    3.12s   63.5%   3.12s    486MiB   96.2%   486MiB
-   OVERT                    1    2.92s   59.4%   2.92s    457MiB   90.4%   457MiB
- query_iteration            1    1.79s   36.5%   1.79s   19.3MiB    3.8%  19.3MiB
-   olnnv_query_proc...      4    1.22s   24.9%   306ms   5.33MiB    1.1%  1.33MiB
-     nnv                    4    1.22s   24.9%   306ms   5.33MiB    1.1%  1.33MiB
-       star_filter          4   61.0μs    0.0%  15.2μs   1.94KiB    0.0%     496B
-   legacy_approx            4    136ms    2.8%  33.9ms   10.5MiB    2.1%  2.64MiB
-   next_query               5   36.8ms    0.7%  7.36ms   1.79MiB    0.4%   367KiB
-     check_infeasib...      9   27.8ms    0.6%  3.09ms   1.02MiB    0.2%   116KiB
-       check_infeas...      9   18.1ms    0.4%  2.01ms    694KiB    0.1%  77.1KiB
-         z3_check          12   10.2ms    0.2%   852μs   6.62KiB    0.0%     565B
-         SMTprep           24   5.59ms    0.1%   233μs    654KiB    0.1%  27.3KiB
-         feasibilit...     16   17.2μs    0.0%  1.08μs      512B    0.0%    32.0B
-         feasibilit...     12   15.5μs    0.0%  1.29μs   2.91KiB    0.0%     248B
-       check_infeas...      9   9.62ms    0.2%  1.07ms    351KiB    0.1%  39.0KiB
-         z3_check           9   5.93ms    0.1%   659μs   1.69KiB    0.0%     192B
-         SMTprep           18   2.94ms    0.1%   163μs    329KiB    0.1%  18.3KiB
-         feasibilit...     18   30.0μs    0.0%  1.67μs      576B    0.0%    32.0B
-         feasibilit...      8   18.4μs    0.0%  2.30μs   1.59KiB    0.0%     204B
-     query_construc...      8   6.63ms    0.1%   829μs    300KiB    0.1%  37.4KiB
-       PicoSAT_solve        8   77.0μs    0.0%  9.63μs      256B    0.0%    32.0B
-     approx_resolution      9    536μs    0.0%  59.6μs   70.4KiB    0.0%  7.82KiB
-     atom_recovery          9    288μs    0.0%  32.0μs   28.6KiB    0.0%  3.18KiB
-       atom_computa...      9    157μs    0.0%  17.5μs   21.9KiB    0.0%  2.44KiB
-       bound_comput...      9   89.1μs    0.0%  9.90μs   3.94KiB    0.0%     448B
-     PicoSAT_solve         14    175μs    0.0%  12.5μs      448B    0.0%    32.0B
-     bound_atoms            9    175μs    0.0%  19.4μs   65.4KiB    0.0%  7.27KiB
-     check_infeasib...     18   74.1μs    0.0%  4.12μs   21.2KiB    0.0%  1.18KiB
-   boolean_skeleton         1   17.2ms    0.3%  17.2ms   1.15MiB    0.2%  1.15MiB
-   olnnv_query_gen          4   2.29ms    0.0%   573μs    394KiB    0.1%  98.5KiB
-   smt_filter_creation      4   7.30μs    0.0%  1.83μs      128B    0.0%    32.0B
+ get_approx_query           1    3.05s   62.6%   3.05s    486MiB   96.2%   486MiB
+   OVERT                    1    2.87s   58.9%   2.87s    457MiB   90.4%   457MiB
+ query_iteration            1    1.83s   37.4%   1.83s   19.3MiB    3.8%  19.3MiB
+   olnnv_query_proc...      4    1.21s   24.8%   303ms   5.33MiB    1.1%  1.33MiB
+     nnv                    4    1.21s   24.8%   303ms   5.33MiB    1.1%  1.33MiB
+       star_filter          4   61.5μs    0.0%  15.4μs   1.94KiB    0.0%     496B
+   legacy_approx            4    123ms    2.5%  30.8ms   10.5MiB    2.1%  2.64MiB
+   next_query               5   48.5ms    1.0%  9.70ms   1.80MiB    0.4%   368KiB
+     check_infeasib...      9   40.3ms    0.8%  4.48ms   1.02MiB    0.2%   116KiB
+       check_infeas...      9   21.7ms    0.4%  2.42ms    351KiB    0.1%  39.0KiB
+         z3_check           9   17.1ms    0.4%  1.90ms   1.69KiB    0.0%     192B
+         SMTprep           18   3.64ms    0.1%   202μs    329KiB    0.1%  18.3KiB
+         feasibilit...     18   25.1μs    0.0%  1.39μs      576B    0.0%    32.0B
+         feasibilit...      8   17.8μs    0.0%  2.23μs   1.59KiB    0.0%     204B
+       check_infeas...      9   18.5ms    0.4%  2.06ms    695KiB    0.1%  77.2KiB
+         z3_check          12   10.5ms    0.2%   879μs   6.62KiB    0.0%     565B
+         SMTprep           24   5.62ms    0.1%   234μs    655KiB    0.1%  27.3KiB
+         feasibilit...     12   26.3μs    0.0%  2.19μs   2.91KiB    0.0%     248B
+         feasibilit...     16   17.9μs    0.0%  1.12μs      512B    0.0%    32.0B
+     query_construc...      8   6.07ms    0.1%   758μs    300KiB    0.1%  37.4KiB
+       PicoSAT_solve        8   69.0μs    0.0%  8.63μs      256B    0.0%    32.0B
+     approx_resolution      9    435μs    0.0%  48.3μs   70.4KiB    0.0%  7.82KiB
+     atom_recovery          9    231μs    0.0%  25.7μs   28.6KiB    0.0%  3.18KiB
+       atom_computa...      9    128μs    0.0%  14.3μs   21.9KiB    0.0%  2.44KiB
+       bound_comput...      9   80.5μs    0.0%  8.94μs   3.94KiB    0.0%     448B
+     PicoSAT_solve         14    151μs    0.0%  10.8μs      448B    0.0%    32.0B
+     bound_atoms            9    129μs    0.0%  14.4μs   65.4KiB    0.0%  7.27KiB
+     check_infeasib...     18   57.2μs    0.0%  3.18μs   21.2KiB    0.0%  1.18KiB
+   boolean_skeleton         1   17.5ms    0.4%  17.5ms   1.15MiB    0.2%  1.15MiB
+   olnnv_query_gen          4   2.21ms    0.0%   554μs    394KiB    0.1%  98.5KiB
+   smt_filter_creation      4   3.66μs    0.0%   914ns      128B    0.0%    32.0B
  ──────────────────────────────────────────────────────────────────────────────── Done
-[runlim] end:			Tue Jan 31 16:00:33 2023
+[runlim] end:			Thu Feb  2 17:41:22 2023
 [runlim] status:		ok
 [runlim] result:		0
-[runlim] children:		167
-[runlim] real:			9.79 seconds
-[runlim] time:			11.28 seconds
-[runlim] space:			1462.8 MB
-[runlim] samples:		88
+[runlim] children:		179
+[runlim] real:			9.77 seconds
+[runlim] time:			11.56 seconds
+[runlim] space:			1459.7 MB
+[runlim] samples:		96
