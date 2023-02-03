@@ -20,13 +20,26 @@ Due to its use of submodules this currently only possible in Julia's development
 To this end run the following commands in the repository folder:
 ```
 julia
-> ] develop ./
+> ] develop .
+> ] activate .
+> ] add https://github.com/sisl/OVERT.jl.git#d598d6c
+> ] pin OVERT
+> ] add SymbolicUtils@0.19.11
+> ] pin SymbolicUtils
+> ] activate
+> ] add https://github.com/sisl/OVERT.jl.git#d598d6c
+> ] pin OVERT
+> ] add SymbolicUtils@0.19.11
+> ] pin SymbolicUtils
 ...
 > ] build SNNT
 ...
 ```
-The second step will take approximately twenty minutes and precompile the tool.
-> *This did not work as expected!*  
+We currently require the precise version of OVERT and SymbolicUtils.
+Note that it currently seems to be necessary to add and pin the two packages for the package *as well as for the surrounding environment!*
+The `build` step will take approximately twenty minutes and precompile the tool.
+> *This did not work as expected!* 
+> First check the log in `deps/build.log` if the run of `deps/sysimage/trace_run.jl` failed, this may contain an error message explaining the problem.
 > First, please ensure that you have `gcc` installed.  
 > Usually the python package installation should have run through fine, however the build script might have failed.  
 > To debug this manually run `julia deps/sysimage/build_sysimage.jl`. This should either succeed or the log might contain some helpful information for debugging.
