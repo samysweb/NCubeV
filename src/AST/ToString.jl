@@ -5,7 +5,7 @@ function term_to_string(v :: Variable)
 end
 
 function term_to_string(n :: TermNumber)
-	return string(convert(Float32,n.value))
+	return string(convert(Float64,n.value))
 end
 
 function term_to_string(t :: CompositeTerm)

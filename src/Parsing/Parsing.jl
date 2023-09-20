@@ -63,6 +63,9 @@ end
 function parse_composite(tokenmanager :: TokenManager)
 	@debug "Parsing composite"
 	or_result = parse_or_composite(tokenmanager)
+	if typeof(or_result) <: Term
+		return or_result
+	end
 	result = parse_implies_list(tokenmanager, or_result)
 	return result
 end
@@ -82,6 +85,9 @@ end
 function parse_or_composite(tokenmanager :: TokenManager)
 	@debug "Parsing or composite"
 	and_result = parse_and_composite(tokenmanager)
+	if typeof(and_result) <: Term
+		return and_result
+	end
 	return parse_or_list(tokenmanager, and_result)
 end
 
@@ -103,6 +109,9 @@ end
 function parse_and_composite(tokenmanager :: TokenManager)
 	@debug "Parsing and composite"
 	atom_result = parse_elementary(tokenmanager)
+	if typeof(atom_result) <: Term
+		return atom_result
+	end
 	return parse_and_list(tokenmanager, atom_result)
 end
 
@@ -126,17 +135,18 @@ function parse_elementary(tokenmanager :: TokenManager)
 	@debug "Parsing elementary"
 	next_token = peek_token(tokenmanager)
 	@debug "Next char is ", next_token
-	if Tokens.exactkind(next_token) == Tokens.LSQUARE
-		@debug "Parsing bracket expression (start)"
-		next(tokenmanager)
-		result = parse_composite(tokenmanager)
-		current_token = next(tokenmanager)
-		if Tokens.kind(current_token) != Tokens.RSQUARE
-			throw_syntax_error("Expected ']'",Tokens.startpos(current_token))
-		end
-		@debug "Parsing bracket expression (end)"
-		return result
-	elseif Tokens.exactkind(next_token) == Tokens.NOT
+	# if Tokens.exactkind(next_token) == Tokens.LSQUARE
+	# 	@debug "Parsing bracket expression (start)"
+	# 	next(tokenmanager)
+	# 	result = parse_composite(tokenmanager)
+	# 	current_token = next(tokenmanager)
+	# 	if Tokens.kind(current_token) != Tokens.RSQUARE
+	# 		throw_syntax_error("Expected ']'",Tokens.startpos(current_token))
+	# 	end
+	# 	@debug "Parsing bracket expression (end)"
+	# 	return result
+	# else
+	if Tokens.exactkind(next_token) == Tokens.NOT
 		next(tokenmanager)
 		result = parse_elementary(tokenmanager)
 		return CompositeFormula(AST.Not, Formula[result])
@@ -148,34 +158,42 @@ end
 function parse_atom(tokenmanager :: TokenManager)
 	@debug "Parsing atom"
 	term1 = parse_term(tokenmanager)
-	current_token = next(tokenmanager)
-	operator :: Union{Comparator,Nothing} = nothing
-	if Tokens.kind(current_token) == Tokens.OP
-		if Tokens.exactkind(current_token) == Tokens.GREATER
-			operator = AST.Greater
-		elseif Tokens.exactkind(current_token) == Tokens.GREATER_EQ
-			operator = AST.GreaterEq
-		elseif Tokens.exactkind(current_token) == Tokens.LESS
-			operator = AST.Less
-		elseif Tokens.exactkind(current_token) == Tokens.LESS_EQ
-			operator = AST.LessEq
-		elseif Tokens.exactkind(current_token) == Tokens.EQ
-			operator = AST.Eq
-		elseif Tokens.exactkind(current_token) == Tokens.NOT_EQ
-			operator = AST.Neq
-		else
-			throw_syntax_error("Expected comparison operator",Tokens.startpos(current_token))
-		end
+	if typeof(term1) <: Formula
+		return term1
 	else
-		throw_syntax_error("Expected comparison operator after "*string(term1)*" but got "*string(current_token),Tokens.startpos(current_token))
+		operator :: Union{Comparator,Nothing} = nothing
+		if Tokens.kind(peek_token(tokenmanager)) == Tokens.OP
+			current_token = next(tokenmanager)
+			if Tokens.exactkind(current_token) == Tokens.GREATER
+				operator = AST.Greater
+			elseif Tokens.exactkind(current_token) == Tokens.GREATER_EQ
+				operator = AST.GreaterEq
+			elseif Tokens.exactkind(current_token) == Tokens.LESS
+				operator = AST.Less
+			elseif Tokens.exactkind(current_token) == Tokens.LESS_EQ
+				operator = AST.LessEq
+			elseif Tokens.exactkind(current_token) == Tokens.EQ
+				operator = AST.Eq
+			elseif Tokens.exactkind(current_token) == Tokens.NOT_EQ
+				operator = AST.Neq
+			else
+				throw_syntax_error("Expected comparison operator",Tokens.startpos(current_token))
+			end
+		else
+			#throw_syntax_error("Expected comparison operator after "*string(term1)*" but got "*string(current_token),Tokens.startpos(current_token))
+			return term1
+		end
+		term2 = parse_term(tokenmanager)
+		return Atom(operator, term1, term2)
 	end
-	term2 = parse_term(tokenmanager)
-	return Atom(operator, term1, term2)
 end
 
 function parse_term(tokenmanager :: TokenManager)
 	@debug "Parsing term"
 	multiply_result = parse_multiply_composite(tokenmanager)
+	if typeof(multiply_result) <: Formula
+		return multiply_result
+	end
 	return parse_term_list(tokenmanager, multiply_result)
 end
 
@@ -199,6 +217,9 @@ end
 function parse_multiply_composite(tokenmanager :: TokenManager)
 	@debug "Parsing multiply composite"
 	result = parse_power_composite(tokenmanager)
+	if typeof(result) <: Formula
+		return result
+	end
 	return parse_multiply_list(tokenmanager, result)
 end
 
@@ -222,6 +243,9 @@ end
 function parse_power_composite(tokenmanager :: TokenManager)
 	@debug "Parsing power composite"
 	result = parse_factor(tokenmanager)
+	if typeof(result) <: Formula
+		return result
+	end
 	return parse_power_list(tokenmanager, result)
 end
 
@@ -242,7 +266,7 @@ function parse_factor(tokenmanager :: TokenManager)
 	if Tokens.kind(current_token) == Tokens.LPAREN
 		@debug "Parsing bracket expression (start)"
 		next(tokenmanager)
-		result = parse_term(tokenmanager)
+		result = parse_composite(tokenmanager)
 		current_token = next(tokenmanager)
 		if Tokens.kind(current_token) != Tokens.RPAREN
 			throw_syntax_error("Expected ')'",Tokens.startpos(current_token))
