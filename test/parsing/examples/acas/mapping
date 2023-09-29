@@ -1,0 +1,13 @@
+"hNet"=>(Input,1),
+"vNet"=>(Input,2),
+"vI"=>(Input,3),
+"tNMACNet"=>(Input,4),
+"nnCOCpost"=>(Output,1),
+"nnDNCpost"=>(Output,2),
+"nnDNDpost"=>(Output,3),
+"nnDES1500post"=>(Output,4),
+"nnCLI1500post"=>(Output,5),
+"nnSDES1500post"=>(Output,6),
+"nnSCLI1500post"=>(Output,7),
+"nnSDES2500post"=>(Output,8),
+"nnSCL2500post"=>(Output,9)

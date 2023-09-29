@@ -1,0 +1,30 @@
+! (B -> w>=x & w>=y & w>=z & C | x>=w & x>=y & x>=z & E | y >= w & y >= x & y>=z & F | z>=w & z>=x & z>=y & G)
+<->
+B & !(w>=x & w>=y & w>=z & C | x>=w & x>=y & x>=z & E | y >= w & y >= x & y>=z & F | z>=w & z>=x & z>=y & G)
+<->
+B & !(w>=x & w>=y & w>=z & C) & !(x>=w & x>=y & x>=z & E) & !(y >= w | y >= x | y>=z | F) & !(z>=w | z>=x | z>=y | G)
+<->
+B & (!w>=x | !w>=y | !w>=z | !C) & (!x>=w | !x>=y | !x>=z | !E) & (!y >= w | !y >= x | !y>=z | !F) & (!z>=w | !z>=x | !z>=y | !G)
+<->
+B & (w<x | w<y | w<z | !C) & (x<w | x<y | x<z | !E) & (y < w | y < x | y<z | !F) & (z<w | z<x | z<y | !G)
+
+Ann: C=false;E=false;F=false;G=true
+B & (z<w | z<x | z<y) <- wichtige Unterscheidungen
+& (w<x | w<y | w<z) & (x<w | x<y | x<z) & (y < w | y < x | y<z) <- unwichtige Unterscheidungen
+
+Ann: z<w=true
+B 
+& (z<x | z<y | true) & (w<x | w<y) & (x<w | x<y | x<z) & (y < w | y < x | y<z)  <- unwichtige Unterscheidungen
+=> bis zu 4 * 3 * 7 * 7 = 91 Fälle
+
+
+
+! (B -> isMax(w,w,x,y,z) & C | isMax(x,w,x,y,z) & E | isMax(y,w,x,y,z) & F | isMax(z,w,x,y,z) & G)
+<->
+B & (!isMax(w,w,x,y,z) | !C) & (!isMax(x,w,x,y,z) | !E) & (!isMax(y,w,x,y,z) | !F) & (!isMax(z,w,x,y,z) | !G)
+
+
+Ann: C=false;E=false;F=false;G=true
+B & (!isMax(w,w,x,y,z) | true) & (!isMax(x,w,x,y,z) | true) & (!isMax(y,w,x,y,z) | true) & (!isMax(z,w,x,y,z))
+Sicherstellen: Für zwei isMax(_,xs...) isMax(_,ys...) gilt:
+Wenn xs==ys, dann kann nur eins von beiden wahr sein
