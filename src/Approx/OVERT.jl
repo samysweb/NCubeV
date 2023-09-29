@@ -12,6 +12,7 @@ function construct_approx(approx_queries :: Dict{Term, Vector{BoundType}}, bound
 		print_msg("[APPROX] Generating expression for ", approx_term,"...")
 		approx_expr = to_expr(approx_term)
 		val_ranges = get_val_ranges(0, bounds)
+		print_msg("Val Ranges: ",val_ranges)
 		for (cur_symbol, cur_bounds) in val_ranges
 			if cur_bounds[1]==cur_bounds[2]
 				println(cur_symbol)

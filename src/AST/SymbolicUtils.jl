@@ -138,6 +138,12 @@ function composite_formula_simplifier()
 	)
 end
 
+function normalize_term(f, a, b)
+	factor = abs(max(maximal_factor(a),maximal_factor(b)))
+	inv_factor = TermNumber(1//factor)
+	return f(CompositeTerm(AST.Mul,[inv_factor,a]), CompositeTerm(AST.Mul,[inv_factor,b]))
+end
+
 function solve_concrete_atom(f, a :: TermNumber, b :: TermNumber)
 	if f(a.value,b.value)
 		return TrueAtom()
@@ -150,6 +156,12 @@ function atom_simplifier()
 	Postwalk(
 		Chain(
 			[
+				@rule(~a::_needs_normalization <= ~b::_needs_normalization => normalize_term(leq, ~a, ~b))
+				@rule(~a::_needs_normalization >= ~b::_needs_normalization => normalize_term(geq, ~a, ~b))
+				@rule(~a::_needs_normalization < ~b::_needs_normalization => normalize_term(le, ~a, ~b))
+				@rule(~a::_needs_normalization > ~b::_needs_normalization => normalize_term(ge, ~a, ~b))
+				@rule(~a::_needs_normalization == ~b::_needs_normalization => normalize_term(eq, ~a, ~b))
+				@rule(~a::_needs_normalization != ~b::_needs_normalization => normalize_term(neq, ~a, ~b))
 
 				@rule (~a <= ~b::_isnotzero => leq(~a - ~b, TermNumber(0.0)))
 				@rule (~a >= ~b => leq(~b - ~a, TermNumber(0.0)))

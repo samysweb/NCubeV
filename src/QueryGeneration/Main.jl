@@ -6,6 +6,7 @@ module QueryGeneration
 	using MLStyle
 	using SymbolicUtils
 	using IterTools
+	using LinearAlgebra
 
 	using ..Util
 	using ..Config

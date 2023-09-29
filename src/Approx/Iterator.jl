@@ -49,11 +49,18 @@ function iterate(approx :: ApproxNormalizedQueryPrototype{Approximation})
 		end
 		# Iterator...
 		num_inputs = length(approx.input_bounds)
-		iter = Iterators.filter( query -> !LP.is_infeasible(query.bounds, query.input_matrix, query.input_bias) ,
-			Iterators.map(b-> generate_conjunction(approx, b), bounds_iterator(
-				(@view approx.nonlinear_query.input_constraints.bounds[1:num_inputs])
-			))
-		)
+		iter = Iterators.filter(
+				Iterators.map(b-> generate_conjunction(approx, b), bounds_iterator(
+					(@view approx.nonlinear_query.input_constraints.bounds[1:num_inputs])
+				))
+			) do (query)
+				if !LP.is_infeasible(query.bounds, query.input_matrix, query.input_bias)
+					return true
+				else
+					print_msg("[APPROX] Skipping infeasible linear region:")
+					return false
+				end
+			end
 		iter_res = iterate(iter)
 		if isnothing(iter_res)
 			return nothing

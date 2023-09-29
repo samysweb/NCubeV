@@ -51,7 +51,17 @@ function get_atoms(skeleton :: BooleanSkeleton, solution :: Vector{Int64})
 						end
 						push!(atoms, (s,atom))
 					end
-					ApproxCase => begin push!(solution_vars, s) end
+					ApproxCase(dim,case_id) => begin
+						push!(solution_vars, s)
+					end
+					IsMaxCase(option_atoms) => begin
+						push!(solution_vars, s)
+						if s > 0
+							for a in option_atoms
+								push!(atoms, (s, a))
+							end
+						end
+					end
 					_ => begin end
 				end
 			end
@@ -149,6 +159,7 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 		infeasibility_cache = []
 		solution = solve(skeleton.sat_instance)
 		input = nothing
+		input_nonlinear_disjunction = nothing
 		disjunction = Vector{CompositeFormula}()
 		disjunction_nonlinear = Vector{Tuple{Formula,Formula}}()
 		nonlinearities_set = Set{ApproxQuery}()
@@ -226,17 +237,25 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 				# 	add_feasible(feasibility_cache.linear, linear_vars)
 				# end
 				not_yet_feasible = !check_feasible(feasibility_cache.bound_linear, [bounds_vars; linear_vars])
+				# if !not_yet_feasible
+				# 	print_msg("[QUERY bound+linear known to be feasible")
+				# end
 				conflicts = []
 				if not_yet_feasible && !SMTInterface.lin_feasible([bounds_smt;linear_smt],ctx, variables, conflicts)
-					#LP.is_infeasible([bounds_smt;linear_smt])
 					#!SMTInterface.nl_feasible([bounds_smt;linear_smt],ctx, variables)
 					# Linear part of conjunction infeasible => skip
 					push!(infeasible_combination, map(x -> -x[1], ([bound_atoms;linear])[conflicts]))
 					#print_msg("Linear part of conjunction infeasible: ", infeasible_combination)
+				elseif not_yet_feasible && LP.is_infeasible([bounds_smt;linear_smt])
+					push!(infeasible_combination, map(x -> -x[1], [bound_atoms;linear]))
 				elseif not_yet_feasible
 					add_feasible(feasibility_cache.bound_linear, [bounds_vars; linear_vars])
 				end
-				not_yet_feasible = !check_feasible(feasibility_cache.approx, [bounds_vars; approx_resolved_vars])
+				#print_msg("[QUERY] LP solver is infeasible: $(LP.is_infeasible([bounds_smt;linear_smt]))")
+				not_yet_feasible = !check_feasible(feasibility_cache.approx, [bounds_vars;linear_vars;approx_resolved_vars])
+				# if !not_yet_feasible
+				# 	print_msg("[QUERY bound+linear+approx known to be feasible")
+				# end
 				conflicts = []
 				if not_yet_feasible && !SMTInterface.lin_feasible([bounds_smt;approx_resolved_smt],ctx, variables, conflicts)
 					#LP.is_infeasible([bounds_smt;approx_resolved_smt])
@@ -244,6 +263,8 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 					# Linear + Approximate part of conjunction infeasible => skip
 					push!(infeasible_combination, map(x -> -x[1], filter(x->x[1]!=0,[bound_atoms;([bound_atoms;approx_resolved])[conflicts]])))
 					#print_msg("Approx of conjunction infeasible: ", infeasible_combination)
+				elseif not_yet_feasible && LP.is_infeasible([bounds_smt;approx_resolved_smt])
+					push!(infeasible_combination, map(x -> -x[1], [bound_atoms;approx_resolved]))
 				elseif not_yet_feasible
 					add_feasible(feasibility_cache.approx, [bounds_vars; approx_resolved_vars])
 				end
@@ -307,6 +328,9 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 			@timeit Config.TIMER "query_construction" begin
 				# OK, our combination is feasible...
 				input, mixed = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},output_conjunction),query)
+				input_nonlinear, mixed_nonlinear = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},nonlinear),query)
+				#print_msg("Mixed Nonlinear: ",length(mixed_nonlinear))
+				#println(mixed_nonlinear)
 				if !skeleton.input_configured
 					input_literals = map(x -> x[1], input)
 				end
@@ -346,50 +370,99 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 					add_clause(skeleton.sat_instance, v)
 				end
 				secondary_infeasibility_cache = []
-				nonlinear_options = Formula[
-					AST.and_construction(map(x -> x[2], nonlinear))
-				]
-				push(skeleton.sat_instance)
-				for (v,_) in mixed
-					if v == 0
-						continue
+				if length(mixed_nonlinear) != 0
+					nonlinear_options = Formula[
+						AST.and_construction(map(x -> x[2], nonlinear))
+					]
+					push(skeleton.sat_instance)
+					for (v,_) in mixed
+						if v == 0
+							continue
+						end
+						add_clause(skeleton.sat_instance, v)
 					end
-					add_clause(skeleton.sat_instance, v)
-				end
-				add_clause(skeleton.sat_instance, map(x->-x, nonlinear_vars))
-				# Find new model
-				#print_msg("[QUERY] Looking for nonlinear combinations...")
-				t = solve(skeleton.sat_instance)
-				while t != :unsatisfiable
-					_, _, conjunction = get_atoms(skeleton, t)
-					_, nonlinear, _ = split_by_linearity(conjunction)
-					nonlinear_smt = convert(Vector{Formula},map(x->x[2],nonlinear))
-					nonlinear_vars = filter(x->x!=0,map(x->x[1],nonlinear))
-					not_yet_feasible = !check_feasible(feasibility_cache.all, map(x -> x[1], [bounds;conjunction]))
-					conflicts = []
-					if !SMTInterface.nl_feasible([bounds_smt;linear_smt;approx_resolved_smt;nonlinear_smt], ctx, variables, conflicts)
-						c = map(x->-x,[bounds_vars;([bounds_vars;linear_vars;approx_resolved_vars;nonlinear_vars])[conflicts]])
-						push!(secondary_infeasibility_cache, c)
-						add_clause(
-							skeleton.sat_instance,
-							c
-						)
-						t = solve(skeleton.sat_instance)
-						continue
-					elseif not_yet_feasible
-						add_feasible(feasibility_cache.all, [bounds_vars; linear_vars; approx_resolved_vars; nonlinear_vars])
-					end
-					#print_msg("[QUERY] Found new nonlinear combination")
-					# Add nonlinearities to set
-					push!(nonlinear_options, AST.and_construction(nonlinear_smt))
-					add_clause(skeleton.sat_instance, map(x -> -x, nonlinear_vars))
+					add_clause(skeleton.sat_instance, map(x->-x, nonlinear_vars))
+					# Find new model
+					#print_msg("[QUERY] Looking for nonlinear combinations...")
 					t = solve(skeleton.sat_instance)
+					while t != :unsatisfiable
+						_, _, conjunction = get_atoms(skeleton, t)
+						_, nonlinear, _ = split_by_linearity(conjunction)
+						nonlinear_smt = convert(Vector{Formula},map(x->x[2],nonlinear))
+						nonlinear_vars = filter(x->x!=0,map(x->x[1],nonlinear))
+						not_yet_feasible = !check_feasible(feasibility_cache.all, map(x -> x[1], [bounds;conjunction]))
+						conflicts = []
+						if !SMTInterface.nl_feasible([bounds_smt;linear_smt;approx_resolved_smt;nonlinear_smt], ctx, variables, conflicts)
+							c = map(x->-x,[bounds_vars;([bounds_vars;linear_vars;approx_resolved_vars;nonlinear_vars])[conflicts]])
+							push!(secondary_infeasibility_cache, c)
+							add_clause(
+								skeleton.sat_instance,
+								c
+							)
+							t = solve(skeleton.sat_instance)
+							print(".")
+							continue
+						elseif not_yet_feasible
+							add_feasible(feasibility_cache.all, [bounds_vars; linear_vars; approx_resolved_vars; nonlinear_vars])
+						end
+						#print_msg("[QUERY] Found new nonlinear combination")
+						# Add nonlinearities to set
+						push!(nonlinear_options, AST.and_construction(nonlinear_smt))
+						add_clause(skeleton.sat_instance, map(x -> -x, nonlinear_vars))
+						t = solve(skeleton.sat_instance)
+					end
+					print_msg("[QUERY] Found all non-linear combinations. Count: ", length(nonlinear_options))
+					pop(skeleton.sat_instance)
+				else
+					if isnothing(input_nonlinear_disjunction)
+						@warn "Generating independent linear disjunctions"
+						@warn "Make sure you are not using this option for non-mixed constraints!"
+						input_nonlinear_disjunction = Formula[
+							AST.and_construction(map(x -> x[2], input_nonlinear))
+						]
+						push(skeleton.sat_instance)
+						add_clause(skeleton.sat_instance, map(x->-x, nonlinear_vars))
+						# Find new model
+						print_msg("[QUERY] Looking for nonlinear input combinations...")
+						t = solve(skeleton.sat_instance)
+						while t != :unsatisfiable
+							_, _, conjunction = get_atoms(skeleton, t)
+							_, nonlinear, _ = split_by_linearity(conjunction)
+							_, current_mixed = split_by_variables(convert(Vector{Tuple{Int64,ParsedNode}},nonlinear),query)
+							@assert length(current_mixed)==0
+							nonlinear_smt = convert(Vector{Formula},map(x->x[2],nonlinear))
+							nonlinear_vars = filter(x->x!=0,map(x->x[1],nonlinear))
+							not_yet_feasible = !check_feasible(feasibility_cache.all, map(x -> x[1], [bounds;input;nonlinear]))
+							conflicts = []
+							if !SMTInterface.nl_feasible([bounds_smt;map(x->x[2],input);nonlinear_smt], ctx, variables, conflicts)
+								c = map(x->-x,[bounds_vars;([bounds_vars;map(x->x[1],input);nonlinear_vars])[conflicts]])
+								push!(secondary_infeasibility_cache, c)
+								add_clause(
+									skeleton.sat_instance,
+									c
+								)
+								t = solve(skeleton.sat_instance)
+								print(".")
+								continue
+							elseif not_yet_feasible
+								add_feasible(feasibility_cache.all, [bounds_vars; map(x->x[1],input); nonlinear_vars])
+							end
+							#print_msg("[QUERY] Found new nonlinear combination")
+							# Add nonlinearities to set
+							push!(input_nonlinear_disjunction, AST.and_construction(nonlinear_smt))
+							add_clause(skeleton.sat_instance, map(x -> -x, nonlinear_vars))
+							t = solve(skeleton.sat_instance)
+						end
+						print_msg("[QUERY] Found all non-linear combinations. Count: ", length(input_nonlinear_disjunction))
+						pop(skeleton.sat_instance)
+					end
+					nonlinear_options=input_nonlinear_disjunction
 				end
-				pop(skeleton.sat_instance)
 				for c in secondary_infeasibility_cache
 					add_clause(skeleton.sat_instance, c)
 					push!(infeasibility_cache, c)
 				end
+				#print_msg(mixed_smt)
 				push!(disjunction_nonlinear,
 					(
 						mixed_smt,
@@ -436,6 +509,7 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 			#	AST.and_construction(disjunction_nonlinear)
 			#])
 			#print_msg("[QUERY] Nonlinear variant of conjunction: ", nonlinear_fml)
+			print_msg("[QUERY] Returning nonlinear disjunction")
 			return (disjunction_nonlinear,NormalizedQuery(map(x->x[2],input), map(x->x.args,collect(disjunction)), nonlinearities_set, query)), state
 		else
 			return nothing

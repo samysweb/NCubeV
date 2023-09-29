@@ -36,6 +36,9 @@ end
 function term_to_string(a :: Atom)
 	return term_to_string(a.left)*term_to_string(a.comparator)*term_to_string(a.right)
 end
+function term_to_string(p :: Predicate)
+	return p.predicate_name*"("*join([term_to_string(x) for x in p.parameters],",")*")"
+end
 function term_to_string(a :: TrueAtom)
 	return "true"
 end

@@ -60,9 +60,10 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 				@timeit Config.TIMER "legacy_approx" begin
 					approx_normalized :: ApproxNormalizedQueryPrototype{Approximation} = get_approx_normalized_query(current_conjunction, approx_cache)
 				end
-				#@info "Initiating iterator"
+				print_msg("[CTRL] Initiating iterator over current linear queries")
 				for linear_query in approx_normalized
 					@timeit Config.TIMER "olnnv_query_processing" begin
+						print_msg("[CTRL] Processing next linear query")
 						push!(results,f((linear_query, SMTFilter)))
 						# Save at most every 200s
 						if !isnothing(backup) && (time_ns() - last_save_time) > 200e9

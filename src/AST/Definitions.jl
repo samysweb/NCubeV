@@ -44,6 +44,11 @@ MLStyle.pattern_uncall(e::Comparator, _, _, _, _) = literal(e)
 	right :: Term
 end
 
+@as_record struct Predicate <: Formula
+	predicate_name :: String
+	parameters :: Vector{Term}
+end
+
 @as_record struct TrueAtom <: Formula end
 @as_record struct FalseAtom <: Formula end
 

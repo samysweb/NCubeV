@@ -150,9 +150,29 @@ function parse_elementary(tokenmanager :: TokenManager)
 		next(tokenmanager)
 		result = parse_elementary(tokenmanager)
 		return CompositeFormula(AST.Not, Formula[result])
+	elseif Tokens.exactkind(next_token) == Tokens.IDENTIFIER && is_predicate(next_token)
+		predicate_name = untokenize(next(tokenmanager))
+		parse_predicate(tokenmanager, predicate_name)
 	else
 		return parse_atom(tokenmanager)
 	end
+end
+
+function parse_predicate(tokenmanager, predicate_name)
+	current_token = next(tokenmanager)
+	if Tokens.kind(current_token) != Tokens.LPAREN
+		throw_syntax_error("Parsing predicate; expected ( but got "*untokenize(current_token),Tokens.startpos(current_token))
+	end
+	params = Term[parse_term(tokenmanager)]
+	current_token = next(tokenmanager)
+	while Tokens.kind(current_token) == Tokens.COMMA
+		push!(params, parse_term(tokenmanager))
+		current_token = next(tokenmanager)
+	end
+	if Tokens.kind(current_token) != Tokens.RPAREN
+		throw_syntax_error("Parsing predicate; expected ) but got "*untokenize(current_token),Tokens.startpos(current_token))
+	end
+	return Predicate(predicate_name, params)
 end
 
 function parse_atom(tokenmanager :: TokenManager)
@@ -294,4 +314,10 @@ end
 
 function throw_syntax_error(message :: String, position)
 	throw(SyntaxParsingException(message*string(position)))
+end
+
+function is_predicate(token)
+	@assert Tokens.kind(token) == Tokens.IDENTIFIER
+	identifier = untokenize(token)
+	return identifier == "isMax"
 end

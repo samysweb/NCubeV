@@ -5,7 +5,7 @@ import Base.^
 import Base./
 import Base.convert
 
-export not, and, or, implies, le, leq, gr, geq, eq, neq, +, -, *, /, ^
+export not, and, or, implies, le, leq, gr, geq, eq, neq, +, -, *, /, ^, predicate
 
 # TODO(steuber): Improve memory efficiency
 
@@ -142,4 +142,8 @@ end
 
 function negate(a :: LinearConstraint)
 	return LinearConstraint(-a.coefficients, -a.bias, !a.equality)
+end
+
+function predicate(name :: String, params :: Vector{Term})
+	return Predicate(name, params)
 end

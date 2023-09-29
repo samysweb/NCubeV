@@ -26,13 +26,34 @@ function _isfalse(x :: Formula)
 	return x isa FalseAtom
 end
 
-function is_literal_number(x :: Term)
-	return x isa TermNumber
+function _needs_normalization(t :: Term)
+	return maximal_factor(t) > 1e4
+end
+
+function maximal_factor(t :: CompositeTerm)
+	return maximum((x->abs(maximal_factor(x))),t.args)
+end
+
+function maximal_factor(t :: TermNumber)
+	return t.value
+end
+
+function maximal_factor(t :: Variable)
+	return 0
+end
+
+function maximal_factor(t :: LinearTerm)
+	return max(maximum(abs,t.coefficients),abs(bias))
 end
 
 function is_linear(f :: Atom)
 	return f.right isa TermNumber && is_linear(f.left)
 end
+
+function is_linear(f :: Predicate)
+	return false
+end
+
 function is_linear(f :: Term)
 	if f isa TermNumber || f isa Variable
 		return true
