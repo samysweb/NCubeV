@@ -101,7 +101,7 @@ module Cmd
 							linear_term)
 				end
 			end
-		end) |> VerifierInterface.reduce_results
+		end)# |> VerifierInterface.reduce_results
 		return result
 	end
 
@@ -112,10 +112,10 @@ module Cmd
 		@time result = run_internal(args)
 
 		print_msg("----------------------------------------------------------")
-		print_msg("Status: "*string(result.status))
-		print_msg("# Unsafe Stars: "*string(length(result.stars)))
-		print_msg("Saving result in "*string(args["output"])*"...")
-		save(args["output"],"result",result,"args",args)
+		#print_msg("Status: "*string(result.status))
+		#print_msg("# Unsafe Stars: "*string(length(result.stars)))
+		print_msg("Saving final results in "*string(args["output"])*"...")
+		save(args["output"]*"-final.jld","result",result,"args",args)
 		show(Config.TIMER)
 		print_msg(" Done")
 	end

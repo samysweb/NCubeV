@@ -88,7 +88,8 @@ function get_star_filter(ctx, variables, disjunction_nonlinear, smt_timeout)
 					end
 				end
 				filtered_out = length(result.stars)-length(filtered_stars)
-				print_msg("[SMT] SMT filtered out ",filtered_out," stars (out of ",length(result.stars),").")
+				num_timeout = count(s->!s.certain,filtered_stars)
+				print_msg("[SMT] SMT filtered out ",filtered_out," stars (out of ",length(result.stars),"; TO: ",num_timeout,").")
 				if length(filtered_stars) == 0
 					return OlnnvResult(Safe, SmtFilterMeta(result.metadata,filtered_out), filtered_stars)
 					#return OlnnvResult(Safe, SmtFilterMeta(result.metadata,filtered_out, formula), filtered_stars)

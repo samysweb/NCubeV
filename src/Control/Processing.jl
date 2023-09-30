@@ -32,6 +32,7 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 	#  - Compute approximations
 	#  - Substiute Over/Under with approximations AND (bounds -> approx)
 	results = []
+	num_invocations = 1
 	original_query = query
 	query = get_approx_query(query)
 	#print_msg("[CTRL] Query formula: ",query.formula)
@@ -63,14 +64,17 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 				print_msg("[CTRL] Initiating iterator over current linear queries")
 				for linear_query in approx_normalized
 					@timeit Config.TIMER "olnnv_query_processing" begin
-						print_msg("[CTRL] Processing next linear query")
+						num_invocations += 1
+						print_msg("[CTRL] Processing linear query no. ",num_invocations)
 						push!(results,f((linear_query, SMTFilter)))
 						# Save at most every 200s
 						if !isnothing(backup) && (time_ns() - last_save_time) > 200e9
 							last_save_time = time_ns()
 							@timeit Config.TIMER "status_backup" begin
 								print_msg("[CTRL] Saving current state of verification...")
-								save(backup,"result",results,"backup_meta",backup_meta)
+								save(backup*"-"*string(num_invocations)*".jld","result",results,"backup_meta",backup_meta)
+								results = []
+								GC.gc()
 							end
 							show(Config.TIMER)
 						end

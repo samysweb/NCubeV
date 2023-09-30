@@ -71,7 +71,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 							search_term2 = simplify(-1.0*formula.left)
 							if haskey(skeleton.similar_formula_cache,search_term2)
 								for (strict, constant, other_var) in skeleton.similar_formula_cache[search_term2]
-									if (!strict && -constant.value > formula.right.value) || (strict && constant.value >= formula.right.value)
+									if (!strict && -constant.value > formula.right.value) || (strict && -constant.value >= formula.right.value)
 										print_msg("[SKELETON] Adding negated atom dependency constraint:")
 										print_msg("!",formula," | !",search_term2,ifelse(strict,"<","<="),constant_value)
 										add_clause(skeleton.sat_instance, [-variable_number, -other_var])
@@ -117,7 +117,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 						search_term2 = LinearTerm(-factor.*formula.coefficients,0//1)
 						if haskey(skeleton.similar_formula_cache,search_term2)
 							for (strict, constant, other_var) in skeleton.similar_formula_cache[search_term2]
-								if (!strict && -constant.value > factor*formula.bias) || (strict && constant.value >= factor*formula.bias)
+								if (!strict && -constant.value > factor*formula.bias) || (strict && -constant.value >= factor*formula.bias)
 									print_msg("[SKELETON] Adding negated linear dependency constraint")
 									print_msg("!",formula," | !",search_term2,ifelse(strict,"<","<="),constant)
 									add_clause(skeleton.sat_instance, [-variable_number, -other_var])
