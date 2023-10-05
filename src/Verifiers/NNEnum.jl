@@ -50,13 +50,22 @@ def prepare_star(star):
 	# Compute bounds
 	dims = star.lpi.get_num_cols()
 	should_skip = np.zeros((dims, 2), dtype=bool)
-	bounds = star.update_input_box_bounds_old(None, should_skip)
-	return (
+	bounds = None
+	try:
+		bounds = star.update_input_box_bounds_old(None, should_skip)
+	except:
+		bounds_lp = star.lpi._get_col_bounds()
+		bounds = []
+		for (i,cur_bound) in enumerate(bounds_lp):
+			bounds.append([i,cur_bound[0],cur_bound[1]])
+		print("[NNENUM] Substitute bounds due to unsat lp:", bounds)
+	result = (
 		A, b,
 		M, c,
 		bounds,
 		star.counter_example
 	)
+	return result
 
 def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 	Settings.UNDERFLOW_BEHAVIOR = "warn"
@@ -70,6 +79,7 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 	Settings.BRANCH_MODE = Settings.BRANCH_OVERAPPROX
 	Settings.NUM_PROCESSES = 1
 	Settings.ITERATE_COUNTEREXAMPLES = iterative
+	Settings.GLPK_TIMEOUT=15
 	
 	network = load_onnx_network(model)
 	ninputs = A_input.shape[1]
@@ -77,6 +87,7 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 	#b_output+=1e-3
 	#b_input+=1e-3
 
+	print("[NNENUM] Creating LP Star...")
 	init_box = np.array(
 		list(zip(lb.flatten(), ub.flatten())),
 		dtype=np.float32,
@@ -87,7 +98,15 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 	for a, b in zip(A_input, b_input):
 		a_ = a.reshape(network.get_input_shape()).flatten("F")
 		init_star.lpi.add_dense_row(a_, b)
+	
+	print("[NNENUM] Checking feasibility")
+	if not init_star.lpi.is_feasible():
+		print("[NNENUM] Region is safe as initial LP is unsatisfiable; stopping run")
+		sys.stdout.flush()
+		yield ("safe", 0, (None, []))
+		return
 
+	print("[NNENUM] Generating output Spec...")
 	spec_list = []
 	for (A_mixed, b_mixed) in disjunction:
 		spec_list.append(MixedSpecification(A_mixed, b_mixed, ninputs))

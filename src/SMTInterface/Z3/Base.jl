@@ -29,26 +29,30 @@ function smt_internal_set_timeout(ctx, timeout)
 	set(ctx, "timeout", timeout)
 end
 function smt_internal_solver(ctx, theory;stars=false)
-	if stars
-		t_solve = Tactic(ctx,"solve-eqs")
-		t_purify = Tactic(ctx,"purify-arith")
-		pre_step = par_and_then(t_solve,t_purify)
+	# Unfortunately, this is broken with the new Z3 version
+	# It seems one step inside the and_then does not work; possibly solve-eqs
+	# if stars
+	# 	t_solve = Tactic(ctx,"solve-eqs")
+	# 	t_purify = Tactic(ctx,"purify-arith")
+	# 	pre_step = par_and_then(t_solve,t_purify)
+	# else
+	# 	pre_step = Tactic(ctx,"purify-arith")
+	# end
+	# qfnra_tactic = Tactic(ctx,theory)
+	# #par_and_then(Tactic(ctx, "qflra"),Tactic(ctx,theory))
+	# t_overall = par_and_then(
+	# 	pre_step,
+	# 	qfnra_tactic
+	# )
+
+	# s = mk_solver(t_overall)
+	if theory=="qfnra"
+		s = Solver(ctx, "QF_NRA")
+	elseif theory=="qflra"
+		s = Solver(ctx, "QF_LRA")
 	else
-		pre_step = Tactic(ctx,"purify-arith")
+		s = Solver(ctx,theory)
 	end
-
-	qfnra_tactic = Tactic(ctx,theory)
-	#par_and_then(Tactic(ctx, "qflra"),Tactic(ctx,theory))
-	
-	t_overall = par_and_then(
-		pre_step,
-		qfnra_tactic
-	)
-
-	#t_both = par_and_then(t_solve, qfnra_tactic)
-	
-	s = mk_solver(t_overall)
-	#s = Solver(ctx, theory)
 	#set(s,"smt.arith.solver",convert(Int32,2))
 	return s
 end
@@ -56,12 +60,14 @@ function smt_internal_add(solver, formula)
 	add(solver, formula)
 end
 function smt_internal_check(solver)
+	#println("[Z3] Checking...")
 	@timeit TIMER "z3_check" begin
 		res =  check(solver)
 	end
 	return res
 end
 function smt_internal_check(solver, exprs)
+	#println("[Z3] Checking...")
 	@timeit TIMER "z3_check" begin
 		res =  check(solver, exprs)
 	end
@@ -95,6 +101,11 @@ function smt_print_model(solver)
 	model = get_model(solver)
 	print_msg("[Z3] Model: ")
 	print_msg(model)
+end
+
+function smt_internal_get_model(solver)
+	model = get_model(solver)
+	return model
 end
 
 function smt_internal_formula_dict(solver, full_ctx)

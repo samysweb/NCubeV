@@ -60,15 +60,33 @@ function check_star(ctx,variables, disjunction_nonlinear, star :: Star, smt_cach
 			end
 			solverres = smt_internal_check(solver)
 			if smt_internal_is_sat(solverres)
-				return 1
+				try
+					m = smt_internal_get_model(solver)
+					# TODO: Generalize for other SMT solvers...
+					num_input_vars = length(star.counter_example[1])
+					for (var_index, var) in enumerate(variables)
+						var_val =Z3.eval(m,var)
+						num = parse(BigInt,convert(String,get_decimal_string(numerator(var_val),100)))
+						den = parse(BigInt,convert(String,get_decimal_string(denominator(var_val),100)))
+						var_val = convert(Float32,convert(BigFloat,num//den))
+						if var_index <= num_input_vars
+							star.counter_example[1][var_index] = var_val
+						else
+							star.counter_example[2][var_index-num_input_vars] = var_val
+						end
+					end
+				catch
+					print_msg("[SMT] Reusing original (linear) counter-example due to error in SMT model extraction")
+				end
+				return 1, star
 			elseif !smt_internal_is_unsat(solverres)
 				# SMT solver returned unknown
-				return 2
+				return 2, star
 			else
-				return 0
+				return 0, star
 			end
 		else
-			return 0
+			return 0, star
 		end
 	end
 end
@@ -82,7 +100,7 @@ function get_star_filter(ctx, variables, disjunction_nonlinear, smt_timeout)
 			else
 				filtered_stars = []
 				for s in result.stars
-					res = check_star(ctx,variables, disjunction_nonlinear, s, smt_cache)
+					res, s = check_star(ctx,variables, disjunction_nonlinear, s, smt_cache)
 					if res > 0
 						push!(filtered_stars, Star(s,res==1))
 					end

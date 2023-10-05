@@ -20,6 +20,8 @@ mutable struct BooleanSkeleton
 		return @timeit Config.TIMER "boolean_skeleton" begin
 			variable_mapping = Dict{Int64, BooleanVariableType}()
 			sat_instance :: PicoPtr = picosat_init()
+			save_original_clauses(sat_instance)
+			picosat_set_verbosity(sat_instance, 0)
 			skeleton = new(query, variable_mapping, sat_instance, nl_feasible_init(full_ctx), false,Dict{Term,Vector{Tuple{Bool,TermNumber}}}())
 			finalizer(x -> picosat_reset(x.sat_instance), skeleton)
 			transform_formula(skeleton)
