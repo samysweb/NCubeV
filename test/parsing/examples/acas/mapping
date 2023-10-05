@@ -1,6 +1,6 @@
 "hNet"=>(Input,1),
-"vNet"=>(Input,2),
-"vI"=>(Input,3),
+"vONet"=>(Input,2),
+"vINet"=>(Input,3),
 "tNMACNet"=>(Input,4),
 "nnCOCpost"=>(Output,1),
 "nnDNCpost"=>(Output,2),

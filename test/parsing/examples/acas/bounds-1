@@ -1,0 +1,28 @@
+(
+	(-8000 <= h & h <= 8000 & -6000 <= v & v <= 6000 & 6 <= tNMAC & tNMAC <= 40&
+-0.0001 <= vI & vI <= 0.0001&
+nnCOCpost<=200&
+nnDNCpost<=200&
+nnDNDpost<=200&
+nnDES1500post<=200&
+nnCLI1500post<=200&
+nnSDES1500post<=200&
+nnSCLI1500post<=200&
+nnSDES2500post<=200&
+nnSCL2500post<=200&
+nnCOCpost>=-200&
+nnDNCpost>=-200&
+nnDNDpost>=-200&
+nnDES1500post>=-200&
+nnCLI1500post>=-200&
+nnSDES1500post>=-200&
+nnSCLI1500post>=-200&
+nnSDES2500post>=-200&
+nnSCL2500post>=-200
+)
+)
+->
+(
+nnCOCpost<=100&
+nnCOCpost>=-100
+)
