@@ -1,0 +1,6 @@
+"v"=>"(vONet-vINet)*200",
+"vO"=>"vONet*200",
+"vI"=>"vINet*200",
+"h"=>"hNet*16000",
+"tNMAC"=>"tNMACNet*40+20",
+"Tmax"=>"40"
