@@ -122,7 +122,7 @@ function split_by_variables(atoms :: Vector{Tuple{Int64,ParsedNode}}, query :: Q
 end
 
 function iterate(iterquery :: IterableQuery)
-	skeleton = BooleanSkeleton(iterquery.query, iterquery.smt_state)
+	skeleton = BooleanSkeleton(iterquery.query, iterquery.smt_state, iterquery.use_approx)
 	max_var = next_var(skeleton.sat_instance)
 	feasibility_cache = MultiFeasibilityCache(convert(Int64,max_var))
 	state = (skeleton, feasibility_cache)
@@ -149,7 +149,7 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 		skeleton = nothing
 		feasibility_cache = nothing
 		if isnothing(state)
-			skeleton = BooleanSkeleton(query, iterquery.smt_state)
+			skeleton = BooleanSkeleton(query, iterquery.smt_state, iterquery.use_approx)
 			max_var = next_var(skeleton.sat_instance)
 			feasibility_cache = MultiFeasibilityCache(convert(Int64,max_var))
 			state = (skeleton, feasibility_cache)
@@ -195,19 +195,21 @@ function iterate(iterquery :: IterableQuery, state :: Tuple{BooleanSkeleton,Mult
 			output_conjunction = nothing
 			@timeit Config.TIMER "approx_resolution" begin
 				approx_bounds = map(x->x[2],bounds)
-				for (s,c) in approx_atoms
-					atom = nothing
-					if c isa UnderApprox
-						atom = generate_linear_constraint(approx_bounds, c.under_approx, query.approximations)
-					elseif c isa OverApprox
-						atom = generate_linear_constraint(approx_bounds, c.over_approx, query.approximations)
-					else
-						@assert false "Neither under nor overapproximation"
+				if skeleton.use_approx
+					for (s,c) in approx_atoms
+						atom = nothing
+						if c isa UnderApprox
+							atom = generate_linear_constraint(approx_bounds, c.under_approx, query.approximations)
+						elseif c isa OverApprox
+							atom = generate_linear_constraint(approx_bounds, c.over_approx, query.approximations)
+						else
+							@assert false "Neither under nor overapproximation"
+						end
+						if s < 0
+							atom = AST.negate(atom)
+						end
+						push!(approx_resolved,(s,atom))
 					end
-					if s < 0
-						atom = AST.negate(atom)
-					end
-					push!(approx_resolved,(s,atom))
 				end
 				output_conjunction = [bound_atoms;linear;approx_resolved]
 			end
