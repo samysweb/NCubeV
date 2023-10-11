@@ -1,0 +1,68 @@
+Lemma "ACAS_Reimport/Safe use case lower bound"
+ProgramVariables
+  /* horizontal */
+  Real a;
+  Real r;    /* relative distance in ft; xi - xo */
+             /* x = r */
+  Real rv;   /* relative speed -(vi - vo) */
+
+  /* vertical */
+  Real h;    /* relative altitude in ft */
+             /* if negative: the intruder is lower than the ownship */
+             /* h := hi - ho */
+             /* z = h */
+  Real v;    /* vertical velocity of ownship */
+  Real vlo;  /* target minimum velocity */
+  Real w;    /* velocity direction */
+
+End.
+Definitions
+  Real hp;   /* puck height */
+  Real rp;   /* puck radius */
+  Real alo;  /* minimal vertical acceleration. Typically g/4 */
+
+  /* velocity bound 1 = lower, -1 = upper */
+  Real wUp = -1;
+  Real wLo = 1;
+
+  Real minI(Real v, Real w) = min(0, v*w);
+  Real maxI(Real v, Real w, Real vlo) = max(0, w * (vlo - v));
+
+  Bool Limpl(Real r, Real h, Real v, Real w, Real vlo, Real rv) <-> 
+    \forall t \forall ro \forall ho (
+        (0 <= t & t < maxI(v,w,vlo)/alo & ro = rv * t & ho = (w * alo)/2 * t^2 + v * t)
+      | (t >= maxI(v,w,vlo)/alo & ro = rv * t & ho = vlo * t - w * maxI(v,w,vlo)^2/(2*alo))
+      -> (abs(r - ro) > rp | w * h < w * ho - hp)
+    );
+
+  Bool init(Real rv) <-> rp>=0 & hp>0 & rv>=0 & alo>0;
+
+  Bool loopInv(Real r, Real h, Real v, Real w, Real vlo, Real rv) <-> ( (w=wUp | w=wLo) & Limpl(r,h,v,w,vlo,rv) );
+  
+  HP motion ::= { {r' = -rv, h' = -v, v' = a & w*v>=w*vlo|w*a>=alo } };
+End.
+
+Problem
+  loopInv(r, h, v, w, vlo, rv) & init(rv) -> abs(r)>rp | abs(h)>hp
+
+End.
+
+
+Tactic "ACAS_Reimport/Safe use case lower bound"expand("init");
+expand("loopInv");
+implyR('R=="((w=wUp()|w=wLo())&Limpl(r,h,v,w,vlo,rv))&rp()>=0&hp()>0&rv>=0&alo()>0->abs(r)>rp()|abs(h)>hp()");
+andL('L)*;
+expand("Limpl");
+allL("0", 'L=="\forall t \forall ro \forall ho (0<=t&t < maxI(v,w,vlo)/alo()&ro=rv*t&ho=w*alo()/2*t^2+v*t|t>=maxI(v,w,vlo)/alo()&ro=rv*t&ho=vlo*t-w*maxI(v,w,vlo)^2/(2*alo())->abs(r-ro)>rp()|w*h < w*ho-hp())");
+allL("0", 'L=="\forall ro \forall ho (0<=0&0 < maxI(v,w,vlo)/alo()&ro=rv*0&ho=w*alo()/2*0^2+v*0|0>=maxI(v,w,vlo)/alo()&ro=rv*0&ho=vlo*0-w*maxI(v,w,vlo)^2/(2*alo())->abs(r-ro)>rp()|w*h < w*ho-hp())");
+allL("0", 'L=="\forall ho (0<=0&0 < maxI(v,w,vlo)/alo()&0=rv*0&ho=w*alo()/2*0^2+v*0|0>=maxI(v,w,vlo)/alo()&0=rv*0&ho=vlo*0-w*maxI(v,w,vlo)^2/(2*alo())->abs(r-0)>rp()|w*h < w*ho-hp())");
+fullSimplify;
+implyL('L=="0 < maxI(v,w,vlo)/alo()|0>=maxI(v,w,vlo)/alo()&0=-w*maxI(v,w,vlo)^2/(2*alo())->abs(r)>rp()|w*h < -hp()"); <(
+  "0 < maxI(v,w,vlo)/alo()|0>=maxI(v,w,vlo)/alo()&0=-w*maxI(v,w,vlo)^2/(2*alo())":
+    QE,
+  "abs(r)>rp()|w*h < -hp()":
+    QE
+)
+End.
+
+End.
