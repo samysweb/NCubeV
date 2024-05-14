@@ -1,3 +1,6 @@
 [submodule "SNNT/vendor/nnenum"]
 	path = deps/nnenum
 	url = https://github.com/samysweb/nnenum.git
+[submodule "deps/OVERTFixed"]
+	path = deps/OVERTFixed
+	url = git@github.com:sisl/OVERT.jl.git
