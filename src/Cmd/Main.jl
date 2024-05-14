@@ -109,11 +109,11 @@ module Cmd
 		Config.reset_timer()
 		args = parse_commandline(cmd_args)
 		
-		@time result = run_internal(args)
+		@time result, cex_count = run_internal(args)
 
 		print_msg("----------------------------------------------------------")
 		#print_msg("Status: "*string(result.status))
-		#print_msg("# Unsafe Stars: "*string(length(result.stars)))
+		print_msg("# Unsafe Stars: "*string(cex_count))
 		print_msg("Saving final results in "*string(args["output"])*"...")
 		save(args["output"]*"-final.jld","result",result,"args",args)
 		show(Config.TIMER)

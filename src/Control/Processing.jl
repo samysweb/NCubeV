@@ -32,6 +32,7 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 	#  - Compute approximations
 	#  - Substiute Over/Under with approximations AND (bounds -> approx)
 	results = []
+	cex_count = 0
 	num_invocations = 1
 	original_query = query
 	query = get_approx_query(query)
@@ -73,6 +74,7 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 							@timeit Config.TIMER "status_backup" begin
 								print_msg("[CTRL] Saving current state of verification...")
 								save(backup*"-"*string(num_invocations)*".jld","result",results,"backup_meta",backup_meta)
+								cex_count += sum(x->length(x.stars),results)
 								results = []
 								GC.gc()
 							end
@@ -83,5 +85,6 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 			end
 		end
 	end
-	return results
+	cex_count += sum(x->length(x.stars),results)
+	return results, cex_count
 end
