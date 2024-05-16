@@ -10,7 +10,26 @@ PicoPtr = PicoSAT.PicoPtr
 libpicosat = PicoSAT.libpicosat
 picosat_init = PicoSAT.picosat_init
 picosat_reset = PicoSAT.picosat_reset
-add_clause = PicoSAT.add_clause
+#add_clause_internal = PicoSAT.add_clause
+function add_clause_internal(p::PicoPtr, clause)
+    for lit in clause
+        v = convert(Cint, lit)
+        v == 0 && throw(ErrorException("PicoSAT Error: non zero integer expected"))
+        PicoSAT.picosat_add(p, v)
+    end
+    PicoSAT.picosat_add(p, 0)
+    return
+end
+
+function add_clause(p::PicoPtr, clause)
+    add_clause_internal(p, clause)
+    if !isnothing(Config.QUERY_GEN_SAVE_SAT)
+        open(Config.QUERY_GEN_SAVE_SAT, "a") do f
+            print(f, join(clause, " "), " 0\n")
+        end
+    end
+end
+
 add_clauses = PicoSAT.add_clauses
 get_solution = PicoSAT.get_solution
 picosat_set_verbosity = PicoSAT.picosat_set_verbosity

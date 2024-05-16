@@ -28,6 +28,43 @@ function transform_formula(skeleton :: BooleanSkeleton)
 			add_clause(skeleton.sat_instance, all_cases)
 		end
 	end
+	if !isnothing(Config.QUERY_GEN_SAVE_SAT)
+		comments = ""
+		open(Config.QUERY_GEN_SAVE_SAT, "a") do f
+			print(f, "c ind ")
+			for x in skeleton.variable_mapping
+				@match x.second begin
+					IntermediateVariable => begin
+						#print_msg("IntermediateVariable")
+						comments *= "c " * repr(x.first) * " -> Intermediate\n"
+						continue
+					end
+					ConstraintVariable(y) => begin
+						if y isa LinearConstraint #|| y isa ApproxNode
+							print(f, x.first, " ")
+							comments *= "c " * repr(x.first) * " -> " * repr(x.second) * "\n"
+						end
+					end
+					ApproxCase(dim,_) => begin
+						#if dim <= skeleton.query.num_input_vars
+							print(f, x.first, " ")
+							comments *= "c " * repr(x.first) * " -> " * repr(x.second) * "\n"
+						#end
+						continue
+					end
+					IsMaxCase(_) => begin
+						print(f, x.first, " ")
+						comments *= "c " * repr(x.first) * " -> " * repr(x.second) * "\n"
+						continue
+					end
+				end
+			end
+			print(f, "0\n")
+			print(f, comments)
+			print(f, "c ----------------------------------------\n")
+		end
+		Config.QUERY_GEN_SAVE_SAT = nothing
+	end
 end
 
 function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_number_dict :: Dict{Union{Atom,Predicate,LinearConstraint,ApproxNode}, Int64})

@@ -13,6 +13,9 @@ module Config
 
 	TIMER = nothing
 
+	# DO NOT SET THIS VARIABLE UNLESS YOU KNOW WHAT YOU ARE DOING!
+	QUERY_GEN_SAVE_SAT = nothing
+
 	function __init__()
 		global INCLUDE_APPROXIMATIONS = true
 		global RIGOROUS_APPROXIMATIONS = false
