@@ -9,7 +9,7 @@ function smt_context(f, varnum :: Int64; timeout=1000)
 		end
 		smt_internal_set_timeout(ctx, timeout)
 		# Run program
-		res = f((ctx, variables))
+		res = GC.@preserve ctx variables f((ctx, variables))
 	end
 	# Cleanup SMT Context
 	GC.gc(true)
@@ -17,8 +17,5 @@ function smt_context(f, varnum :: Int64; timeout=1000)
 end
 
 function smt_solver(f, ctx;stars=false, theory="qfnra")
-	res = nothing
-	s = smt_internal_solver(ctx, theory;stars=stars)
-	res = f(s)
-	return res
+	return smt_internal_solver(f, ctx, theory;stars=stars)
 end

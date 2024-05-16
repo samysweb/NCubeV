@@ -13,7 +13,6 @@ mutable struct BooleanSkeleton
 	query :: Query
 	variable_mapping :: Dict{Int64, BooleanVariableType}
 	sat_instance :: PicoPtr
-	smt_feasibility :: Any
 	input_configured :: Bool
 	similar_formula_cache :: Dict{Term,Vector{Tuple{Bool,TermNumber,Int}}}
 	use_approx :: Bool
@@ -23,7 +22,7 @@ mutable struct BooleanSkeleton
 			sat_instance :: PicoPtr = picosat_init()
 			save_original_clauses(sat_instance)
 			picosat_set_verbosity(sat_instance, 0)
-			skeleton = new(query, variable_mapping, sat_instance, nl_feasible_init(full_ctx), false,Dict{Term,Vector{Tuple{Bool,TermNumber}}}(), use_approx)
+			skeleton = new(query, variable_mapping, sat_instance, false,Dict{Term,Vector{Tuple{Bool,TermNumber}}}(), use_approx)
 			finalizer(x -> picosat_reset(x.sat_instance), skeleton)
 			transform_formula(skeleton)
 			return skeleton

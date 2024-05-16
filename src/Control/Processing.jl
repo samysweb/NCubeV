@@ -41,7 +41,7 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 	@timeit Config.TIMER "query_iteration" begin
 		# TODO(steuber): Make SMT timeout for normalization configurable
 		smt_context(query.num_input_vars+query.num_output_vars;timeout=10000) do smt_ctx
-			iterable_query = IterableQuery(query, smt_ctx,Config.INCLUDE_APPROXIMATIONS)
+			iterable_query = IterableQuery(query, smt_ctx, Config.INCLUDE_APPROXIMATIONS)
 			for (disjunction_nonlinear,current_conjunction) in iterable_query
 				print_msg("[CTRL] Considering conjunction with ",
 					length(current_conjunction.input_constraints.linear_constraints)+length(current_conjunction.input_constraints.semilinear_constraints),

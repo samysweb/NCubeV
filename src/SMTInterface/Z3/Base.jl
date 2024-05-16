@@ -28,7 +28,7 @@ function smt_internal_set_timeout(ctx, timeout)
 	#set_param("timeout", timeout)
 	set(ctx, "timeout", timeout)
 end
-function smt_internal_solver(ctx, theory;stars=false)
+function smt_internal_solver(f, ctx, theory;stars=false)
 	# Unfortunately, this is broken with the new Z3 version
 	# It seems one step inside the and_then does not work; possibly solve-eqs
 	# if stars
@@ -36,25 +36,37 @@ function smt_internal_solver(ctx, theory;stars=false)
 	# 	t_purify = Tactic(ctx,"purify-arith")
 	# 	pre_step = par_and_then(t_solve,t_purify)
 	# else
-	# 	pre_step = Tactic(ctx,"purify-arith")
+		
 	# end
-	# qfnra_tactic = Tactic(ctx,theory)
-	# #par_and_then(Tactic(ctx, "qflra"),Tactic(ctx,theory))
-	# t_overall = par_and_then(
-	# 	pre_step,
-	# 	qfnra_tactic
-	# )
-
-	# s = mk_solver(t_overall)
-	if theory=="qfnra"
-		s = Solver(ctx, "QF_NRA")
-	elseif theory=="qflra"
-		s = Solver(ctx, "QF_LRA")
-	else
-		s = Solver(ctx,theory)
+	res = nothing
+	begin
+		s = nothing
+		#solver_tactic = nothing
+		if theory=="qfnra"
+			#s = Solver(ctx,"QF_NRA")
+			if stars
+				s = mk_solver( Tactic(ctx, "solve-eqs") & Tactic(ctx, "purify-arith") & Tactic(ctx, "qfnra"))
+			elseif !USE_CORES
+				s = mk_solver(Tactic(ctx, "purify-arith") & Tactic(ctx, "qfnra"))
+			else
+				s = Solver(ctx,"QF_NRA")
+			end
+		elseif theory=="qflra"
+			if stars
+				s = mk_solver( Tactic(ctx, "solve-eqs") & Tactic(ctx, "purify-arith") & Tactic(ctx, "qflra"))
+			elseif !USE_CORES
+				s = mk_solver(Tactic(ctx, "purify-arith") & Tactic(ctx, "qflra"))
+			else
+				s = Solver(ctx,"QF_LRA")
+			end
+			#set(s,"smt.arith.solver",convert(Int32,2))
+		else
+			s = Solver(ctx,theory)
+		end
+		
+		res =  GC.@preserve s f(s)
 	end
-	#set(s,"smt.arith.solver",convert(Int32,2))
-	return s
+	return res
 end
 function smt_internal_add(solver, formula)
 	add(solver, formula)
@@ -135,5 +147,14 @@ function smt_internal_add_to_dict(dict, i, formula, additional, dict_copy)
 			smt_internal_add(solver, a)
 		end
 		return v
+	end
+end
+function smt_internal_set(solver, name, value)
+	if name == "unsat-core"
+		if USE_CORES || !value
+			set(solver, "unsat-core", value)
+		end
+	else
+		set(solver, name, value)
 	end
 end

@@ -50,4 +50,9 @@ using .Cmd
 
 export run_cmd
 
+function main_NCubeV():Cint
+    result = run_cmd(ARGS)
+    return convert(Cint, result)
+end
+
 end # module

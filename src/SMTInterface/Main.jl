@@ -10,6 +10,8 @@ module SMTInterface
 
 	export smt_context, nl_feasible, nl_feasible_init
 
+	USE_CORES = true
+
 	if SMT_SOLVER == "Z3"
 		include("Z3/Main.jl")
 	elseif SMT_SOLVER == "CVC5"
@@ -25,46 +27,9 @@ module SMTInterface
 	include("Base.jl")
 	include("StarFilter.jl")
 
-	function nl_feasible_init(full_ctx)
-		ctx, _ = full_ctx
-		s = smt_internal_solver(ctx, "qfnra")
-		d = smt_internal_formula_dict(s,full_ctx)
-		return (s,d)
-	end
-
-	function nl_feasible(constraints, feasibility_solver)
-		@timeit TIMER "SMTprep" begin
-			s,d = feasibility_solver
-			all_vars = smt_internal_get_var_dict(d)
-			smt_formulas = []
-			additional = []
-			for c in constraints
-				i, f = c
-				var = smt_internal_add_to_dict(d, i, f, additional, all_vars)
-				push!(smt_formulas, var)
-			end
-			smt_internal_push(s)
-			for a in additional
-				smt_internal_add(s, a)
-			end
-			for f in smt_formulas
-				smt_internal_add(s, f)
-			end
-			for f in values(all_vars)
-				smt_internal_add(s, Z3.not(f))
-			end
-		end
-		res = smt_internal_check(s)
-		@timeit TIMER "SMTprep" begin
-			smt_internal_pop(s)
-		end
-		return !smt_internal_is_unsat(res)
-	end
-
-
 	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables,conflicts;print_model=false)
 		res = smt_solver(ctx) do s
-			set(s,"unsat-core",true)
+			smt_internal_set(s,"unsat-core",true)
 			conflict_clauses = Dict()
 			vars = ExprVector(ctx)
 			@timeit TIMER "SMTprep" begin
@@ -94,10 +59,16 @@ module SMTInterface
 				print_msg("[SMT] SMT returned status: ", res)
 			else # unsat
 				#print_msg("[SMT] Conflict:")
-				for c in unsat_core(s)
-					#print_msg("[SMT] ", c)
-					#print_msg("[SMT] ", constraints[conflict_clauses[string(c)]])
-					push!(conflicts,conflict_clauses[string(c)])
+				if USE_CORES
+					for c in unsat_core(s)
+						#print_msg("[SMT] ", c)
+						#print_msg("[SMT] ", constraints[conflict_clauses[string(c)]])
+						push!(conflicts,conflict_clauses[string(c)])
+					end
+				else
+					for (i,_) in enumerate(constraints)
+						push!(conflicts,i)
+					end
 				end
 			end
 			end
@@ -110,7 +81,7 @@ module SMTInterface
 
 	function lin_feasible(constraints :: Vector{LinearConstraint}, ctx, variables,conflicts;print_model=false)
 		res = smt_solver(ctx;theory="qflra") do s
-			set(s,"unsat-core",true)
+			smt_internal_set(s,"unsat-core",true)
 			conflict_clauses = Dict()
 			vars = ExprVector(ctx)
 			@timeit TIMER "SMTprep" begin
@@ -140,10 +111,16 @@ module SMTInterface
 				print_msg("[SMT] SMT returned status: ", res)
 			else # unsat
 				#print_msg("[SMT] Conflict:")
-				for c in unsat_core(s)
-					#print_msg("[SMT] ", c)
-					#print_msg("[SMT] ", constraints[conflict_clauses[string(c)]])
-					push!(conflicts,conflict_clauses[string(c)])
+				if USE_CORES
+					for c in unsat_core(s)
+						#print_msg("[SMT] ", c)
+						#print_msg("[SMT] ", constraints[conflict_clauses[string(c)]])
+						push!(conflicts,conflict_clauses[string(c)])
+					end
+				else
+					for (i,_) in enumerate(constraints)
+						push!(conflicts,i)
+					end
 				end
 			end
 			end

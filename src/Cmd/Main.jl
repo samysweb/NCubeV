@@ -57,6 +57,9 @@ module Cmd
 				help = "Number of approximation points to use"
 				arg_type = Int
 				default = 1
+			"--no-cores"
+				help = "Do not use cores for SMT queries (this allows another SMT solver which may be faster for higher-order polynomials)"
+				action = :store_true
 		end
 		return parse_args(cmd_args,s)
 	end
@@ -69,6 +72,12 @@ module Cmd
 		if args["rigorous"]
 			print_msg("[CMD] Running in rigorous mode")
 			Config.set_rigorous_approximations(true)
+		end
+		if args["no-cores"]
+			print_msg("[CMD] Not using cores for SMT queries")
+			SMTInterface.USE_CORES = false
+		else
+			SMTInterface.USE_CORES = true
 		end
 		set_approx_density(args["approx"])
 		print_msg("[CMD] Using SMT solver: ", args["smt"])
@@ -118,5 +127,6 @@ module Cmd
 		save(args["output"]*"-final.jld","result",result,"args",args)
 		show(Config.TIMER)
 		print_msg(" Done")
+		return (cex_count > 0) ? 1 : 0
 	end
 end
