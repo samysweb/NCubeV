@@ -67,6 +67,9 @@ function is_linear(f :: Term)
 end
 
 function get_num_cases(bounds :: AbstractArray{Vector{Float64}})
+	if length(bounds) == 0
+		return 0
+	end
 	return reduce(*, map(x -> length(x)-1, bounds))
 end
 

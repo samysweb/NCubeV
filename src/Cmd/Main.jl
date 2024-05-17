@@ -60,6 +60,9 @@ module Cmd
 			"--no-cores"
 				help = "Do not use cores for SMT queries (this allows another SMT solver which may be faster for higher-order polynomials)"
 				action = :store_true
+			"--no-normalization"
+				help = "Do not normalize atoms (this may throw errors when formulas contain large numbers)"
+				action = :store_true
 		end
 		return parse_args(cmd_args,s)
 	end
@@ -78,6 +81,12 @@ module Cmd
 			SMTInterface.USE_CORES = false
 		else
 			SMTInterface.USE_CORES = true
+		end
+		if args["no-normalization"]
+			print_msg("[CMD] Not normalizing atoms")
+			Config.NORMALIZE_ATOMS = false
+		else
+			Config.NORMALIZE_ATOMS = true
 		end
 		set_approx_density(args["approx"])
 		print_msg("[CMD] Using SMT solver: ", args["smt"])

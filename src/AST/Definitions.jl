@@ -27,7 +27,7 @@ MLStyle.pattern_uncall(o::Operation, _, _, _, _) = literal(o)
 	operation :: Operation
 	args :: Vector{Term}
 	args_hash :: UInt
-	CompositeTerm(operation :: Operation, args :: Vector{T}) where {T <: Term} = new(operation, args, reduce(+,Iterators.map(hash,args)))
+	CompositeTerm(operation :: Operation, args :: Vector{T}) where {T <: Term} = new(operation, args, reduce(+,Iterators.map(hash,args),init=0))
 end
 
 # Formulae
@@ -118,7 +118,7 @@ MLStyle.pattern_uncall(e::Connective, _, _, _, _) = literal(e)
 	connective :: Connective
 	args :: Vector{Formula}
 	args_hash :: UInt
-	CompositeFormula(connective :: Connective, args :: Vector{T}) where {T <: Formula} = new(connective, args, reduce(+,Iterators.map(hash,args)))
+	CompositeFormula(connective :: Connective, args :: Vector{T}) where {T <: Formula} = new(connective, args, reduce(+,Iterators.map(hash,args),init=0))
 end
 
 abstract type ApproximationPrototype end

@@ -10,3 +10,4 @@ using SNNT
 SNNT.run_cmd(args)
 
 SNNT.run_cmd([["--rigorous"];args])
+SNNT.run_cmd([["--no-normalization","--no-cores"];args])

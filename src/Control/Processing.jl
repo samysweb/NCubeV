@@ -74,7 +74,7 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 							@timeit Config.TIMER "status_backup" begin
 								print_msg("[CTRL] Saving current state of verification...")
 								save(backup*"-"*string(num_invocations)*".jld","result",results,"backup_meta",backup_meta)
-								cex_count += sum(x->length(x.stars),results)
+								cex_count += sum(x->length(x.stars),results,init=0)
 								results = []
 								GC.gc()
 							end
@@ -85,6 +85,6 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 			end
 		end
 	end
-	cex_count += sum(x->length(x.stars),results)
+	cex_count += sum(x->length(x.stars),results,init=0)
 	return results, cex_count
 end

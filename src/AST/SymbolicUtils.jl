@@ -152,17 +152,24 @@ function solve_concrete_atom(f, a :: TermNumber, b :: TermNumber)
 	end
 end
 
+function atom_normalizer()
+	return Chain(
+		[
+			@rule(~a::_needs_normalization <= ~b::_needs_normalization => normalize_term(leq, ~a, ~b))
+			@rule(~a::_needs_normalization >= ~b::_needs_normalization => normalize_term(geq, ~a, ~b))
+			@rule(~a::_needs_normalization < ~b::_needs_normalization => normalize_term(le, ~a, ~b))
+			@rule(~a::_needs_normalization > ~b::_needs_normalization => normalize_term(ge, ~a, ~b))
+			@rule(~a::_needs_normalization == ~b::_needs_normalization => normalize_term(eq, ~a, ~b))
+			@rule(~a::_needs_normalization != ~b::_needs_normalization => normalize_term(neq, ~a, ~b))
+		]
+	)
+end
+
 function atom_simplifier()
 	Postwalk(
 		Chain(
 			[
-				@rule(~a::_needs_normalization <= ~b::_needs_normalization => normalize_term(leq, ~a, ~b))
-				@rule(~a::_needs_normalization >= ~b::_needs_normalization => normalize_term(geq, ~a, ~b))
-				@rule(~a::_needs_normalization < ~b::_needs_normalization => normalize_term(le, ~a, ~b))
-				@rule(~a::_needs_normalization > ~b::_needs_normalization => normalize_term(ge, ~a, ~b))
-				@rule(~a::_needs_normalization == ~b::_needs_normalization => normalize_term(eq, ~a, ~b))
-				@rule(~a::_needs_normalization != ~b::_needs_normalization => normalize_term(neq, ~a, ~b))
-
+				If(_ -> Config.NORMALIZE_ATOMS, atom_normalizer())
 				@rule (~a <= ~b::_isnotzero => leq(~a - ~b, TermNumber(0.0)))
 				@rule (~a >= ~b => leq(~b - ~a, TermNumber(0.0)))
 				@rule (~a <  ~b::_isnotzero => le(~a - ~b,  TermNumber(0.0)))

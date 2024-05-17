@@ -16,6 +16,8 @@ module Config
 	# DO NOT SET THIS VARIABLE UNLESS YOU KNOW WHAT YOU ARE DOING!
 	QUERY_GEN_SAVE_SAT = nothing
 
+	NORMALIZE_ATOMS = true
+
 	function __init__()
 		global INCLUDE_APPROXIMATIONS = true
 		global RIGOROUS_APPROXIMATIONS = false
