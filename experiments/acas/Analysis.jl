@@ -3,6 +3,7 @@ using JLD
 using Glob
 using Images
 using ImageTransformations
+using Plots
 
 function summarize_and_load(folder, prefix)
     println("Loading results from $folder/$prefix-*.jld")
@@ -197,7 +198,7 @@ end
 nmac_rectangle(;rv=2200,altitute_offset=10000) = Shape([-500/rv,500/rv,500/rv,-500/rv], [-100+altitute_offset,-100+altitute_offset,100+altitute_offset,100+altitute_offset])
 
 function plot_trajectory(plot_name,crash_trace,cf_trace;tau=0.1,rv=2200,altitute_offset = 10000,xlims=(-6.7,6.7),ylims=(9400,10500),figsize=(1000,300),delta=2.0,imgmodifier=1.0,show_planes=false)
-
+    # CC 0 image: https://www.rawpixel.com/image/6481821/vector-sticker-public-domain-blue
     intruder = load("intruder.png")  
     time_total = length(crash_trace)*tau
     time_to_nmac = time_total-5+500/rv
@@ -243,14 +244,20 @@ function plot_trajectory(plot_name,crash_trace,cf_trace;tau=0.1,rv=2200,altitute
         x1 = -time_to_nmac
         x2 = -time_to_nmac+delta*(size(ownship,2)/size(intruder,2))
         ownship_ratio = size(ownship,1)/size(ownship,2)
+        x_center = (x1+x2)/2
+        # Find index of h_cf closest to x_center
+        idx = argmin(abs.(t_ownship .- x_center))
+        y_center = h_cf[idx]
         y_range = (x2-x1)*ownship_ratio*y_modifier*imgmodifier
-        if theta > 0
-            y1 = h_crash[1]-y_range*(1/8)
-            y2 = h_crash[1]+y_range*(7/8)
-        else
-            y1 = h_crash[1]-y_range*(7/8)
-            y2 = h_crash[1]+y_range*(1/8)
-        end
+        # if theta > 0
+        #     y1 = h_crash[1]-y_range*(1/8)
+        #     y2 = h_crash[1]+y_range*(7/8)
+        # else
+        #     y1 = h_crash[1]-y_range*(7/8)
+        #     y2 = h_crash[1]+y_range*(1/8)
+        # end
+        y1 = y_center-y_range*0.5
+        y2 = y_center+y_range*0.5
         plot!([x1,x2],[y1,y2],ownship,fopacity=1.0,aspect_ratio=:none,yflip=false)
         # Intruder
         x1 = time_to_nmac-delta
