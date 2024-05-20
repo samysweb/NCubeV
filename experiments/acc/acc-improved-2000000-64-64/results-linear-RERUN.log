@@ -1,0 +1,630 @@
+[runlim] version:		1.10
+[runlim] time limit:		311040000 seconds
+[runlim] real time limit:	311040000 seconds
+[runlim] space limit:		30900 MB
+[runlim] argv[0]:		./deps/NCubeV/bin/NCubeV
+[runlim] argv[1]:		test/parsing/examples/acc/formula
+[runlim] argv[2]:		test/parsing/examples/acc/fixed
+[runlim] argv[3]:		test/parsing/examples/acc/mapping
+[runlim] argv[4]:		test/networks/acc-improved-2000000-64-64.onnx
+[runlim] argv[5]:		experiments/acc/acc-improved-2000000-64-64/results-linear-RERUN
+[runlim] argv[6]:		--linear
+[runlim] start:			Mon May 20 11:41:45 2024
+[runlim] main pid:		1863551
+[CMD] Running without any non-linear constraint approximations
+[CMD] Using SMT solver: Z3
+[CMD] Parsed initial query: SNNT.AST.Query(((-1.0*x1<0.0&((-1.0*rPos)+(0.004999999999999999*(rVel^2.0)))<=0.0&-1.0*x1<=0.0&1.0*x1<=100.0&-1.0*x2<=200.0&1.0*x2<=200.0&-1.0*x3<=100.0&1.0*x3<=100.0)->(-1.0*x3<=-100.0|(-1.0*x3<=100.0&1.0*x3<100.0&(1.0*x3<0.0|-1.0*x3<0.0)&(((1.0*x20.1*x3<0.0|-1.0*x2<0.0)&((-0.005000000000000001*rAccpost)+(-0.1*rVel)+(-1.0*rPos)+(5.0e-5*(rAccpost^2.0))+(0.004999999999999999*(rVel^2.0))+(0.001*rAccpost*rVel))<0.0)|(((-0.005000000000000001*rAccpost)+(-0.1*rVel)+(-1.0*rPos)+(5.0e-5*(rAccpost^2.0))+(0.004999999999999999*(rVel^2.0))+(0.001*rAccpost*rVel))<0.0&((0.5*(rVel^2.0))+(-1.0*rAccpost*rPos))<0.0)))|(1.0*x3<=0.0&-1.0*x3<=0.0&((-0.1*rVel)+(-1.0*rPos)+(0.004999999999999999*(rVel^2.0)))<0.0))), Set(SNNT.AST.Variable[rAccpost, rVel, rPos]), 2, 1, Dict{SNNT.AST.ApproxQuery, SNNT.AST.Approximation}(), Vector{Float64}[])
+[CMD] SMT Timeout: 10s
+[CTRL] Iterating over conjunctions...
+[APPROX] Trying to build approximation...
+[APPROX] Generating expression for (rAccpost*rPos)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost^2.0)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost*rVel)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rVel^2.0)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Approximation Bounds: Vector{Float64}[]
+[APPROX] Approximations: Dict{SNNT.AST.ApproxQuery, SNNT.AST.Approximation}()
+[APPROX] Approximation is ready
+[SKELETON] Adding linear dependency constraint
+Float32[-1.0, 0.0, 0.0]+0.0<0.0 -> -1.0*x1<=0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=-100.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+-100.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=100.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+100.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<=-100.0 -> -1.0*x3<=100.0
+100.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<100.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00099999999999
+100.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<0.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<0.0 -> Float32[0.0, 0.0, 1.0]+0.0<100.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<0.0 | !Float32[0.0, 0.0, -1.0]+0.0<=-100.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<=-100.0 -> -1.0*x3<0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!-1.0*x3<0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x2<0.0 -> Float32[0.0, -1.0, 0.0]+0.0<=200.0
+0.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<=0.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<=0.0 -> Float32[0.0, 0.0, 1.0]+0.0<100.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, 1.0]+0.0<0.0 -> 1.0*x3<=0.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<=0.0 | !Float32[0.0, 0.0, -1.0]+0.0<=-100.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<=0.0 | !Float32[0.0, 0.0, -1.0]+0.0<0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<=-100.0 -> -1.0*x3<=0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<0.0 -> -1.0*x3<=0.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!-1.0*x3<=0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 2
+.[QUERY] Found all non-linear combinations. Count: 2
+.[QUERY] Found all non-linear combinations. Count: 2
+.[QUERY] Found all non-linear combinations. Count: 3
+.[QUERY] Found all non-linear combinations. Count: 2
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 8
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 8
+[CTRL] Processing linear query no. 2
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, -73.18705430608887]
+[NNENUM] ub: [16.376852110707294, 0.0]
+[runlim] sample:		10.7 time, 10.1 real, 1466.8 MB
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  8
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 9/16  (3.516%) CEs: 9 ETA: 3.7 sec (expected 256 stars)   
+(0.2 sec) Q: 0, Sets: 18/26  (4.956%) CEs: 18 ETA: 4.6 sec (expected 363 stars)   (0.3 sec) Q: 0, Sets: 28/34  (8.203%) CEs: 28 ETA: 3.9 sec (expected 341 stars)   
+(0.4 sec) Q: 0, Sets: 34/41  (10.303%) CEs: 38 ETA: 3.9 sec (expected 330 stars)   (0.6 sec) Q: 0, Sets: 44/50  (10.742%) CEs: 49 ETA: 4.6 sec (expected 410 stars)   (0.7 sec) Q: 0, Sets: 59/62  (12.5%) CEs: 59 ETA: 4.6 sec (expected 472 stars)   (0.8 sec) Q: 0, Sets: 67/77  (25.977%) CEs: 67 ETA: 2.2 sec (expected 258 stars)   
+(0.9 sec) Q: 0, Sets: 73/80  (26.123%) CEs: 77 ETA: 2.4 sec (expected 279 stars)   (1.0 sec) Q: 0, Sets: 83/92  (26.208%) CEs: 86 ETA: 2.7 sec (expected 317 stars)   (1.1 sec) Q: 0, Sets: 93/101  (26.294%) CEs: 95 ETA: 3.0 sec (expected 354 stars)   (1.2 sec) Q: 0, Sets: 103/112  (26.379%) CEs: 105 ETA: 3.3 sec (expected 390 stars)   (1.3 sec) Q: 0, Sets: 114/121  (26.758%) CEs: 115 ETA: 3.5 sec (expected 426 stars)   (1.4 sec) Q: 0, Sets: 124/133  (27.643%) CEs: 124 ETA: 3.6 sec (expected 449 stars)   (1.5 sec) Q: 0, Sets: 136/140  (28.125%) CEs: 136 ETA: 3.8 sec (expected 484 stars)   (1.6 sec) Q: 0, Sets: 146/155  (28.577%) CEs: 146 ETA: 4.0 sec (expected 511 stars)   
+(1.7 sec) Q: 0, Sets: 154/162  (28.601%) CEs: 154 ETA: 4.2 sec (expected 538 stars)   (1.8 sec) Q: 0, Sets: 158/170  (28.675%) CEs: 163 ETA: 4.5 sec (expected 551 stars)   (1.9 sec) Q: 0, Sets: 168/179  (28.687%) CEs: 172 ETA: 4.7 sec (expected 586 stars)   (2.0 sec) Q: 0, Sets: 179/185  (28.711%) CEs: 182 ETA: 5.0 sec (expected 623 stars)   (2.1 sec) Q: 0, Sets: 189/194  (29.59%) CEs: 191 ETA: 5.0 sec (expected 639 stars)   (2.2 sec) Q: 0, Sets: 197/204  (29.858%) CEs: 199 ETA: 5.2 sec (expected 660 stars)   (2.3 sec) Q: 0, Sets: 205/213  (30.057%) CEs: 207 ETA: 5.4 sec (expected 682 stars)   (2.4 sec) Q: 0, Sets: 215/224  (30.115%) CEs: 217 ETA: 5.6 sec (expected 714 stars)   (2.5 sec) Q: 0, Sets: 225/234  (30.182%) CEs: 226 ETA: 5.8 sec (expected 745 stars)   (2.6 sec) Q: 0, Sets: 235/243  (30.206%) CEs: 236 ETA: 6.1 sec (expected 778 stars)   (2.7 sec) Q: 0, Sets: 245/252  (30.246%) CEs: 246 ETA: 6.3 sec (expected 810 stars)   (2.8 sec) Q: 0, Sets: 255/262  (30.258%) CEs: 255 ETA: 6.5 sec (expected 843 stars)   (2.9 sec) Q: 0, Sets: 265/271  (30.261%) CEs: 265 ETA: 6.8 sec (expected 876 stars)   (3.0 sec) Q: 0, Sets: 275/283  (30.35%) CEs: 275 ETA: 7.0 sec (expected 906 stars)   (3.2 sec) Q: 0, Sets: 284/291  (30.392%) CEs: 284 ETA: 7.2 sec (expected 934 stars)   (3.3 sec) Q: 0, Sets: 294/298  (30.469%) CEs: 294 ETA: 7.4 sec (expected 965 stars)   
+(3.4 sec) Q: 0, Sets: 300/304  (31.055%) CEs: 304 ETA: 7.5 sec (expected 966 stars)   (3.5 sec) Q: 0, Sets: 309/318  (32.837%) CEs: 313 ETA: 7.1 sec (expected 941 stars)   (3.6 sec) Q: 0, Sets: 320/327  (33.081%) CEs: 323 ETA: 7.2 sec (expected 967 stars)   (3.7 sec) Q: 0, Sets: 329/336  (33.643%) CEs: 333 ETA: 7.3 sec (expected 978 stars)   (3.8 sec) Q: 0, Sets: 340/345  (34.766%) CEs: 342 ETA: 7.1 sec (expected 978 stars)   (3.9 sec) Q: 0, Sets: 350/355  (35.498%) CEs: 352 ETA: 7.1 sec (expected 986 stars)   (4.0 sec) Q: 0, Sets: 361/364  (35.938%) CEs: 362 ETA: 7.1 sec (expected 1005 stars)   (4.1 sec) Q: 0, Sets: 370/379  (36.237%) CEs: 371 ETA: 7.2 sec (expected 1021 stars)   (4.2 sec) Q: 0, Sets: 380/385  (36.719%) CEs: 382 ETA: 7.2 sec (expected 1035 stars)   (4.3 sec) Q: 0, Sets: 389/398  (37.549%) CEs: 390 ETA: 7.2 sec (expected 1036 stars)   (4.4 sec) Q: 0, Sets: 399/407  (37.671%) CEs: 400 ETA: 7.3 sec (expected 1059 stars)   (4.5 sec) Q: 0, Sets: 409/415  (38.086%) CEs: 410 ETA: 7.3 sec (expected 1074 stars)   (4.6 sec) Q: 0, Sets: 419/429  (38.388%) CEs: 419 ETA: 7.4 sec (expected 1091 stars)   (4.7 sec) Q: 0, Sets: 425/433  (38.44%) CEs: 429 ETA: 7.5 sec (expected 1106 stars)   (4.8 sec) Q: 0, Sets: 435/442  (38.599%) CEs: 438 ETA: 7.7 sec (expected 1127 stars)   (4.9 sec) Q: 0, Sets: 445/453  (38.611%) CEs: 449 ETA: 7.8 sec (expected 1153 stars)   (5.0 sec) Q: 0, Sets: 455/461  (38.77%) CEs: 459 ETA: 7.9 sec (expected 1174 stars)   (5.1 sec) Q: 0, Sets: 466/470  (40.234%) CEs: 469 ETA: 7.6 sec (expected 1158 stars)   (5.2 sec) Q: 0, Sets: 477/481  (40.43%) CEs: 480 ETA: 7.7 sec (expected 1180 stars)   (5.3 sec) Q: 0, Sets: 487/492  (43.164%) CEs: 491 ETA: 7.0 sec (expected 1128 stars)   (5.4 sec) Q: 0, Sets: 497/507  (45.515%) CEs: 500 ETA: 6.5 sec (expected 1092 stars)   (5.6 sec) Q: 0, Sets: 508/516  (45.532%) CEs: 510 ETA: 6.6 sec (expected 1116 stars)   (5.7 sec) Q: 0, Sets: 518/525  (45.592%) CEs: 520 ETA: 6.8 sec (expected 1136 stars)   (5.8 sec) Q: 0, Sets: 528/534  (45.63%) CEs: 530 ETA: 6.9 sec (expected 1157 stars)   (5.9 sec) Q: 0, Sets: 538/543  (45.801%) CEs: 538 ETA: 6.9 sec (expected 1175 stars)   (6.0 sec) Q: 0, Sets: 548/555  (45.824%) CEs: 548 ETA: 7.1 sec (expected 1196 stars)   (6.1 sec) Q: 0, Sets: 557/565  (45.876%) CEs: 557 ETA: 7.2 sec (expected 1214 stars)   (6.2 sec) Q: 0, Sets: 562/566  (45.898%) CEs: 566 ETA: 7.3 sec (expected 1224 stars)   (6.3 sec) Q: 0, Sets: 572/576  (45.996%) CEs: 576 ETA: 7.4 sec (expected 1244 stars)   (6.4 sec) Q: 0, Sets: 582/586  (46.436%) CEs: 585 ETA: 7.4 sec (expected 1253 stars)   (6.5 sec) Q: 0, Sets: 591/595  (46.631%) CEs: 595 ETA: 7.5 sec (expected 1267 stars)   (6.6 sec) Q: 0, Sets: 601/605  (47.461%) CEs: 605 ETA: 7.3 sec (expected 1266 stars)   
+(6.7 sec) Q: 0, Sets: 615/625  (47.755%) CEs: 615 ETA: 7.4 sec (expected 1288 stars)   (6.8 sec) Q: 0, Sets: 625/633  (47.771%) CEs: 625 ETA: 7.5 sec (expected 1308 stars)   (6.9 sec) Q: 0, Sets: 630/638  (47.777%) CEs: 634 ETA: 7.6 sec (expected 1319 stars)   (7.0 sec) Q: 0, Sets: 640/649  (47.785%) CEs: 644 ETA: 7.7 sec (expected 1339 stars)   (7.2 sec) Q: 0, Sets: 650/660  (47.794%) CEs: 654 ETA: 7.8 sec (expected 1360 stars)   (7.3 sec) Q: 0, Sets: 661/668  (47.798%) CEs: 664 ETA: 7.9 sec (expected 1383 stars)   (7.4 sec) Q: 0, Sets: 671/678  (47.799%) CEs: 674 ETA: 8.0 sec (expected 1404 stars)   (7.5 sec) Q: 0, Sets: 681/686  (47.827%) CEs: 684 ETA: 8.1 sec (expected 1424 stars)   (7.6 sec) Q: 0, Sets: 691/699  (47.867%) CEs: 693 ETA: 8.2 sec (expected 1444 stars)   (7.7 sec) Q: 0, Sets: 701/707  (47.888%) CEs: 703 ETA: 8.4 sec (expected 1464 stars)   (7.8 sec) Q: 0, Sets: 711/719  (47.908%) CEs: 712 ETA: 8.5 sec (expected 1484 stars)   (7.9 sec) Q: 0, Sets: 722/728  (47.913%) CEs: 723 ETA: 8.6 sec (expected 1507 stars)   (8.0 sec) Q: 0, Sets: 732/739  (47.943%) CEs: 733 ETA: 8.7 sec (expected 1527 stars)   (8.1 sec) Q: 0, Sets: 743/748  (48.01%) CEs: 743 ETA: 8.8 sec (expected 1548 stars)   (8.2 sec) Q: 0, Sets: 752/758  (48.037%) CEs: 752 ETA: 8.9 sec (expected 1565 stars)   (8.3 sec) Q: 0, Sets: 763/767  (48.045%) CEs: 763 ETA: 9.0 sec (expected 1588 stars)   (8.4 sec) Q: 0, Sets: 767/777  (48.048%) CEs: 772 ETA: 9.1 sec (expected 1596 stars)   (8.5 sec) Q: 0, Sets: 781/788  (48.077%) CEs: 781 ETA: 9.2 sec (expected 1624 stars)   (8.6 sec) Q: 0, Sets: 787/793  (48.09%) CEs: 791 ETA: 9.3 sec (expected 1637 stars)   (8.7 sec) Q: 0, Sets: 797/802  (48.141%) CEs: 801 ETA: 9.4 sec (expected 1656 stars)   (8.8 sec) Q: 0, Sets: 807/814  (48.198%) CEs: 812 ETA: 9.5 sec (expected 1674 stars)   (8.9 sec) Q: 0, Sets: 818/823  (48.233%) CEs: 822 ETA: 9.6 sec (expected 1696 stars)   (9.0 sec) Q: 0, Sets: 828/834  (48.254%) CEs: 831 ETA: 9.7 sec (expected 1716 stars)   (9.1 sec) Q: 0, Sets: 838/846  (48.258%) CEs: 841 ETA: 9.8 sec (expected 1736 stars)   (9.2 sec) Q: 0, Sets: 848/857  (48.267%) CEs: 852 ETA: 9.9 sec (expected 1757 stars)   (9.3 sec) Q: 0, Sets: 858/864  (48.286%) CEs: 862 ETA: 10.0 sec (expected 1777 stars)   (9.5 sec) Q: 0, Sets: 867/876  (48.293%) CEs: 871 ETA: 10.1 sec (expected 1795 stars)   (9.6 sec) Q: 0, Sets: 877/884  (48.303%) CEs: 881 ETA: 10.2 sec (expected 1816 stars)   [runlim] sample:		20.7 time, 20.1 real, 1472.4 MB
+(9.7 sec) Q: 0, Sets: 887/893  (48.325%) CEs: 891 ETA: 10.3 sec (expected 1835 stars)   (9.8 sec) Q: 0, Sets: 897/903  (48.335%) CEs: 901 ETA: 10.4 sec (expected 1856 stars)   (9.9 sec) Q: 0, Sets: 906/917  (48.34%) CEs: 911 ETA: 10.5 sec (expected 1874 stars)   (10.0 sec) Q: 0, Sets: 916/926  (48.343%) CEs: 920 ETA: 10.7 sec (expected 1895 stars)   (10.1 sec) Q: 0, Sets: 926/932  (48.349%) CEs: 931 ETA: 10.8 sec (expected 1915 stars)   (10.2 sec) Q: 0, Sets: 937/943  (48.358%) CEs: 941 ETA: 10.9 sec (expected 1938 stars)   (10.3 sec) Q: 0, Sets: 948/954  (48.367%) CEs: 951 ETA: 11.0 sec (expected 1960 stars)   (10.4 sec) Q: 0, Sets: 959/966  (48.37%) CEs: 962 ETA: 11.1 sec (expected 1983 stars)   (10.5 sec) Q: 0, Sets: 969/974  (48.376%) CEs: 972 ETA: 11.2 sec (expected 2003 stars)   (10.6 sec) Q: 0, Sets: 978/986  (48.392%) CEs: 981 ETA: 11.3 sec (expected 2021 stars)   (10.7 sec) Q: 0, Sets: 989/994  (48.399%) CEs: 992 ETA: 11.4 sec (expected 2043 stars)   (10.8 sec) Q: 0, Sets: 999/1005  (48.408%) CEs: 1002 ETA: 11.5 sec (expected 2064 stars)   (10.9 sec) Q: 0, Sets: 1009/1012  (48.425%) CEs: 1010 ETA: 11.6 sec (expected 2084 stars)   (11.0 sec) Q: 0, Sets: 1016/1020  (48.436%) CEs: 1018 ETA: 11.7 sec (expected 2098 stars)   (11.1 sec) Q: 0, Sets: 1025/1032  (48.517%) CEs: 1026 ETA: 11.8 sec (expected 2113 stars)   (11.2 sec) Q: 0, Sets: 1035/1041  (48.532%) CEs: 1036 ETA: 11.9 sec (expected 2133 stars)   (11.3 sec) Q: 0, Sets: 1045/1050  (48.621%) CEs: 1046 ETA: 12.0 sec (expected 2149 stars)   (11.4 sec) Q: 0, Sets: 1054/1060  (48.712%) CEs: 1055 ETA: 12.0 sec (expected 2164 stars)   (11.5 sec) Q: 0, Sets: 1063/1069  (48.752%) CEs: 1064 ETA: 12.1 sec (expected 2180 stars)   (11.6 sec) Q: 0, Sets: 1073/1077  (48.926%) CEs: 1073 ETA: 12.1 sec (expected 2193 stars)   (11.7 sec) Q: 0, Sets: 1083/1089  (48.959%) CEs: 1083 ETA: 12.2 sec (expected 2212 stars)   (11.8 sec) Q: 0, Sets: 1088/1092  (48.999%) CEs: 1092 ETA: 12.3 sec (expected 2220 stars)   (11.9 sec) Q: 0, Sets: 1098/1103  (49.139%) CEs: 1102 ETA: 12.4 sec (expected 2234 stars)   (12.0 sec) Q: 0, Sets: 1108/1111  (49.194%) CEs: 1112 ETA: 12.4 sec (expected 2252 stars)   (12.2 sec) Q: 0, Sets: 1117/1126  (50.098%) CEs: 1121 ETA: 12.1 sec (expected 2230 stars)   (12.3 sec) Q: 0, Sets: 1128/1134  (51.953%) CEs: 1130 ETA: 11.3 sec (expected 2171 stars)   (12.4 sec) Q: 0, Sets: 1139/1145  (52.295%) CEs: 1140 ETA: 11.3 sec (expected 2178 stars)   (12.5 sec) Q: 0, Sets: 1149/1157  (52.429%) CEs: 1150 ETA: 11.3 sec (expected 2192 stars)   (12.6 sec) Q: 0, Sets: 1160/1167  (52.673%) CEs: 1161 ETA: 11.3 sec (expected 2202 stars)   (12.7 sec) Q: 0, Sets: 1170/1178  (52.844%) CEs: 1171 ETA: 11.3 sec (expected 2214 stars)   (12.8 sec) Q: 0, Sets: 1181/1189  (53.223%) CEs: 1181 ETA: 11.2 sec (expected 2219 stars)   (12.9 sec) Q: 0, Sets: 1186/1196  (53.534%) CEs: 1191 ETA: 11.2 sec (expected 2215 stars)   (13.0 sec) Q: 0, Sets: 1199/1207  (53.955%) CEs: 1199 ETA: 11.1 sec (expected 2222 stars)   (13.1 sec) Q: 0, Sets: 1209/1216  (54.175%) CEs: 1209 ETA: 11.1 sec (expected 2232 stars)   (13.2 sec) Q: 0, Sets: 1219/1226  (56.25%) CEs: 1219 ETA: 10.3 sec (expected 2167 stars)   (13.3 sec) Q: 0, Sets: 1229/1234  (57.617%) CEs: 1230 ETA: 9.8 sec (expected 2133 stars)   
+(13.4 sec) Q: 0, Sets: 1239/1245  (58.105%) CEs: 1239 ETA: 9.7 sec (expected 2132 stars)   (13.5 sec) Q: 0, Sets: 1249/1253  (60.156%) CEs: 1249 ETA: 8.9 sec (expected 2076 stars)   (13.6 sec) Q: 0, Sets: 1260/1262  (62.5%) CEs: 1258 ETA: 8.2 sec (expected 2016 stars)   (13.7 sec) Q: 0, Sets: 1269/1274  (63.281%) CEs: 1268 ETA: 8.0 sec (expected 2005 stars)   (13.8 sec) Q: 0, Sets: 1279/1287  (64.258%) CEs: 1277 ETA: 7.7 sec (expected 1990 stars)   (13.9 sec) Q: 0, Sets: 1290/1296  (64.697%) CEs: 1287 ETA: 7.6 sec (expected 1994 stars)   (14.0 sec) Q: 0, Sets: 1300/1304  (65.625%) CEs: 1297 ETA: 7.3 sec (expected 1981 stars)   (14.1 sec) Q: 0, Sets: 1310/1316  (66.992%) CEs: 1307 ETA: 7.0 sec (expected 1955 stars)   (14.2 sec) Q: 0, Sets: 1320/1328  (67.224%) CEs: 1316 ETA: 6.9 sec (expected 1964 stars)   (14.3 sec) Q: 0, Sets: 1325/1333  (67.249%) CEs: 1326 ETA: 7.0 sec (expected 1970 stars)   (14.4 sec) Q: 0, Sets: 1336/1344  (67.325%) CEs: 1336 ETA: 7.0 sec (expected 1984 stars)   (14.5 sec) Q: 0, Sets: 1346/1353  (67.499%) CEs: 1347 ETA: 7.0 sec (expected 1994 stars)   (14.6 sec) Q: 0, Sets: 1357/1361  (67.92%) CEs: 1356 ETA: 6.9 sec (expected 1998 stars)   (14.8 sec) Q: 0, Sets: 1366/1373  (68.066%) CEs: 1367 ETA: 6.9 sec (expected 2007 stars)   (14.9 sec) Q: 0, Sets: 1381/1388  (68.121%) CEs: 1377 ETA: 7.0 sec (expected 2027 stars)   (15.0 sec) Q: 0, Sets: 1392/1399  (68.153%) CEs: 1388 ETA: 7.0 sec (expected 2042 stars)   (15.1 sec) Q: 0, Sets: 1402/1408  (68.201%) CEs: 1398 ETA: 7.0 sec (expected 2056 stars)   (15.2 sec) Q: 0, Sets: 1408/1412  (68.311%) CEs: 1408 ETA: 7.0 sec (expected 2061 stars)   (15.3 sec) Q: 0, Sets: 1418/1423  (68.6%) CEs: 1417 ETA: 7.0 sec (expected 2067 stars)   (15.4 sec) Q: 0, Sets: 1429/1433  (68.677%) CEs: 1427 ETA: 7.0 sec (expected 2081 stars)   (15.5 sec) Q: 0, Sets: 1439/1444  (69.336%) CEs: 1436 ETA: 6.8 sec (expected 2075 stars)   (15.6 sec) Q: 0, Sets: 1450/1456  (69.8%) CEs: 1447 ETA: 6.7 sec (expected 2077 stars)   (15.7 sec) Q: 0, Sets: 1461/1466  (70.264%) CEs: 1458 ETA: 6.6 sec (expected 2079 stars)   (15.8 sec) Q: 0, Sets: 1473/1481  (70.374%) CEs: 1468 ETA: 6.6 sec (expected 2093 stars)   (15.9 sec) Q: 0, Sets: 1477/1485  (70.383%) CEs: 1477 ETA: 6.7 sec (expected 2099 stars)   (16.0 sec) Q: 0, Sets: 1488/1496  (70.615%) CEs: 1486 ETA: 6.7 sec (expected 2107 stars)   (16.1 sec) Q: 0, Sets: 1498/1503  (70.691%) CEs: 1496 ETA: 6.7 sec (expected 2119 stars)   (16.2 sec) Q: 0, Sets: 1507/1514  (71.118%) CEs: 1506 ETA: 6.6 sec (expected 2119 stars)   (16.3 sec) Q: 0, Sets: 1518/1523  (71.338%) CEs: 1517 ETA: 6.6 sec (expected 2128 stars)   (16.4 sec) Q: 0, Sets: 1529/1533  (72.266%) CEs: 1527 ETA: 6.3 sec (expected 2116 stars)   (16.5 sec) Q: 0, Sets: 1539/1545  (78.125%) CEs: 1537 ETA: 4.6 sec (expected 1970 stars)   (16.6 sec) Q: 0, Sets: 1551/1554  (85.547%) CEs: 1547 ETA: 2.8 sec (expected 1813 stars)   (16.7 sec) Q: 0, Sets: 1561/1564  (86.914%) CEs: 1556 ETA: 2.5 sec (expected 1796 stars)   (16.8 sec) Q: 0, Sets: 1569/1576  (87.695%) CEs: 1565 ETA: 2.4 sec (expected 1789 stars)   (16.9 sec) Q: 0, Sets: 1579/1584  (89.258%) CEs: 1575 ETA: 2.0 sec (expected 1769 stars)   (17.0 sec) Q: 0, Sets: 1590/1592  (93.75%) CEs: 1584 ETA: 1.1 sec (expected 1696 stars)   (17.1 sec) Q: 0, Sets: 1600/1606  (93.848%) CEs: 1595 ETA: 1.1 sec (expected 1705 stars)   (17.2 sec) Q: 0, Sets: 1610/1616  (94.238%) CEs: 1605 ETA: 1.1 sec (expected 1708 stars)   (17.3 sec) Q: 0, Sets: 1621/1624  (95.117%) CEs: 1616 ETA: 0.9 sec (expected 1704 stars)   (17.4 sec) Q: 0, Sets: 1632/1634  (96.875%) CEs: 1626 ETA: 0.6 sec (expected 1685 stars)   (17.5 sec) Q: 0, Sets: 1644/1644  (100.0%) CEs: 1638 ETA: 0.0 sec (expected 1644 stars)   
+Total Stars: 1644 (1644 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 17.5 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 23119
+Total Num Lps: 23119
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [0.0, 0.0]
+Output: [9.147181510925293]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x75859423e2e0>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 1638
+[NNENUM] Filtering result using SMT solver...
+[runlim] sample:		30.8 time, 30.1 real, 1520.5 MB
+[runlim] sample:		40.8 time, 40.1 real, 1528.9 MB
+[runlim] sample:		50.9 time, 50.1 real, 1546.0 MB
+[SMT] SMT filtered out 1566 stars (out of 1638; TO: 0).
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+..[QUERY] Found all non-linear combinations. Count: 2
+.[QUERY] Found all non-linear combinations. Count: 2
+.[QUERY] Found all non-linear combinations. Count: 2
+...[QUERY] Found all non-linear combinations. Count: 3
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 7
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 7
+[CTRL] Processing linear query no. 3
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [31.703236423477783, -73.18705430608887]
+[NNENUM] ub: [100.0, 0.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  7
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 5/11  (2.344%) CEs: 9 ETA: 5.4 sec (expected 213 stars)   
+(0.2 sec) Q: 0, Sets: 21/26  (7.812%) CEs: 26 ETA: 2.7 sec (expected 269 stars)   (0.3 sec) Q: 0, Sets: 42/45  (43.75%) CEs: 47 ETA: 0.4 sec (expected 96 stars)   
+
+Total Stars: 66 (66 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 0.4 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 1346
+Total Num Lps: 1346
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [31.703235626220703, -15.210908889770508]
+Output: [13.604846954345703]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7585942ad340>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 59
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 59 stars (out of 59; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 5
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 5
+[CTRL] Processing linear query no. 4
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, 0.0]
+[NNENUM] ub: [16.376852110707294, 200.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  5
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 4/10  (16.016%) CEs: 0 ETA: 0.7 sec (expected 25 stars)   
+(0.2 sec) Q: 0, Sets: 8/11  (25.0%) CEs: 0 ETA: 0.7 sec (expected 32 stars)   (0.4 sec) Q: 0, Sets: 17/20  (31.25%) CEs: 0 ETA: 0.8 sec (expected 54 stars)   
+(0.5 sec) Q: 0, Sets: 25/30  (38.281%) CEs: 0 ETA: 0.8 sec (expected 65 stars)   (0.6 sec) Q: 0, Sets: 29/31  (50.0%) CEs: 0 ETA: 0.6 sec (expected 58 stars)   (0.7 sec) Q: 0, Sets: 42/42  (100.0%) CEs: 0 ETA: 0.0 sec (expected 42 stars)   
+Total Stars: 42 (0 exact, 42 approx)
+Unfinished Stars: 0
+Runtime: 0.7 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 0
+Total Num Lps: 0
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x75859423e310>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 5
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [16.376852110707294, 0.0]
+[NNENUM] ub: [31.703236423477783, 200.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+
+Total Stars: 4 (0 exact, 4 approx)
+Unfinished Stars: 0
+Runtime: 0.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 0
+Total Num Lps: 0
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x758594253bb0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 4
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 4
+[CTRL] Processing linear query no. 6
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, 0.0]
+[NNENUM] ub: [16.376852110707294, 0.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  4
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x758594253790>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+.[QUERY] Found all non-linear combinations. Count: 3
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 7
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 7
+[CTRL] Processing linear query no. 7
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [31.703236423477783, -134.49259155717084]
+[NNENUM] ub: [100.0, -73.18705430608887]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  7
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 7/11  (17.188%) CEs: 7 ETA: 0.6 sec (expected 41 stars)   
+(0.2 sec) Q: 0, Sets: 22/26  (23.828%) CEs: 20 ETA: 0.7 sec (expected 92 stars)   
+Total Stars: 43 (43 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 0.3 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 667
+Total Num Lps: 667
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [31.703235626220703, -73.18705749511719]
+Output: [100.0]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x75859423e910>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 28
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 22 stars (out of 28; TO: 0).
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 7
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 7
+[CTRL] Processing linear query no. 8
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [16.376852110707294, -134.49259155717084]
+[NNENUM] ub: [31.703236423477783, -73.18705430608887]
+[runlim] sample:		66.2 time, 60.1 real, 1596.0 MB
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  7
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 15/17  (81.25%) CEs: 10 ETA: 0.0 sec (expected 18 stars)   
+
+Total Stars: 17 (17 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 0.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 203
+Total Num Lps: 203
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [16.37685203552246, -73.18705749511719]
+Output: [100.00000762939453]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7585942531f0>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 10
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 10 stars (out of 10; TO: 0).
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 7
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 7
+[CTRL] Processing linear query no. 9
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [31.703236423477783, -200.0]
+[NNENUM] ub: [100.0, -134.49259155717084]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  7
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7585933bb550>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+.[QUERY] Found all non-linear combinations. Count: 3
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 7
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 7
+[CTRL] Processing linear query no. 10
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [16.376852110707294, -73.18705430608887]
+[NNENUM] ub: [31.703236423477783, 0.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  7
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 5/9  (15.625%) CEs: 8 ETA: 0.7 sec (expected 32 stars)   
+(0.2 sec) Q: 0, Sets: 22/24  (43.75%) CEs: 19 ETA: 0.3 sec (expected 50 stars)   (0.3 sec) Q: 0, Sets: 34/37  (75.0%) CEs: 30 ETA: 0.1 sec (expected 45 stars)   
+(0.4 sec) Q: 0, Sets: 46/49  (82.812%) CEs: 42 ETA: 0.1 sec (expected 56 stars)   (0.5 sec) Q: 0, Sets: 63/63  (100.0%) CEs: 56 ETA: 0.0 sec (expected 63 stars)   
+Total Stars: 63 (63 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 0.5 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 1188
+Total Num Lps: 1188
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [16.37685203552246, -19.016319274902344]
+Output: [32.79403305053711]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x758592aeb760>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 56
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 54 stars (out of 56; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 11
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [31.703236423477783, 0.0]
+[NNENUM] ub: [100.0, 200.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+
+Total Stars: 4 (0 exact, 4 approx)
+Unfinished Stars: 0
+Runtime: 0.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 0
+Total Num Lps: 0
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x75859423eee0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 12
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [31.703236423477783, 0.0]
+[NNENUM] ub: [100.0, 0.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7585942651f0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 13
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [16.376852110707294, 0.0]
+[NNENUM] ub: [31.703236423477783, 0.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7585933bb970>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+ 60.746750 seconds (245.34 M allocations: 3.365 GiB, 3.07% gc time, 6.94% compilation time)
+----------------------------------------------------------
+# Unsafe Stars: 80
+Saving final results in experiments/acc/acc-improved-2000000-64-64/results-linear-RERUN...
+ ────────────────────────────────────────────────────────────────────────────────
+                                        Time                    Allocations      
+                               ───────────────────────   ────────────────────────
+       Tot / % measured:            62.4s /  95.6%           3.45GiB /  92.9%    
+
+ Section               ncalls     time    %tot     avg     alloc    %tot      avg
+ ────────────────────────────────────────────────────────────────────────────────
+ query_iteration            1    53.5s   89.6%   53.5s   2.07GiB   64.7%  2.07GiB
+   olnnv_query_proc...     12    52.2s   87.5%   4.35s   1.99GiB   62.2%   170MiB
+     nnv                   12    52.2s   87.5%   4.35s   1.99GiB   62.2%   170MiB
+       star_filter         12    31.2s   52.3%   2.60s   1.97GiB   61.3%   168MiB
+         z3_check       16.0k    29.9s   50.0%  1.87ms   1.83GiB   57.0%   120KiB
+   next_query              13    842ms    1.4%  64.8ms   72.0MiB    2.2%  5.54MiB
+     check_infeasib...    124    664ms    1.1%  5.36ms   57.5MiB    1.8%   475KiB
+       check_infeas...    124    375ms    0.6%  3.02ms   15.9MiB    0.5%   131KiB
+         SMTprep          326    218ms    0.4%   670μs   13.8MiB    0.4%  43.3KiB
+         z3_check         163    150ms    0.3%   923μs   1.49MiB    0.0%  9.35KiB
+         feasibilit...    210    554μs    0.0%  2.64μs   6.56KiB    0.0%    32.0B
+         feasibilit...    163    151μs    0.0%   929ns   52.0KiB    0.0%     326B
+       check_infeas...    124    290ms    0.5%  2.33ms   41.6MiB    1.3%   344KiB
+         SMTprep          466    112ms    0.2%   241μs   7.81MiB    0.2%  17.2KiB
+         LP_create_...    214   89.8ms    0.2%   420μs   11.2MiB    0.3%  53.7KiB
+         z3_check         233   44.1ms    0.1%   189μs   30.9KiB    0.0%     136B
+         LP_populat...    214   22.7ms    0.0%   106μs   13.9MiB    0.4%  66.7KiB
+         LP_check         214   12.0ms    0.0%  55.9μs   3.35MiB    0.1%  16.1KiB
+         LP_add_con...    214   3.73ms    0.0%  17.4μs   4.72MiB    0.1%  22.6KiB
+         feasibilit...    248    463μs    0.0%  1.87μs   7.75KiB    0.0%    32.0B
+         feasibilit...    214    159μs    0.0%   743ns   45.0KiB    0.0%     215B
+     query_construc...     58    159ms    0.3%  2.75ms   8.91MiB    0.3%   157KiB
+       SMTprep            118   82.2ms    0.1%   697μs   4.98MiB    0.2%  43.2KiB
+       z3_check            59   50.7ms    0.1%   860μs    566KiB    0.0%  9.59KiB
+       PicoSAT_solve      117   2.17ms    0.0%  18.5μs   3.66KiB    0.0%    32.0B
+       atom_recovery       59   1.30ms    0.0%  22.0μs    347KiB    0.0%  5.89KiB
+         atom_compu...     59    939μs    0.0%  15.9μs    312KiB    0.0%  5.28KiB
+         bound_comp...     59    265μs    0.0%  4.48μs   25.8KiB    0.0%     448B
+       feasibility_...     59   76.5μs    0.0%  1.30μs   1.84KiB    0.0%    32.0B
+       feasibility_...     23   25.4μs    0.0%  1.11μs   6.81KiB    0.0%     303B
+     atom_recovery        124   3.19ms    0.0%  25.8μs    736KiB    0.0%  5.94KiB
+       atom_computa...    124   2.36ms    0.0%  19.0μs    663KiB    0.0%  5.35KiB
+       bound_comput...    124    649μs    0.0%  5.24μs   54.2KiB    0.0%     448B
+     PicoSAT_solve        137   2.57ms    0.0%  18.8μs   4.28KiB    0.0%    32.0B
+     bound_atoms          124   1.52ms    0.0%  12.3μs    903KiB    0.0%  7.28KiB
+     check_infeasib...    248    525μs    0.0%  2.12μs    376KiB    0.0%  1.52KiB
+     approx_resolution    124    180μs    0.0%  1.45μs    139KiB    0.0%  1.12KiB
+   boolean_skeleton         1   82.2ms    0.1%  82.2ms   3.86MiB    0.1%  3.86MiB
+   legacy_approx           12   23.0ms    0.0%  1.92ms   1.39MiB    0.0%   119KiB
+   olnnv_query_gen         12   10.7ms    0.0%   892μs   2.51MiB    0.1%   214KiB
+   smt_filter_creation     12   11.5μs    0.0%   958ns      384B    0.0%    32.0B
+ get_approx_query           1    6.22s   10.4%   6.22s   1.13GiB   35.3%  1.13GiB
+   OVERT                    4    3.67s    6.2%   918ms    448MiB   13.6%   112MiB
+ ──────────────────────────────────────────────────────────────────────────────── Done
+[runlim] end:			Mon May 20 11:42:49 2024
+[runlim] status:		ok
+[runlim] result:		0
+[runlim] children:		631
+[runlim] real:			64.28 seconds
+[runlim] time:			74.33 seconds
+[runlim] space:			1600.7 MB
+[runlim] samples:		642

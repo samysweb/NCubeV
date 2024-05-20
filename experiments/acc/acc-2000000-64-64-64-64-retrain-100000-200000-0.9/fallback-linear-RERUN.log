@@ -1,0 +1,724 @@
+[runlim] version:		1.10
+[runlim] time limit:		311040000 seconds
+[runlim] real time limit:	311040000 seconds
+[runlim] space limit:		30900 MB
+[runlim] argv[0]:		./deps/NCubeV/bin/NCubeV
+[runlim] argv[1]:		test/parsing/examples/acc/formula-fallback
+[runlim] argv[2]:		test/parsing/examples/acc/fixed
+[runlim] argv[3]:		test/parsing/examples/acc/mapping
+[runlim] argv[4]:		test/networks/acc-2000000-64-64-64-64-retrain-100000-200000-0.9.onnx
+[runlim] argv[5]:		experiments/acc/acc-2000000-64-64-64-64-retrain-100000-200000-0.9/fallback-linear-RERUN
+[runlim] argv[6]:		--approx
+[runlim] argv[7]:		1
+[runlim] argv[8]:		--linear
+[runlim] start:			Mon May 20 11:57:35 2024
+[runlim] main pid:		1884937
+[CMD] Running without any non-linear constraint approximations
+[CMD] Using SMT solver: Z3
+[CMD] Parsed initial query: SNNT.AST.Query(((-1.0*x1<0.0&((-1.0*rPos)+(0.004999999999999999*(rVel^2.0)))<=0.0&-1.0*x1<=0.0&1.0*x1<=100.0&-1.0*x2<=200.0&1.0*x2<=200.0&-1.0*x3<=100.0&1.0*x3<=100.01&(-1.0*x2<-0.1|1.0*x2<-2.1|-1.0*x1<-0.08))->(-1.0*x3<=-100.0|(-1.0*x3<=100.0&1.0*x3<100.0&(1.0*x3<0.0|-1.0*x3<0.0)&(((1.0*x20.1*x3<0.0|-1.0*x2<0.0)&((-0.005000000000000001*rAccpost)+(-0.1*rVel)+(-1.0*rPos)+(5.0e-5*(rAccpost^2.0))+(0.004999999999999999*(rVel^2.0))+(0.001*rAccpost*rVel))<0.0)|(((-0.005000000000000001*rAccpost)+(-0.1*rVel)+(-1.0*rPos)+(5.0e-5*(rAccpost^2.0))+(0.004999999999999999*(rVel^2.0))+(0.001*rAccpost*rVel))<0.0&((0.5*(rVel^2.0))+(-1.0*rAccpost*rPos))<0.0)))|(1.0*x3<=0.0&-1.0*x3<=0.0&((-0.1*rVel)+(-1.0*rPos)+(0.004999999999999999*(rVel^2.0)))<0.0))), Set(SNNT.AST.Variable[rAccpost, rVel, rPos]), 2, 1, Dict{SNNT.AST.ApproxQuery, SNNT.AST.Approximation}(), Vector{Float64}[])
+[CMD] SMT Timeout: 10s
+[CTRL] Iterating over conjunctions...
+[APPROX] Trying to build approximation...
+[APPROX] Generating expression for (rAccpost*rPos)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.0, 100.01000213623047], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost^2.0)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.0, 100.01000213623047], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost*rVel)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.0, 100.01000213623047], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rVel^2.0)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.0, 100.01000213623047], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Approximation Bounds: Vector{Float64}[]
+[APPROX] Approximations: Dict{SNNT.AST.ApproxQuery, SNNT.AST.Approximation}()
+[APPROX] Approximation is ready
+[SKELETON] Adding linear dependency constraint
+Float32[-1.0, 0.0, 0.0]+0.0<0.0 -> -1.0*x1<=0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x2<-0.1 -> Float32[0.0, -1.0, 0.0]+0.0<=200.0
+-0.09999999999999999999999999999999999999999999999999999999999999999999999999999914
+[SKELETON] Adding linear dependency constraint
+1.0*x2<-2.1 -> Float32[0.0, 1.0, 0.0]+0.0<=200.0
+-2.099999999999999999999999999999999999999999999999999999999999999999999999999986
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x2<-2.1 | !Float32[0.0, -1.0, 0.0]+0.0<-0.1
+[SKELETON] Adding linear dependency constraint
+-1.0*x1<-0.08 -> Float32[-1.0, 0.0, 0.0]+0.0<0.0
+-0.07999999999999999999999999999999999999999999999999999999999999999999999999999996
+[SKELETON] Adding linear dependency constraint
+-1.0*x1<-0.08 -> Float32[-1.0, 0.0, 0.0]+0.0<=0.0
+-0.07999999999999999999999999999999999999999999999999999999999999999999999999999996
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=-100.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.0
+-100.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<100.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00999999999999
+100.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<0.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00999999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<0.0 -> Float32[0.0, 0.0, 1.0]+0.0<100.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<0.0 | !Float32[0.0, 0.0, -1.0]+0.0<=-100.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<=-100.0 -> -1.0*x3<0.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!-1.0*x3<0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x2<0.0 -> Float32[0.0, -1.0, 0.0]+0.0<=200.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, -1.0, 0.0]+0.0<-0.1 -> -1.0*x2<0.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!-1.0*x2<0.0 | !Float32[0.0, 1.0, 0.0]+0.0<-2.1
+[SKELETON] Adding linear dependency constraint
+1.0*x3<=0.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00999999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<=0.0 -> Float32[0.0, 0.0, 1.0]+0.0<100.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, 1.0]+0.0<0.0 -> 1.0*x3<=0.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<=0.0 | !Float32[0.0, 0.0, -1.0]+0.0<=-100.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<=0.0 | !Float32[0.0, 0.0, -1.0]+0.0<0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<=-100.0 -> -1.0*x3<=0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<0.0 -> -1.0*x3<=0.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!-1.0*x3<=0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
+.[QUERY] Found all non-linear combinations. Count: 1
+..[QUERY] Found all non-linear combinations. Count: 1
+..[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 7
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 7
+[CTRL] Processing linear query no. 2
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, -2.1]
+[NNENUM] ub: [16.376852110707294, 0.0]
+[runlim] sample:		11.1 time, 10.2 real, 1457.4 MB
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  7
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 8/17  (0.879%) CEs: 8 ETA: 18.9 sec (expected 910 stars)   
+(0.3 sec) Q: 0, Sets: 20/29  (1.367%) CEs: 20 ETA: 19.4 sec (expected 1463 stars)   (0.4 sec) Q: 0, Sets: 24/35  (1.562%) CEs: 28 ETA: 23.3 sec (expected 1536 stars)   
+(0.5 sec) Q: 0, Sets: 34/47  (1.711%) CEs: 38 ETA: 27.3 sec (expected 1988 stars)   (0.6 sec) Q: 0, Sets: 44/56  (1.725%) CEs: 47 ETA: 33.1 sec (expected 2551 stars)   (0.7 sec) Q: 0, Sets: 54/65  (1.748%) CEs: 57 ETA: 38.6 sec (expected 3089 stars)   (0.8 sec) Q: 0, Sets: 65/75  (1.754%) CEs: 67 ETA: 44.3 sec (expected 3706 stars)   
+(0.9 sec) Q: 0, Sets: 76/86  (1.757%) CEs: 79 ETA: 50.3 sec (expected 4325 stars)   (1.0 sec) Q: 0, Sets: 89/101  (1.799%) CEs: 90 ETA: 54.8 sec (expected 4948 stars)   (1.1 sec) Q: 0, Sets: 99/110  (1.813%) CEs: 101 ETA: 1.0 min (expected 5461 stars)   (1.2 sec) Q: 0, Sets: 109/122  (1.862%) CEs: 110 ETA: 1.06 min (expected 5853 stars)   (1.3 sec) Q: 0, Sets: 120/129  (1.898%) CEs: 120 ETA: 1.13 min (expected 6322 stars)   (1.4 sec) Q: 0, Sets: 131/141  (1.922%) CEs: 131 ETA: 1.21 min (expected 6816 stars)   (1.5 sec) Q: 0, Sets: 143/152  (1.935%) CEs: 143 ETA: 1.28 min (expected 7391 stars)   (1.6 sec) Q: 0, Sets: 148/157  (1.949%) CEs: 154 ETA: 1.36 min (expected 7592 stars)   
+(1.7 sec) Q: 0, Sets: 160/172  (2.35%) CEs: 164 ETA: 1.2 min (expected 6809 stars)   (1.8 sec) Q: 0, Sets: 172/180  (2.441%) CEs: 176 ETA: 1.22 min (expected 7045 stars)   (1.9 sec) Q: 0, Sets: 183/191  (2.93%) CEs: 187 ETA: 1.07 min (expected 6246 stars)   (2.0 sec) Q: 0, Sets: 194/202  (3.009%) CEs: 198 ETA: 1.09 min (expected 6447 stars)   (2.1 sec) Q: 0, Sets: 206/213  (3.052%) CEs: 207 ETA: 1.13 min (expected 6750 stars)   (2.2 sec) Q: 0, Sets: 216/225  (3.079%) CEs: 218 ETA: 1.18 min (expected 7015 stars)   (2.3 sec) Q: 0, Sets: 226/235  (3.09%) CEs: 227 ETA: 1.22 min (expected 7314 stars)   (2.4 sec) Q: 0, Sets: 236/252  (3.126%) CEs: 236 ETA: 1.26 min (expected 7549 stars)   (2.5 sec) Q: 0, Sets: 246/259  (3.152%) CEs: 246 ETA: 1.3 min (expected 7803 stars)   (2.6 sec) Q: 0, Sets: 250/266  (3.153%) CEs: 255 ETA: 1.36 min (expected 7928 stars)   (2.8 sec) Q: 0, Sets: 262/277  (3.154%) CEs: 265 ETA: 1.41 min (expected 8307 stars)   (2.9 sec) Q: 0, Sets: 275/289  (3.154%) CEs: 277 ETA: 1.46 min (expected 8719 stars)   (3.0 sec) Q: 0, Sets: 286/302  (3.154%) CEs: 287 ETA: 1.51 min (expected 9067 stars)   (3.1 sec) Q: 0, Sets: 296/310  (3.155%) CEs: 297 ETA: 1.57 min (expected 9383 stars)   (3.2 sec) Q: 0, Sets: 306/318  (3.165%) CEs: 307 ETA: 1.61 min (expected 9669 stars)   (3.3 sec) Q: 0, Sets: 316/332  (3.186%) CEs: 317 ETA: 1.66 min (expected 9918 stars)   
+(3.4 sec) Q: 0, Sets: 328/339  (3.197%) CEs: 328 ETA: 1.7 min (expected 10258 stars)   (3.5 sec) Q: 0, Sets: 334/344  (3.21%) CEs: 338 ETA: 1.75 min (expected 10404 stars)   (3.6 sec) Q: 0, Sets: 349/358  (3.296%) CEs: 349 ETA: 1.75 min (expected 10589 stars)   (3.7 sec) Q: 0, Sets: 358/369  (3.365%) CEs: 358 ETA: 1.77 min (expected 10640 stars)   (3.8 sec) Q: 0, Sets: 368/381  (3.382%) CEs: 368 ETA: 1.81 min (expected 10881 stars)   (3.9 sec) Q: 0, Sets: 379/389  (3.4%) CEs: 379 ETA: 1.85 min (expected 11148 stars)   (4.0 sec) Q: 0, Sets: 384/393  (3.406%) CEs: 387 ETA: 1.89 min (expected 11275 stars)   (4.1 sec) Q: 0, Sets: 394/405  (3.45%) CEs: 398 ETA: 1.92 min (expected 11420 stars)   (4.2 sec) Q: 0, Sets: 406/414  (3.491%) CEs: 408 ETA: 1.94 min (expected 11629 stars)   (4.3 sec) Q: 0, Sets: 416/424  (3.503%) CEs: 418 ETA: 1.98 min (expected 11874 stars)   (4.4 sec) Q: 0, Sets: 424/433  (3.516%) CEs: 425 ETA: 2.03 min (expected 12060 stars)   (4.5 sec) Q: 0, Sets: 432/443  (3.534%) CEs: 434 ETA: 2.07 min (expected 12224 stars)   (4.6 sec) Q: 0, Sets: 442/452  (3.577%) CEs: 443 ETA: 2.09 min (expected 12358 stars)   (4.7 sec) Q: 0, Sets: 451/461  (3.723%) CEs: 452 ETA: 2.05 min (expected 12113 stars)   (4.9 sec) Q: 0, Sets: 461/469  (3.809%) CEs: 462 ETA: 2.04 min (expected 12104 stars)   (5.0 sec) Q: 0, Sets: 471/478  (3.857%) CEs: 471 ETA: 2.06 min (expected 12210 stars)   (5.1 sec) Q: 0, Sets: 482/491  (3.955%) CEs: 482 ETA: 2.05 min (expected 12187 stars)   (5.2 sec) Q: 0, Sets: 487/494  (4.199%) CEs: 491 ETA: 1.96 min (expected 11597 stars)   (5.3 sec) Q: 0, Sets: 497/503  (4.639%) CEs: 501 ETA: 1.81 min (expected 10714 stars)   (5.4 sec) Q: 0, Sets: 508/519  (4.706%) CEs: 512 ETA: 1.81 min (expected 10795 stars)   (5.5 sec) Q: 0, Sets: 521/530  (4.773%) CEs: 524 ETA: 1.82 min (expected 10916 stars)   (5.6 sec) Q: 0, Sets: 531/541  (4.855%) CEs: 534 ETA: 1.83 min (expected 10936 stars)   (5.7 sec) Q: 0, Sets: 541/550  (5.078%) CEs: 544 ETA: 1.78 min (expected 10654 stars)   (5.8 sec) Q: 0, Sets: 553/561  (5.298%) CEs: 555 ETA: 1.73 min (expected 10438 stars)   (5.9 sec) Q: 0, Sets: 564/570  (5.444%) CEs: 566 ETA: 1.71 min (expected 10359 stars)   (6.0 sec) Q: 0, Sets: 575/583  (5.688%) CEs: 577 ETA: 1.66 min (expected 10108 stars)   (6.1 sec) Q: 0, Sets: 586/592  (5.835%) CEs: 588 ETA: 1.65 min (expected 10043 stars)   (6.2 sec) Q: 0, Sets: 596/607  (5.891%) CEs: 598 ETA: 1.66 min (expected 10117 stars)   (6.3 sec) Q: 0, Sets: 607/616  (5.914%) CEs: 608 ETA: 1.68 min (expected 10263 stars)   (6.4 sec) Q: 0, Sets: 619/626  (6.018%) CEs: 620 ETA: 1.68 min (expected 10286 stars)   (6.5 sec) Q: 0, Sets: 631/638  (6.079%) CEs: 632 ETA: 1.69 min (expected 10380 stars)   (6.6 sec) Q: 0, Sets: 641/646  (6.152%) CEs: 641 ETA: 1.69 min (expected 10419 stars)   
+(6.7 sec) Q: 0, Sets: 652/659  (6.186%) CEs: 652 ETA: 1.71 min (expected 10540 stars)   (6.9 sec) Q: 0, Sets: 662/668  (7.422%) CEs: 662 ETA: 1.43 min (expected 8920 stars)   (7.0 sec) Q: 0, Sets: 673/679  (9.961%) CEs: 673 ETA: 1.05 min (expected 6756 stars)   (7.1 sec) Q: 0, Sets: 678/682  (11.719%) CEs: 684 ETA: 53.2 sec (expected 5786 stars)   (7.2 sec) Q: 0, Sets: 690/697  (13.086%) CEs: 694 ETA: 47.6 sec (expected 5273 stars)   (7.3 sec) Q: 0, Sets: 700/709  (13.214%) CEs: 704 ETA: 47.7 sec (expected 5297 stars)   (7.4 sec) Q: 0, Sets: 712/719  (13.257%) CEs: 715 ETA: 48.2 sec (expected 5371 stars)   (7.5 sec) Q: 0, Sets: 724/730  (13.672%) CEs: 726 ETA: 47.2 sec (expected 5296 stars)   (7.6 sec) Q: 0, Sets: 736/742  (14.038%) CEs: 737 ETA: 46.4 sec (expected 5243 stars)   (7.7 sec) Q: 0, Sets: 747/753  (14.844%) CEs: 747 ETA: 44.0 sec (expected 5032 stars)   (7.8 sec) Q: 0, Sets: 758/765  (15.625%) CEs: 758 ETA: 42.0 sec (expected 4851 stars)   (7.9 sec) Q: 0, Sets: 762/775  (15.63%) CEs: 767 ETA: 42.5 sec (expected 4875 stars)   (8.0 sec) Q: 0, Sets: 774/788  (15.635%) CEs: 777 ETA: 43.1 sec (expected 4951 stars)   (8.1 sec) Q: 0, Sets: 785/802  (15.635%) CEs: 788 ETA: 43.7 sec (expected 5021 stars)   (8.2 sec) Q: 0, Sets: 795/810  (15.635%) CEs: 798 ETA: 44.2 sec (expected 5085 stars)   (8.3 sec) Q: 0, Sets: 808/822  (15.636%) CEs: 808 ETA: 44.8 sec (expected 5168 stars)   (8.4 sec) Q: 0, Sets: 817/832  (15.636%) CEs: 817 ETA: 45.3 sec (expected 5225 stars)   (8.5 sec) Q: 0, Sets: 829/844  (15.642%) CEs: 828 ETA: 45.9 sec (expected 5300 stars)   (8.6 sec) Q: 0, Sets: 840/858  (15.644%) CEs: 837 ETA: 46.4 sec (expected 5370 stars)   (8.7 sec) Q: 0, Sets: 851/865  (15.644%) CEs: 847 ETA: 46.9 sec (expected 5440 stars)   (8.8 sec) Q: 0, Sets: 862/875  (15.645%) CEs: 858 ETA: 47.5 sec (expected 5510 stars)   (8.9 sec) Q: 0, Sets: 867/886  (15.645%) CEs: 868 ETA: 48.0 sec (expected 5542 stars)   (9.0 sec) Q: 0, Sets: 878/893  (15.645%) CEs: 879 ETA: 48.6 sec (expected 5612 stars)   (9.1 sec) Q: 0, Sets: 888/905  (15.645%) CEs: 888 ETA: 49.2 sec (expected 5676 stars)   (9.2 sec) Q: 0, Sets: 898/913  (15.645%) CEs: 898 ETA: 49.7 sec (expected 5740 stars)   (9.3 sec) Q: 0, Sets: 909/924  (15.646%) CEs: 909 ETA: 50.3 sec (expected 5810 stars)   (9.4 sec) Q: 0, Sets: 920/933  (15.646%) CEs: 920 ETA: 50.9 sec (expected 5880 stars)   [runlim] sample:		21.1 time, 20.2 real, 1463.7 MB
+(9.5 sec) Q: 0, Sets: 930/944  (15.646%) CEs: 931 ETA: 51.4 sec (expected 5944 stars)   (9.6 sec) Q: 0, Sets: 942/955  (15.648%) CEs: 941 ETA: 52.0 sec (expected 6020 stars)   (9.7 sec) Q: 0, Sets: 953/965  (15.649%) CEs: 952 ETA: 52.5 sec (expected 6090 stars)   (9.9 sec) Q: 0, Sets: 968/980  (15.73%) CEs: 961 ETA: 52.8 sec (expected 6154 stars)   (10.0 sec) Q: 0, Sets: 978/990  (15.735%) CEs: 972 ETA: 53.3 sec (expected 6215 stars)   (10.1 sec) Q: 0, Sets: 990/1000  (15.756%) CEs: 983 ETA: 53.8 sec (expected 6283 stars)   (10.2 sec) Q: 0, Sets: 1000/1009  (15.802%) CEs: 995 ETA: 54.2 sec (expected 6328 stars)   (10.3 sec) Q: 0, Sets: 1012/1021  (15.845%) CEs: 1004 ETA: 54.6 sec (expected 6387 stars)   (10.4 sec) Q: 0, Sets: 1023/1034  (15.862%) CEs: 1014 ETA: 55.0 sec (expected 6449 stars)   (10.5 sec) Q: 0, Sets: 1028/1037  (15.866%) CEs: 1024 ETA: 55.6 sec (expected 6479 stars)   (10.6 sec) Q: 0, Sets: 1038/1047  (15.918%) CEs: 1034 ETA: 55.9 sec (expected 6521 stars)   (10.7 sec) Q: 0, Sets: 1050/1062  (15.929%) CEs: 1046 ETA: 56.4 sec (expected 6592 stars)   (10.8 sec) Q: 0, Sets: 1061/1071  (15.94%) CEs: 1054 ETA: 56.9 sec (expected 6656 stars)   (10.9 sec) Q: 0, Sets: 1072/1080  (15.985%) CEs: 1065 ETA: 57.2 sec (expected 6706 stars)   (11.0 sec) Q: 0, Sets: 1082/1093  (15.996%) CEs: 1075 ETA: 57.7 sec (expected 6764 stars)   (11.1 sec) Q: 0, Sets: 1094/1104  (15.999%) CEs: 1086 ETA: 58.2 sec (expected 6838 stars)   (11.2 sec) Q: 0, Sets: 1105/1116  (16.004%) CEs: 1097 ETA: 58.7 sec (expected 6904 stars)   (11.3 sec) Q: 0, Sets: 1115/1125  (16.008%) CEs: 1107 ETA: 59.3 sec (expected 6965 stars)   (11.4 sec) Q: 0, Sets: 1126/1134  (16.014%) CEs: 1118 ETA: 59.8 sec (expected 7031 stars)   (11.5 sec) Q: 0, Sets: 1137/1146  (16.015%) CEs: 1129 ETA: 1.01 min (expected 7100 stars)   (11.6 sec) Q: 0, Sets: 1147/1159  (16.019%) CEs: 1138 ETA: 1.01 min (expected 7160 stars)   (11.7 sec) Q: 0, Sets: 1159/1170  (16.025%) CEs: 1150 ETA: 1.02 min (expected 7233 stars)   (11.8 sec) Q: 0, Sets: 1168/1182  (16.025%) CEs: 1159 ETA: 1.03 min (expected 7288 stars)   (11.9 sec) Q: 0, Sets: 1178/1192  (16.026%) CEs: 1169 ETA: 1.04 min (expected 7350 stars)   (12.0 sec) Q: 0, Sets: 1188/1202  (16.027%) CEs: 1179 ETA: 1.05 min (expected 7413 stars)   (12.1 sec) Q: 0, Sets: 1195/1206  (16.027%) CEs: 1191 ETA: 1.06 min (expected 7456 stars)   (12.2 sec) Q: 0, Sets: 1207/1218  (16.028%) CEs: 1202 ETA: 1.07 min (expected 7531 stars)   (12.3 sec) Q: 0, Sets: 1217/1230  (16.037%) CEs: 1211 ETA: 1.08 min (expected 7589 stars)   (12.5 sec) Q: 0, Sets: 1227/1239  (16.038%) CEs: 1221 ETA: 1.09 min (expected 7651 stars)   (12.6 sec) Q: 0, Sets: 1238/1249  (16.039%) CEs: 1232 ETA: 1.1 min (expected 7719 stars)   (12.7 sec) Q: 0, Sets: 1251/1265  (16.053%) CEs: 1243 ETA: 1.1 min (expected 7793 stars)   (12.8 sec) Q: 0, Sets: 1261/1273  (16.054%) CEs: 1253 ETA: 1.11 min (expected 7855 stars)   (12.9 sec) Q: 0, Sets: 1272/1281  (16.058%) CEs: 1263 ETA: 1.12 min (expected 7921 stars)   (13.0 sec) Q: 0, Sets: 1282/1293  (16.06%) CEs: 1273 ETA: 1.13 min (expected 7983 stars)   (13.1 sec) Q: 0, Sets: 1293/1303  (16.062%) CEs: 1284 ETA: 1.14 min (expected 8050 stars)   (13.2 sec) Q: 0, Sets: 1303/1319  (16.065%) CEs: 1294 ETA: 1.15 min (expected 8111 stars)   (13.3 sec) Q: 0, Sets: 1313/1328  (16.065%) CEs: 1304 ETA: 1.16 min (expected 8173 stars)   
+(13.4 sec) Q: 0, Sets: 1317/1333  (16.065%) CEs: 1313 ETA: 1.17 min (expected 8198 stars)   (13.5 sec) Q: 0, Sets: 1328/1344  (16.066%) CEs: 1323 ETA: 1.17 min (expected 8266 stars)   (13.6 sec) Q: 0, Sets: 1338/1355  (16.066%) CEs: 1333 ETA: 1.18 min (expected 8328 stars)   (13.7 sec) Q: 0, Sets: 1350/1365  (16.066%) CEs: 1344 ETA: 1.19 min (expected 8403 stars)   (13.8 sec) Q: 0, Sets: 1360/1371  (16.068%) CEs: 1354 ETA: 1.2 min (expected 8464 stars)   (13.9 sec) Q: 0, Sets: 1372/1385  (16.068%) CEs: 1366 ETA: 1.21 min (expected 8539 stars)   (14.0 sec) Q: 0, Sets: 1381/1399  (16.07%) CEs: 1375 ETA: 1.22 min (expected 8594 stars)   (14.1 sec) Q: 0, Sets: 1393/1408  (16.07%) CEs: 1386 ETA: 1.23 min (expected 8668 stars)   (14.2 sec) Q: 0, Sets: 1403/1418  (16.07%) CEs: 1396 ETA: 1.24 min (expected 8731 stars)   (14.3 sec) Q: 0, Sets: 1414/1427  (16.07%) CEs: 1406 ETA: 1.25 min (expected 8799 stars)   (14.4 sec) Q: 0, Sets: 1429/1442  (16.07%) CEs: 1421 ETA: 1.26 min (expected 8892 stars)   (14.5 sec) Q: 0, Sets: 1439/1453  (16.07%) CEs: 1432 ETA: 1.27 min (expected 8954 stars)   (14.7 sec) Q: 0, Sets: 1453/1465  (16.07%) CEs: 1445 ETA: 1.28 min (expected 9041 stars)   (14.8 sec) Q: 0, Sets: 1464/1476  (16.071%) CEs: 1455 ETA: 1.28 min (expected 9110 stars)   (14.9 sec) Q: 0, Sets: 1469/1481  (16.071%) CEs: 1465 ETA: 1.29 min (expected 9141 stars)   (15.0 sec) Q: 0, Sets: 1479/1494  (16.071%) CEs: 1474 ETA: 1.3 min (expected 9203 stars)   (15.1 sec) Q: 0, Sets: 1490/1503  (16.072%) CEs: 1484 ETA: 1.31 min (expected 9271 stars)   (15.2 sec) Q: 0, Sets: 1500/1513  (16.072%) CEs: 1494 ETA: 1.32 min (expected 9333 stars)   (15.3 sec) Q: 0, Sets: 1511/1524  (16.073%) CEs: 1504 ETA: 1.33 min (expected 9401 stars)   (15.4 sec) Q: 0, Sets: 1522/1535  (16.073%) CEs: 1514 ETA: 1.34 min (expected 9469 stars)   (15.5 sec) Q: 0, Sets: 1531/1546  (16.073%) CEs: 1523 ETA: 1.35 min (expected 9525 stars)   (15.6 sec) Q: 0, Sets: 1541/1554  (16.073%) CEs: 1533 ETA: 1.36 min (expected 9587 stars)   (15.7 sec) Q: 0, Sets: 1553/1566  (16.073%) CEs: 1544 ETA: 1.36 min (expected 9662 stars)   (15.8 sec) Q: 0, Sets: 1563/1573  (16.074%) CEs: 1554 ETA: 1.37 min (expected 9724 stars)   (15.9 sec) Q: 0, Sets: 1567/1581  (16.074%) CEs: 1564 ETA: 1.38 min (expected 9749 stars)   (16.0 sec) Q: 0, Sets: 1579/1591  (16.074%) CEs: 1573 ETA: 1.39 min (expected 9823 stars)   (16.1 sec) Q: 0, Sets: 1590/1603  (16.075%) CEs: 1584 ETA: 1.4 min (expected 9891 stars)   (16.2 sec) Q: 0, Sets: 1600/1612  (16.076%) CEs: 1594 ETA: 1.41 min (expected 9953 stars)   (16.3 sec) Q: 0, Sets: 1609/1624  (16.076%) CEs: 1603 ETA: 1.42 min (expected 10009 stars)   (16.4 sec) Q: 0, Sets: 1620/1633  (16.076%) CEs: 1615 ETA: 1.43 min (expected 10077 stars)   (16.5 sec) Q: 0, Sets: 1633/1644  (16.076%) CEs: 1626 ETA: 1.44 min (expected 10158 stars)   (16.6 sec) Q: 0, Sets: 1643/1655  (16.078%) CEs: 1635 ETA: 1.44 min (expected 10219 stars)   (16.7 sec) Q: 0, Sets: 1653/1664  (16.083%) CEs: 1645 ETA: 1.45 min (expected 10278 stars)   (16.8 sec) Q: 0, Sets: 1664/1676  (16.084%) CEs: 1656 ETA: 1.46 min (expected 10346 stars)   (16.9 sec) Q: 0, Sets: 1675/1686  (16.085%) CEs: 1667 ETA: 1.47 min (expected 10413 stars)   (17.0 sec) Q: 0, Sets: 1685/1697  (16.087%) CEs: 1678 ETA: 1.48 min (expected 10475 stars)   (17.1 sec) Q: 0, Sets: 1698/1710  (16.087%) CEs: 1690 ETA: 1.49 min (expected 10555 stars)   (17.2 sec) Q: 0, Sets: 1710/1721  (16.088%) CEs: 1701 ETA: 1.5 min (expected 10629 stars)   (17.3 sec) Q: 0, Sets: 1721/1732  (16.088%) CEs: 1712 ETA: 1.51 min (expected 10697 stars)   (17.4 sec) Q: 0, Sets: 1730/1746  (16.089%) CEs: 1721 ETA: 1.52 min (expected 10753 stars)   (17.5 sec) Q: 0, Sets: 1741/1755  (16.089%) CEs: 1732 ETA: 1.53 min (expected 10821 stars)   (17.7 sec) Q: 0, Sets: 1750/1765  (16.089%) CEs: 1741 ETA: 1.53 min (expected 10877 stars)   (17.8 sec) Q: 0, Sets: 1755/1769  (16.089%) CEs: 1751 ETA: 1.54 min (expected 10908 stars)   (17.9 sec) Q: 0, Sets: 1766/1780  (16.09%) CEs: 1761 ETA: 1.55 min (expected 10976 stars)   (18.0 sec) Q: 0, Sets: 1778/1792  (16.09%) CEs: 1773 ETA: 1.56 min (expected 11050 stars)   (18.1 sec) Q: 0, Sets: 1790/1804  (16.091%) CEs: 1784 ETA: 1.57 min (expected 11124 stars)   (18.2 sec) Q: 0, Sets: 1799/1815  (16.091%) CEs: 1793 ETA: 1.58 min (expected 11180 stars)   (18.3 sec) Q: 0, Sets: 1811/1823  (16.091%) CEs: 1804 ETA: 1.59 min (expected 11254 stars)   (18.4 sec) Q: 0, Sets: 1823/1837  (16.092%) CEs: 1815 ETA: 1.6 min (expected 11329 stars)   (18.5 sec) Q: 0, Sets: 1834/1845  (16.092%) CEs: 1825 ETA: 1.61 min (expected 11397 stars)   (18.6 sec) Q: 0, Sets: 1844/1857  (16.092%) CEs: 1835 ETA: 1.61 min (expected 11459 stars)   [runlim] sample:		31.1 time, 30.2 real, 1470.6 MB
+(18.7 sec) Q: 0, Sets: 1856/1870  (16.093%) CEs: 1847 ETA: 1.62 min (expected 11533 stars)   (18.8 sec) Q: 0, Sets: 1866/1879  (16.093%) CEs: 1857 ETA: 1.63 min (expected 11595 stars)   (18.9 sec) Q: 0, Sets: 1877/1888  (16.093%) CEs: 1868 ETA: 1.64 min (expected 11663 stars)   (19.0 sec) Q: 0, Sets: 1887/1900  (16.095%) CEs: 1878 ETA: 1.65 min (expected 11724 stars)   (19.1 sec) Q: 0, Sets: 1892/1904  (16.096%) CEs: 1888 ETA: 1.66 min (expected 11755 stars)   (19.2 sec) Q: 0, Sets: 1904/1912  (16.101%) CEs: 1899 ETA: 1.67 min (expected 11825 stars)   (19.3 sec) Q: 0, Sets: 1914/1929  (16.102%) CEs: 1910 ETA: 1.68 min (expected 11887 stars)   (19.4 sec) Q: 0, Sets: 1926/1939  (16.102%) CEs: 1921 ETA: 1.69 min (expected 11962 stars)   (19.5 sec) Q: 0, Sets: 1937/1950  (16.102%) CEs: 1932 ETA: 1.7 min (expected 12030 stars)   (19.6 sec) Q: 0, Sets: 1949/1963  (16.102%) CEs: 1944 ETA: 1.7 min (expected 12104 stars)   (19.7 sec) Q: 0, Sets: 1961/1973  (16.103%) CEs: 1954 ETA: 1.71 min (expected 12178 stars)   (19.8 sec) Q: 0, Sets: 1973/1984  (16.103%) CEs: 1965 ETA: 1.72 min (expected 12253 stars)   (19.9 sec) Q: 0, Sets: 1984/1996  (16.103%) CEs: 1976 ETA: 1.73 min (expected 12320 stars)   (20.0 sec) Q: 0, Sets: 1995/2010  (16.105%) CEs: 1987 ETA: 1.74 min (expected 12387 stars)   (20.1 sec) Q: 0, Sets: 2001/2012  (16.105%) CEs: 1997 ETA: 1.75 min (expected 12425 stars)   (20.2 sec) Q: 0, Sets: 2011/2023  (16.106%) CEs: 2008 ETA: 1.76 min (expected 12486 stars)   (20.3 sec) Q: 0, Sets: 2022/2031  (16.107%) CEs: 2018 ETA: 1.77 min (expected 12554 stars)   (20.5 sec) Q: 0, Sets: 2033/2041  (16.11%) CEs: 2028 ETA: 1.78 min (expected 12619 stars)   (20.6 sec) Q: 0, Sets: 2043/2049  (16.211%) CEs: 2037 ETA: 1.77 min (expected 12603 stars)   (20.7 sec) Q: 0, Sets: 2055/2066  (16.507%) CEs: 2048 ETA: 1.74 min (expected 12449 stars)   (20.8 sec) Q: 0, Sets: 2066/2076  (16.525%) CEs: 2057 ETA: 1.75 min (expected 12503 stars)   (20.9 sec) Q: 0, Sets: 2077/2088  (16.533%) CEs: 2068 ETA: 1.76 min (expected 12563 stars)   (21.0 sec) Q: 0, Sets: 2087/2097  (16.537%) CEs: 2078 ETA: 1.76 min (expected 12620 stars)   (21.1 sec) Q: 0, Sets: 2097/2106  (16.544%) CEs: 2087 ETA: 1.77 min (expected 12676 stars)   (21.2 sec) Q: 0, Sets: 2102/2112  (16.548%) CEs: 2096 ETA: 1.78 min (expected 12703 stars)   (21.3 sec) Q: 0, Sets: 2112/2121  (16.58%) CEs: 2107 ETA: 1.78 min (expected 12738 stars)   (21.4 sec) Q: 0, Sets: 2123/2130  (16.595%) CEs: 2117 ETA: 1.79 min (expected 12793 stars)   (21.5 sec) Q: 0, Sets: 2134/2142  (16.644%) CEs: 2127 ETA: 1.79 min (expected 12821 stars)   (21.6 sec) Q: 0, Sets: 2144/2152  (16.76%) CEs: 2137 ETA: 1.79 min (expected 12792 stars)   (21.7 sec) Q: 0, Sets: 2157/2162  (16.797%) CEs: 2149 ETA: 1.79 min (expected 12842 stars)   (21.8 sec) Q: 0, Sets: 2168/2180  (16.824%) CEs: 2160 ETA: 1.8 min (expected 12887 stars)   (21.9 sec) Q: 0, Sets: 2179/2191  (16.828%) CEs: 2171 ETA: 1.8 min (expected 12949 stars)   (22.0 sec) Q: 0, Sets: 2190/2205  (16.829%) CEs: 2183 ETA: 1.81 min (expected 13013 stars)   (22.1 sec) Q: 0, Sets: 2202/2211  (16.83%) CEs: 2194 ETA: 1.82 min (expected 13083 stars)   (22.2 sec) Q: 0, Sets: 2213/2222  (16.833%) CEs: 2204 ETA: 1.83 min (expected 13147 stars)   (22.3 sec) Q: 0, Sets: 2224/2237  (16.834%) CEs: 2216 ETA: 1.84 min (expected 13211 stars)   (22.4 sec) Q: 0, Sets: 2236/2246  (16.836%) CEs: 2227 ETA: 1.85 min (expected 13281 stars)   (22.5 sec) Q: 0, Sets: 2246/2256  (16.836%) CEs: 2237 ETA: 1.85 min (expected 13340 stars)   (22.6 sec) Q: 0, Sets: 2256/2267  (16.837%) CEs: 2247 ETA: 1.86 min (expected 13399 stars)   (22.7 sec) Q: 0, Sets: 2269/2277  (16.845%) CEs: 2260 ETA: 1.87 min (expected 13470 stars)   (22.8 sec) Q: 0, Sets: 2279/2286  (16.891%) CEs: 2269 ETA: 1.87 min (expected 13492 stars)   (22.9 sec) Q: 0, Sets: 2284/2296  (16.919%) CEs: 2279 ETA: 1.88 min (expected 13499 stars)   (23.0 sec) Q: 0, Sets: 2295/2310  (16.921%) CEs: 2289 ETA: 1.89 min (expected 13563 stars)   (23.1 sec) Q: 0, Sets: 2305/2315  (16.921%) CEs: 2297 ETA: 1.89 min (expected 13622 stars)   (23.2 sec) Q: 0, Sets: 2315/2324  (16.924%) CEs: 2307 ETA: 1.9 min (expected 13679 stars)   (23.3 sec) Q: 0, Sets: 2326/2337  (16.926%) CEs: 2317 ETA: 1.91 min (expected 13742 stars)   (23.5 sec) Q: 0, Sets: 2338/2351  (16.927%) CEs: 2329 ETA: 1.92 min (expected 13813 stars)   (23.6 sec) Q: 0, Sets: 2348/2358  (16.927%) CEs: 2338 ETA: 1.93 min (expected 13871 stars)   (23.7 sec) Q: 0, Sets: 2360/2373  (16.927%) CEs: 2350 ETA: 1.93 min (expected 13942 stars)   (23.8 sec) Q: 0, Sets: 2365/2376  (16.927%) CEs: 2361 ETA: 1.94 min (expected 13972 stars)   (23.9 sec) Q: 0, Sets: 2377/2385  (16.928%) CEs: 2370 ETA: 1.95 min (expected 14042 stars)   (24.0 sec) Q: 0, Sets: 2387/2398  (16.929%) CEs: 2380 ETA: 1.96 min (expected 14100 stars)   (24.1 sec) Q: 0, Sets: 2399/2406  (16.931%) CEs: 2391 ETA: 1.97 min (expected 14169 stars)   (24.2 sec) Q: 0, Sets: 2411/2422  (16.933%) CEs: 2403 ETA: 1.98 min (expected 14239 stars)   (24.3 sec) Q: 0, Sets: 2421/2432  (16.934%) CEs: 2415 ETA: 1.98 min (expected 14297 stars)   (24.4 sec) Q: 0, Sets: 2434/2443  (16.935%) CEs: 2426 ETA: 1.99 min (expected 14372 stars)   (24.5 sec) Q: 0, Sets: 2446/2457  (16.936%) CEs: 2438 ETA: 2.0 min (expected 14443 stars)   (24.6 sec) Q: 0, Sets: 2457/2467  (16.938%) CEs: 2449 ETA: 2.01 min (expected 14506 stars)   (24.7 sec) Q: 0, Sets: 2467/2477  (16.942%) CEs: 2459 ETA: 2.02 min (expected 14562 stars)   (24.8 sec) Q: 0, Sets: 2478/2486  (16.943%) CEs: 2470 ETA: 2.03 min (expected 14626 stars)   (24.9 sec) Q: 0, Sets: 2489/2496  (16.943%) CEs: 2480 ETA: 2.03 min (expected 14690 stars)   (25.0 sec) Q: 0, Sets: 2499/2512  (17.001%) CEs: 2491 ETA: 2.03 min (expected 14699 stars)   (25.1 sec) Q: 0, Sets: 2511/2521  (17.002%) CEs: 2502 ETA: 2.04 min (expected 14769 stars)   (25.2 sec) Q: 0, Sets: 2519/2534  (17.005%) CEs: 2510 ETA: 2.05 min (expected 14814 stars)   (25.3 sec) Q: 0, Sets: 2531/2541  (17.006%) CEs: 2521 ETA: 2.06 min (expected 14883 stars)   (25.4 sec) Q: 0, Sets: 2542/2559  (17.006%) CEs: 2532 ETA: 2.07 min (expected 14948 stars)   (25.5 sec) Q: 0, Sets: 2549/2562  (17.006%) CEs: 2545 ETA: 2.08 min (expected 14989 stars)   (25.6 sec) Q: 0, Sets: 2561/2572  (17.007%) CEs: 2555 ETA: 2.08 min (expected 15059 stars)   (25.7 sec) Q: 0, Sets: 2574/2584  (17.009%) CEs: 2568 ETA: 2.09 min (expected 15134 stars)   (25.8 sec) Q: 0, Sets: 2585/2596  (17.009%) CEs: 2577 ETA: 2.1 min (expected 15198 stars)   (25.9 sec) Q: 0, Sets: 2596/2607  (17.011%) CEs: 2588 ETA: 2.11 min (expected 15261 stars)   (26.1 sec) Q: 0, Sets: 2606/2616  (17.014%) CEs: 2598 ETA: 2.12 min (expected 15317 stars)   (26.2 sec) Q: 0, Sets: 2616/2629  (17.014%) CEs: 2607 ETA: 2.13 min (expected 15375 stars)   (26.3 sec) Q: 0, Sets: 2626/2638  (17.015%) CEs: 2617 ETA: 2.13 min (expected 15434 stars)   (26.4 sec) Q: 0, Sets: 2637/2646  (17.015%) CEs: 2627 ETA: 2.14 min (expected 15498 stars)   (26.5 sec) Q: 0, Sets: 2646/2657  (17.018%) CEs: 2636 ETA: 2.15 min (expected 15548 stars)   (26.6 sec) Q: 0, Sets: 2657/2666  (17.02%) CEs: 2647 ETA: 2.16 min (expected 15611 stars)   
+(26.7 sec) Q: 0, Sets: 2669/2678  (17.024%) CEs: 2659 ETA: 2.17 min (expected 15678 stars)   (26.8 sec) Q: 0, Sets: 2675/2682  (17.029%) CEs: 2668 ETA: 2.17 min (expected 15709 stars)   (26.9 sec) Q: 0, Sets: 2685/2697  (17.043%) CEs: 2679 ETA: 2.18 min (expected 15754 stars)   (27.0 sec) Q: 0, Sets: 2696/2705  (17.049%) CEs: 2689 ETA: 2.19 min (expected 15814 stars)   (27.1 sec) Q: 0, Sets: 2708/2718  (17.05%) CEs: 2700 ETA: 2.2 min (expected 15883 stars)   (27.2 sec) Q: 0, Sets: 2718/2729  (17.051%) CEs: 2710 ETA: 2.2 min (expected 15941 stars)   (27.3 sec) Q: 0, Sets: 2728/2737  (17.055%) CEs: 2720 ETA: 2.21 min (expected 15996 stars)   (27.4 sec) Q: 0, Sets: 2739/2747  (17.056%) CEs: 2731 ETA: 2.22 min (expected 16059 stars)   (27.5 sec) Q: 0, Sets: 2749/2758  (17.064%) CEs: 2742 ETA: 2.23 min (expected 16110 stars)   (27.6 sec) Q: 0, Sets: 2760/2767  (17.081%) CEs: 2753 ETA: 2.23 min (expected 16159 stars)   [runlim] sample:		41.1 time, 40.2 real, 1477.4 MB
+(27.7 sec) Q: 0, Sets: 2771/2781  (17.084%) CEs: 2763 ETA: 2.24 min (expected 16220 stars)   (27.8 sec) Q: 0, Sets: 2781/2787  (17.09%) CEs: 2773 ETA: 2.25 min (expected 16273 stars)   (27.9 sec) Q: 0, Sets: 2792/2804  (17.093%) CEs: 2783 ETA: 2.26 min (expected 16334 stars)   (28.0 sec) Q: 0, Sets: 2802/2813  (17.096%) CEs: 2793 ETA: 2.26 min (expected 16390 stars)   (28.1 sec) Q: 0, Sets: 2813/2821  (17.099%) CEs: 2804 ETA: 2.27 min (expected 16451 stars)   (28.2 sec) Q: 0, Sets: 2823/2835  (17.103%) CEs: 2814 ETA: 2.28 min (expected 16506 stars)   (28.3 sec) Q: 0, Sets: 2835/2844  (17.105%) CEs: 2825 ETA: 2.29 min (expected 16574 stars)   (28.4 sec) Q: 0, Sets: 2846/2856  (17.107%) CEs: 2836 ETA: 2.3 min (expected 16637 stars)   (28.5 sec) Q: 0, Sets: 2858/2869  (17.115%) CEs: 2848 ETA: 2.3 min (expected 16699 stars)   (28.7 sec) Q: 0, Sets: 2864/2873  (17.117%) CEs: 2859 ETA: 2.31 min (expected 16732 stars)   (28.8 sec) Q: 0, Sets: 2875/2884  (17.119%) CEs: 2870 ETA: 2.32 min (expected 16794 stars)   (28.9 sec) Q: 0, Sets: 2890/2899  (17.128%) CEs: 2880 ETA: 2.33 min (expected 16873 stars)   (29.0 sec) Q: 0, Sets: 2897/2905  (17.131%) CEs: 2891 ETA: 2.34 min (expected 16911 stars)   (29.1 sec) Q: 0, Sets: 2907/2918  (17.14%) CEs: 2903 ETA: 2.34 min (expected 16960 stars)   (29.2 sec) Q: 0, Sets: 2920/2929  (17.146%) CEs: 2915 ETA: 2.35 min (expected 17030 stars)   (29.3 sec) Q: 0, Sets: 2931/2940  (17.153%) CEs: 2925 ETA: 2.36 min (expected 17088 stars)   (29.4 sec) Q: 0, Sets: 2942/2949  (17.159%) CEs: 2937 ETA: 2.37 min (expected 17145 stars)   (29.5 sec) Q: 0, Sets: 2953/2965  (17.191%) CEs: 2948 ETA: 2.37 min (expected 17178 stars)   (29.6 sec) Q: 0, Sets: 2965/2974  (17.255%) CEs: 2959 ETA: 2.37 min (expected 17184 stars)   (29.7 sec) Q: 0, Sets: 2976/2984  (17.285%) CEs: 2972 ETA: 2.37 min (expected 17217 stars)   (29.8 sec) Q: 0, Sets: 2989/2996  (17.468%) CEs: 2983 ETA: 2.35 min (expected 17111 stars)   (29.9 sec) Q: 0, Sets: 3000/3007  (17.627%) CEs: 2994 ETA: 2.33 min (expected 17019 stars)   (30.0 sec) Q: 0, Sets: 3017/3024  (17.889%) CEs: 3007 ETA: 2.3 min (expected 16865 stars)   (30.1 sec) Q: 0, Sets: 3029/3035  (17.95%) CEs: 3019 ETA: 2.3 min (expected 16874 stars)   (30.2 sec) Q: 0, Sets: 3034/3041  (18.018%) CEs: 3028 ETA: 2.29 min (expected 16839 stars)   (30.3 sec) Q: 0, Sets: 3045/3054  (18.029%) CEs: 3038 ETA: 2.3 min (expected 16889 stars)   (30.4 sec) Q: 0, Sets: 3055/3063  (18.115%) CEs: 3050 ETA: 2.29 min (expected 16864 stars)   (30.5 sec) Q: 0, Sets: 3068/3077  (18.13%) CEs: 3060 ETA: 2.3 min (expected 16922 stars)   (30.6 sec) Q: 0, Sets: 3080/3085  (18.164%) CEs: 3073 ETA: 2.3 min (expected 16957 stars)   (30.7 sec) Q: 0, Sets: 3090/3097  (18.225%) CEs: 3084 ETA: 2.3 min (expected 16955 stars)   (30.9 sec) Q: 0, Sets: 3100/3107  (18.295%) CEs: 3092 ETA: 2.3 min (expected 16944 stars)   (31.0 sec) Q: 0, Sets: 3111/3116  (18.335%) CEs: 3103 ETA: 2.3 min (expected 16968 stars)   (31.1 sec) Q: 0, Sets: 3120/3126  (18.457%) CEs: 3112 ETA: 2.29 min (expected 16904 stars)   (31.2 sec) Q: 0, Sets: 3130/3137  (18.567%) CEs: 3121 ETA: 2.28 min (expected 16858 stars)   (31.3 sec) Q: 0, Sets: 3141/3147  (18.597%) CEs: 3132 ETA: 2.28 min (expected 16889 stars)   (31.4 sec) Q: 0, Sets: 3153/3159  (19.141%) CEs: 3143 ETA: 2.21 min (expected 16473 stars)   (31.5 sec) Q: 0, Sets: 3164/3169  (20.703%) CEs: 3154 ETA: 2.01 min (expected 15283 stars)   (31.6 sec) Q: 0, Sets: 3175/3183  (21.136%) CEs: 3165 ETA: 1.96 min (expected 15021 stars)   (31.7 sec) Q: 0, Sets: 3183/3191  (21.176%) CEs: 3178 ETA: 1.96 min (expected 15031 stars)   (31.8 sec) Q: 0, Sets: 3194/3204  (21.394%) CEs: 3189 ETA: 1.95 min (expected 14930 stars)   (31.9 sec) Q: 0, Sets: 3206/3217  (21.412%) CEs: 3199 ETA: 1.95 min (expected 14973 stars)   (32.0 sec) Q: 0, Sets: 3218/3225  (21.417%) CEs: 3210 ETA: 1.96 min (expected 15025 stars)   (32.1 sec) Q: 0, Sets: 3228/3236  (21.422%) CEs: 3221 ETA: 1.96 min (expected 15068 stars)   (32.2 sec) Q: 0, Sets: 3241/3250  (21.449%) CEs: 3233 ETA: 1.96 min (expected 15111 stars)   (32.3 sec) Q: 0, Sets: 3254/3264  (21.46%) CEs: 3247 ETA: 1.97 min (expected 15163 stars)   (32.4 sec) Q: 0, Sets: 3266/3272  (21.466%) CEs: 3257 ETA: 1.98 min (expected 15215 stars)   (32.5 sec) Q: 0, Sets: 3277/3282  (21.484%) CEs: 3267 ETA: 1.98 min (expected 15253 stars)   (32.6 sec) Q: 0, Sets: 3283/3292  (21.699%) CEs: 3277 ETA: 1.96 min (expected 15130 stars)   (32.7 sec) Q: 0, Sets: 3293/3298  (21.765%) CEs: 3287 ETA: 1.96 min (expected 15130 stars)   (32.8 sec) Q: 0, Sets: 3303/3309  (21.808%) CEs: 3297 ETA: 1.96 min (expected 15146 stars)   (32.9 sec) Q: 0, Sets: 3312/3323  (21.81%) CEs: 3308 ETA: 1.97 min (expected 15186 stars)   (33.0 sec) Q: 0, Sets: 3325/3333  (21.815%) CEs: 3319 ETA: 1.97 min (expected 15242 stars)   (33.1 sec) Q: 0, Sets: 3337/3341  (21.826%) CEs: 3331 ETA: 1.98 min (expected 15289 stars)   (33.2 sec) Q: 0, Sets: 3350/3359  (21.899%) CEs: 3340 ETA: 1.98 min (expected 15297 stars)   (33.3 sec) Q: 0, Sets: 3361/3372  (21.908%) CEs: 3350 ETA: 1.98 min (expected 15341 stars)   (33.4 sec) Q: 0, Sets: 3370/3382  (21.925%) CEs: 3359 ETA: 1.98 min (expected 15370 stars)   (33.5 sec) Q: 0, Sets: 3381/3390  (21.945%) CEs: 3370 ETA: 1.99 min (expected 15407 stars)   (33.6 sec) Q: 0, Sets: 3393/3403  (21.982%) CEs: 3381 ETA: 1.99 min (expected 15435 stars)   (33.7 sec) Q: 0, Sets: 3403/3411  (21.997%) CEs: 3390 ETA: 1.99 min (expected 15470 stars)   (33.8 sec) Q: 0, Sets: 3414/3422  (22.034%) CEs: 3401 ETA: 2.0 min (expected 15494 stars)   (34.0 sec) Q: 0, Sets: 3426/3433  (22.058%) CEs: 3413 ETA: 2.0 min (expected 15532 stars)   (34.1 sec) Q: 0, Sets: 3431/3441  (22.079%) CEs: 3425 ETA: 2.0 min (expected 15539 stars)   (34.2 sec) Q: 0, Sets: 3448/3455  (22.162%) CEs: 3435 ETA: 2.0 min (expected 15558 stars)   (34.3 sec) Q: 0, Sets: 3459/3469  (22.182%) CEs: 3445 ETA: 2.0 min (expected 15594 stars)   (34.4 sec) Q: 0, Sets: 3472/3478  (22.253%) CEs: 3454 ETA: 2.0 min (expected 15602 stars)   (34.5 sec) Q: 0, Sets: 3483/3492  (22.327%) CEs: 3466 ETA: 2.0 min (expected 15600 stars)   (34.6 sec) Q: 0, Sets: 3493/3504  (22.334%) CEs: 3476 ETA: 2.0 min (expected 15640 stars)   (34.7 sec) Q: 0, Sets: 3505/3512  (22.357%) CEs: 3488 ETA: 2.01 min (expected 15677 stars)   (34.8 sec) Q: 0, Sets: 3516/3522  (22.449%) CEs: 3498 ETA: 2.0 min (expected 15662 stars)   (34.9 sec) Q: 0, Sets: 3527/3536  (22.488%) CEs: 3509 ETA: 2.0 min (expected 15684 stars)   (35.0 sec) Q: 0, Sets: 3547/3555  (22.501%) CEs: 3519 ETA: 2.01 min (expected 15764 stars)   (35.1 sec) Q: 0, Sets: 3557/3566  (22.504%) CEs: 3529 ETA: 2.01 min (expected 15806 stars)   (35.2 sec) Q: 0, Sets: 3570/3576  (22.51%) CEs: 3541 ETA: 2.02 min (expected 15860 stars)   (35.3 sec) Q: 0, Sets: 3574/3582  (22.522%) CEs: 3550 ETA: 2.02 min (expected 15869 stars)   (35.4 sec) Q: 0, Sets: 3586/3594  (22.576%) CEs: 3561 ETA: 2.02 min (expected 15884 stars)   (35.5 sec) Q: 0, Sets: 3596/3603  (22.589%) CEs: 3571 ETA: 2.03 min (expected 15919 stars)   (35.6 sec) Q: 0, Sets: 3605/3614  (22.681%) CEs: 3580 ETA: 2.02 min (expected 15895 stars)   (35.7 sec) Q: 0, Sets: 3617/3623  (22.827%) CEs: 3591 ETA: 2.01 min (expected 15845 stars)   (35.8 sec) Q: 0, Sets: 3628/3636  (22.949%) CEs: 3602 ETA: 2.01 min (expected 15809 stars)   (35.9 sec) Q: 0, Sets: 3637/3645  (23.008%) CEs: 3610 ETA: 2.0 min (expected 15808 stars)   (36.0 sec) Q: 0, Sets: 3648/3653  (23.035%) CEs: 3620 ETA: 2.01 min (expected 15837 stars)   (36.1 sec) Q: 0, Sets: 3658/3666  (23.151%) CEs: 3630 ETA: 2.0 min (expected 15801 stars)   (36.2 sec) Q: 0, Sets: 3669/3674  (23.34%) CEs: 3640 ETA: 1.98 min (expected 15720 stars)   (36.4 sec) Q: 0, Sets: 3681/3689  (23.547%) CEs: 3649 ETA: 1.97 min (expected 15632 stars)   (36.5 sec) Q: 0, Sets: 3687/3693  (23.621%) CEs: 3660 ETA: 1.96 min (expected 15609 stars)   (36.6 sec) Q: 0, Sets: 3698/3704  (23.792%) CEs: 3670 ETA: 1.95 min (expected 15543 stars)   (36.7 sec) Q: 0, Sets: 3709/3715  (23.95%) CEs: 3680 ETA: 1.94 min (expected 15486 stars)   [runlim] sample:		51.1 time, 50.2 real, 1483.7 MB
+(36.8 sec) Q: 0, Sets: 3722/3732  (24.223%) CEs: 3691 ETA: 1.92 min (expected 15365 stars)   (36.9 sec) Q: 0, Sets: 3734/3741  (24.255%) CEs: 3701 ETA: 1.92 min (expected 15395 stars)   (37.0 sec) Q: 0, Sets: 3745/3753  (24.274%) CEs: 3713 ETA: 1.92 min (expected 15428 stars)   (37.1 sec) Q: 0, Sets: 3754/3763  (24.285%) CEs: 3723 ETA: 1.93 min (expected 15458 stars)   (37.2 sec) Q: 0, Sets: 3764/3773  (24.288%) CEs: 3733 ETA: 1.93 min (expected 15497 stars)   (37.3 sec) Q: 0, Sets: 3774/3779  (24.316%) CEs: 3742 ETA: 1.93 min (expected 15520 stars)   (37.4 sec) Q: 0, Sets: 3783/3788  (24.365%) CEs: 3751 ETA: 1.94 min (expected 15526 stars)   (37.5 sec) Q: 0, Sets: 3796/3807  (24.464%) CEs: 3763 ETA: 1.93 min (expected 15516 stars)   (37.6 sec) Q: 0, Sets: 3807/3813  (24.481%) CEs: 3772 ETA: 1.93 min (expected 15551 stars)   (37.7 sec) Q: 0, Sets: 3821/3828  (24.521%) CEs: 3782 ETA: 1.94 min (expected 15583 stars)   (37.8 sec) Q: 0, Sets: 3834/3840  (24.634%) CEs: 3792 ETA: 1.93 min (expected 15564 stars)   (37.9 sec) Q: 0, Sets: 3845/3853  (24.661%) CEs: 3802 ETA: 1.93 min (expected 15591 stars)   (38.0 sec) Q: 0, Sets: 3857/3863  (24.692%) CEs: 3813 ETA: 1.93 min (expected 15621 stars)   (38.1 sec) Q: 0, Sets: 3868/3873  (24.805%) CEs: 3824 ETA: 1.93 min (expected 15594 stars)   (38.2 sec) Q: 0, Sets: 3877/3892  (25.004%) CEs: 3833 ETA: 1.91 min (expected 15506 stars)   (38.3 sec) Q: 0, Sets: 3888/3904  (25.009%) CEs: 3843 ETA: 1.92 min (expected 15546 stars)   (38.4 sec) Q: 0, Sets: 3894/3908  (25.01%) CEs: 3854 ETA: 1.92 min (expected 15570 stars)   (38.6 sec) Q: 0, Sets: 3909/3923  (25.026%) CEs: 3864 ETA: 1.92 min (expected 15620 stars)   (38.7 sec) Q: 0, Sets: 3921/3936  (25.029%) CEs: 3876 ETA: 1.93 min (expected 15666 stars)   (38.8 sec) Q: 0, Sets: 3931/3946  (25.037%) CEs: 3886 ETA: 1.93 min (expected 15701 stars)   (38.9 sec) Q: 0, Sets: 3942/3955  (25.041%) CEs: 3897 ETA: 1.94 min (expected 15742 stars)   (39.0 sec) Q: 0, Sets: 3953/3967  (25.05%) CEs: 3908 ETA: 1.94 min (expected 15780 stars)   (39.1 sec) Q: 0, Sets: 3965/3978  (25.063%) CEs: 3920 ETA: 1.95 min (expected 15820 stars)   (39.2 sec) Q: 0, Sets: 3971/3982  (25.07%) CEs: 3931 ETA: 1.95 min (expected 15840 stars)   (39.3 sec) Q: 0, Sets: 3984/3994  (25.095%) CEs: 3942 ETA: 1.95 min (expected 15876 stars)   (39.4 sec) Q: 0, Sets: 3994/4009  (25.107%) CEs: 3953 ETA: 1.96 min (expected 15908 stars)   (39.5 sec) Q: 0, Sets: 4005/4018  (25.111%) CEs: 3963 ETA: 1.96 min (expected 15949 stars)   (39.6 sec) Q: 0, Sets: 4016/4028  (25.12%) CEs: 3974 ETA: 1.97 min (expected 15987 stars)   (39.7 sec) Q: 0, Sets: 4027/4040  (25.142%) CEs: 3987 ETA: 1.97 min (expected 16017 stars)   (39.8 sec) Q: 0, Sets: 4039/4050  (25.158%) CEs: 3998 ETA: 1.97 min (expected 16054 stars)   (39.9 sec) Q: 0, Sets: 4050/4061  (25.179%) CEs: 4009 ETA: 1.98 min (expected 16085 stars)   (40.0 sec) Q: 0, Sets: 4062/4074  (25.206%) CEs: 4020 ETA: 1.98 min (expected 16115 stars)   (40.1 sec) Q: 0, Sets: 4073/4083  (25.241%) CEs: 4030 ETA: 1.98 min (expected 16136 stars)   (40.2 sec) Q: 0, Sets: 4085/4094  (25.317%) CEs: 4040 ETA: 1.98 min (expected 16135 stars)   (40.3 sec) Q: 0, Sets: 4091/4101  (25.348%) CEs: 4051 ETA: 1.98 min (expected 16139 stars)   (40.4 sec) Q: 0, Sets: 4108/4120  (25.37%) CEs: 4063 ETA: 1.98 min (expected 16192 stars)   (40.6 sec) Q: 0, Sets: 4120/4128  (25.389%) CEs: 4075 ETA: 1.99 min (expected 16227 stars)   (40.7 sec) Q: 0, Sets: 4130/4139  (25.531%) CEs: 4085 ETA: 1.98 min (expected 16176 stars)   (40.8 sec) Q: 0, Sets: 4136/4143  (25.586%) CEs: 4097 ETA: 1.98 min (expected 16165 stars)   (40.9 sec) Q: 0, Sets: 4148/4160  (25.833%) CEs: 4106 ETA: 1.96 min (expected 16057 stars)   (41.0 sec) Q: 0, Sets: 4159/4169  (25.842%) CEs: 4117 ETA: 1.96 min (expected 16094 stars)   (41.1 sec) Q: 0, Sets: 4168/4181  (25.849%) CEs: 4126 ETA: 1.96 min (expected 16124 stars)   (41.2 sec) Q: 0, Sets: 4180/4191  (25.852%) CEs: 4137 ETA: 1.97 min (expected 16169 stars)   (41.3 sec) Q: 0, Sets: 4190/4200  (25.854%) CEs: 4147 ETA: 1.97 min (expected 16207 stars)   (41.4 sec) Q: 0, Sets: 4200/4215  (25.854%) CEs: 4158 ETA: 1.98 min (expected 16245 stars)   (41.5 sec) Q: 0, Sets: 4209/4221  (25.864%) CEs: 4167 ETA: 1.98 min (expected 16274 stars)   (41.6 sec) Q: 0, Sets: 4221/4231  (25.891%) CEs: 4179 ETA: 1.98 min (expected 16303 stars)   (41.7 sec) Q: 0, Sets: 4232/4240  (26.099%) CEs: 4189 ETA: 1.97 min (expected 16215 stars)   (41.8 sec) Q: 0, Sets: 4243/4250  (26.147%) CEs: 4199 ETA: 1.97 min (expected 16227 stars)   (41.9 sec) Q: 0, Sets: 4253/4261  (26.245%) CEs: 4209 ETA: 1.96 min (expected 16205 stars)   (42.0 sec) Q: 0, Sets: 4264/4270  (26.465%) CEs: 4220 ETA: 1.95 min (expected 16112 stars)   (42.1 sec) Q: 0, Sets: 4273/4284  (26.596%) CEs: 4228 ETA: 1.94 min (expected 16066 stars)   (42.2 sec) Q: 0, Sets: 4284/4297  (26.606%) CEs: 4239 ETA: 1.94 min (expected 16102 stars)   (42.3 sec) Q: 0, Sets: 4296/4306  (26.678%) CEs: 4251 ETA: 1.94 min (expected 16103 stars)   (42.4 sec) Q: 0, Sets: 4308/4317  (26.782%) CEs: 4263 ETA: 1.93 min (expected 16085 stars)   (42.5 sec) Q: 0, Sets: 4314/4329  (26.807%) CEs: 4276 ETA: 1.94 min (expected 16093 stars)   (42.6 sec) Q: 0, Sets: 4326/4338  (26.81%) CEs: 4287 ETA: 1.94 min (expected 16135 stars)   (42.8 sec) Q: 0, Sets: 4337/4350  (26.821%) CEs: 4296 ETA: 1.94 min (expected 16170 stars)   (42.9 sec) Q: 0, Sets: 4347/4359  (26.822%) CEs: 4306 ETA: 1.95 min (expected 16207 stars)   (43.0 sec) Q: 0, Sets: 4358/4369  (26.826%) CEs: 4317 ETA: 1.95 min (expected 16246 stars)   (43.1 sec) Q: 0, Sets: 4368/4379  (26.828%) CEs: 4326 ETA: 1.96 min (expected 16282 stars)   (43.2 sec) Q: 0, Sets: 4378/4390  (26.83%) CEs: 4337 ETA: 1.96 min (expected 16318 stars)   (43.3 sec) Q: 0, Sets: 4390/4397  (26.855%) CEs: 4348 ETA: 1.96 min (expected 16347 stars)   (43.4 sec) Q: 0, Sets: 4400/4409  (26.874%) CEs: 4357 ETA: 1.97 min (expected 16373 stars)   (43.5 sec) Q: 0, Sets: 4413/4422  (26.88%) CEs: 4369 ETA: 1.97 min (expected 16418 stars)   (43.6 sec) Q: 0, Sets: 4421/4433  (26.884%) CEs: 4377 ETA: 1.98 min (expected 16445 stars)   (43.7 sec) Q: 0, Sets: 4431/4441  (26.888%) CEs: 4387 ETA: 1.98 min (expected 16479 stars)   (43.8 sec) Q: 0, Sets: 4441/4450  (26.895%) CEs: 4396 ETA: 1.98 min (expected 16512 stars)   (43.9 sec) Q: 0, Sets: 4451/4459  (26.898%) CEs: 4406 ETA: 1.99 min (expected 16548 stars)   (44.0 sec) Q: 0, Sets: 4461/4472  (26.901%) CEs: 4416 ETA: 1.99 min (expected 16583 stars)   (44.1 sec) Q: 0, Sets: 4466/4478  (26.902%) CEs: 4426 ETA: 2.0 min (expected 16601 stars)   (44.2 sec) Q: 0, Sets: 4478/4487  (26.904%) CEs: 4437 ETA: 2.0 min (expected 16645 stars)   (44.3 sec) Q: 0, Sets: 4488/4500  (26.93%) CEs: 4446 ETA: 2.0 min (expected 16666 stars)   (44.4 sec) Q: 0, Sets: 4499/4510  (26.93%) CEs: 4457 ETA: 2.01 min (expected 16706 stars)   (44.5 sec) Q: 0, Sets: 4510/4520  (26.937%) CEs: 4467 ETA: 2.01 min (expected 16743 stars)   (44.6 sec) Q: 0, Sets: 4520/4529  (26.939%) CEs: 4477 ETA: 2.02 min (expected 16778 stars)   (44.7 sec) Q: 0, Sets: 4532/4540  (26.946%) CEs: 4489 ETA: 2.02 min (expected 16819 stars)   (44.8 sec) Q: 0, Sets: 4545/4557  (27.347%) CEs: 4501 ETA: 1.98 min (expected 16620 stars)   (44.9 sec) Q: 0, Sets: 4557/4567  (27.402%) CEs: 4512 ETA: 1.98 min (expected 16630 stars)   (45.0 sec) Q: 0, Sets: 4562/4572  (27.404%) CEs: 4522 ETA: 1.99 min (expected 16647 stars)   (45.1 sec) Q: 0, Sets: 4575/4586  (27.412%) CEs: 4533 ETA: 1.99 min (expected 16690 stars)   (45.2 sec) Q: 0, Sets: 4586/4596  (27.42%) CEs: 4543 ETA: 2.0 min (expected 16725 stars)   (45.3 sec) Q: 0, Sets: 4597/4606  (27.426%) CEs: 4554 ETA: 2.0 min (expected 16761 stars)   (45.4 sec) Q: 0, Sets: 4608/4618  (27.436%) CEs: 4565 ETA: 2.0 min (expected 16795 stars)   (45.5 sec) Q: 0, Sets: 4618/4626  (27.441%) CEs: 4575 ETA: 2.01 min (expected 16829 stars)   (45.6 sec) Q: 0, Sets: 4628/4637  (27.472%) CEs: 4585 ETA: 2.01 min (expected 16846 stars)   (45.8 sec) Q: 0, Sets: 4639/4646  (27.783%) CEs: 4595 ETA: 1.98 min (expected 16697 stars)   [runlim] sample:		61.1 time, 60.2 real, 1491.6 MB
+(45.9 sec) Q: 0, Sets: 4648/4658  (27.793%) CEs: 4604 ETA: 1.99 min (expected 16724 stars)   (46.0 sec) Q: 0, Sets: 4657/4670  (27.82%) CEs: 4612 ETA: 1.99 min (expected 16740 stars)   (46.1 sec) Q: 0, Sets: 4667/4679  (27.82%) CEs: 4622 ETA: 1.99 min (expected 16775 stars)   (46.2 sec) Q: 0, Sets: 4673/4684  (27.821%) CEs: 4632 ETA: 2.0 min (expected 16797 stars)   (46.3 sec) Q: 0, Sets: 4682/4695  (27.822%) CEs: 4642 ETA: 2.0 min (expected 16829 stars)   (46.4 sec) Q: 0, Sets: 4694/4704  (27.823%) CEs: 4654 ETA: 2.0 min (expected 16871 stars)   (46.5 sec) Q: 0, Sets: 4705/4716  (27.827%) CEs: 4664 ETA: 2.01 min (expected 16908 stars)   (46.6 sec) Q: 0, Sets: 4715/4726  (27.828%) CEs: 4674 ETA: 2.01 min (expected 16943 stars)   (46.7 sec) Q: 0, Sets: 4727/4738  (27.829%) CEs: 4685 ETA: 2.02 min (expected 16986 stars)   (46.8 sec) Q: 0, Sets: 4738/4746  (27.83%) CEs: 4695 ETA: 2.02 min (expected 17025 stars)   (46.9 sec) Q: 0, Sets: 4748/4758  (27.831%) CEs: 4705 ETA: 2.03 min (expected 17060 stars)   (47.0 sec) Q: 0, Sets: 4760/4766  (27.832%) CEs: 4717 ETA: 2.03 min (expected 17103 stars)   (47.1 sec) Q: 0, Sets: 4772/4785  (27.847%) CEs: 4729 ETA: 2.03 min (expected 17136 stars)   (47.2 sec) Q: 0, Sets: 4776/4788  (27.848%) CEs: 4735 ETA: 2.04 min (expected 17151 stars)   (47.3 sec) Q: 0, Sets: 4786/4798  (27.848%) CEs: 4746 ETA: 2.04 min (expected 17186 stars)   (47.4 sec) Q: 0, Sets: 4798/4809  (27.849%) CEs: 4757 ETA: 2.05 min (expected 17228 stars)   (47.5 sec) Q: 0, Sets: 4809/4822  (27.851%) CEs: 4766 ETA: 2.05 min (expected 17267 stars)   (47.6 sec) Q: 0, Sets: 4821/4831  (27.851%) CEs: 4778 ETA: 2.06 min (expected 17310 stars)   (47.7 sec) Q: 0, Sets: 4832/4841  (27.853%) CEs: 4788 ETA: 2.06 min (expected 17348 stars)   (47.8 sec) Q: 0, Sets: 4841/4849  (27.863%) CEs: 4797 ETA: 2.06 min (expected 17375 stars)   (47.9 sec) Q: 0, Sets: 4853/4858  (27.93%) CEs: 4808 ETA: 2.06 min (expected 17376 stars)   (48.0 sec) Q: 0, Sets: 4859/4866  (28.04%) CEs: 4819 ETA: 2.05 min (expected 17329 stars)   (48.1 sec) Q: 0, Sets: 4873/4883  (28.333%) CEs: 4828 ETA: 2.03 min (expected 17199 stars)   (48.2 sec) Q: 0, Sets: 4878/4891  (28.333%) CEs: 4837 ETA: 2.03 min (expected 17217 stars)   (48.4 sec) Q: 0, Sets: 4888/4901  (28.337%) CEs: 4848 ETA: 2.04 min (expected 17249 stars)   (48.5 sec) Q: 0, Sets: 4901/4910  (28.357%) CEs: 4859 ETA: 2.04 min (expected 17283 stars)   (48.6 sec) Q: 0, Sets: 4910/4920  (28.375%) CEs: 4869 ETA: 2.04 min (expected 17304 stars)   (48.7 sec) Q: 0, Sets: 4924/4932  (28.479%) CEs: 4883 ETA: 2.04 min (expected 17290 stars)   (48.8 sec) Q: 0, Sets: 4936/4945  (28.735%) CEs: 4894 ETA: 2.02 min (expected 17177 stars)   (48.9 sec) Q: 0, Sets: 4947/4956  (28.815%) CEs: 4904 ETA: 2.01 min (expected 17168 stars)   (49.0 sec) Q: 0, Sets: 4958/4963  (28.906%) CEs: 4915 ETA: 2.01 min (expected 17152 stars)   (49.1 sec) Q: 0, Sets: 4970/4975  (30.078%) CEs: 4926 ETA: 1.9 min (expected 16524 stars)   (49.2 sec) Q: 0, Sets: 4981/4988  (30.701%) CEs: 4936 ETA: 1.85 min (expected 16224 stars)   (49.3 sec) Q: 0, Sets: 4986/4992  (30.756%) CEs: 4946 ETA: 1.85 min (expected 16212 stars)   (49.4 sec) Q: 0, Sets: 4996/5006  (31.274%) CEs: 4956 ETA: 1.81 min (expected 15975 stars)   (49.5 sec) Q: 0, Sets: 5006/5013  (32.471%) CEs: 4965 ETA: 1.72 min (expected 15417 stars)   (49.6 sec) Q: 0, Sets: 5015/5022  (32.812%) CEs: 4974 ETA: 1.69 min (expected 15284 stars)   (49.7 sec) Q: 0, Sets: 5025/5030  (33.496%) CEs: 4982 ETA: 1.65 min (expected 15002 stars)   (49.8 sec) Q: 0, Sets: 5033/5039  (33.74%) CEs: 4990 ETA: 1.63 min (expected 14917 stars)   (49.9 sec) Q: 0, Sets: 5040/5048  (33.847%) CEs: 4996 ETA: 1.63 min (expected 14891 stars)   (50.0 sec) Q: 0, Sets: 5048/5052  (33.984%) CEs: 5003 ETA: 1.62 min (expected 14854 stars)   (50.1 sec) Q: 0, Sets: 5052/5055  (34.375%) CEs: 5009 ETA: 1.6 min (expected 14697 stars)   (50.2 sec) Q: 0, Sets: 5060/5072  (34.383%) CEs: 5018 ETA: 1.6 min (expected 14716 stars)   (50.3 sec) Q: 0, Sets: 5069/5080  (34.392%) CEs: 5026 ETA: 1.6 min (expected 14739 stars)   (50.4 sec) Q: 0, Sets: 5077/5091  (34.436%) CEs: 5033 ETA: 1.6 min (expected 14743 stars)   (50.6 sec) Q: 0, Sets: 5085/5099  (34.439%) CEs: 5040 ETA: 1.6 min (expected 14765 stars)   (50.7 sec) Q: 0, Sets: 5093/5104  (34.44%) CEs: 5048 ETA: 1.61 min (expected 14788 stars)   (50.8 sec) Q: 0, Sets: 5100/5111  (34.443%) CEs: 5055 ETA: 1.61 min (expected 14807 stars)   (50.9 sec) Q: 0, Sets: 5104/5113  (34.445%) CEs: 5062 ETA: 1.61 min (expected 14818 stars)   (51.0 sec) Q: 0, Sets: 5113/5124  (34.45%) CEs: 5073 ETA: 1.62 min (expected 14842 stars)   (51.1 sec) Q: 0, Sets: 5125/5134  (34.454%) CEs: 5083 ETA: 1.62 min (expected 14875 stars)   (51.2 sec) Q: 0, Sets: 5134/5144  (34.46%) CEs: 5093 ETA: 1.62 min (expected 14898 stars)   (51.3 sec) Q: 0, Sets: 5143/5155  (34.467%) CEs: 5101 ETA: 1.63 min (expected 14922 stars)   (51.4 sec) Q: 0, Sets: 5152/5162  (34.467%) CEs: 5110 ETA: 1.63 min (expected 14947 stars)   (51.5 sec) Q: 0, Sets: 5160/5169  (34.47%) CEs: 5118 ETA: 1.63 min (expected 14970 stars)   (51.6 sec) Q: 0, Sets: 5168/5177  (34.471%) CEs: 5126 ETA: 1.64 min (expected 14992 stars)   (51.7 sec) Q: 0, Sets: 5177/5188  (34.48%) CEs: 5135 ETA: 1.64 min (expected 15014 stars)   (51.8 sec) Q: 0, Sets: 5185/5196  (34.485%) CEs: 5143 ETA: 1.64 min (expected 15036 stars)   (51.9 sec) Q: 0, Sets: 5194/5206  (34.486%) CEs: 5152 ETA: 1.64 min (expected 15061 stars)   (52.0 sec) Q: 0, Sets: 5206/5215  (34.491%) CEs: 5165 ETA: 1.65 min (expected 15094 stars)   (52.1 sec) Q: 0, Sets: 5215/5226  (34.492%) CEs: 5173 ETA: 1.65 min (expected 15119 stars)   (52.2 sec) Q: 0, Sets: 5225/5235  (34.5%) CEs: 5182 ETA: 1.65 min (expected 15145 stars)   (52.3 sec) Q: 0, Sets: 5235/5244  (34.509%) CEs: 5193 ETA: 1.66 min (expected 15170 stars)   (52.5 sec) Q: 0, Sets: 5246/5255  (34.531%) CEs: 5203 ETA: 1.66 min (expected 15192 stars)   (52.6 sec) Q: 0, Sets: 5254/5262  (34.555%) CEs: 5211 ETA: 1.66 min (expected 15205 stars)   (52.7 sec) Q: 0, Sets: 5262/5271  (34.589%) CEs: 5218 ETA: 1.66 min (expected 15213 stars)   (52.8 sec) Q: 0, Sets: 5273/5280  (34.735%) CEs: 5229 ETA: 1.65 min (expected 15181 stars)   (52.9 sec) Q: 0, Sets: 5278/5287  (34.778%) CEs: 5238 ETA: 1.65 min (expected 15176 stars)   (53.0 sec) Q: 0, Sets: 5289/5296  (34.857%) CEs: 5248 ETA: 1.65 min (expected 15173 stars)   (53.1 sec) Q: 0, Sets: 5299/5304  (35.059%) CEs: 5258 ETA: 1.64 min (expected 15115 stars)   (53.2 sec) Q: 0, Sets: 5310/5318  (35.074%) CEs: 5269 ETA: 1.64 min (expected 15139 stars)   (53.3 sec) Q: 0, Sets: 5323/5331  (35.102%) CEs: 5280 ETA: 1.64 min (expected 15164 stars)   
+(53.4 sec) Q: 0, Sets: 5336/5341  (35.144%) CEs: 5293 ETA: 1.64 min (expected 15183 stars)   (53.5 sec) Q: 0, Sets: 5344/5352  (36.005%) CEs: 5300 ETA: 1.58 min (expected 14843 stars)   (53.6 sec) Q: 0, Sets: 5352/5359  (36.034%) CEs: 5307 ETA: 1.59 min (expected 14853 stars)   (53.7 sec) Q: 0, Sets: 5360/5369  (36.052%) CEs: 5315 ETA: 1.59 min (expected 14867 stars)   (53.8 sec) Q: 0, Sets: 5369/5378  (36.055%) CEs: 5324 ETA: 1.59 min (expected 14891 stars)   (53.9 sec) Q: 0, Sets: 5377/5384  (36.06%) CEs: 5332 ETA: 1.59 min (expected 14911 stars)   (54.0 sec) Q: 0, Sets: 5380/5389  (36.067%) CEs: 5338 ETA: 1.6 min (expected 14917 stars)   (54.1 sec) Q: 0, Sets: 5388/5396  (36.071%) CEs: 5346 ETA: 1.6 min (expected 14937 stars)   (54.2 sec) Q: 0, Sets: 5395/5406  (36.075%) CEs: 5353 ETA: 1.6 min (expected 14955 stars)   (54.3 sec) Q: 0, Sets: 5403/5413  (36.075%) CEs: 5362 ETA: 1.6 min (expected 14977 stars)   (54.4 sec) Q: 0, Sets: 5412/5423  (36.076%) CEs: 5370 ETA: 1.61 min (expected 15001 stars)   (54.6 sec) Q: 0, Sets: 5420/5431  (36.078%) CEs: 5378 ETA: 1.61 min (expected 15023 stars)   (54.7 sec) Q: 0, Sets: 5430/5437  (36.081%) CEs: 5387 ETA: 1.61 min (expected 15050 stars)   (54.8 sec) Q: 0, Sets: 5438/5445  (36.082%) CEs: 5395 ETA: 1.62 min (expected 15071 stars)   (54.9 sec) Q: 0, Sets: 5447/5460  (36.133%) CEs: 5403 ETA: 1.62 min (expected 15075 stars)   [runlim] sample:		71.1 time, 70.2 real, 1496.9 MB
+(55.0 sec) Q: 0, Sets: 5456/5466  (36.137%) CEs: 5411 ETA: 1.62 min (expected 15098 stars)   (55.1 sec) Q: 0, Sets: 5462/5472  (36.138%) CEs: 5420 ETA: 1.62 min (expected 15114 stars)   (55.2 sec) Q: 0, Sets: 5469/5479  (36.139%) CEs: 5427 ETA: 1.63 min (expected 15133 stars)   (55.3 sec) Q: 0, Sets: 5477/5486  (36.16%) CEs: 5434 ETA: 1.63 min (expected 15146 stars)   (55.4 sec) Q: 0, Sets: 5485/5495  (36.183%) CEs: 5442 ETA: 1.63 min (expected 15159 stars)   (55.5 sec) Q: 0, Sets: 5493/5503  (36.19%) CEs: 5450 ETA: 1.63 min (expected 15178 stars)   (55.6 sec) Q: 0, Sets: 5501/5510  (36.192%) CEs: 5458 ETA: 1.63 min (expected 15200 stars)   (55.7 sec) Q: 0, Sets: 5509/5519  (36.195%) CEs: 5465 ETA: 1.64 min (expected 15220 stars)   (55.8 sec) Q: 0, Sets: 5518/5526  (36.202%) CEs: 5473 ETA: 1.64 min (expected 15242 stars)   (55.9 sec) Q: 0, Sets: 5522/5530  (36.205%) CEs: 5481 ETA: 1.64 min (expected 15252 stars)   (56.0 sec) Q: 0, Sets: 5534/5540  (36.292%) CEs: 5489 ETA: 1.64 min (expected 15249 stars)   (56.2 sec) Q: 0, Sets: 5545/5550  (36.304%) CEs: 5500 ETA: 1.64 min (expected 15274 stars)   (56.3 sec) Q: 0, Sets: 5555/5561  (36.377%) CEs: 5510 ETA: 1.64 min (expected 15271 stars)   (56.4 sec) Q: 0, Sets: 5564/5572  (36.395%) CEs: 5519 ETA: 1.64 min (expected 15288 stars)   (56.5 sec) Q: 0, Sets: 5572/5583  (36.396%) CEs: 5527 ETA: 1.65 min (expected 15309 stars)   (56.6 sec) Q: 0, Sets: 5577/5585  (36.397%) CEs: 5536 ETA: 1.65 min (expected 15323 stars)   (56.7 sec) Q: 0, Sets: 5586/5595  (36.405%) CEs: 5544 ETA: 1.65 min (expected 15344 stars)   (56.8 sec) Q: 0, Sets: 5595/5600  (36.426%) CEs: 5552 ETA: 1.65 min (expected 15360 stars)   (56.9 sec) Q: 0, Sets: 5603/5610  (36.447%) CEs: 5560 ETA: 1.65 min (expected 15373 stars)   (57.0 sec) Q: 0, Sets: 5611/5617  (36.469%) CEs: 5567 ETA: 1.66 min (expected 15386 stars)   (57.1 sec) Q: 0, Sets: 5620/5627  (36.563%) CEs: 5576 ETA: 1.65 min (expected 15371 stars)   (57.2 sec) Q: 0, Sets: 5628/5632  (36.621%) CEs: 5583 ETA: 1.65 min (expected 15368 stars)   (57.3 sec) Q: 0, Sets: 5638/5643  (36.688%) CEs: 5593 ETA: 1.65 min (expected 15367 stars)   (57.4 sec) Q: 0, Sets: 5647/5656  (36.728%) CEs: 5602 ETA: 1.65 min (expected 15375 stars)   (57.5 sec) Q: 0, Sets: 5652/5661  (36.739%) CEs: 5612 ETA: 1.65 min (expected 15384 stars)   (57.6 sec) Q: 0, Sets: 5663/5671  (36.758%) CEs: 5623 ETA: 1.65 min (expected 15406 stars)   (57.7 sec) Q: 0, Sets: 5676/5683  (36.786%) CEs: 5634 ETA: 1.65 min (expected 15430 stars)   (57.8 sec) Q: 0, Sets: 5686/5692  (36.877%) CEs: 5645 ETA: 1.65 min (expected 15419 stars)   (58.0 sec) Q: 0, Sets: 5698/5706  (36.946%) CEs: 5656 ETA: 1.65 min (expected 15422 stars)   (58.1 sec) Q: 0, Sets: 5710/5716  (36.993%) CEs: 5666 ETA: 1.65 min (expected 15435 stars)   (58.2 sec) Q: 0, Sets: 5721/5730  (37.019%) CEs: 5677 ETA: 1.65 min (expected 15454 stars)   (58.3 sec) Q: 0, Sets: 5734/5742  (37.038%) CEs: 5689 ETA: 1.65 min (expected 15482 stars)   (58.4 sec) Q: 0, Sets: 5745/5753  (37.045%) CEs: 5700 ETA: 1.65 min (expected 15508 stars)   (58.5 sec) Q: 0, Sets: 5751/5756  (37.048%) CEs: 5712 ETA: 1.66 min (expected 15523 stars)   (58.6 sec) Q: 0, Sets: 5762/5769  (37.097%) CEs: 5722 ETA: 1.66 min (expected 15532 stars)   (58.7 sec) Q: 0, Sets: 5774/5778  (37.207%) CEs: 5734 ETA: 1.65 min (expected 15519 stars)   (58.8 sec) Q: 0, Sets: 5786/5790  (39.062%) CEs: 5745 ETA: 1.53 min (expected 14812 stars)   (58.9 sec) Q: 0, Sets: 5799/5802  (43.75%) CEs: 5757 ETA: 1.26 min (expected 13255 stars)   (59.0 sec) Q: 0, Sets: 5810/5815  (44.507%) CEs: 5767 ETA: 1.23 min (expected 13054 stars)   (59.1 sec) Q: 0, Sets: 5822/5826  (47.266%) CEs: 5779 ETA: 1.1 min (expected 12318 stars)   (59.2 sec) Q: 0, Sets: 5833/5837  (48.291%) CEs: 5791 ETA: 1.06 min (expected 12079 stars)   (59.3 sec) Q: 0, Sets: 5844/5850  (56.25%) CEs: 5801 ETA: 46.1 sec (expected 10389 stars)   (59.4 sec) Q: 0, Sets: 5854/5860  (62.891%) CEs: 5809 ETA: 35.1 sec (expected 9308 stars)   (59.5 sec) Q: 0, Sets: 5863/5869  (64.6%) CEs: 5818 ETA: 32.6 sec (expected 9076 stars)   (59.6 sec) Q: 0, Sets: 5875/5878  (67.188%) CEs: 5830 ETA: 29.1 sec (expected 8744 stars)   (59.7 sec) Q: 0, Sets: 5880/5883  (67.969%) CEs: 5839 ETA: 28.1 sec (expected 8651 stars)   (59.8 sec) Q: 0, Sets: 5895/5897  (73.438%) CEs: 5850 ETA: 21.6 sec (expected 8027 stars)   (59.9 sec) Q: 0, Sets: 5901/5909  (75.146%) CEs: 5861 ETA: 19.8 sec (expected 7853 stars)   (1.0 min) Q: 0, Sets: 5913/5918  (75.781%) CEs: 5872 ETA: 19.2 sec (expected 7803 stars)   (1.0 min) Q: 0, Sets: 5923/5930  (77.173%) CEs: 5882 ETA: 17.8 sec (expected 7675 stars)   (1.0 min) Q: 0, Sets: 5933/5937  (77.93%) CEs: 5892 ETA: 17.1 sec (expected 7613 stars)   (1.01 min) Q: 0, Sets: 5944/5948  (80.371%) CEs: 5902 ETA: 14.7 sec (expected 7396 stars)   (1.01 min) Q: 0, Sets: 5953/5959  (81.25%) CEs: 5911 ETA: 14.0 sec (expected 7327 stars)   (1.01 min) Q: 0, Sets: 5961/5969  (81.335%) CEs: 5919 ETA: 13.9 sec (expected 7329 stars)   (1.01 min) Q: 0, Sets: 5970/5979  (81.378%) CEs: 5927 ETA: 13.9 sec (expected 7336 stars)   (1.01 min) Q: 0, Sets: 5979/5990  (81.386%) CEs: 5935 ETA: 13.9 sec (expected 7346 stars)   (1.01 min) Q: 0, Sets: 5988/5999  (81.398%) CEs: 5944 ETA: 13.9 sec (expected 7356 stars)   (1.02 min) Q: 0, Sets: 5997/6005  (81.427%) CEs: 5952 ETA: 13.9 sec (expected 7365 stars)   (1.02 min) Q: 0, Sets: 6001/6009  (81.436%) CEs: 5960 ETA: 13.9 sec (expected 7369 stars)   (1.02 min) Q: 0, Sets: 6009/6019  (81.461%) CEs: 5967 ETA: 13.9 sec (expected 7377 stars)   (1.02 min) Q: 0, Sets: 6017/6025  (81.488%) CEs: 5975 ETA: 13.9 sec (expected 7384 stars)   (1.02 min) Q: 0, Sets: 6025/6031  (81.592%) CEs: 5983 ETA: 13.9 sec (expected 7384 stars)   (1.03 min) Q: 0, Sets: 6034/6039  (82.031%) CEs: 5992 ETA: 13.5 sec (expected 7356 stars)   (1.03 min) Q: 0, Sets: 6042/6047  (82.373%) CEs: 6000 ETA: 13.2 sec (expected 7335 stars)   (1.03 min) Q: 0, Sets: 6051/6061  (82.861%) CEs: 6011 ETA: 12.8 sec (expected 7303 stars)   (1.03 min) Q: 0, Sets: 6062/6070  (82.922%) CEs: 6020 ETA: 12.7 sec (expected 7310 stars)   (1.03 min) Q: 0, Sets: 6071/6076  (83.008%) CEs: 6029 ETA: 12.7 sec (expected 7314 stars)   (1.03 min) Q: 0, Sets: 6081/6087  (83.368%) CEs: 6040 ETA: 12.4 sec (expected 7294 stars)   (1.04 min) Q: 0, Sets: 6092/6099  (83.496%) CEs: 6050 ETA: 12.3 sec (expected 7296 stars)   (1.04 min) Q: 0, Sets: 6101/6109  (83.606%) CEs: 6059 ETA: 12.2 sec (expected 7297 stars)   (1.04 min) Q: 0, Sets: 6112/6119  (83.64%) CEs: 6071 ETA: 12.2 sec (expected 7308 stars)   (1.04 min) Q: 0, Sets: 6125/6131  (83.85%) CEs: 6082 ETA: 12.0 sec (expected 7305 stars)   (1.04 min) Q: 0, Sets: 6137/6143  (83.955%) CEs: 6092 ETA: 12.0 sec (expected 7310 stars)   (1.04 min) Q: 0, Sets: 6143/6149  (83.963%) CEs: 6102 ETA: 12.0 sec (expected 7316 stars)   (1.05 min) Q: 0, Sets: 6154/6158  (83.983%) CEs: 6112 ETA: 12.0 sec (expected 7328 stars)   (1.05 min) Q: 0, Sets: 6163/6166  (85.156%) CEs: 6120 ETA: 11.0 sec (expected 7237 stars)   (1.05 min) Q: 0, Sets: 6170/6173  (85.547%) CEs: 6127 ETA: 10.6 sec (expected 7212 stars)   (1.05 min) Q: 0, Sets: 6179/6181  (85.938%) CEs: 6134 ETA: 10.3 sec (expected 7190 stars)   (1.05 min) Q: 0, Sets: 6188/6194  (85.986%) CEs: 6144 ETA: 10.3 sec (expected 7196 stars)   (1.05 min) Q: 0, Sets: 6197/6206  (86.043%) CEs: 6153 ETA: 10.3 sec (expected 7202 stars)   (1.06 min) Q: 0, Sets: 6208/6217  (86.057%) CEs: 6164 ETA: 10.3 sec (expected 7214 stars)   (1.06 min) Q: 0, Sets: 6217/6226  (86.061%) CEs: 6173 ETA: 10.3 sec (expected 7224 stars)   (1.06 min) Q: 0, Sets: 6228/6238  (86.072%) CEs: 6184 ETA: 10.3 sec (expected 7236 stars)   (1.06 min) Q: 0, Sets: 6235/6240  (86.084%) CEs: 6194 ETA: 10.3 sec (expected 7243 stars)   (1.06 min) Q: 0, Sets: 6245/6253  (86.094%) CEs: 6204 ETA: 10.3 sec (expected 7254 stars)   (1.07 min) Q: 0, Sets: 6257/6261  (86.279%) CEs: 6215 ETA: 10.2 sec (expected 7252 stars)   (1.07 min) Q: 0, Sets: 6267/6269  (86.719%) CEs: 6224 ETA: 9.8 sec (expected 7227 stars)   [runlim] sample:		81.1 time, 80.2 real, 1502.1 MB
+(1.07 min) Q: 0, Sets: 6276/6283  (86.761%) CEs: 6234 ETA: 9.8 sec (expected 7234 stars)   (1.07 min) Q: 0, Sets: 6287/6295  (86.796%) CEs: 6245 ETA: 9.8 sec (expected 7243 stars)   (1.07 min) Q: 0, Sets: 6298/6304  (86.838%) CEs: 6257 ETA: 9.7 sec (expected 7253 stars)   (1.07 min) Q: 0, Sets: 6309/6317  (86.917%) CEs: 6268 ETA: 9.7 sec (expected 7259 stars)   (1.08 min) Q: 0, Sets: 6323/6331  (86.945%) CEs: 6280 ETA: 9.7 sec (expected 7272 stars)   (1.08 min) Q: 0, Sets: 6333/6339  (86.954%) CEs: 6290 ETA: 9.7 sec (expected 7283 stars)   (1.08 min) Q: 0, Sets: 6344/6349  (86.981%) CEs: 6300 ETA: 9.7 sec (expected 7294 stars)   (1.08 min) Q: 0, Sets: 6354/6359  (87.033%) CEs: 6310 ETA: 9.7 sec (expected 7301 stars)   (1.08 min) Q: 0, Sets: 6357/6360  (87.061%) CEs: 6315 ETA: 9.7 sec (expected 7302 stars)   (1.08 min) Q: 0, Sets: 6365/6369  (87.329%) CEs: 6323 ETA: 9.4 sec (expected 7289 stars)   (1.09 min) Q: 0, Sets: 6373/6376  (89.062%) CEs: 6329 ETA: 8.0 sec (expected 7156 stars)   (1.09 min) Q: 0, Sets: 6379/6387  (89.209%) CEs: 6336 ETA: 7.9 sec (expected 7151 stars)   (1.09 min) Q: 0, Sets: 6389/6394  (89.429%) CEs: 6346 ETA: 7.7 sec (expected 7144 stars)   (1.09 min) Q: 0, Sets: 6401/6406  (89.642%) CEs: 6357 ETA: 7.6 sec (expected 7141 stars)   (1.09 min) Q: 0, Sets: 6411/6419  (90.674%) CEs: 6367 ETA: 6.7 sec (expected 7070 stars)   (1.09 min) Q: 0, Sets: 6422/6429  (91.04%) CEs: 6377 ETA: 6.5 sec (expected 7054 stars)   (1.1 min) Q: 0, Sets: 6432/6440  (91.129%) CEs: 6387 ETA: 6.4 sec (expected 7058 stars)   (1.1 min) Q: 0, Sets: 6437/6443  (91.15%) CEs: 6395 ETA: 6.4 sec (expected 7062 stars)   (1.1 min) Q: 0, Sets: 6445/6450  (91.199%) CEs: 6403 ETA: 6.4 sec (expected 7067 stars)   (1.1 min) Q: 0, Sets: 6457/6461  (91.357%) CEs: 6415 ETA: 6.3 sec (expected 7068 stars)   (1.1 min) Q: 0, Sets: 6468/6471  (91.797%) CEs: 6424 ETA: 5.9 sec (expected 7046 stars)   (1.1 min) Q: 0, Sets: 6477/6484  (91.838%) CEs: 6433 ETA: 5.9 sec (expected 7053 stars)   (1.11 min) Q: 0, Sets: 6486/6493  (91.862%) CEs: 6442 ETA: 5.9 sec (expected 7061 stars)   (1.11 min) Q: 0, Sets: 6497/6504  (91.91%) CEs: 6452 ETA: 5.9 sec (expected 7069 stars)   (1.11 min) Q: 0, Sets: 6502/6506  (91.943%) CEs: 6461 ETA: 5.8 sec (expected 7072 stars)   (1.11 min) Q: 0, Sets: 6514/6517  (92.871%) CEs: 6472 ETA: 5.1 sec (expected 7014 stars)   (1.11 min) Q: 0, Sets: 6526/6530  (93.546%) CEs: 6482 ETA: 4.6 sec (expected 6976 stars)   (1.12 min) Q: 0, Sets: 6535/6540  (94.092%) CEs: 6491 ETA: 4.2 sec (expected 6945 stars)   (1.12 min) Q: 0, Sets: 6546/6551  (94.629%) CEs: 6502 ETA: 3.8 sec (expected 6918 stars)   (1.12 min) Q: 0, Sets: 6556/6560  (95.093%) CEs: 6512 ETA: 3.5 sec (expected 6894 stars)   (1.12 min) Q: 0, Sets: 6566/6573  (95.52%) CEs: 6521 ETA: 3.2 sec (expected 6874 stars)   (1.12 min) Q: 0, Sets: 6575/6580  (95.557%) CEs: 6530 ETA: 3.1 sec (expected 6881 stars)   (1.12 min) Q: 0, Sets: 6581/6585  (95.605%) CEs: 6540 ETA: 3.1 sec (expected 6883 stars)   (1.13 min) Q: 0, Sets: 6590/6595  (96.167%) CEs: 6548 ETA: 2.7 sec (expected 6853 stars)   (1.13 min) Q: 0, Sets: 6599/6605  (96.249%) CEs: 6559 ETA: 2.6 sec (expected 6856 stars)   (1.13 min) Q: 0, Sets: 6610/6615  (96.368%) CEs: 6568 ETA: 2.6 sec (expected 6859 stars)   (1.13 min) Q: 0, Sets: 6621/6627  (96.503%) CEs: 6578 ETA: 2.5 sec (expected 6861 stars)   (1.13 min) Q: 0, Sets: 6629/6636  (96.585%) CEs: 6586 ETA: 2.4 sec (expected 6863 stars)   (1.13 min) Q: 0, Sets: 6638/6641  (96.631%) CEs: 6594 ETA: 2.4 sec (expected 6869 stars)   (1.14 min) Q: 0, Sets: 6647/6650  (96.729%) CEs: 6603 ETA: 2.3 sec (expected 6872 stars)   (1.14 min) Q: 0, Sets: 6652/6657  (96.973%) CEs: 6607 ETA: 2.1 sec (expected 6860 stars)   (1.14 min) Q: 0, Sets: 6660/6667  (97.017%) CEs: 6615 ETA: 2.1 sec (expected 6865 stars)   (1.14 min) Q: 0, Sets: 6669/6674  (97.119%) CEs: 6624 ETA: 2.0 sec (expected 6867 stars)   (1.14 min) Q: 0, Sets: 6675/6680  (97.144%) CEs: 6634 ETA: 2.0 sec (expected 6871 stars)   (1.14 min) Q: 0, Sets: 6685/6689  (97.266%) CEs: 6645 ETA: 1.9 sec (expected 6873 stars)   (1.15 min) Q: 0, Sets: 6697/6702  (97.522%) CEs: 6655 ETA: 1.7 sec (expected 6867 stars)   (1.15 min) Q: 0, Sets: 6708/6712  (97.546%) CEs: 6665 ETA: 1.7 sec (expected 6877 stars)   (1.15 min) Q: 0, Sets: 6718/6723  (97.617%) CEs: 6675 ETA: 1.7 sec (expected 6882 stars)   (1.15 min) Q: 0, Sets: 6727/6732  (97.635%) CEs: 6684 ETA: 1.7 sec (expected 6890 stars)   (1.15 min) Q: 0, Sets: 6736/6741  (97.654%) CEs: 6693 ETA: 1.7 sec (expected 6898 stars)   (1.16 min) Q: 0, Sets: 6745/6747  (97.656%) CEs: 6701 ETA: 1.7 sec (expected 6907 stars)   (1.16 min) Q: 0, Sets: 6755/6759  (98.016%) CEs: 6713 ETA: 1.4 sec (expected 6892 stars)   (1.16 min) Q: 0, Sets: 6766/6770  (98.291%) CEs: 6723 ETA: 1.2 sec (expected 6884 stars)   (1.16 min) Q: 0, Sets: 6776/6778  (98.438%) CEs: 6731 ETA: 1.1 sec (expected 6884 stars)   (1.16 min) Q: 0, Sets: 6785/6792  (98.474%) CEs: 6741 ETA: 1.1 sec (expected 6890 stars)   (1.16 min) Q: 0, Sets: 6791/6798  (98.484%) CEs: 6751 ETA: 1.1 sec (expected 6896 stars)   (1.17 min) Q: 0, Sets: 6802/6809  (98.503%) CEs: 6760 ETA: 1.1 sec (expected 6905 stars)   (1.17 min) Q: 0, Sets: 6811/6817  (98.517%) CEs: 6769 ETA: 1.1 sec (expected 6914 stars)   (1.17 min) Q: 0, Sets: 6822/6828  (98.569%) CEs: 6779 ETA: 1.0 sec (expected 6921 stars)   (1.17 min) Q: 0, Sets: 6833/6839  (98.582%) CEs: 6789 ETA: 1.0 sec (expected 6931 stars)   (1.17 min) Q: 0, Sets: 6842/6850  (98.637%) CEs: 6798 ETA: 1.0 sec (expected 6937 stars)   (1.17 min) Q: 0, Sets: 6851/6860  (98.641%) CEs: 6806 ETA: 1.0 sec (expected 6945 stars)   (1.18 min) Q: 0, Sets: 6862/6871  (98.646%) CEs: 6817 ETA: 1.0 sec (expected 6956 stars)   (1.18 min) Q: 0, Sets: 6872/6877  (98.7%) CEs: 6827 ETA: 0.9 sec (expected 6963 stars)   (1.18 min) Q: 0, Sets: 6876/6883  (98.701%) CEs: 6835 ETA: 0.9 sec (expected 6966 stars)   (1.18 min) Q: 0, Sets: 6886/6891  (98.705%) CEs: 6844 ETA: 0.9 sec (expected 6976 stars)   (1.18 min) Q: 0, Sets: 6895/6899  (98.718%) CEs: 6854 ETA: 0.9 sec (expected 6985 stars)   (1.19 min) Q: 0, Sets: 6907/6911  (98.755%) CEs: 6866 ETA: 0.9 sec (expected 6994 stars)   (1.19 min) Q: 0, Sets: 6918/6924  (98.774%) CEs: 6877 ETA: 0.9 sec (expected 7004 stars)   (1.19 min) Q: 0, Sets: 6929/6935  (98.805%) CEs: 6887 ETA: 0.9 sec (expected 7013 stars)   (1.19 min) Q: 0, Sets: 6939/6946  (98.837%) CEs: 6898 ETA: 0.8 sec (expected 7021 stars)   (1.19 min) Q: 0, Sets: 6952/6958  (98.859%) CEs: 6910 ETA: 0.8 sec (expected 7032 stars)   (1.19 min) Q: 0, Sets: 6963/6968  (98.875%) CEs: 6919 ETA: 0.8 sec (expected 7042 stars)   (1.2 min) Q: 0, Sets: 6972/6979  (98.908%) CEs: 6928 ETA: 0.8 sec (expected 7049 stars)   (1.2 min) Q: 0, Sets: 6982/6986  (98.92%) CEs: 6938 ETA: 0.8 sec (expected 7058 stars)   (1.2 min) Q: 0, Sets: 6993/6999  (98.956%) CEs: 6949 ETA: 0.8 sec (expected 7067 stars)   (1.2 min) Q: 0, Sets: 7004/7007  (98.975%) CEs: 6959 ETA: 0.7 sec (expected 7077 stars)   (1.2 min) Q: 0, Sets: 7013/7019  (98.991%) CEs: 6968 ETA: 0.7 sec (expected 7084 stars)   (1.2 min) Q: 0, Sets: 7019/7025  (98.993%) CEs: 6978 ETA: 0.7 sec (expected 7090 stars)   (1.21 min) Q: 0, Sets: 7029/7034  (99.005%) CEs: 6990 ETA: 0.7 sec (expected 7100 stars)   (1.21 min) Q: 0, Sets: 7041/7047  (99.018%) CEs: 7000 ETA: 0.7 sec (expected 7111 stars)   (1.21 min) Q: 0, Sets: 7050/7055  (99.023%) CEs: 7009 ETA: 0.7 sec (expected 7120 stars)   (1.21 min) Q: 0, Sets: 7060/7066  (99.078%) CEs: 7019 ETA: 0.7 sec (expected 7126 stars)   (1.21 min) Q: 0, Sets: 7070/7075  (99.1%) CEs: 7028 ETA: 0.7 sec (expected 7134 stars)   (1.21 min) Q: 0, Sets: 7079/7087  (99.11%) CEs: 7037 ETA: 0.7 sec (expected 7143 stars)   (1.22 min) Q: 0, Sets: 7089/7095  (99.111%) CEs: 7047 ETA: 0.7 sec (expected 7153 stars)   (1.22 min) Q: 0, Sets: 7100/7107  (99.118%) CEs: 7057 ETA: 0.7 sec (expected 7163 stars)   (1.22 min) Q: 0, Sets: 7110/7119  (99.124%) CEs: 7067 ETA: 0.6 sec (expected 7173 stars)   (1.22 min) Q: 0, Sets: 7121/7130  (99.128%) CEs: 7077 ETA: 0.6 sec (expected 7184 stars)   (1.22 min) Q: 0, Sets: 7132/7142  (99.129%) CEs: 7088 ETA: 0.6 sec (expected 7195 stars)   (1.23 min) Q: 0, Sets: 7143/7148  (99.13%) CEs: 7098 ETA: 0.6 sec (expected 7206 stars)   (1.23 min) Q: 0, Sets: 7148/7154  (99.132%) CEs: 7107 ETA: 0.6 sec (expected 7211 stars)   (1.23 min) Q: 0, Sets: 7157/7164  (99.139%) CEs: 7115 ETA: 0.6 sec (expected 7219 stars)   (1.23 min) Q: 0, Sets: 7166/7172  (99.142%) CEs: 7124 ETA: 0.6 sec (expected 7228 stars)   (1.23 min) Q: 0, Sets: 7178/7187  (99.17%) CEs: 7134 ETA: 0.6 sec (expected 7238 stars)   (1.23 min) Q: 0, Sets: 7189/7195  (99.173%) CEs: 7145 ETA: 0.6 sec (expected 7249 stars)   (1.24 min) Q: 0, Sets: 7199/7208  (99.174%) CEs: 7156 ETA: 0.6 sec (expected 7259 stars)   (1.24 min) Q: 0, Sets: 7210/7216  (99.177%) CEs: 7166 ETA: 0.6 sec (expected 7270 stars)   (1.24 min) Q: 0, Sets: 7221/7225  (99.179%) CEs: 7176 ETA: 0.6 sec (expected 7281 stars)   (1.24 min) Q: 0, Sets: 7232/7239  (99.18%) CEs: 7187 ETA: 0.6 sec (expected 7292 stars)   (1.24 min) Q: 0, Sets: 7238/7240  (99.194%) CEs: 7196 ETA: 0.6 sec (expected 7297 stars)   (1.24 min) Q: 0, Sets: 7247/7253  (99.199%) CEs: 7206 ETA: 0.6 sec (expected 7306 stars)   (1.25 min) Q: 0, Sets: 7257/7261  (99.203%) CEs: 7216 ETA: 0.6 sec (expected 7315 stars)   (1.25 min) Q: 0, Sets: 7267/7269  (99.213%) CEs: 7226 ETA: 0.6 sec (expected 7325 stars)   (1.25 min) Q: 0, Sets: 7277/7280  (99.217%) CEs: 7236 ETA: 0.6 sec (expected 7334 stars)   (1.25 min) Q: 0, Sets: 7285/7292  (99.225%) CEs: 7244 ETA: 0.6 sec (expected 7342 stars)   (1.25 min) Q: 0, Sets: 7296/7302  (99.28%) CEs: 7254 ETA: 0.5 sec (expected 7349 stars)   (1.25 min) Q: 0, Sets: 7307/7311  (99.438%) CEs: 7265 ETA: 0.4 sec (expected 7348 stars)   (1.26 min) Q: 0, Sets: 7320/7323  (99.695%) CEs: 7276 ETA: 0.2 sec (expected 7342 stars)   (1.26 min) Q: 0, Sets: 7331/7336  (99.763%) CEs: 7287 ETA: 0.2 sec (expected 7348 stars)   (1.26 min) Q: 0, Sets: 7341/7344  (99.786%) CEs: 7297 ETA: 0.2 sec (expected 7357 stars)   (1.26 min) Q: 0, Sets: 7351/7355  (99.792%) CEs: 7307 ETA: 0.2 sec (expected 7366 stars)   (1.26 min) Q: 0, Sets: 7362/7364  (99.951%) CEs: 7318 ETA: 0.0 sec (expected 7366 stars)   
+Total Stars: 7364 (7364 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 1.26 min (75.79 sec)
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 97433
+Total Num Lps: 97433
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [0.07999999821186066, 0.0]
+Output: [6.673331260681152]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x71dca4fc7400>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 7319
+[NNENUM] Filtering result using SMT solver...
+[runlim] sample:		91.1 time, 90.2 real, 1721.5 MB
+[runlim] sample:		101.2 time, 100.2 real, 1557.1 MB
+[runlim] sample:		111.3 time, 110.2 real, 1592.2 MB
+[runlim] sample:		121.3 time, 120.2 real, 1595.2 MB
+[runlim] sample:		131.4 time, 130.2 real, 1660.5 MB
+[runlim] sample:		141.4 time, 140.2 real, 1662.5 MB
+[runlim] sample:		151.5 time, 150.2 real, 1662.9 MB
+[runlim] sample:		161.6 time, 160.2 real, 1664.9 MB
+[runlim] sample:		171.7 time, 170.2 real, 1732.2 MB
+[runlim] sample:		181.8 time, 180.2 real, 1733.2 MB
+[runlim] sample:		191.8 time, 190.2 real, 1733.7 MB
+[runlim] sample:		201.9 time, 200.2 real, 1735.4 MB
+[runlim] sample:		212.0 time, 210.2 real, 1740.8 MB
+[runlim] sample:		222.0 time, 220.2 real, 1745.8 MB
+[runlim] sample:		232.1 time, 230.2 real, 1745.1 MB
+[runlim] sample:		242.2 time, 240.2 real, 1875.3 MB
+[runlim] sample:		252.3 time, 250.2 real, 1875.6 MB
+[SMT] SMT filtered out 7319 stars (out of 7319; TO: 0).
+[CTRL] Saving current state of verification...
+ ────────────────────────────────────────────────────────────────────────────────
+                                        Time                    Allocations      
+                               ───────────────────────   ────────────────────────
+       Tot / % measured:             254s /   2.4%           10.9GiB /  10.4%    
+
+ Section               ncalls     time    %tot     avg     alloc    %tot      avg
+ ────────────────────────────────────────────────────────────────────────────────
+ get_approx_query           1    6.11s  100.0%   6.11s   1.14GiB  100.0%  1.14GiB
+   OVERT                    4    3.58s   58.5%   894ms    448MiB   38.5%   112MiB
+ query_iteration            0   0.00ns    0.0%    NaNh     0.00B    0.0%        -
+   next_query               1    172ms    2.8%   172ms   14.2MiB    1.2%  14.2MiB
+     check_infeasib...     30    132ms    2.2%  4.41ms   11.5MiB    1.0%   391KiB
+       check_infeas...     30   69.1ms    1.1%  2.30ms   8.85MiB    0.8%   302KiB
+         SMTprep          112   30.8ms    0.5%   275μs   1.99MiB    0.2%  18.2KiB
+         LP_create_...     45   18.3ms    0.3%   407μs   2.36MiB    0.2%  53.7KiB
+         z3_check          56   11.4ms    0.2%   204μs   7.44KiB    0.0%     136B
+         LP_populat...     45   4.24ms    0.1%  94.3μs   2.75MiB    0.2%  62.5KiB
+         LP_check          45   2.48ms    0.0%  55.1μs    690KiB    0.1%  15.3KiB
+         LP_add_con...     45    705μs    0.0%  15.7μs    954KiB    0.1%  21.2KiB
+         feasibilit...     60   54.7μs    0.0%   912ns   1.88KiB    0.0%    32.0B
+         feasibilit...     45   29.7μs    0.0%   661ns   9.20KiB    0.0%     209B
+       check_infeas...     30   63.1ms    1.0%  2.10ms   2.61MiB    0.2%  89.0KiB
+         SMTprep           52   40.0ms    0.7%   769μs   2.32MiB    0.2%  45.6KiB
+         z3_check          26   22.1ms    0.4%   849μs    177KiB    0.0%  6.82KiB
+         feasibilit...     38   40.0μs    0.0%  1.05μs   1.19KiB    0.0%    32.0B
+         feasibilit...     26   23.1μs    0.0%   888ns   8.56KiB    0.0%     337B
+     query_construc...      7   35.6ms    0.6%  5.09ms   1.61MiB    0.1%   235KiB
+       SMTprep             20   15.5ms    0.3%   777μs    922KiB    0.1%  46.1KiB
+       z3_check            10   12.3ms    0.2%  1.23ms    210KiB    0.0%  21.0KiB
+       atom_recovery       10    203μs    0.0%  20.3μs   71.2KiB    0.0%  7.12KiB
+         atom_compu...     10    148μs    0.0%  14.8μs   64.0KiB    0.0%  6.40KiB
+         bound_comp...     10   40.2μs    0.0%  4.02μs   4.38KiB    0.0%     448B
+       PicoSAT_solve       17    158μs    0.0%  9.27μs      544B    0.0%    32.0B
+       feasibility_...     10   11.7μs    0.0%  1.17μs      320B    0.0%    32.0B
+       feasibility_...      4   3.94μs    0.0%   984ns   1.25KiB    0.0%     320B
+     atom_recovery         30    810μs    0.0%  27.0μs    211KiB    0.0%  7.04KiB
+       atom_computa...     30    602μs    0.0%  20.1μs    192KiB    0.0%  6.41KiB
+       bound_comput...     30    160μs    0.0%  5.33μs   13.1KiB    0.0%     448B
+     bound_atoms           30    624μs    0.0%  20.8μs    218KiB    0.0%  7.28KiB
+     PicoSAT_solve         31    344μs    0.0%  11.1μs      992B    0.0%    32.0B
+     check_infeasib...     60    112μs    0.0%  1.86μs   96.7KiB    0.0%  1.61KiB
+     approx_resolution     30   37.9μs    0.0%  1.26μs   35.7KiB    0.0%  1.19KiB
+   boolean_skeleton         1   69.4ms    1.1%  69.4ms   3.91MiB    0.3%  3.91MiB
+   legacy_approx            1   22.3ms    0.4%  22.3ms   1.33MiB    0.1%  1.33MiB
+   olnnv_query_gen          1   1.41ms    0.0%  1.41ms    267KiB    0.0%   267KiB
+   smt_filter_creation      1    652ns    0.0%   652ns     32.0B    0.0%    32.0B
+   olnnv_query_proc...      0   0.00ns    0.0%    NaNh     0.00B    0.0%        -
+     nnv                    1     245s  4015.8%    245s   9.53GiB  838.7%  9.53GiB
+       star_filter          1     165s  2701.4%    165s   9.42GiB  829.3%  9.42GiB
+         z3_check       58.6k     158s  2587.2%  2.70ms   8.77GiB  771.6%   157KiB
+     status_backup          1    1.56s   25.5%   1.56s   58.6MiB    5.0%  58.6MiB
+ ────────────────────────────────────────────────────────────────────────────────[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 7
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 7
+[CTRL] Processing linear query no. 3
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, -73.18705430608887]
+[NNENUM] ub: [16.376852110707294, -2.1]
+[runlim] sample:		263.6 time, 260.2 real, 1782.3 MB
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  7
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 18/21  (21.875%) CEs: 0 ETA: 0.6 sec (expected 82 stars)   
+(0.3 sec) Q: 0, Sets: 44/48  (53.125%) CEs: 3 ETA: 0.3 sec (expected 83 stars)   (0.4 sec) Q: 0, Sets: 52/59  (56.445%) CEs: 9 ETA: 0.3 sec (expected 92 stars)   
+(0.5 sec) Q: 0, Sets: 70/78  (57.275%) CEs: 18 ETA: 0.4 sec (expected 122 stars)   (0.6 sec) Q: 0, Sets: 87/93  (57.715%) CEs: 23 ETA: 0.4 sec (expected 151 stars)   (0.7 sec) Q: 0, Sets: 102/110  (59.546%) CEs: 32 ETA: 0.5 sec (expected 171 stars)   (0.8 sec) Q: 0, Sets: 120/129  (59.784%) CEs: 39 ETA: 0.5 sec (expected 201 stars)   
+(0.9 sec) Q: 0, Sets: 133/141  (59.813%) CEs: 51 ETA: 0.6 sec (expected 222 stars)   (1.0 sec) Q: 0, Sets: 154/160  (60.327%) CEs: 60 ETA: 0.7 sec (expected 255 stars)   (1.1 sec) Q: 0, Sets: 173/180  (61.789%) CEs: 67 ETA: 0.7 sec (expected 280 stars)   (1.2 sec) Q: 0, Sets: 189/194  (61.865%) CEs: 79 ETA: 0.8 sec (expected 306 stars)   (1.3 sec) Q: 0, Sets: 204/214  (61.87%) CEs: 86 ETA: 0.8 sec (expected 330 stars)   (1.4 sec) Q: 0, Sets: 228/235  (61.876%) CEs: 98 ETA: 0.9 sec (expected 368 stars)   (1.5 sec) Q: 0, Sets: 240/248  (61.883%) CEs: 112 ETA: 1.0 sec (expected 388 stars)   (1.7 sec) Q: 0, Sets: 252/260  (61.885%) CEs: 121 ETA: 1.0 sec (expected 407 stars)   
+(1.8 sec) Q: 0, Sets: 260/268  (61.886%) CEs: 130 ETA: 1.1 sec (expected 420 stars)   (1.9 sec) Q: 0, Sets: 271/276  (61.89%) CEs: 140 ETA: 1.1 sec (expected 438 stars)   (2.0 sec) Q: 0, Sets: 282/293  (61.915%) CEs: 150 ETA: 1.2 sec (expected 455 stars)   (2.1 sec) Q: 0, Sets: 293/303  (61.922%) CEs: 159 ETA: 1.3 sec (expected 473 stars)   (2.2 sec) Q: 0, Sets: 297/307  (61.923%) CEs: 166 ETA: 1.3 sec (expected 480 stars)   (2.3 sec) Q: 0, Sets: 305/318  (61.923%) CEs: 173 ETA: 1.4 sec (expected 493 stars)   (2.4 sec) Q: 0, Sets: 313/323  (61.923%) CEs: 181 ETA: 1.5 sec (expected 505 stars)   (2.5 sec) Q: 0, Sets: 321/333  (61.923%) CEs: 188 ETA: 1.5 sec (expected 518 stars)   (2.6 sec) Q: 0, Sets: 329/341  (61.923%) CEs: 195 ETA: 1.6 sec (expected 531 stars)   (2.7 sec) Q: 0, Sets: 333/344  (61.923%) CEs: 204 ETA: 1.7 sec (expected 538 stars)   (2.8 sec) Q: 0, Sets: 343/352  (61.925%) CEs: 212 ETA: 1.7 sec (expected 554 stars)   (2.9 sec) Q: 0, Sets: 352/358  (61.938%) CEs: 220 ETA: 1.8 sec (expected 568 stars)   (3.0 sec) Q: 0, Sets: 359/366  (61.945%) CEs: 228 ETA: 1.8 sec (expected 580 stars)   (3.1 sec) Q: 0, Sets: 368/375  (61.96%) CEs: 236 ETA: 1.9 sec (expected 594 stars)   (3.2 sec) Q: 0, Sets: 376/386  (61.965%) CEs: 244 ETA: 2.0 sec (expected 607 stars)   (3.3 sec) Q: 0, Sets: 386/392  (61.981%) CEs: 253 ETA: 2.0 sec (expected 623 stars)   
+(3.4 sec) Q: 0, Sets: 398/404  (62.024%) CEs: 264 ETA: 2.1 sec (expected 642 stars)   (3.5 sec) Q: 0, Sets: 403/408  (62.054%) CEs: 273 ETA: 2.2 sec (expected 649 stars)   (3.6 sec) Q: 0, Sets: 411/418  (62.091%) CEs: 281 ETA: 2.2 sec (expected 662 stars)   (3.7 sec) Q: 0, Sets: 420/425  (62.109%) CEs: 288 ETA: 2.3 sec (expected 676 stars)   (3.8 sec) Q: 0, Sets: 428/436  (62.164%) CEs: 296 ETA: 2.3 sec (expected 689 stars)   (3.9 sec) Q: 0, Sets: 436/444  (62.168%) CEs: 304 ETA: 2.4 sec (expected 701 stars)   (4.0 sec) Q: 0, Sets: 444/449  (62.183%) CEs: 311 ETA: 2.5 sec (expected 714 stars)   (4.1 sec) Q: 0, Sets: 451/456  (62.415%) CEs: 318 ETA: 2.5 sec (expected 723 stars)   (4.3 sec) Q: 0, Sets: 465/472  (64.16%) CEs: 324 ETA: 2.4 sec (expected 725 stars)   (4.4 sec) Q: 0, Sets: 481/487  (64.941%) CEs: 331 ETA: 2.4 sec (expected 741 stars)   (4.5 sec) Q: 0, Sets: 511/517  (70.508%) CEs: 331 ETA: 1.9 sec (expected 725 stars)   (4.6 sec) Q: 0, Sets: 540/544  (89.062%) CEs: 331 ETA: 0.6 sec (expected 606 stars)   
+Total Stars: 565 (523 exact, 42 approx)
+Unfinished Stars: 0
+Runtime: 4.6 sec
+Completed work frac: 0.9999999403953552
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 10677
+Total Num Lps: 10677
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [0.07999999821186066, -2.0999999046325684]
+Output: [100.0009994506836]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x71dc9a291ca0>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 331
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 331 stars (out of 331; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+..[QUERY] Found all non-linear combinations. Count: 1
+..[QUERY] Found all non-linear combinations. Count: 1
+..[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 7
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 7
+[CTRL] Processing linear query no. 4
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, -73.18705430608887]
+[NNENUM] ub: [0.07999999999999999, -2.1]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  7
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x71dc9aec7e20>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 3
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 3
+[CTRL] Processing linear query no. 5
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, 0.0]
+[NNENUM] ub: [16.376852110707294, 0.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  3
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+
+Total Stars: 3 (0 exact, 3 approx)
+Unfinished Stars: 0
+Runtime: 0.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 0
+Total Num Lps: 0
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x71dca4fc7a30>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 3
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 3
+[CTRL] Processing linear query no. 6
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, 0.0]
+[NNENUM] ub: [16.376852110707294, 0.09999999999999999]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  3
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+
+Total Stars: 5 (0 exact, 5 approx)
+Unfinished Stars: 0
+Runtime: 0.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 0
+Total Num Lps: 0
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x71dc9a291940>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+..[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 6
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 6
+[CTRL] Processing linear query no. 7
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [31.703236423477783, -73.18705430608887]
+[NNENUM] ub: [100.0, -2.1]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  6
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 12/17  (10.938%) CEs: 0 ETA: 1.3 sec (expected 110 stars)   
+(0.3 sec) Q: 0, Sets: 34/38  (58.594%) CEs: 0 ETA: 0.2 sec (expected 58 stars)   (0.4 sec) Q: 0, Sets: 49/55  (63.477%) CEs: 4 ETA: 0.2 sec (expected 77 stars)   
+(0.5 sec) Q: 0, Sets: 54/59  (63.867%) CEs: 14 ETA: 0.3 sec (expected 85 stars)   (0.6 sec) Q: 0, Sets: 65/69  (65.527%) CEs: 23 ETA: 0.3 sec (expected 99 stars)   (0.7 sec) Q: 0, Sets: 75/78  (67.969%) CEs: 34 ETA: 0.3 sec (expected 110 stars)   (0.8 sec) Q: 0, Sets: 83/86  (71.875%) CEs: 41 ETA: 0.3 sec (expected 115 stars)   
+(0.9 sec) Q: 0, Sets: 94/102  (81.25%) CEs: 52 ETA: 0.2 sec (expected 116 stars)   (1.0 sec) Q: 0, Sets: 110/113  (84.18%) CEs: 61 ETA: 0.2 sec (expected 131 stars)   (1.1 sec) Q: 0, Sets: 124/129  (87.891%) CEs: 70 ETA: 0.2 sec (expected 141 stars)   (1.2 sec) Q: 0, Sets: 137/141  (91.211%) CEs: 81 ETA: 0.1 sec (expected 150 stars)   (1.3 sec) Q: 0, Sets: 151/154  (95.703%) CEs: 89 ETA: 0.1 sec (expected 158 stars)   
+Total Stars: 159 (143 exact, 16 approx)
+Unfinished Stars: 0
+Runtime: 1.3 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 3829
+Total Num Lps: 3829
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [31.703235626220703, -2.0999999046325684]
+Output: [0.14029546082019806]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x71dca4fc7760>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 93
+[NNENUM] Filtering result using SMT solver...
+[runlim] sample:		278.9 time, 270.2 real, 1852.0 MB
+[SMT] SMT filtered out 93 stars (out of 93; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 3
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 3
+[CTRL] Processing linear query no. 8
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, 0.09999999999999999]
+[NNENUM] ub: [0.07999999999999999, 200.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  3
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+
+Total Stars: 7 (0 exact, 7 approx)
+Unfinished Stars: 0
+Runtime: 0.2 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 0
+Total Num Lps: 0
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x71dca4fdbcd0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 3
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 3
+[CTRL] Processing linear query no. 9
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, 0.09999999999999999]
+[NNENUM] ub: [16.376852110707294, 200.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  3
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 5/10  (46.875%) CEs: 0 ETA: 0.2 sec (expected 11 stars)   
+(0.3 sec) Q: 0, Sets: 22/25  (50.0%) CEs: 0 ETA: 0.3 sec (expected 44 stars)   (0.4 sec) Q: 0, Sets: 41/45  (62.109%) CEs: 0 ETA: 0.2 sec (expected 66 stars)   
+(0.5 sec) Q: 0, Sets: 55/64  (62.927%) CEs: 0 ETA: 0.3 sec (expected 87 stars)   (0.6 sec) Q: 0, Sets: 77/86  (63.477%) CEs: 0 ETA: 0.3 sec (expected 121 stars)   (0.7 sec) Q: 0, Sets: 103/105  (68.75%) CEs: 0 ETA: 0.3 sec (expected 150 stars)   (0.8 sec) Q: 0, Sets: 124/126  (74.609%) CEs: 0 ETA: 0.3 sec (expected 166 stars)   
+(0.9 sec) Q: 0, Sets: 135/143  (75.391%) CEs: 0 ETA: 0.3 sec (expected 179 stars)   (1.0 sec) Q: 0, Sets: 159/161  (86.719%) CEs: 0 ETA: 0.2 sec (expected 183 stars)   
+Total Stars: 184 (14 exact, 170 approx)
+Unfinished Stars: 0
+Runtime: 1.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 324
+Total Num Lps: 324
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x71dca4fe8670>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 6
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 6
+[CTRL] Processing linear query no. 10
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [16.376852110707294, -73.18705430608887]
+[NNENUM] ub: [31.703236423477783, -2.1]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  6
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 7/12  (10.156%) CEs: 0 ETA: 1.5 sec (expected 69 stars)   
+(0.3 sec) Q: 0, Sets: 21/29  (19.141%) CEs: 4 ETA: 1.2 sec (expected 110 stars)   (0.4 sec) Q: 0, Sets: 35/41  (20.288%) CEs: 5 ETA: 1.5 sec (expected 173 stars)   
+(0.5 sec) Q: 0, Sets: 52/60  (20.435%) CEs: 17 ETA: 1.9 sec (expected 254 stars)   (0.6 sec) Q: 0, Sets: 65/72  (20.703%) CEs: 31 ETA: 2.2 sec (expected 314 stars)   (0.7 sec) Q: 0, Sets: 77/83  (20.972%) CEs: 43 ETA: 2.6 sec (expected 367 stars)   (0.8 sec) Q: 0, Sets: 87/90  (21.875%) CEs: 50 ETA: 2.8 sec (expected 398 stars)   
+(0.9 sec) Q: 0, Sets: 99/104  (23.145%) CEs: 63 ETA: 2.9 sec (expected 428 stars)   (1.0 sec) Q: 0, Sets: 113/119  (24.219%) CEs: 77 ETA: 3.1 sec (expected 467 stars)   
+Total Stars: 127 (106 exact, 21 approx)
+Unfinished Stars: 0
+Runtime: 1.0 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 2697
+Total Num Lps: 2697
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [16.37685203552246, -2.0999999046325684]
+Output: [3.51127552986145]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x71dca53b4880>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 80
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 80 stars (out of 80; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 6
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 6
+[CTRL] Processing linear query no. 11
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [31.703236423477783, -134.49259155717084]
+[NNENUM] ub: [100.0, -73.18705430608887]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  6
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x71dca4fe8fd0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 6
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 6
+[CTRL] Processing linear query no. 12
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [31.703236423477783, -200.0]
+[NNENUM] ub: [100.0, -134.49259155717084]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  6
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x71dca4fc7760>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 0 input constraints and a disjunction of size 6
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 6
+[CTRL] Processing linear query no. 13
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [16.376852110707294, -134.49259155717084]
+[NNENUM] ub: [31.703236423477783, -73.18705430608887]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  6
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x71dca4fc7c10>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+274.000438 seconds (1.12 G allocations: 11.515 GiB, 1.36% gc time, 1.99% compilation time: 11% of which was recompilation)
+----------------------------------------------------------
+# Unsafe Stars: 0
+Saving final results in experiments/acc/acc-2000000-64-64-64-64-retrain-100000-200000-0.9/fallback-linear-RERUN...
+ ────────────────────────────────────────────────────────────────────────────────
+                                        Time                    Allocations      
+                               ───────────────────────   ────────────────────────
+       Tot / % measured:             274s /  99.6%           11.5GiB /  98.5%    
+
+ Section               ncalls     time    %tot     avg     alloc    %tot      avg
+ ────────────────────────────────────────────────────────────────────────────────
+ query_iteration            1     267s   97.8%    267s   10.2GiB   90.0%  10.2GiB
+   olnnv_query_proc...     12     265s   97.2%   22.1s   10.1GiB   89.1%   863MiB
+     nnv                   12     264s   96.6%   22.0s   10.0GiB   88.6%   857MiB
+       star_filter         12     174s   63.8%   14.5s   9.93GiB   87.6%   848MiB
+         z3_check       62.4k     167s   61.1%  2.67ms   9.23GiB   81.4%   155KiB
+     status_backup          1    1.56s    0.6%   1.56s   58.6MiB    0.5%  58.6MiB
+   next_query              13    1.21s    0.4%  93.2ms   93.5MiB    0.8%  7.19MiB
+     check_infeasib...    158    1.08s    0.4%  6.81ms   79.5MiB    0.7%   515KiB
+       check_infeas...    158    544ms    0.2%  3.44ms   57.7MiB    0.5%   374KiB
+         SMTprep          592    205ms    0.1%   347μs   11.1MiB    0.1%  19.2KiB
+         LP_create_...    276    133ms    0.0%   480μs   14.5MiB    0.1%  53.7KiB
+         z3_check         296   65.6ms    0.0%   221μs   42.3KiB    0.0%     146B
+         LP_check         276   64.8ms    0.0%   235μs   5.19MiB    0.0%  19.3KiB
+         LP_populat...    276   62.5ms    0.0%   226μs   19.6MiB    0.2%  72.7KiB
+         LP_add_con...    276   5.36ms    0.0%  19.4μs   6.52MiB    0.1%  24.2KiB
+         feasibilit...    316    854μs    0.0%  2.70μs   9.88KiB    0.0%    32.0B
+         feasibilit...    276    244μs    0.0%   883ns   59.1KiB    0.0%     219B
+       check_infeas...    158    532ms    0.2%  3.37ms   21.9MiB    0.2%   142KiB
+         SMTprep          402    303ms    0.1%   755μs   18.1MiB    0.2%  46.0KiB
+         z3_check         201    220ms    0.1%  1.09ms   2.96MiB    0.0%  15.1KiB
+         feasibilit...    276    967μs    0.0%  3.50μs   8.62KiB    0.0%    32.0B
+         feasibilit...    201    219μs    0.0%  1.09μs   66.5KiB    0.0%     339B
+     query_construc...     63    108ms    0.0%  1.71ms   6.90MiB    0.1%   112KiB
+       SMTprep             74   49.7ms    0.0%   671μs   3.32MiB    0.0%  46.0KiB
+       z3_check            37   31.3ms    0.0%   847μs    487KiB    0.0%  13.2KiB
+       PicoSAT_solve      100   2.49ms    0.0%  24.9μs   3.12KiB    0.0%    32.0B
+       atom_recovery       37    909μs    0.0%  24.6μs    249KiB    0.0%  6.74KiB
+         atom_compu...     37    660μs    0.0%  17.8μs    227KiB    0.0%  6.12KiB
+         bound_comp...     37    192μs    0.0%  5.19μs   16.2KiB    0.0%     448B
+       feasibility_...     37   55.1μs    0.0%  1.49μs   1.16KiB    0.0%    32.0B
+       feasibility_...     18   19.0μs    0.0%  1.05μs   5.62KiB    0.0%     320B
+     atom_recovery        158   5.39ms    0.0%  34.1μs   1.03MiB    0.0%  6.70KiB
+       atom_computa...    158   4.01ms    0.0%  25.4μs    965KiB    0.0%  6.11KiB
+       bound_comput...    158   1.10ms    0.0%  6.99μs   69.1KiB    0.0%     448B
+     PicoSAT_solve        171   4.88ms    0.0%  28.5μs   5.34KiB    0.0%    32.0B
+     bound_atoms          158   2.37ms    0.0%  15.0μs   1.13MiB    0.0%  7.30KiB
+     check_infeasib...    316    771μs    0.0%  2.44μs    511KiB    0.0%  1.62KiB
+     approx_resolution    158    268μs    0.0%  1.69μs    190KiB    0.0%  1.20KiB
+   boolean_skeleton         1   69.4ms    0.0%  69.4ms   3.91MiB    0.0%  3.91MiB
+   legacy_approx           12   23.2ms    0.0%  1.94ms   1.39MiB    0.0%   119KiB
+   olnnv_query_gen         12   11.4ms    0.0%   952μs   2.54MiB    0.0%   217KiB
+   smt_filter_creation     12   8.79μs    0.0%   732ns      384B    0.0%    32.0B
+ get_approx_query           1    6.11s    2.2%   6.11s   1.14GiB   10.0%  1.14GiB
+   OVERT                    4    3.58s    1.3%   894ms    448MiB    3.9%   112MiB
+ ──────────────────────────────────────────────────────────────────────────────── Done
+[runlim] end:			Mon May 20 12:02:11 2024
+[runlim] status:		ok
+[runlim] result:		0
+[runlim] children:		2746
+[runlim] real:			276.04 seconds
+[runlim] time:			292.52 seconds
+[runlim] space:			1948.3 MB
+[runlim] samples:		2758
