@@ -9,43 +9,6 @@ plant = LinearODE(A,B,C,D);
 
 # Analysis using LinearODE
 lb = [0.1; -4];
-ub = [0.5; -0.3];
-init_set = Star(lb,ub);
-
-reachPRM = 
-
-  struct with fields:
-
-        ref_input: []
-         numSteps: 1
-         init_set: [1×1 Star]
-         numCores: 1
-    controlPeriod: 0.1000
-     plantTimStep: 0.1000
-      reachMethod: 'exact-star'
-
-
-
-The neural network control system is safe  143.2892
-
-
-reachPRM = 
-
-  struct with fields:
-
-        ref_input: []
-         numSteps: 1
-         init_set: [1×1 Star]
-         numCores: 1
-    controlPeriod: 0.1000
-     plantTimStep: 0.1000
-      reachMethod: 'approx-star'
-
-
-
-The neural network control system is safe  158.4215
-
-lb = [0.1; -4];
 ub = [0.5; 0];
 
 reachPRM = 
@@ -80,7 +43,40 @@ reachPRM =
 
 The neural network control system is safe   1.1898e+03
 
-# Larger State Space 
+# Analysis using NonlinearODE
+
+reachPRM = 
+
+  struct with fields:
+
+        ref_input: []
+         numSteps: 1
+         init_set: [1×1 Star]
+         numCores: 1
+    controlPeriod: 0.1000
+     plantTimStep: 0.1000
+      reachMethod: 'approx-star'
+
+The 1^th reach set reaches unsafe regionCannot find counter examples, please consider increasing number of samples for falsification   36.6521
+
+reachStep = 0.05;
+controlPeriod = 0.05;
+
+reachPRM = 
+
+  struct with fields:
+
+        ref_input: []
+         numSteps: 1
+         init_set: [1×1 Star]
+         numCores: 1
+    controlPeriod: 0.0500
+     plantTimStep: 0.0500
+      reachMethod: 'approx-star'
+
+The 1^th reach set reaches unsafe regionCannot find counter examples, please consider increasing number of samples for falsification   32.4264
+
+# Additional Experiment: Larger State Space 
 lb = [0.1; -4];
 ub = [0.9; 0];
 reachPRM = 
