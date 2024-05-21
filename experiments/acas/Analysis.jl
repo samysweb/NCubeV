@@ -227,7 +227,7 @@ function plot_trajectory(plot_name,crash_trace,cf_trace;tau=0.1,rv=2200,altitute
         #aspect_ratio=3e-3)
     plot!(t_ownship, h_cf, labels="Original path of ownship",linestyle=:dash,color=:orange, linewidth=3)
     plot!(t_intruder,h_intruder, label="Intruder",color=:purple,linestyle=:dot, linewidth=3)
-    plot!(nmac_rectangle(altitute_offset=pos_intruder),fopacity=.3,label="NMAC",color=:red)
+    plot!(nmac_rectangle(altitute_offset=pos_intruder),fopacity=.3,label="NMAC collision region",color=:red)
 
     # Images
     if show_planes
@@ -308,7 +308,7 @@ function plot_trajectory2(plot_name,crash_trace,cf_trace;tau=0.1,rv=2200,altitut
         #aspect_ratio=3e-3)
     plot!(t_ownship, h_cf, labels="Original path of ownship",linestyle=:dash,color=:orange, linewidth=3)
     plot!(t_intruder,h_intruder, label="Intruder",color=:purple,linestyle=:dot, linewidth=3)
-    plot!(nmac_rectangle(altitute_offset=h_intruder_nmac),fopacity=.3,label="NMAC",color=:red)
+    plot!(nmac_rectangle(altitute_offset=h_intruder_nmac),fopacity=.3,label="NMAC collision region",color=:red)
 
     # Images
     if show_planes
