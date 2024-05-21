@@ -1,0 +1,131 @@
+Theorem "ACAS_Reimport/Theorem 1: Correctness of implicit safe regions (flexible alo)"
+ProgramVariables
+  /* horizontal */
+  Real r;    /* relative distance in ft; xi - xo */
+  Real alo;  /* minimal vertical acceleration. Typically g/4 */
+             /* x = r */
+  Real rv;   /* relative speed -(vi - vo) */
+
+  /* vertical */
+  Real h;    /* relative altitude in ft */
+             /* if negative: the intruder is lower than the ownship */
+             /* h := hi - ho */
+             /* z = h */
+  Real v;    /* vertical velocity of ownship */
+  Real vlo;  /* target minimum velocity */
+  Real w;    /* velocity direction */
+  Real a;
+
+End.
+
+Definitions
+  Real hp;   /* puck height */
+  Real rp;   /* puck radius */
+
+  /* velocity bound 1 = lower, -1 = upper */
+  Real wUp = -1;
+  Real wLo = 1;
+
+  Real minI(Real v, Real w) = min(0, v*w);
+  Real maxI(Real v, Real w, Real vlo) = max(0, w * (vlo - v));
+
+  Bool Limpl(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> 
+    \forall t \forall ro \forall ho (
+        (0 <= t & t < maxI(v,w,vlo)/alo & ro = rv * t & ho = (w * alo)/2 * t^2 + v * t)
+      | (t >= maxI(v,w,vlo)/alo & ro = rv * t & ho = vlo * t - w * maxI(v,w,vlo)^2/(2*alo))
+      -> (abs(r - ro) > rp | w * h < w * ho - hp)
+    );
+
+  Bool init(Real rv, Real alo) <-> rp>=0 & hp>0 & rv>=0 & alo>0;
+
+  Bool loopInv(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> ( (w=wUp | w=wLo) & alo>0 & Limpl(r,h,v,w,vlo,rv, alo) );
+  
+  HP motion ::= { {r' = -rv, h' = -v, v' = a & w*v>=w*vlo|w*a>=alo } };
+End.
+
+Problem    init(rv,alo)
+  & ( (w=wUp | w=wLo) & Limpl(r,h,v,w,vlo,rv,alo) )
+  ->
+  [{ {
+     { ?true;
+       ++
+       {{ w:=wUp; ++ w:=wLo; }
+        vlo := *;
+        alo := *;?(alo>0);
+        ?Limpl(r,h,v,w,vlo,rv,alo);
+       }
+     }
+     a := *;?(w*v>=w*vlo|w*a>=alo);
+     }
+     motion;
+   }*@invariant(loopInv(r,h,v,w,vlo,rv,alo))
+  ] ( (abs(r) > rp | abs(h) > hp) & Limpl(r,h,v,w,vlo,rv,alo) )
+End.
+
+Tactic "Proof ACAS X Theorem 1: Correctness of Implicit Safe Regions"
+implyR('R=="init(rv,alo)&(w=wUp()|w=wLo())&Limpl(r,h,v,w,vlo,rv,alo)->[{{{?true;++{w:=wUp();++w:=wLo();}vlo:=*;alo:=*;?alo>0;?Limpl(r,h,v,w,vlo,rv,alo);}a:=*;?w*v>=w*vlo|w*a>=alo;}motion{|^@|};}*]((abs(r)>rp()|abs(h)>hp())&Limpl(r,h,v,w,vlo,rv,alo))");
+loop("loopInv(r,h,v,w,vlo,rv,alo)", 'R=="[{{{?true;++{w:=wUp();++w:=wLo();}vlo:=*;alo:=*;?alo>0;?Limpl(r,h,v,w,vlo,rv,alo);}a:=*;?w*v>=w*vlo|w*a>=alo;}motion{|^@|};}*]((abs(r)>rp()|abs(h)>hp())&Limpl(r,h,v,w,vlo,rv,alo))"); <(
+  "Init":
+    expandAllDefs() ; propClose,
+  "Post":
+    andR('R=="(abs(r)>rp()|abs(h)>hp())&\forall t \forall ro \forall ho (0<=t&t < max(0,w*(vlo-v))/alo&ro=rv*t&ho=w*alo/2*t^2+v*t|t>=max(0,w*(vlo-v))/alo&ro=rv*t&ho=vlo*t-w*max(0,w*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|w*h < w*ho-hp())") ; <(
+    "abs(r)>rp()|abs(h)>hp()": useLemma("ACAS_Reimport/Safe use case lower bound (flexible alo)") ; propClose,
+    "\forall t \forall ro \forall ho (0<=t&t < max(0,w*(vlo-v))/alo&ro=rv*t&ho=w*alo/2*t^2+v*t|t>=max(0,w*(vlo-v))/alo&ro=rv*t&ho=vlo*t-w*max(0,w*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|w*h < w*ho-hp())": expandAllDefs() ; propClose
+  ),
+  "Step":
+    composeb('R=="[{{?true;++{w:=-1;++w:=1;}vlo:=*;alo:=*;?alo>0;?\forall t \forall ro \forall ho (0<=t&t < max(0,w*(vlo-v))/alo&ro=rv*t&ho=w*alo/2*t^2+v*t|t>=max(0,w*(vlo-v))/alo&ro=rv*t&ho=vlo*t-w*max(0,w*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|w*h < w*ho-hp());}a:=*;?w*v>=w*vlo|w*a>=alo;}{r'=-rv,h'=-v,v'=a&w*v>=w*vlo|w*a>=alo}]loopInv(r,h,v,w,vlo,rv,alo)");
+    MR("loopInv(r,h,v,w,vlo,rv,alo)&init(rv,alo)&(w*v>=w*vlo|w*a>=alo)", 'R=="[{?true;++{w:=-1;++w:=1;}vlo:=*;alo:=*;?alo>0;?\forall t \forall ro \forall ho (0<=t&t < max(0,w*(vlo-v))/alo&ro=rv*t&ho=w*alo/2*t^2+v*t|t>=max(0,w*(vlo-v))/alo&ro=rv*t&ho=vlo*t-w*max(0,w*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|w*h < w*ho-hp());}a:=*;?w*v>=w*vlo|w*a>=alo;][{r'=-rv,h'=-v,v'=a&w*v>=w*vlo|w*a>=alo}]loopInv(r,h,v,w,vlo,rv,alo)"); <(
+      "Use Q->P":
+        chaseAt('R=="[{?true;++{w:=-1;++w:=1;}vlo:=*;alo:=*;?alo>0;?\forall t \forall ro \forall ho (0<=t&t < max(0,w*(vlo-v))/alo&ro=rv*t&ho=w*alo/2*t^2+v*t|t>=max(0,w*(vlo-v))/alo&ro=rv*t&ho=vlo*t-w*max(0,w*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|w*h < w*ho-hp());}a:=*;?w*v>=w*vlo|w*a>=alo;](loopInv(r,h,v,w,vlo,rv,alo)&init(rv,alo)&(w*v>=w*vlo|w*a>=alo))");
+        unfold; <(
+          "\forall vlo \forall alo (alo>0->\forall t \forall ro \forall ho (0<=t&t < max(0,(- 1)*(vlo-v))/alo&ro=rv*t&ho=(- 1)*alo/2*t^2+v*t|t>=max(0,(- 1)*(vlo-v))/alo&ro=rv*t&ho=vlo*t-(- 1)*max(0,(- 1)*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|(- 1)*h < (- 1)*ho-hp())->\forall a ((- 1)*v>=(- 1)*vlo|(- 1)*a>=alo->loopInv(r,h,v,-1,vlo,rv,alo)&init(rv,alo)&((- 1)*v>=(- 1)*vlo|(- 1)*a>=alo)))//loopInv(r,h,v,-1,vlo,rv,alo)":
+            expandAllDefs();
+            andR('R=="(-1=-1|-1=1)&alo>0&\forall t \forall ro \forall ho (0<=t&t < max(0,(- 1)*(vlo-v))/alo&ro=rv*t&ho=(- 1)*alo/2*t^2+v*t|t>=max(0,(- 1)*(vlo-v))/alo&ro=rv*t&ho=vlo*t-(- 1)*max(0,(- 1)*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|(- 1)*h < (- 1)*ho-hp())"); <(
+              "-1=-1|-1=1":
+                QE,
+              "alo>0&\forall t \forall ro \forall ho (0<=t&t < max(0,(- 1)*(vlo-v))/alo&ro=rv*t&ho=(- 1)*alo/2*t^2+v*t|t>=max(0,(- 1)*(vlo-v))/alo&ro=rv*t&ho=vlo*t-(- 1)*max(0,(- 1)*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|(- 1)*h < (- 1)*ho-hp())":
+                andR('R=="alo>0&\forall t \forall ro \forall ho (0<=t&t < max(0,(- 1)*(vlo-v))/alo&ro=rv*t&ho=(- 1)*alo/2*t^2+v*t|t>=max(0,(- 1)*(vlo-v))/alo&ro=rv*t&ho=vlo*t-(- 1)*max(0,(- 1)*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|(- 1)*h < (- 1)*ho-hp())"); <(
+                  "alo>0":
+                    propClose,
+                  "\forall t \forall ro \forall ho (0<=t&t < max(0,(- 1)*(vlo-v))/alo&ro=rv*t&ho=(- 1)*alo/2*t^2+v*t|t>=max(0,(- 1)*(vlo-v))/alo&ro=rv*t&ho=vlo*t-(- 1)*max(0,(- 1)*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|(- 1)*h < (- 1)*ho-hp())":
+                    propClose
+                )
+            ),
+          "\forall vlo \forall alo (alo>0->\forall t \forall ro \forall ho (0<=t&t < max(0,1*(vlo-v))/alo&ro=rv*t&ho=1*alo/2*t^2+v*t|t>=max(0,1*(vlo-v))/alo&ro=rv*t&ho=vlo*t-1*max(0,1*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|1*h < 1*ho-hp())->\forall a (1*v>=1*vlo|1*a>=alo->loopInv(r,h,v,1,vlo,rv,alo)&init(rv,alo)&(1*v>=1*vlo|1*a>=alo)))//loopInv(r,h,v,1,vlo,rv,alo)":
+            expandAllDefs();
+            andR('R=="(1=-1|1=1)&alo>0&\forall t \forall ro \forall ho (0<=t&t < max(0,1*(vlo-v))/alo&ro=rv*t&ho=1*alo/2*t^2+v*t|t>=max(0,1*(vlo-v))/alo&ro=rv*t&ho=vlo*t-1*max(0,1*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|1*h < 1*ho-hp())"); <(
+              "1=-1|1=1":
+                QE,
+              "alo>0&\forall t \forall ro \forall ho (0<=t&t < max(0,1*(vlo-v))/alo&ro=rv*t&ho=1*alo/2*t^2+v*t|t>=max(0,1*(vlo-v))/alo&ro=rv*t&ho=vlo*t-1*max(0,1*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|1*h < 1*ho-hp())":
+                andR('R=="alo>0&\forall t \forall ro \forall ho (0<=t&t < max(0,1*(vlo-v))/alo&ro=rv*t&ho=1*alo/2*t^2+v*t|t>=max(0,1*(vlo-v))/alo&ro=rv*t&ho=vlo*t-1*max(0,1*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|1*h < 1*ho-hp())"); <(
+                  "alo>0":
+                    propClose,
+                  "\forall t \forall ro \forall ho (0<=t&t < max(0,1*(vlo-v))/alo&ro=rv*t&ho=1*alo/2*t^2+v*t|t>=max(0,1*(vlo-v))/alo&ro=rv*t&ho=vlo*t-1*max(0,1*(vlo-v))^2/(2*alo)->abs(r-ro)>rp()|1*h < 1*ho-hp())":
+                    propClose
+                )
+            ),
+          "init(rv,alo)&(w*v>=w*vlo|w*a>=alo)//init(rv,alo)":
+            expandAllDefs();
+            propClose,
+          "init(rv,alo)&(w*v>=w*vlo|w*a>=alo)//w*v>=w*vlo|w*a>=alo":
+            propClose,
+          "init(rv,alo)&(1*v>=1*vlo|1*a>=alo)//init(rv,alo)":
+            expandAllDefs();
+            propClose,
+          "init(rv,alo)&((- 1)*v>=(- 1)*vlo|(- 1)*a>=alo)//init(rv,alo)":
+            expandAllDefs();
+            propClose,
+          "init(rv,alo)&((- 1)*v>=(- 1)*vlo|(- 1)*a>=alo)//(- 1)*v>=(- 1)*vlo|(- 1)*a>=alo":
+            propClose,
+          "init(rv,alo)&(1*v>=1*vlo|1*a>=alo)//1*v>=1*vlo|1*a>=alo":
+            propClose
+        ),
+      "Show [a]Q":
+        expandAllDefs();
+        useLemma("ACAS_Reimport/Safe lower bound (flexible alo)", "prop")
+    )
+)
+
+End.
+
+End.

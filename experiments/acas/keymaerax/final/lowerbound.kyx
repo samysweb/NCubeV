@@ -37,8 +37,6 @@ Definitions
     );
 
   Bool init(Real rv) <-> rp>=0 & hp>0 & rv>=0 & alo>0;
-
-  Bool loopInv(Real r, Real h, Real v, Real w, Real vlo, Real rv) <-> ( (w=wUp | w=wLo) & Limpl(r,h,v,w,vlo,rv) );
   
   HP motion ::= { {r' = -rv, h' = -v, v' = a & w*v>=w*vlo|w*a>=alo } };
 End.
@@ -52,7 +50,8 @@ Problem    (w*v>=w*vlo|w*a>=alo)
 
 End.
 
-Tactic "ACAS_Reimport/Safe lower bound"implyR('R=="(w*v>=w*vlo|w*a>=alo())&(w=wUp()|w=wLo())&Limpl(r,h,v,w,vlo,rv)&init(rv)->[motion{|^@|};]((w=wUp()|w=wLo())&Limpl(r,h,v,w,vlo,rv))");
+Tactic "ACAS_Reimport/Safe lower bound"
+implyR('R=="(w*v>=w*vlo|w*a>=alo())&(w=wUp()|w=wLo())&Limpl(r,h,v,w,vlo,rv)&init(rv)->[motion{|^@|};]((w=wUp()|w=wLo())&Limpl(r,h,v,w,vlo,rv))");
 boxAnd('R=="[motion{|^@|};]((w=wUp()|w=wLo())&Limpl(r,h,v,w,vlo,rv))");
 andR('R=="[motion{|^@|};](w=wUp()|w=wLo())&[motion{|^@|};]Limpl(r,h,v,w,vlo,rv)"); <(
   "[motion{|^@|};](w=wUp()|w=wLo())":

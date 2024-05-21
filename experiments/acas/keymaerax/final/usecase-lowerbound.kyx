@@ -48,7 +48,8 @@ Problem
 End.
 
 
-Tactic "ACAS_Reimport/Safe use case lower bound"expand("init");
+Tactic "ACAS_Reimport/Safe use case lower bound"
+expand("init");
 expand("loopInv");
 implyR('R=="((w=wUp()|w=wLo())&Limpl(r,h,v,w,vlo,rv))&rp()>=0&hp()>0&rv>=0&alo()>0->abs(r)>rp()|abs(h)>hp()");
 andL('L)*;
