@@ -9,6 +9,23 @@ using namespace flowstar;
 int main(int argc, char *argv[])
 {
 //	intervalNumPrecision = 600;
+
+	// ./nn_acc order bernstein_order partition_num neuron_approx symb_rem
+	// order: Taylor Order
+	// bernstein_order: Bernstein Order
+	// partition_num: Partition Number
+	// neuron_approx: Taylor | Berns | Mix
+	// symb_rem: Concrete | Symbolic
+	if (argc < 4)
+	{
+		cout << "Usage: ./nn_acc <order> <bernstein_order> <partition_num>" << endl;
+		cout << "order: Taylor Order" << endl;
+		cout << "bernstein_order: Bernstein Order > 2" << endl;
+		cout << "partition_num: Partition Number" << endl;
+		cout << "neuron_approx: Taylor | Berns | Mix" << endl;
+		cout << "symb_rem: Concrete | Symbolic" << endl;
+		return 1;
+	}
 	
 	/*
 	// Declaration of the state variables.
@@ -68,7 +85,7 @@ int main(int argc, char *argv[])
 	// Specify the parameters for reachability computation.
 	Computational_Setting setting(vars);
 
-	unsigned int order = 3;
+	unsigned int order = atoi(argv[1]);
 
 	// stepsize and order for reachability analysis
 	setting.setFixedStepsize(0.1, 5); // order = 4/5
@@ -105,6 +122,7 @@ int main(int argc, char *argv[])
 	double w = 0; // 0.5
 	int steps = 1; // should be 50
     Interval init_x0(0.1,0.5), init_x1(-4.0,0.0), init_t(0);
+	//Interval init_x0(0.1,0.2), init_x1(-4.0,-4.0), init_t(0);
 	Interval init_u0(0);
     vector<Interval> X0;
     X0.push_back(init_x0);
@@ -134,10 +152,9 @@ int main(int argc, char *argv[])
 	Global_Computation_Setting g_setting;
 	g_setting.prepareForReachability(maxOrder);
 	*/
-
 	// no less than 2, otherwise the obtained Bernstein approximation may be wrong
-	unsigned int bernstein_order = 50;
-	unsigned int partition_num = 20000;
+	unsigned int bernstein_order = atoi(argv[2]);
+	unsigned int partition_num = atoi(argv[3]);
 
 	unsigned int if_symbo = 1;
  
@@ -250,21 +267,21 @@ int main(int argc, char *argv[])
 	}
 
 	// plot the flowpipes in the x-y plane
-	result.transformToTaylorModels(setting);
+	// result.transformToTaylorModels(setting);
 
-	Plot_Setting plot_setting(vars);
-	plot_setting.setOutputDims("t", "x1");
+	// Plot_Setting plot_setting(vars);
+	// plot_setting.setOutputDims("t", "x1");
 
-	int mkres = mkdir("./outputs", S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-	if (mkres < 0 && errno != EEXIST)
-	{
-		printf("Can not create the directory for images.\n");
-		exit(1);
-	}
+	// int mkres = mkdir("./outputs", S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+	// if (mkres < 0 && errno != EEXIST)
+	// {
+	// 	printf("Can not create the directory for images.\n");
+	// 	exit(1);
+	// }
 
-	// you need to create a subdir named outputs
-	// the file name is example.m and it is put in the subdir outputs
-	plot_setting.plot_2D_octagon_GNUPLOT("./outputs/", "acc_"  + to_string(steps) + "_"  + to_string(if_symbo), result.tmv_flowpipes, setting);
+	// // you need to create a subdir named outputs
+	// // the file name is example.m and it is put in the subdir outputs
+	// plot_setting.plot_2D_octagon_GNUPLOT("./outputs/", "acc_"  + to_string(steps) + "_"  + to_string(if_symbo), result.tmv_flowpipes, setting);
 
  
 
