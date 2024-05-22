@@ -13,6 +13,7 @@
 
 	import SNNT.AST.Input
 	import SNNT.AST.Output
+	import SNNT
 
 	export run_cmd
 
@@ -56,6 +57,12 @@
 				help = "Number of approximation points to use"
 				arg_type = Int
 				default = 1
+			"--no-cores"
+				help = "Do not use cores for SMT queries (this allows another SMT solver which may be faster for higher-order polynomials)"
+				action = :store_true
+			"--no-normalization"
+				help = "Do not normalize atoms (this may throw errors when formulas contain large numbers)"
+				action = :store_true
 		end
 		return parse_args(cmd_args,s)
 	end
@@ -68,6 +75,18 @@
 		if args["rigorous"]
 			print_msg("[CMD] Running in rigorous mode")
 			Config.set_rigorous_approximations(true)
+		end
+		if args["no-cores"]
+			print_msg("[CMD] Not using cores for SMT queries")
+			SMTInterface.USE_CORES = false
+		else
+			SMTInterface.USE_CORES = true
+		end
+		if args["no-normalization"]
+			print_msg("[CMD] Not normalizing atoms")
+			Config.NORMALIZE_ATOMS = false
+		else
+			Config.NORMALIZE_ATOMS = true
 		end
 		set_approx_density(args["approx"])
 		print_msg("[CMD] Using SMT solver: ", args["smt"])
@@ -92,8 +111,8 @@
 		print_msg("[CMD] SMT Timeout: ", smt_timeout, "s")
         num_queries_feasibility_check = 0
         num_queries_feasibility_check_no_disjunction = 0
-		SNNT.Config.QUERY_GEN_DO_INFEASIBILITY_CHECK = false
-		SNNT.Config.QUERY_GEN_SAVE_SAT = "./sat.dimacs"
+		#SNNT.Config.QUERY_GEN_DO_INFEASIBILITY_CHECK = false
+		SNNT.Config.QUERY_GEN_SAVE_SAT = args["output"]*".dimacs"
         result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=smt_timeout*1000) do (ctx, variables)
 			Control.run_query(prepared_query, ctx, smt_timeout, variables, backup=args["output"],backup_meta=args) do (linear_term,SMTFilter)
                 num_queries_feasibility_check += 1
@@ -116,3 +135,9 @@
 		show(Config.TIMER)
 		print_msg(" Done")
 	end
+
+	function main()
+		run_cmd(ARGS)
+	end
+
+	main()
