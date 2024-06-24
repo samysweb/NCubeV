@@ -4,7 +4,8 @@ This repository contains the non-linear neural network verifier $N^3V$ (and its 
 ## Installation
 ### Requirements
 We require an installation of Julia 1.10.
-Moreover, if the installation fails it may be necessary to install Conda (we use `Conda.jl` to manage a python environment)
+Moreover, if the installation fails it may be necessary to install Conda (we use `Conda.jl` to manage a python environment).
+This tool has a dependency on [PicoSAT.jl](https://github.com/sisl/PicoSAT.jl) which is only compatible with the platforms listed [here](https://github.com/JuliaBinaryWrappers/PicoSAT_jll.jl)
 
 ### Setup
 The setup script can be run via `./build.sh <path to julia 1.10 executable>`.
