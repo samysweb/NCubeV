@@ -49,5 +49,23 @@ $N^3V$ (pronounced "N Cube V") stands for **N**on-linear **N**eural **N**etwork 
 Incidentally, interpreted as a unit $N^3V$ corresponds to $m^5kg^4A^{-1}s^{-9}$ which signifies the CPS mission of the tool: "**m**a**k**in**g** **a**utonomy **s**afer (which in turn has $5+4+1+9=19$ letters).
 
 ## Citation
-This work is not published (yet).  
-If you want to cite this work in your research, please reach out so we can figure something out.
+This has no conference publication (yet).  
+In the meantime, please refer to [arXiv:2402.10998](https://arxiv.org/abs/2402.10998):
+```bibtex
+
+
+@article{NCubeV,
+  author       = {Samuel Teuber and
+                  Stefan Mitsch and
+                  Andr{\'{e}} Platzer},
+  title        = {Provably Safe Neural Network Controllers via Differential Dynamic
+                  Logic},
+  journal      = {CoRR},
+  volume       = {abs/2402.10998},
+  year         = {2024},
+  url          = {https://doi.org/10.48550/arXiv.2402.10998},
+  doi          = {10.48550/ARXIV.2402.10998},
+  eprinttype    = {arXiv},
+  eprint       = {2402.10998},
+}
+```
