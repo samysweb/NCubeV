@@ -3,4 +3,4 @@
 	url = https://github.com/samysweb/nnenum.git
 [submodule "deps/OVERTFixed"]
 	path = deps/OVERTFixed
-	url = git@github.com:samysweb/OVERT.jl.git
+	url = https://github.com/samysweb/OVERT.jl.git
