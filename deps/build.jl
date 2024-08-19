@@ -9,6 +9,8 @@ using Conda
 @info "Installing packages necessary for NNEnum"
 Conda.add("certifi")
 Conda.add("python=3.8")
+# Update PyCall build so that it knows that we run on Python 3.8
+pkg"build PyCall"
 Conda.pip_interop(true)
 Conda.pip("install",["numpy","scipy==1.7","threadpoolctl==3.5","onnx==1.9.0","onnxruntime==1.8.0","skl2onnx==1.7.0","swiglpk","termcolor","packaging"])
 Conda.pip("install",["cvc5"])
