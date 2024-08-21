@@ -17,11 +17,11 @@ Conda.add("scipy==1.7")
 Conda.add("threadpoolctl==3.5")
 Conda.add("onnx==1.9.0")
 Conda.pip("install", "onnxruntime==1.8.0")
-Conda.add("skl2onnx==1.7.0")
-Conda.add("swiglpk")
-Conda.add("termcolor")
-Conda.add("packaging")
-Conda.add("cvc5")
+Conda.pip("install", "skl2onnx==1.7.0")
+Conda.pip("install", "swiglpk")
+Conda.pip("install", "termcolor")
+Conda.pip("install", "packaging")
+Conda.pip("install", "cvc5")
 
 @info "Building Sysimage..."
 using PackageCompiler
