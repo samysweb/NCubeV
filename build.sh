@@ -9,4 +9,4 @@ git submodule update --recursive
 
 echo "Building NCubeV with $1"
 
-bash -c "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 $1 -E 'using Pkg; Pkg.activate(\".\"); Pkg.instantiate(); Pkg.build();'"
+bash -c "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 $1 -E 'ENV[\"PYTHON\"] = \"\"; using Pkg; Pkg.activate(\".\"); Pkg.instantiate(); Pkg.build();'"

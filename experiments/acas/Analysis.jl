@@ -197,7 +197,7 @@ end
 
 nmac_rectangle(;rv=2200,altitute_offset=10000) = Shape([-500/rv,500/rv,500/rv,-500/rv], [-100+altitute_offset,-100+altitute_offset,100+altitute_offset,100+altitute_offset])
 
-function plot_trajectory(plot_name,crash_trace,cf_trace;tau=0.1,rv=2200,altitute_offset = 10000,xlims=(-6.7,6.7),ylims=(9400,10500),figsize=(1000,300),delta=2.0,imgmodifier=1.0,show_planes=false)
+function plot_trajectory(plot_name,crash_trace,cf_trace;tau=0.1,rv=2200,altitute_offset = 10000,xlims=(-6.7,6.7),ylims=(9400,10500),figsize=(1000,300),delta=2.0,imgmodifier=1.0,show_planes=false,show_traces=true)
     # CC 0 image: https://www.rawpixel.com/image/6481821/vector-sticker-public-domain-blue
     intruder = load("intruder.png")  
     time_total = length(crash_trace)*tau
@@ -210,24 +210,39 @@ function plot_trajectory(plot_name,crash_trace,cf_trace;tau=0.1,rv=2200,altitute
     h_intruder = repeat([pos_intruder],length(t_intruder))
     h_crash = [(pos_intruder-x[1]) for x in crash_trace]
     h_cf = [(pos_intruder-x[1]) for x in cf_trace]
-    plot(t_ownship, h_crash,
-        labels="Ownship (current advisory)",
-        linestyle=:solid,
-        legend=:outertopright,
+    plot(nmac_rectangle(altitute_offset=pos_intruder),label="NMAC collision region          ",color="#ff6f91")
+    if show_traces
+        plot!(t_ownship, h_crash,
+            labels="Ownship (current advisory)",
+            linestyle=:solid,
+            legend=:outertopright,
+            xlims=xlims, ylims=ylims,
+            xlabel="time for intruder / -time for ownship (s)",
+            ylabel="altitude (ft)",
+            size=figsize,
+            leftmargin = 30Plots.px,
+            bottommargin = 40Plots.px,
+            color="#2c73d2", linewidth=3,
+            tickfontsize=16,
+            guidefontsize=16,
+            legendfontsize=16)#,
+            #aspect_ratio=3e-3)
+        plot!(t_ownship, h_cf, labels="Original path of ownship",linestyle=:dash,color="#ffc75f", linewidth=3)
+        plot!(t_intruder,h_intruder, label="Intruder",color="#d65db1",linestyle=:dot, linewidth=3)
+    else
+        # "Ownship (current advisory)"
+        # "NMAC collision region     "
+        plot(nmac_rectangle(altitute_offset=pos_intruder),label="NMAC collision region          ",color="#ff6f91",legend=:outertopright,
         xlims=xlims, ylims=ylims,
         xlabel="time for intruder / -time for ownship (s)",
         ylabel="altitude (ft)",
         size=figsize,
         leftmargin = 30Plots.px,
         bottommargin = 40Plots.px,
-        color=:blue, linewidth=3,
         tickfontsize=16,
         guidefontsize=16,
-        legendfontsize=16)#,
-        #aspect_ratio=3e-3)
-    plot!(t_ownship, h_cf, labels="Original path of ownship",linestyle=:dash,color=:orange, linewidth=3)
-    plot!(t_intruder,h_intruder, label="Intruder",color=:purple,linestyle=:dot, linewidth=3)
-    plot!(nmac_rectangle(altitute_offset=pos_intruder),fopacity=.3,label="NMAC collision region",color=:red)
+        legendfontsize=16)
+    end
 
     # Images
     if show_planes
@@ -273,7 +288,7 @@ function plot_trajectory(plot_name,crash_trace,cf_trace;tau=0.1,rv=2200,altitute
     savefig(plot_name)
 end
 
-function plot_trajectory2(plot_name,crash_trace,cf_trace;tau=0.1,rv=2200,altitute_offset = 10000,xlims=(-6.7,6.7),ylims=(9400,10500),figsize=(1000,300),delta=2.0,imgmodifier=1.0,show_planes=false)
+function plot_trajectory2(plot_name,crash_trace,cf_trace;tau=0.1,rv=2200,altitute_offset = 10000,xlims=(-6.7,6.7),ylims=(9400,10500),figsize=(1000,300),delta=2.0,imgmodifier=1.0,plane_offset=0.0,thetai_offset=0.0,xishift=1.0,show_planes=false,show_traces=true)
 
     intruder = load("intruder.png")  
     time_total = length(crash_trace)*tau
@@ -291,24 +306,26 @@ function plot_trajectory2(plot_name,crash_trace,cf_trace;tau=0.1,rv=2200,altitut
     h_intruder_nmac = h_intruder[floor(Int,time_to_nmac/tau)]
     h_crash = h_intruder .- [(x[1]) for x in crash_trace]
     h_cf = h_intruder .- [(x[1]) for x in cf_trace]
-    plot(t_ownship, h_crash,
-        labels="Ownship (current advisory)",
-        linestyle=:solid,
-        legend=:outertopright,
-        xlims=xlims, ylims=ylims,
-        xlabel="time for intruder / -time for ownship (s)",
-        ylabel="altitude (ft)",
-        size=figsize,
-        leftmargin = 30Plots.px,
-        bottommargin = 40Plots.px,
-        color=:blue, linewidth=3,
-        tickfontsize=16,
-        guidefontsize=16,
-        legendfontsize=16)#,
-        #aspect_ratio=3e-3)
-    plot!(t_ownship, h_cf, labels="Original path of ownship",linestyle=:dash,color=:orange, linewidth=3)
-    plot!(t_intruder,h_intruder, label="Intruder",color=:purple,linestyle=:dot, linewidth=3)
-    plot!(nmac_rectangle(altitute_offset=h_intruder_nmac),fopacity=.3,label="NMAC collision region",color=:red)
+    plot(nmac_rectangle(altitute_offset=h_intruder_nmac),label="NMAC collision region",color="#ff6f91")
+    if show_traces
+        plot!(t_ownship, h_crash,
+            labels="Ownship (current advisory)",
+            linestyle=:solid,
+            legend=:outertopright,
+            xlims=xlims, ylims=ylims,
+            xlabel="time for intruder / -time for ownship (s)",
+            ylabel="altitude (ft)",
+            size=figsize,
+            leftmargin = 30Plots.px,
+            bottommargin = 40Plots.px,
+            color="#2c73d2", linewidth=3,
+            tickfontsize=16,
+            guidefontsize=16,
+            legendfontsize=16)#,
+            #aspect_ratio=3e-3)
+        plot!(t_ownship, h_cf, labels="Original path of ownship",linestyle=:dash,color="#ffc75f", linewidth=3)
+        plot!(t_intruder,h_intruder, label="Intruder",color="#d65db1",linestyle=:dot, linewidth=3)
+    end
 
     # Images
     if show_planes
@@ -322,26 +339,36 @@ function plot_trajectory2(plot_name,crash_trace,cf_trace;tau=0.1,rv=2200,altitut
         println(dh)
         theta = atan(dh/dt)
         ownship = imrotate(reverse(intruder,dims=(1,2)),theta)
-        x1 = -time_to_nmac
-        x2 = -time_to_nmac+delta*(size(ownship,2)/size(intruder,2))
+        x1 = -time_to_nmac-plane_offset
+        x2 = -time_to_nmac-plane_offset+delta*(size(ownship,2)/size(intruder,2))
         ownship_ratio = size(ownship,1)/size(ownship,2)
         y_range = (x2-x1)*ownship_ratio*y_modifier*imgmodifier
-        if theta > 0
-            y1 = h_crash[1]-y_range*(1/8)
-            y2 = h_crash[1]+y_range*(7/8)
-        else
-            y1 = h_crash[1]-y_range*(7/8)
-            y2 = h_crash[1]+y_range*(1/8)
-        end
+        # if theta > 0
+        #     y1 = h_crash[1]-y_range*(1/8)
+        #     y2 = h_crash[1]+y_range*(7/8)
+        # else
+        #     y1 = h_crash[1]-y_range*(7/8)
+        #     y2 = h_crash[1]+y_range*(1/8)
+        # end
+        y1 = h_crash[1]-y_range*(4/8)
+        y2 = h_crash[1]+y_range*(4/8)
         plot!([x1,x2],[y1,y2],ownship,fopacity=1.0,aspect_ratio=:none,yflip=false)
         # Intruder
-        x1 = time_to_nmac-delta
-        x2 = time_to_nmac
+        dh = (h_intruder[end-convert(Int,4*delta/tau/3)][1]-h_intruder[end-1][1])/y_modifier
+        theta = atan(dh/dt)+thetai_offset
+        intruder_r = imrotate(intruder,-theta)
+        x1 = time_to_nmac+plane_offset+xishift-4*delta/3*(size(intruder_r,2)/size(intruder,2))
+        x2 = time_to_nmac+plane_offset+xishift
         intruder_ratio = size(intruder,1)/size(intruder,2)
         y_range = (x2-x1)*intruder_ratio*y_modifier*imgmodifier
-        y1 = pos_intruder-y_range*(4/8)
-        y2 = pos_intruder+y_range*(4/8)
-        plot!([x1,x2],[y1,y2],reverse(intruder,dims=1),fopacity=1.0,aspect_ratio=:none,yflip=false)
+        if -theta > 0
+            y1 = pos_intruder-y_range*(1/8)
+            y2 = pos_intruder+y_range*(7/8)
+        else
+            y1 = pos_intruder-y_range*(7/8)
+            y2 = pos_intruder+y_range*(1/8)
+        end
+        plot!([x1,x2],[y1,y2],reverse(intruder_r,dims=1),fopacity=1.0,aspect_ratio=:none,yflip=false)
     end
     #xlims=xlims, ylims=ylims,size=figsize)
     #plot!([-7.0,7.0],[9400,11000])
