@@ -264,7 +264,9 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 				options = @view parameters[2:end]
 				@warn "Beware: Use of isMax assumes that there always exists a *unique* maximum!"
 				if !(cur_max in options)
-					raise("isMax requires that first argument is also one of the remaining arguments!")
+					println(cur_max)
+					println(options)
+					throw("isMax requires that first argument is also one of the remaining arguments!")
 				end
 				if !(allunique(options))
 					raise("All options must be unique")

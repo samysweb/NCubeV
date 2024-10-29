@@ -185,9 +185,35 @@ function atom_simplifier()
 				@rule (~a::is_literal_number != ~b::is_literal_number => solve_concrete_atom(!=, ~a, ~b))
 
 				# TODO(steuber): Extend matching rule for >=3 element multiplications
-				@rule ( (*((~x::_isone/~y), ~~z) < ~a) => le(*(~~z...), ~a * ~y) )
-				@rule ( (*((~x::_isone/~y), ~~z) <= ~a) => leq(*(~~z...), ~a * ~y) )
-				@rule ( (*((~x::_isone/~y), ~~z) == ~a) => eq(*(~~z...), ~a * ~y) )
+				@rule (
+					(*((~x::_isone/~y), ~~z) < ~a)
+					=>
+					and(Formula[
+						and_construction(Formula[
+							leq(TermNumber(0.0), ~y),
+							le(*(~~z...), ~a * ~y)
+						]),
+						and_construction(Formula[
+							le(~y, TermNumber(0.0)),
+							le(~a * ~y, *(~~z...))
+						])
+					])
+				)
+				@rule (
+					(*((~x::_isone/~y), ~~z) <= ~a)
+					=>
+					or_construction(Formula[
+						and_construction(Formula[
+							leq(TermNumber(0.0), ~y),
+							leq(*(~~z...), ~a * ~y)
+						]),
+						and_construction(Formula[
+							le(~y, TermNumber(0.0)),
+							leq(~a * ~y, *(~~z...))
+						])
+					])
+				)
+				@rule ((*((~x::_isone/~y), ~~z) == ~a) => eq(*(~~z...), ~a * ~y) )
 				@rule ( (*((~x::_isone/~y), ~~z) != ~a) => neq(*(~~z...), ~a * ~y) )
 				
 				#@rule ( (~z * (~x::_isone/~y) < ~a) => le(~z, ~a * ~y) )
