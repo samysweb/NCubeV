@@ -188,9 +188,9 @@ function atom_simplifier()
 				@rule (
 					(*((~x::_isone/~y), ~~z) < ~a)
 					=>
-					and(Formula[
+					or_construction(Formula[
 						and_construction(Formula[
-							leq(TermNumber(0.0), ~y),
+							le(TermNumber(0.0), ~y),
 							le(*(~~z...), ~a * ~y)
 						]),
 						and_construction(Formula[
@@ -204,7 +204,7 @@ function atom_simplifier()
 					=>
 					or_construction(Formula[
 						and_construction(Formula[
-							leq(TermNumber(0.0), ~y),
+							le(TermNumber(0.0), ~y),
 							leq(*(~~z...), ~a * ~y)
 						]),
 						and_construction(Formula[
