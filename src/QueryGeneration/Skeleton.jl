@@ -129,7 +129,11 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 				if haskey(variable_number_dict, formula)
 					return SkeletonFormula(variable_number_dict[formula])
 				else
-					factor=1/norm(formula.coefficients)
+					if !iszero(norm(formula.coefficients))
+						factor=1/norm(formula.coefficients)
+					else
+						factor=one(Rational{BigInt})
+					end
 					variable_number = next_var(skeleton.sat_instance)
 					skeleton.variable_mapping[variable_number] = ConstraintVariable(formula)
 					variable_number_dict[formula] = variable_number
@@ -258,7 +262,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 					return SkeletonFormula(internal_formula.variable_number)
 				end
 			end
-			Predicate("isMax", parameters) => begin
+			Predicate("isMax", parameters,_) => begin
 				@assert length(parameters) >= 3
 				cur_max = parameters[1]
 				options = @view parameters[2:end]
@@ -266,6 +270,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 				if !(cur_max in options)
 					println(cur_max)
 					println(options)
+					print(cur_max == options[1])
 					throw("isMax requires that first argument is also one of the remaining arguments!")
 				end
 				if !(allunique(options))
@@ -303,10 +308,12 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 							add_clause(skeleton.sat_instance, [-last_counter_var, current_counter_var])
 						end
 						add_clause(skeleton.sat_instance, [-option_var, current_counter_var])
+						println("Adding ", Predicate("isMax", [options[i]; options[option_order]]))
 						variable_number_dict[Predicate("isMax", [options[i]; options[option_order]])] = option_var
 					end
 					add_clause(skeleton.sat_instance, option_variables)
 				end
+				println("Searching ",normalized_predicate)
 				return SkeletonFormula(variable_number_dict[normalized_predicate])
 			end
 			SemiLinearConstraint() => formula

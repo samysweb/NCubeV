@@ -47,6 +47,8 @@ end
 @as_record struct Predicate <: Formula
 	predicate_name :: String
 	parameters :: Vector{Term}
+	args_hash :: UInt
+	Predicate(predicate_name :: String, args :: Vector{T}) where {T <: Term} = new(predicate_name, args, reduce(+,Iterators.map(hash,args),init=0))
 end
 
 @as_record struct TrueAtom <: Formula end

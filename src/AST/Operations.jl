@@ -4,8 +4,9 @@ import Base.-
 import Base.^
 import Base./
 import Base.convert
+import Base.==
 
-export not, and, or, implies, le, leq, gr, geq, eq, neq, +, -, *, /, ^, predicate
+export not, and, or, implies, le, leq, gr, geq, is_eq, neq, +, -, *, /, ^, predicate, ==
 
 # TODO(steuber): Improve memory efficiency
 
@@ -60,7 +61,7 @@ le(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Less,t1,t2)
 leq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(LessEq,t1,t2)
 gr(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Greater,t1,t2)
 geq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(GreaterEq,t1,t2)
-eq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Eq,t1,t2)
+is_eq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Eq,t1,t2)
 neq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Neq,t1,t2)
 
 #+(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}} = CompositeTerm(Add,Term[t1,t2])
@@ -147,3 +148,15 @@ end
 function predicate(name :: String, params :: Vector{Term})
 	return Predicate(name, params)
 end
+
+function ==(t1 :: CompositeTerm, t2 :: CompositeTerm)
+	return t1.operation == t2.operation && all(t1.args .== t2.args)
+end
+
+function ==(p1 :: Predicate, p2 :: Predicate)
+	return p1.predicate_name == p2.predicate_name && all(p1.parameters .== p2.parameters)
+end
+
+# function ==(f1 :: Formula, f2::Formula)
+# 	@warn "Missing implementation to compare ", f1, " and ", f2
+# end

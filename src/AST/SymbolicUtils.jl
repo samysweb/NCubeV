@@ -73,6 +73,16 @@ POW_RULES = [
 	@rule(^(~x::_isone, ~y) => TermNumber(1))
 	@rule (^(~a::is_literal_number, ~b::is_literal_number) => ^(~a, ~b))
 	@rule(^(+(~x,~y), ~z::_istwo) => +(^(~x, ~z), *(~z, ~x, ~y), ^(~y, ~z)))
+	@rule(
+		^(+(~x,~y,~z), ~e::_istwo)
+		=>
+		+(^(~x, ~e), *(~e,~x,~y), *(~e,~x,~z), ^(~y, ~e), *(~e,~y,~z), ^(~z, ~e))
+	)
+	@rule(
+		^(+(~w,~x,~y,~z), ~e::_istwo)
+		=>
+		+(^(~w, ~e),*(~e,~w,~x),*(~e,~w,~y),*(~e,~w,~z),^(~x, ~e), *(~e,~x,~y), *(~e,~x,~z), ^(~y, ~e), *(~e,~y,~z), ^(~z, ~e))
+	)
 	@rule( ( (~x) / (~y)  ) ^ (~z) => ( ( (~x)^(~z) )/( (~y)^(~z) ) ) )
 	@rule(^(*(~~x),~y) => *(map(a->^(a,~y), ~~x)...))
 	@rule(^(^(~x,~y::is_literal_number), ~z::is_literal_number) => ^(~x, ~y*~z))
@@ -159,7 +169,7 @@ function atom_normalizer()
 			@rule(~a::_needs_normalization >= ~b::_needs_normalization => normalize_term(geq, ~a, ~b))
 			@rule(~a::_needs_normalization < ~b::_needs_normalization => normalize_term(le, ~a, ~b))
 			@rule(~a::_needs_normalization > ~b::_needs_normalization => normalize_term(ge, ~a, ~b))
-			@rule(~a::_needs_normalization == ~b::_needs_normalization => normalize_term(eq, ~a, ~b))
+			@rule(is_eq(~a::_needs_normalization, ~b::_needs_normalization) => normalize_term(is_eq, ~a, ~b))
 			@rule(~a::_needs_normalization != ~b::_needs_normalization => normalize_term(neq, ~a, ~b))
 		]
 	)
@@ -174,14 +184,14 @@ function atom_simplifier()
 				@rule (~a >= ~b => leq(~b - ~a, TermNumber(0.0)))
 				@rule (~a <  ~b::_isnotzero => le(~a - ~b,  TermNumber(0.0)))
 				@rule (~a >  ~b => le(~b - ~a,  TermNumber(0.0)))
-				@rule (~a == ~b::_isnotzero => eq(~a - ~b, TermNumber(0.0)))
+				@rule (is_eq(~a, ~b::_isnotzero) => is_eq(~a - ~b, TermNumber(0.0)))
 				@rule (~a != ~b::_isnotzero => neq(~a - ~b, TermNumber(0.0)))
 				
 				@rule (~a::is_literal_number <= ~b::is_literal_number => solve_concrete_atom(<=, ~a, ~b))
 				@rule (~a::is_literal_number >= ~b::is_literal_number => solve_concrete_atom(>=, ~a, ~b))
 				@rule (~a::is_literal_number < ~b::is_literal_number => solve_concrete_atom(<, ~a, ~b))
 				@rule (~a::is_literal_number > ~b::is_literal_number => solve_concrete_atom(>, ~a, ~b))
-				@rule (~a::is_literal_number == ~b::is_literal_number => solve_concrete_atom(==, ~a, ~b))
+				@rule (is_eq(~a::is_literal_number, ~b::is_literal_number) => solve_concrete_atom(==, ~a, ~b))
 				@rule (~a::is_literal_number != ~b::is_literal_number => solve_concrete_atom(!=, ~a, ~b))
 
 				# TODO(steuber): Extend matching rule for >=3 element multiplications
@@ -213,7 +223,7 @@ function atom_simplifier()
 						])
 					])
 				)
-				@rule ((*((~x::_isone/~y), ~~z) == ~a) => eq(*(~~z...), ~a * ~y) )
+				@rule (is_eq(*((~x::_isone/~y), ~~z), ~a) => is_eq(*(~~z...), ~a * ~y) )
 				@rule ( (*((~x::_isone/~y), ~~z) != ~a) => neq(*(~~z...), ~a * ~y) )
 				
 				#@rule ( (~z * (~x::_isone/~y) < ~a) => le(~z, ~a * ~y) )

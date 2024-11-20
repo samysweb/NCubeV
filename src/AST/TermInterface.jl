@@ -87,7 +87,7 @@ function operation(x :: Atom)
 	elseif x.comparator == GreaterEq
 		return (>=)
 	elseif x.comparator == Eq
-		return (==)
+		return (is_eq)
 	elseif x.comparator == Neq
 		return (!=)
 	end
@@ -158,7 +158,7 @@ function operation_to_ast(op)
 		return Greater
 	elseif op == (>=)
 		return GreaterEq
-	elseif op == (==)
+	elseif op == (is_eq)
 		return Eq
 	elseif op == (!=)
 		return Neq
@@ -260,7 +260,7 @@ function promote_symtype(f :: Symbol, arg_symtypes)
 		return CompositeTerm
 	elseif f == :(!) || f == :(&&) || f == :(||) || f == :implies
 		return CompositeFormula
-	elseif f == :(<) || f == :(<=) || f == :(>) || f == :(>=) || f == :(==) || f == :(!=)
+	elseif f == :(<) || f == :(<=) || f == :(>) || f == :(>=) || f == :(is_eq) || f == :(!=)
 		return Atom
 	else
 		raise("Unclear symtype for symbol $(f)")
