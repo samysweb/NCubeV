@@ -1,0 +1,9 @@
+"DELTA"=>1.0,
+"T"=>0.1,
+"cpost"=>0.0,
+"A"=>99,
+"margin"=>2.1,
+"B"=>101,
+"rVelpost"=>"rVel",
+"rPospost"=>"rPos",
+"rAccpost"=>"rAccpostNN+err1"

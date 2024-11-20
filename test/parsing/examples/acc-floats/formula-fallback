@@ -1,0 +1,28 @@
+(
+    (0<= rPos & rPos <= 100 & -200 <= rVel & rVel <= 200 & -B <= rAccpostNN & rAccpostNN <= A+margin+0.1&
+    -DELTA <= err1 &
+    err1 <= DELTA)&
+    ((rPos > 0 & rPos > rVel^2 / (2*A)) | (rPos > 0 & rVel>0)) & (rVel>0.1 | rVel < -2.1 | rPos > 0.08)
+)
+->
+(
+A <= rAccpost &
+rAccpost <= A + margin |
+rAccpost >= -B &
+rAccpost  <  A + margin &
+rAccpost != 0 &
+(
+  (-rVel / rAccpost > T | -rVel / rAccpost  <  0) &
+  (
+    rPos + rVel * T + rAccpost * T^2 / 2 > (rVel + rAccpost * T)^2 / (2 * A) |
+    rPos + rVel * T + rAccpost * T^2 / 2 > 0 & rVel + rAccpost * T > 0
+  ) |
+  (
+    rPos + rVel * T + rAccpost * T^2 / 2 > (rVel + rAccpost * T)^2 / (2 * A) |
+    rPos + rVel * T + rAccpost * T^2 / 2 > 0 & rVel + rAccpost * T > 0
+  ) &
+  rPos - rVel^2 / rAccpost + rVel^2 / (2 * rAccpost) > 0
+) |
+(rPos + rVel * T > rVel^2 / (2 * A) | rPos + rVel * T > 0 & rVel > 0) &
+rAccpost = 0
+)
