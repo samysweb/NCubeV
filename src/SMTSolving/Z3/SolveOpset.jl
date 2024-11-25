@@ -1,4 +1,4 @@
-function add_constraint(solver :: Z3SolverContainer, constraint :: Z3.Expr; idx=nothing)
+function add_constraint(solver :: Z3SolverContainer, constraint :: Z3ExprContainer; idx=nothing)
 	if !isnothing(idx)
 		ctx = solver.ctx.ctx.ctx
 		assert_var = Z3.Z3_mk_const(
@@ -11,13 +11,19 @@ function add_constraint(solver :: Z3SolverContainer, constraint :: Z3.Expr; idx=
 		Z3.Z3_solver_assert(
 			solver.ctx.ctx.ctx,
 			_get_solver(solver),
-			Z3.as_ast(constraint))
+			Z3.as_ast(constraint.expr))
 	else
 		Z3.Z3_solver_assert_and_track(
 			solver.ctx.ctx.ctx,
 			_get_solver(solver),
-			Z3.as_ast(constraint),
+			Z3.as_ast(constraint.expr),
 			assert_var)
+	end
+	for a in constraint.additional
+		Z3.Z3_solver_assert(
+			solver.ctx.ctx.ctx,
+			_get_solver(solver),
+			Z3.as_ast(a))
 	end
 	if !isnothing(idx)
 		solver.named_assertions[assert_var] = idx
@@ -25,10 +31,7 @@ function add_constraint(solver :: Z3SolverContainer, constraint :: Z3.Expr; idx=
 end
 
 function process_ast_context(solver :: Z3SolverContainer, ast_context :: ASTZ3Context)
-	for a in ast_context.additional
-		add_constraint(solver, a)
-	end
-	empty!(ast_context.additional)
+	# Nothing to do here
 end
 
 function check_sat(solver :: Z3SolverContainer)
@@ -52,12 +55,12 @@ function get_model(f, solver :: Z3SolverContainer, res)
 	return result
 end
 
-function evaluate_model(m :: Z3ModelContainer, expr :: Z3.Expr)
+function evaluate_model(m :: Z3ModelContainer, expr :: Z3ExprContainer)
 	res = Ref{Z3.Libz3.Z3_ast}()
 	Z3.Z3_model_eval(
 		m.ctx.ctx.ctx,
 		m.model,
-		Z3.as_ast(expr),
+		Z3.as_ast(expr.expr),
 		true,
 		res)
 	sort = Z3.Z3_sort_to_string(

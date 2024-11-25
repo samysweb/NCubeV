@@ -1,3 +1,8 @@
+struct Z3ExprContainer
+    expr :: Z3.Expr
+    additional :: Vector{Z3.Expr}
+end
+
 struct Z3Context
     ctx :: Z3.Context
     variables :: Vector{Z3.Expr}
@@ -5,8 +10,7 @@ end
 
 struct ASTZ3Context
     ctx :: Z3Context
-    additional :: Vector{Z3.Expr}
-    smt_cache :: Dict{ParsedNode,Z3.Expr}
+    smt_cache :: Dict{ParsedNode,Z3ExprContainer}
 end
 
 mutable struct Z3SolverContainer

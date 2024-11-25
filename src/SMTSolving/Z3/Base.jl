@@ -17,9 +17,8 @@ end
 end
 
 function get_ast_context(context :: Z3Context)
-	additional = Z3.Expr[]
-	smt_cache = Dict{ParsedNode,Z3.Expr}()
-	return ASTZ3Context(context, additional, smt_cache)
+	smt_cache = Dict{ParsedNode,Z3ExprContainer}()
+	return ASTZ3Context(context, smt_cache)
 end
 
 function is_cached(ast_context :: ASTZ3Context, f :: ParsedNode)
@@ -30,12 +29,12 @@ function get_cached(ast_context :: ASTZ3Context, f :: ParsedNode)
 	return ast_context.smt_cache[f]
 end
 
-function cache(ast_context :: ASTZ3Context, f :: ParsedNode, smt :: Z3.Expr)
+function cache(ast_context :: ASTZ3Context, f :: ParsedNode, smt :: Z3ExprContainer)
 	ast_context.smt_cache[f] = smt
 end
 
 function get_ast_ctx_variable(ast_context :: ASTZ3Context, i :: Int)
-	return get_ctx_variable(ast_context.ctx, i)
+	return Z3ExprContainer(get_ctx_variable(ast_context.ctx, i),Z3.Expr[])
 end
 
 function get_solver(f, ctx :: Z3Context, theory)
