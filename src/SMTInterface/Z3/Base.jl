@@ -22,6 +22,7 @@ function smt_internal_context()
 end
 function smt_internal_variable(ctx, name)
 	var = real_const(ctx, name)
+	#Z3.Expr(ctx, Z3.Z3_mk_const(Z3.ref(ctx), Z3.to_symbol(name,ctx), Sort(ctx,Z3.Z3_mk_real_sort(Z3.ref(ctx))).ast))
 	return var
 end
 function smt_internal_set_timeout(ctx, timeout)

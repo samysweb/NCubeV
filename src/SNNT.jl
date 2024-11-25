@@ -21,6 +21,8 @@ include("Analysis/Main.jl")
 include("LP/Main.jl")
 include("SMTInterface/Main.jl")
 
+include("SMTSolving/Main.jl")
+
 # Query Generation
 include("QueryGeneration/Main.jl")
 

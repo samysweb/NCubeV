@@ -5,15 +5,29 @@ function smt_internal_context()
 	options["revert-arith-models-on-unsat"] = true
 	return (options,PY_CVC5.Context())
 end
+function smt_internal_set(solver, name, value)
+	if name == "unsat-core"
+		if USE_CORES || !value
+			solver.setOption("produce-unsat-cores",value)
+		end
+	else
+		@assert false "Unknown option: "*name
+	end
+end
 function smt_internal_variable(ctx, name)
 	return PY_CVC5.Real(name,ctx=ctx[2])
 end
 function smt_internal_set_timeout(ctx, timeout)
 	ctx[1]["tlimit-per"] = timeout
 end
-function smt_internal_solver(ctx, theory;stars=false)
+function smt_internal_solver(f, ctx, theory;stars=false)
 	global SMT_LOG+=1
-	s = PY_CVC5. SolverFor(theory, ctx=ctx[2], logFile="/tmp/smtlog"*string(SMT_LOG)*".smt2")
+	if theory=="qfnra"
+		theory = "QF_NRA"
+	elseif theory=="qflra"
+		theory = "QF_LRA"
+	end
+	s = PY_CVC5.SolverFor(theory, ctx=ctx[2], logFile="/tmp/smtlog"*string(SMT_LOG)*".smt2")
 	for (k,v) in ctx[1]
 		current = s.getOption(k)
 		if string(current) != string(v)
@@ -21,7 +35,7 @@ function smt_internal_solver(ctx, theory;stars=false)
 			s.setOption(k,v)
 		end
 	end
-	return s
+	return f(s)
 end
 function smt_internal_add(solver, formula)
 	solver.add(formula)

@@ -25,10 +25,10 @@ function add_to_solver(solver, variables, star, smt_cache)
 end
 
 function check_star(ctx,variables, disjunction_nonlinear, star :: Star, smt_cache)
-	smt_solver(ctx;theory="qfnra",stars=true) do solver
+	smt_solver(ctx;theory="qfnra",stars=false) do solver
 		add_to_solver(solver, variables, star, smt_cache)
 		disjunction = []
-		smt_solver(ctx;theory="qflra",stars=true) do lin_solver
+		smt_solver(ctx;theory="qflra",stars=false) do lin_solver
 			add_to_solver(lin_solver, variables, star, smt_cache)
 			for (linear, nonlinear) in disjunction_nonlinear
 				smt_internal_push(lin_solver)
@@ -94,15 +94,26 @@ end
 function get_star_filter(ctx, variables, disjunction_nonlinear, smt_timeout)
 	return function(result :: OlnnvResult)
 		smt_cache = Dict()
+		found_first = false
+		idx=0
 		@timeit TIMER "star_filter" begin
 			if result.status == "safe"
 				return result
 			else
 				filtered_stars = []
 				for s in result.stars
+					idx+=1
+					if idx % 100 == 0
+						print_msg("[SMT] Processing star ",idx," of ",length(result.stars))
+					end
 					res, s = check_star(ctx,variables, disjunction_nonlinear, s, smt_cache)
 					if res > 0
 						push!(filtered_stars, Star(s,res==1))
+						if !found_first && res == 1
+							found_first = true
+							print_msg("[SMT] Found first counter-example")
+							print_msg("[SMT] ", s.counter_example)
+						end
 					end
 				end
 				filtered_out = length(result.stars)-length(filtered_stars)

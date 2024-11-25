@@ -2,7 +2,7 @@
 
 julia_version = "1.10.4"
 manifest_format = "2.0"
-project_hash = "582a3895f3b205494789674f57fef43292ca487d"
+project_hash = "6031a722f1c0ae05b6faa64c4b8fdf17f7891b7a"
 
 [[deps.AbstractTrees]]
 git-tree-sha1 = "2d9c9a55f9c93e8887ad391fbae72f8ef55e1177"
@@ -140,6 +140,11 @@ git-tree-sha1 = "9e2a6b69137e6969bab0152632dcb3bc108c8bdd"
 uuid = "6e34b625-4abd-537c-b88f-471c36dfa7a0"
 version = "1.0.8+1"
 
+[[deps.CEnum]]
+git-tree-sha1 = "389ad5c84de1ae7cf0e28e381131c98ea87d54fc"
+uuid = "fa961155-64e5-5f13-b03f-caf6b980ea82"
+version = "0.5.0"
+
 [[deps.Calculus]]
 deps = ["LinearAlgebra"]
 git-tree-sha1 = "f641eb0a4f00c343bbc32346e1217b86f3ce9dad"
@@ -223,12 +228,6 @@ version = "1.5.5"
     [deps.ConstructionBase.weakdeps]
     IntervalSets = "8197267c-284f-5f27-9208-e0e47529a953"
     StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-
-[[deps.CxxWrap]]
-deps = ["Libdl", "MacroTools", "libcxxwrap_julia_jll"]
-git-tree-sha1 = "ba1a559afd562447710513525030d6ad83e5868a"
-uuid = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
-version = "0.15.1"
 
 [[deps.DataAPI]]
 git-tree-sha1 = "abe83f3a2f1b857aac70ef8b269080af17764bbe"
@@ -1038,10 +1037,10 @@ uuid = "efce3f68-66dc-5838-9240-27a6d6f5f9b6"
 version = "0.5.6"
 
 [[deps.Z3]]
-deps = ["CxxWrap", "z3_jll"]
-git-tree-sha1 = "6e29e37a7c490c376278445829a4d47f835c538d"
+deps = ["CEnum", "z3_jll"]
+git-tree-sha1 = "a1df57353da205e996e6bf003afa1e06e1ebd9ac"
 uuid = "06b161dc-0161-11ea-0f74-41f836f4024b"
-version = "0.4.4"
+version = "1.0.3"
 
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
@@ -1095,6 +1094,6 @@ version = "3.0.2+0"
 
 [[deps.z3_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "GMP_jll", "JLLWrappers", "Libdl", "libcxxwrap_julia_jll"]
-git-tree-sha1 = "94c97c83e0221ac868b46dc88052f5f8bc7b2cea"
+git-tree-sha1 = "78ebc17c164dc79959a3fba356715bb2df6a0e6e"
 uuid = "1bc4e1ec-7839-5212-8f2f-0d16b7bd09bc"
-version = "4.13.0+1"
+version = "4.13.3+0"

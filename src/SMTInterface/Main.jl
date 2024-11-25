@@ -10,7 +10,7 @@ module SMTInterface
 
 	export smt_context, nl_feasible, nl_feasible_init
 
-	USE_CORES = true
+	USE_CORES = false
 
 	if SMT_SOLVER == "Z3"
 		include("Z3/Main.jl")

@@ -15,7 +15,14 @@ function handle_nonlinearity_internal(b :: BoundType, f ::Term) :: Tuple{Set{App
 						res = union(res, new_res)
 						push!(new_args,new_arg)
 					end
+					# TODO(steuber): Parametrization
+					#if length(res) <= 2
 					return res, CompositeTerm(AST.Add, new_args)
+					#else
+					#	print_msg("[APPROX] More than two approximations in addition -> aggregating")
+					#	res = ApproxQuery(b, f)
+					#	return Set{ApproxQuery}((res,)), NonLinearSubstitution(res)
+					#end
 				end
 				Mul => begin
 					if args[1] isa TermNumber

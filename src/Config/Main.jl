@@ -9,6 +9,8 @@ module Config
 
 	SMT_SOLVER = "Z3"
 
+	SMT_USE_CORES = true
+
 	EPSILON = 1e-3
 
 	TIMER = nothing
