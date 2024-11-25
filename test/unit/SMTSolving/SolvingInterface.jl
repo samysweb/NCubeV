@@ -1,4 +1,5 @@
 using SNNT.SMTSolving
+using SNNT.Config
 
 function smt_eq_var_real(solver :: SMTSolver)
     solver.get_context(3) do (ctx)
@@ -427,6 +428,85 @@ function smt_eq_leq_lt_var_real_sub_div(solver)
     end
 end
 
+function smt_setup_unsat(solver,ctx,slv)
+    actx = solver.get_ast_context(ctx)
+    # x1 = 1.0
+    fml1 = solver.opset.eq(
+        actx,
+        solver.get_variable(actx, 1),
+        solver.opset.real_literal(actx, 1.0)
+    )
+    solver.solve.add_constraint(slv, fml1; idx=1)
+    fml2 = solver.opset.eq(
+        actx,
+        solver.get_variable(actx, 1),
+        solver.get_variable(actx, 3)
+    )
+    solver.solve.add_constraint(slv, fml2; idx=2)
+    fml3 = solver.opset.eq(
+        actx,
+        solver.get_variable(actx, 2),
+        solver.opset.real_literal(actx, 3.0)
+    )
+    solver.solve.add_constraint(slv, fml3; idx=3)
+    fml4 = solver.opset.eq(
+        actx,
+        solver.get_variable(actx, 4),
+        solver.opset.real_literal(actx, 3.0)
+    )
+    solver.solve.add_constraint(slv, fml4; idx=4)
+    fml5 = solver.opset.eq(
+        actx,
+        solver.get_variable(actx, 3),
+        solver.opset.real_literal(actx, 3.0)
+    )
+    solver.solve.add_constraint(slv, fml5; idx=5)
+    solver.solve.process_ast_context(slv, actx)
+end
+
+function smt_core(solver)
+    old_core_val = Config.SMT_USE_CORES
+    Config.SMT_USE_CORES = true
+    try
+        solver.get_context(4) do (ctx)
+            solver.get_solver(ctx,"qfnra") do (slv)
+                smt_setup_unsat(solver,ctx, slv)
+                res = solver.solve.check_sat(slv)
+                @test solver.solve.is_unsat(res)
+                core = solver.solve.get_core(slv)
+                @test 1 in core
+                @test 2 in core
+                @test 5 in core
+            end
+        end
+    finally
+        Config.SMT_USE_CORES = old_core_val
+    end
+end
+
+function smt_no_core(solver)
+    old_core_val = Config.SMT_USE_CORES
+    Config.SMT_USE_CORES = false
+    try
+        solver.get_context(4) do (ctx)
+            solver.get_solver(ctx,"qfnra") do (slv)
+                smt_setup_unsat(solver,ctx, slv)
+                res = solver.solve.check_sat(slv)
+                @test solver.solve.is_unsat(res)
+                core = solver.solve.get_core(slv)
+                @test 1 in core
+                @test 2 in core
+                @test 3 in core
+                @test 4 in core
+                @test 5 in core
+            end
+        end
+    finally
+        Config.SMT_USE_CORES = old_core_val
+    end
+end
+
+
 function test_smt_solver(solver)
     smt_eq_var_real(solver)
     smt_eq_leq_lt_var_real_pow(solver)
@@ -434,7 +514,8 @@ function test_smt_solver(solver)
     smt_eq_leq_lt_var_real_sub_div(solver)
     smt_and_or_implies_ite_true_false(solver)
     smt_comparators(solver)
-    # TODO: Core
+    smt_core(solver)
+    smt_no_core(solver)
 end
 
 @testset "SMT Solvers" begin

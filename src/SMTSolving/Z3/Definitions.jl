@@ -9,13 +9,19 @@ struct ASTZ3Context
     smt_cache :: Dict{ParsedNode,Z3.Expr}
 end
 
-struct Z3SolverContainer
+mutable struct Z3SolverContainer
     ctx :: Z3Context
     solver
-    named_assertions :: Dict{Z3.Expr,Int}
+    named_assertions :: Dict{Z3.Z3_ast,Int}
     function Z3SolverContainer(ctx, solver)
         named_assertions = Dict{Z3.Expr,Int}()
-        new(ctx, solver, named_assertions)
+        s = new(ctx, solver, named_assertions)
+        finalizer(finalizer_z3_solver_container, s)
+    end
+end
+function finalizer_z3_solver_container(s :: Z3SolverContainer)
+    for (k,_) in s.named_assertions
+        Z3.Z3_dec_ref(s.ctx.ctx.ctx, k)
     end
 end
 

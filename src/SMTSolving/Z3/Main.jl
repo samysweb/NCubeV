@@ -2,6 +2,7 @@ module Z3Solver
     using Z3
 
     using ....AST
+    using ....Config
 
     VAR_COUNTER = 0
     include("Helper.jl")

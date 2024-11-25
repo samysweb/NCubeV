@@ -1,16 +1,25 @@
 function add_constraint(solver :: Z3SolverContainer, constraint :: Z3.Expr; idx=nothing)
+	if !isnothing(idx)
+		ctx = solver.ctx.ctx.ctx
+		assert_var = Z3.Z3_mk_const(
+			ctx,
+			Z3.Z3_mk_string_symbol(ctx, "nvAssert$idx"), 
+			Z3.Z3_mk_bool_sort(ctx))
+		Z3.Z3_inc_ref(ctx, assert_var)
+	end
 	if isnothing(idx) || !Config.SMT_USE_CORES
 		Z3.Z3_solver_assert(
 			solver.ctx.ctx.ctx,
 			_get_solver(solver),
 			Z3.as_ast(constraint))
 	else
-		assert_var = Z3.as_ast(BoolVar("nvAssert$idx", solver.ctx.ctx))
 		Z3.Z3_solver_assert_and_track(
-			solver.ctx.ctx,
+			solver.ctx.ctx.ctx,
 			_get_solver(solver),
 			Z3.as_ast(constraint),
 			assert_var)
+	end
+	if !isnothing(idx)
 		solver.named_assertions[assert_var] = idx
 	end
 end
@@ -83,12 +92,16 @@ end
 
 function get_core(solver :: Z3SolverContainer)
 	# Get core from Z3
-	coreVec = Z3.Z3_solver_get_unsat_core(solver.ctx.ctx.ctx, _get_solver(solver))
-	len = Z3.Z3_ast_vector_size(solver.ctx.ctx.ctx, coreVec)
-	core = Vector{Int}()
-	for i in 0:len-1
-		ast = Z3.Z3_ast_vector_get(solver.ctx.ctx.ctx, coreVec, i)
-		push!(core, solver.named_assertions[ast])
+	if !Config.SMT_USE_CORES
+		return collect(Int, values(solver.named_assertions))
+	else
+		coreVec = Z3.Z3_solver_get_unsat_core(solver.ctx.ctx.ctx, _get_solver(solver))
+		len = Z3.Z3_ast_vector_size(solver.ctx.ctx.ctx, coreVec)
+		core = Vector{Int}()
+		for i in 0:len-1
+			ast = Z3.Z3_ast_vector_get(solver.ctx.ctx.ctx, coreVec, i)
+			push!(core, solver.named_assertions[ast])
+		end
+		return core
 	end
-	return core
 end
