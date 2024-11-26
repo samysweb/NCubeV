@@ -2,6 +2,7 @@ module SMTSolving
 
 using MLStyle
 using TimerOutputs
+using SymbolicUtils
 
 using ..Util
 using ..AST
@@ -18,10 +19,12 @@ using .SMTInterface
 # AST 2 SMT Routines
 include("AST2SMT.jl")
 
+include("StarFilter.jl")
+
 # Register SMT Solvers
 include("Z3/Main.jl")
 
-export nl_feasible, lin_feasible, get_star_filter, smt_context, set_use_cores, SMTSolver
+export nl_feasible, lin_feasible, get_star_filter, smt_context, set_use_cores, SMTSolver, SmtFilterMeta
 
 function preprocess_constraints(constraints, ctx, slv, solver)
     actx = solver.get_ast_context(ctx)
@@ -68,12 +71,6 @@ function lin_feasible(constraints :: Vector{LinearConstraint}, ctx,conflicts;pri
     return solver.get_solver(ctx,"qflra") do slv
         preprocess_constraints(constraints, ctx, slv, solver)
         return smt_check_feasible(slv, solver, conflicts;print_model=print_model)        
-    end
-end
-
-function get_star_filter(ctx, variables, disjunction_nonlinear, smt_timeout)
-	return function(result :: OlnnvResult)
-        return result
     end
 end
 

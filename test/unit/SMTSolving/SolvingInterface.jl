@@ -1,6 +1,3 @@
-using SNNT.SMTSolving
-using SNNT.Config
-
 function smt_eq_var_real(solver :: SMTSolver)
     solver.get_context(3) do (ctx)
         actx = solver.get_ast_context(ctx)

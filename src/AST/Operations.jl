@@ -11,7 +11,7 @@ export not, and, or, implies, le, leq, gr, geq, is_eq, neq, +, -, *, /, ^, predi
 # TODO(steuber): Improve memory efficiency
 
 not(f :: T1) where {T1 <: Formula} =  CompositeFormula(Not,Formula[f])
-function and(fs :: T1...) where {T1 <: Formula}
+function and(fs :: Vararg{Formula})
 	return and_construction(fs)
 end
 
@@ -20,16 +20,20 @@ function and_construction(fs)
 		# In case there is only one element in and
 		return fs
 	end
-	fs = convert(Vector{Formula}, fs)
+	fs = collect(Formula, fs)
 	if length(fs) == 0
 		return TrueAtom()
 	elseif length(fs) == 1
 		return fs[1]
+	elseif any(x->x isa FalseAtom, fs)
+		return FalseAtom()
+	elseif all(x->x isa TrueAtom, fs)
+		return TrueAtom()
 	else
 		return CompositeFormula(And, fs)
 	end
 end
-function or(fs :: T1...) where {T1 <: Formula}
+function or(fs :: Vararg{Formula})
 	return or_construction(fs)
 end
 
@@ -38,31 +42,97 @@ function or_construction(fs)
 		# In case there is only one element in or
 		return fs
 	end
-	fs = convert(Vector{Formula}, fs)
+	fs = collect(Formula, fs)
 	if length(fs) == 0
 		return FalseAtom()
 	elseif length(fs) == 1
 		return fs[1]
+	elseif any(x->x isa TrueAtom, fs)
+		return TrueAtom()
+	elseif all(x->x isa FalseAtom, fs)
+		return FalseAtom()
 	else
 		return CompositeFormula(Or, fs)
 	end
 end
-implies(f :: T1, g :: T2) where {T1 <: Formula,T2 <: Formula} = CompositeFormula(Implies,Formula[f,g])
+function implies(f :: T1, g :: T2) where {T1 <: Formula,T2 <: Formula}
+	if f isa FalseAtom
+		return TrueAtom()
+	elseif g isa TrueAtom
+		return TrueAtom()
+	elseif f isa TrueAtom && g isa FalseAtom
+		return FalseAtom()
+	end
+	return CompositeFormula(Implies,Formula[f,g])
+end
 
-linear_lesseq(coeff :: Vector{Rational{BigInt}}, bias :: Rational{BigInt}) = LinearConstraint(coeff, bias, true)
-linear_less(coeff :: Vector{Rational{BigInt}}, bias :: Rational{BigInt}) = LinearConstraint(coeff, bias, false)
+function linear_lesseq(coeff :: Vector{Rational{BigInt}}, bias :: Rational{BigInt})
+	if all(iszero.(coeff))
+		if bias < 0
+			return FalseAtom()
+		else
+			return TrueAtom()
+		end
+	end
+	return LinearConstraint(coeff, bias, true)
+end
+function linear_less(coeff :: Vector{Rational{BigInt}}, bias :: Rational{BigInt})
+	if all(iszero.(coeff))
+		if bias <= 0
+			return FalseAtom()
+		else
+			return TrueAtom()
+		end
+	end
+	return LinearConstraint(coeff, bias, false)
+end
 
-linear(coeff :: Vector{Rational{BigInt}}, bias :: Rational{BigInt}) = LinearTerm(coeff, bias)
+function linear(coeff :: Vector{Rational{BigInt}}, bias :: Rational{BigInt})
+	if all(iszero.(coeff))
+		return TermNumber(bias)
+	end
+	return LinearTerm(coeff, bias)
+end
 
 overapprox_fun(f :: T1) where {T1 <: Formula} = OverApprox(f)
 underapprox_fun(f :: T1) where {T1 <: Formula} = UnderApprox(f)
 
-le(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Less,t1,t2)
-leq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(LessEq,t1,t2)
-gr(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Greater,t1,t2)
-geq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(GreaterEq,t1,t2)
-is_eq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Eq,t1,t2)
-neq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term} = Atom(Neq,t1,t2)
+function le(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term}
+	if t1 isa TermNumber && t2 isa TermNumber
+		return ifelse(t1.value < t2.value, TrueAtom(), FalseAtom())
+	end
+	return Atom(Less,t1,t2)
+end
+function leq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term}
+	if t1 isa TermNumber && t2 isa TermNumber
+		return ifelse(t1.value <= t2.value, TrueAtom(), FalseAtom())
+	end
+	return Atom(LessEq,t1,t2)
+end
+function gr(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term}
+	if t1 isa TermNumber && t2 isa TermNumber
+		return ifelse(t1.value > t2.value, TrueAtom(), FalseAtom())
+	end
+	Atom(Greater,t1,t2)
+end
+function geq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term}
+	if t1 isa TermNumber && t2 isa TermNumber
+		return ifelse(t1.value >= t2.value, TrueAtom(), FalseAtom())
+	end
+	return Atom(GreaterEq,t1,t2)
+end
+function is_eq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term}
+	if t1 isa TermNumber && t2 isa TermNumber
+		return ifelse(t1.value == t2.value, TrueAtom(), FalseAtom())
+	end
+	return Atom(Eq,t1,t2)
+end
+function neq(t1 :: T1, t2 :: T2) where {T1 <: Term,T2 <: Term}
+	if t1 isa TermNumber && t2 isa TermNumber
+		return ifelse(t1.value != t2.value, TrueAtom(), FalseAtom())
+	end
+	return Atom(Neq,t1,t2)
+end
 
 #+(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}} = CompositeTerm(Add,Term[t1,t2])
 #+(t1 :: T1) where {T1 <: Union{Term,Number}} = t1
@@ -77,7 +147,12 @@ function +(t1 :: T1, t2 :: T2...) where {T1 <: Term,T2 <: Term}
 		CompositeTerm(Add,args)
 	end
 end
--(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}} = CompositeTerm(Sub,Term[t1,t2])
+function -(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}}
+	if t1 isa TermNumber && t2 isa TermNumber
+		return TermNumber(t1.value - t2.value)
+	end
+	return CompositeTerm(Sub,Term[t1,t2])
+end
 #*(t1 :: T1, t2 :: T2) where {T1 <: Union{Term,Number},T2 <: Union{Term,Number}} = CompositeTerm(Mul,Term[t1,t2])
 #*(t1 :: T1) where {T1 <: Union{Term,Number}} = t1
 function *(t1 :: Term, t2 :: Number)
@@ -139,6 +214,14 @@ function negate(a :: Atom)
 	# else
 	# 	return CompositeFormula(Not, [a])
 	# end
+end
+
+function negate(a :: TrueAtom)
+	return FalseAtom()
+end
+
+function negate(a :: FalseAtom)
+	return TrueAtom()
 end
 
 function negate(a :: LinearConstraint)

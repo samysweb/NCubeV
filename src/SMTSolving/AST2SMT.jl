@@ -90,7 +90,8 @@ function ast2smt_internal(
     f :: LinearTerm,
     ast_context,
     solver :: SMTSolver)
-    return solver.add(
+    return solver.opset.add(
+        ast_context,
         ast2smt_internal_linear(f.coefficients, ast_context, solver),
         solver.opset.real_literal(ast_context, f.bias)
     )

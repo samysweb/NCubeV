@@ -8,6 +8,7 @@ import TermInterface.issym
 import TermInterface.nameof
 import SymbolicUtils.promote_symtype
 import SymbolicUtils.is_literal_number
+import SymbolicUtils.substitute
 import Base.isequal
 #import MultivariatePolynomials.similarvariable
 
@@ -290,3 +291,45 @@ istree(x :: NonLinearSubstitution) = false
 issym(x :: NonLinearSubstitution) = true
 nameof(x :: NonLinearSubstitution) = x
 symtype(x :: NonLinearSubstitution) = Number
+
+function substitute(x :: LinearTerm, subst; fold=true)
+	coeffs = copy(x.coefficients)
+	bias = x.bias
+	for (k,v) in subst
+		if k isa Variable && !isnothing(k.position) && k.position <= length(coeffs)
+			if v isa TermNumber
+				bias += coeffs[k.position]*v.value
+				coeffs[k.position] = 0
+			elseif v isa Number
+				bias += coeffs[k.position]*v
+				coeffs[k.position] = 0
+			else
+				throw("Unsupported substitution value: "*string(v))
+			end
+		end
+	end
+	return linear(coeffs, bias)
+end
+
+function substitute(x :: LinearConstraint, subst; fold=true)
+	coeffs = copy(x.coefficients)
+	bias = x.bias
+	for (k,v) in subst
+		if k isa Variable && !isnothing(k.position) && k.position <= length(coeffs)
+			if v isa TermNumber
+				bias -= coeffs[k.position]*v.value
+				coeffs[k.position] = 0
+			elseif v isa Number
+				bias -= coeffs[k.position]*v
+				coeffs[k.position] = 0
+			else
+				throw("Unsupported substitution value: "*string(v))
+			end
+		end
+	end
+	if x.equality
+		return linear_lesseq(coeffs, bias)
+	else
+		return linear_less(coeffs, bias)
+	end
+end

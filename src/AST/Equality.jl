@@ -2,7 +2,7 @@ import Base.isequal
 import Base.hash
 
 isequal(x :: TermNumber, y :: TermNumber) = x.value == y.value
-isequal(x :: Variable, y :: Variable) = isequal(x.name, y.name)
+isequal(x :: Variable, y :: Variable) = ifelse(!isnothing(x.position)&&!isnothing(y.position), isequal(x.position,y.position),isequal(x.name, y.name))
 function isequal(x :: CompositeTerm, y :: CompositeTerm)
 	if x.operation == y.operation
 		return all(isequal(x.args, y.args))
@@ -18,7 +18,7 @@ isequal(x :: OverApprox, y :: OverApprox) = isequal(x.formula, y.formula)
 isequal(x :: UnderApprox, y :: UnderApprox) = isequal(x.formula, y.formula)
 
 hash(x :: TermNumber) :: UInt = hash(x.value)
-hash(x :: Variable) :: UInt = hash(x.name)
+hash(x :: Variable) :: UInt = ifelse(!isnothing(x.position), hash(x.position), hash(x.name))
 hash(x :: CompositeTerm) :: UInt = hash(x.operation) * x.args_hash
 hash(x :: Atom) :: UInt = hash(x.comparator) * hash(x.left) * hash(x.right)
 hash(x :: Predicate) :: UInt = hash(x.predicate_name) * x.args_hash

@@ -43,7 +43,7 @@ function maximal_factor(t :: Variable)
 end
 
 function maximal_factor(t :: LinearTerm)
-	return max(maximum(abs,t.coefficients),abs(bias))
+	return max(maximum(abs,t.coefficients),abs(t.bias))
 end
 
 function is_linear(f :: Atom)

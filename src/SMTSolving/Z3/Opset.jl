@@ -29,7 +29,7 @@ function z3_false_literal(ctx :: ASTZ3Context)
 end
 
 function z3_real_literal(ctx :: ASTZ3Context, r :: T) where {T <: Real}
-    r = rationalize(Int64, r)
+    r = rationalize(Int32, r)
     return Z3ExprContainer(Z3Helper.RealVal(r, ctx.ctx.ctx), Z3.Expr[])
 end
 

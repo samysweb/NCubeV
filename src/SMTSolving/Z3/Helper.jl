@@ -102,7 +102,7 @@ function RealVar(name::String, ctx=nothing)
     return Expr(ctx, Z3.Z3_mk_const(ref(ctx), to_symbol(name, ctx), RealSort(ctx).ast))
 end
 
-function RealVal(r::Rational{Int64}, ctx=nothing)
+function RealVal(r::Rational{Int32}, ctx=nothing)
     ctx = _get_ctx(ctx)
     Expr(ctx, Z3.Z3_mk_real(ref(ctx), r.num, r.den))
 end

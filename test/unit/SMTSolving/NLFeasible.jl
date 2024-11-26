@@ -1,7 +1,3 @@
-using SNNT.AST
-using SNNT.SMTSolving
-using SNNT.Config
-
 function test_nl_lin_smt_feasible()
     smt_context(2) do (ctx)
         @test nl_feasible(
