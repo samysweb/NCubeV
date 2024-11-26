@@ -2,6 +2,8 @@ module Util
 
 using Base.Rounding
 
+using ..Config
+
 function __init__()
 	Rounding.setrounding(BigFloat,Rounding.RoundDown)
 end
@@ -17,8 +19,10 @@ end
 end
 
 @inline function print_msg(args :: Vararg{Any})
-	println(args...)
-	flush(stdout)
+	if Config.OUTPUT
+		println(args...)
+		flush(stdout)
+	end
 end
 
 end

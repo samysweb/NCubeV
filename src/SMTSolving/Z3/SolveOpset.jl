@@ -35,6 +35,8 @@ function process_ast_context(solver :: Z3SolverContainer, ast_context :: ASTZ3Co
 end
 
 function check_sat(solver :: Z3SolverContainer)
+	#print("-----------------------------------")
+	#print(unsafe_string(Z3.Z3_solver_to_string(solver.ctx.ctx.ctx, solver.solver)))
 	return Z3.Z3_solver_check(solver.ctx.ctx.ctx, _get_solver(solver))
 end
 

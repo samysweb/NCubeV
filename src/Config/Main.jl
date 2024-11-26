@@ -1,5 +1,7 @@
 module Config
 	using TimerOutputs
+
+	OUTPUT = true
 	
 	INCLUDE_APPROXIMATIONS = true
 

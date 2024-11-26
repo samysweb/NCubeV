@@ -59,6 +59,7 @@ struct SMTSolver
 
     # AST2SMT
     # AST2SMT Context
+    # TODO(steuber): Add Solver to ast context?
     get_ast_context # (context) -> ast_context
     is_cached # (ast_context, f) -> Bool
     get_cached # (ast_context, f) -> SMTExpr

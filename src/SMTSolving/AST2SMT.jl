@@ -109,7 +109,7 @@ function ast2smt_internal(
     solver :: SMTSolver)
     termLeft = ast2smt(f.left, ast_context, solver)
     termRight = ast2smt(f.right, ast_context, solver)
-    return @match f.op begin
+    return @match f.comparator begin
         Eq => solver.opset.eq(ast_context, termLeft, termRight)
         Neq => solver.opset.neq(ast_context, termLeft, termRight)
         Less => solver.opset.lt(ast_context, termLeft, termRight)
@@ -124,8 +124,8 @@ function ast2smt_internal(
     ast_context,
     solver :: SMTSolver)
     arguments = map(x -> ast2smt(x, ast_context, solver), f.args)
-    return @match f.op begin
-        Plus => begin
+    return @match f.operation begin
+        Add => begin
             res = arguments[1]
             for cur_arg in arguments[2:end]
                 res = solver.opset.add(ast_context, res, cur_arg)
@@ -157,6 +157,9 @@ function ast2smt_internal(
         Neg => begin
             @assert length(arguments) == 1
             return solver.opset.neg(ast_context, arguments[1])
+        end
+        _  => begin
+            throw("Unknown SMT Operation "*string(f))
         end
     end
 end

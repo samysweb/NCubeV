@@ -2,10 +2,10 @@ module SNNT
 
 ENV["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"]="python"
 
-#Util
-include("Util/Main.jl")
 # Configuration
 include("Config/Main.jl")
+#Util
+include("Util/Main.jl")
 
 # Basic Definitions
 include("AST/Main.jl")

@@ -51,16 +51,16 @@ end
 
 function z3_power(ctx :: ASTZ3Context, base :: Z3ExprContainer, exp :: Z3ExprContainer)
     #return f1 ^ f2
+    # Careful! This only works because z3_real_literal has no side constraints...
     denExp = Z3.Z3_get_denominator(ctx.ctx.ctx.ctx,Z3.as_ast(exp.expr))
     den = Z3.Z3_get_numeral_double(ctx.ctx.ctx.ctx,denExp)
-    denExp = Z3.Expr(ctx.ctx.ctx, denExp)
+    denExp = z3_real_literal(ctx, den).expr
 	if isone(den)
 		return Z3ExprContainer((base.expr)^(exp.expr), Z3.Expr[base.additional;exp.additional])
 	else
         global VAR_COUNTER+=1
         helper = RealVar("h$VAR_COUNTER", ctx.ctx.ctx)
         additional = Z3.Expr[base.additional;exp.additional]
-        # Careful! This only works because z3_real_literal has no side constraints...
         if convert(Int,den) % 2 == 0
             push!(
                 additional,
@@ -77,7 +77,7 @@ function z3_power(ctx :: ASTZ3Context, base :: Z3ExprContainer, exp :: Z3ExprCon
         end
         numExp = Z3.Z3_get_numerator(ctx.ctx.ctx.ctx,Z3.as_ast(exp.expr))
         num = Z3.Z3_get_numeral_double(ctx.ctx.ctx.ctx,numExp)
-        numExp = Z3.Expr(ctx.ctx.ctx, numExp)
+        numExp = z3_real_literal(ctx, num).expr
         if isone(num)
             return Z3ExprContainer(helper,additional)
         else
