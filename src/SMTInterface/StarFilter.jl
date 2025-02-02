@@ -68,7 +68,7 @@ function check_star(ctx,variables, disjunction_nonlinear, star :: Star, smt_cach
 						var_val =Z3.eval(m,var)
 						num = parse(BigInt,convert(String,get_decimal_string(numerator(var_val),100)))
 						den = parse(BigInt,convert(String,get_decimal_string(denominator(var_val),100)))
-						var_val = convert(Float32,convert(BigFloat,num//den))
+						var_val = convert(Float64,convert(BigFloat,num//den))
 						if var_index <= num_input_vars
 							star.counter_example[1][var_index] = var_val
 						else
@@ -107,7 +107,9 @@ function get_star_filter(ctx, variables, disjunction_nonlinear, smt_timeout)
 				end
 				filtered_out = length(result.stars)-length(filtered_stars)
 				num_timeout = count(s->!s.certain,filtered_stars)
-				print_msg("[SMT] SMT filtered out ",filtered_out," stars (out of ",length(result.stars),"; TO: ",num_timeout,").")
+				if length(result.stars) > 1
+					print_msg("[SMT] SMT filtered out ",filtered_out," stars (out of ",length(result.stars),"; TO: ",num_timeout,").")
+				end
 				if length(filtered_stars) == 0
 					return OlnnvResult(Safe, SmtFilterMeta(result.metadata,filtered_out), filtered_stars)
 					#return OlnnvResult(Safe, SmtFilterMeta(result.metadata,filtered_out, formula), filtered_stars)
