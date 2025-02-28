@@ -90,6 +90,7 @@ module Cmd
 		end
 		set_approx_density(args["approx"])
 		print_msg("[CMD] Using SMT solver: ", args["smt"])
+		print_msg("[CMD] Using verifier: ", args["verifier"])
 		Config.set_smt_solver(args["smt"])
 		# Load fixed variables
 		fixed_vars_content = open(args["fixed"], "r") do f
