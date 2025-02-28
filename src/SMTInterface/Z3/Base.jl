@@ -44,21 +44,21 @@ function smt_internal_solver(f, ctx, theory;stars=false)
 		#solver_tactic = nothing
 		if theory=="qfnra"
 			#s = Solver(ctx,"QF_NRA")
-			if stars
-				s = mk_solver( Tactic(ctx, "solve-eqs") & Tactic(ctx, "purify-arith") & Tactic(ctx, "qfnra"))
-			elseif !USE_CORES
-				s = mk_solver(Tactic(ctx, "purify-arith") & Tactic(ctx, "qfnra"))
-			else
+			#if stars
+			#	s = mk_solver( Tactic(ctx, "solve-eqs") & Tactic(ctx, "purify-arith") & Tactic(ctx, "qfnra"))
+			#elseif !USE_CORES
+			#	s = mk_solver(Tactic(ctx, "purify-arith") & Tactic(ctx, "qfnra"))
+			#else
 				s = Solver(ctx,"QF_NRA")
-			end
+			#end
 		elseif theory=="qflra"
-			if stars
-				s = mk_solver( Tactic(ctx, "solve-eqs") & Tactic(ctx, "purify-arith") & Tactic(ctx, "qflra"))
-			elseif !USE_CORES
-				s = mk_solver(Tactic(ctx, "purify-arith") & Tactic(ctx, "qflra"))
-			else
+			#if stars
+			#	s = mk_solver( Tactic(ctx, "solve-eqs") & Tactic(ctx, "purify-arith") & Tactic(ctx, "qflra"))
+			#elseif !USE_CORES
+			#	s = mk_solver(Tactic(ctx, "purify-arith") & Tactic(ctx, "qflra"))
+			#else
 				s = Solver(ctx,"QF_LRA")
-			end
+			#end
 			#set(s,"smt.arith.solver",convert(Int32,2))
 		else
 			s = Solver(ctx,theory)
