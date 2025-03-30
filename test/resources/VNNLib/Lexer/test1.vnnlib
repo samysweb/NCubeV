@@ -1,0 +1,11 @@
+(and ; this should be ignored
+    (or
+        (<=
+            (+ X_1 X_2) ; another comment
+            (+ X_3 X_4)
+        )
+    ; ignore this
+        (= X_1 X_2)
+    )
+    (>= X_1 X_2)
+)

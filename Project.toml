@@ -1,0 +1,8 @@
+name = "NCubeV"
+uuid = "113cebf7-34b1-47b4-8dd1-1691cf798379"
+authors = ["Samuel Teuber <teuber@kit.edu>"]
+version = "0.1.0"
+
+[deps]
+Mmap = "a63ad114-7e13-5084-954f-fe012c677804"
+Tokenize = "0796e94c-ce3b-5d07-9a54-7f471281c624"
