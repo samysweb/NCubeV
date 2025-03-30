@@ -85,4 +85,14 @@ end
         @test isa(token_mgr, TokenManager)
         test_token_mgr(token_mgr, false)
     end
+    get_lexer(joinpath(RESOURCE_DIR,"VNNLib/Lexer/test2.vnnlib")) do (token_mgr)
+        @test !isnothing(token_mgr)
+        @test isa(token_mgr, TokenManager)
+        test_next_token_is(token_mgr, TOKENS.ENDMARKER;peek=true)
+    end
+    get_lexer(joinpath(RESOURCE_DIR,"VNNLib/Lexer/test2.vnnlib")) do (token_mgr)
+        @test !isnothing(token_mgr)
+        @test isa(token_mgr, TokenManager)
+        test_next_token_is(token_mgr, TOKENS.ENDMARKER;peek=false)
+    end
 end
