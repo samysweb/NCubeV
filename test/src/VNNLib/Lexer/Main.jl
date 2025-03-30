@@ -70,6 +70,8 @@ function test_token_mgr(token_mgr, peek)
 
         test_next_token_is(token_mgr, TOKENS.RPAREN;peek=peek)
         test_next_token_is(token_mgr, TOKENS.RPAREN;peek=peek)
+
+        test_next_token_is(token_mgr, TOKENS.ENDMARKER;peek=peek)
 end
 
 @testset "Lexer" begin
