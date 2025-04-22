@@ -132,10 +132,15 @@ module Cmd
 
 		print_msg("----------------------------------------------------------")
 		#print_msg("Status: "*string(result.status))
-		print_msg("# Unsafe Stars: "*string(cex_count))
+		#print_msg("# Unsafe Stars: "*string(cex_count))
 		print_msg("Saving final results in "*string(args["output"])*"...")
+		if cex_count > 0
+			print_msg("Found "*string(cex_count)*" counterexample regions")
+		else
+			print_msg("No counterexamples found -> SAFE")
+		end
 		save(args["output"]*"-final.jld","result",result,"args",args)
-		show(Config.TIMER)
+		# show(Config.TIMER)
 		print_msg(" Done")
 		return (cex_count > 0) ? 1 : 0
 	end
