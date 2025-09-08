@@ -230,7 +230,7 @@ function similarterm(::Type{Atom}, c, args, symtype=Atom;metadata=nothing, exprh
 end
 
 function similarterm(::Type{Predicate}, c, args, symtype=Predicate;metadata=nothing,exprhead=:call)
-	     #similarterm(x::Type{SNNT.AST.Predicate}, head::Symbol, args::Vector{SNNT.AST.Variable}, symtype::Type; metadata::Nothing, exprhead::Symbol)
+	     #similarterm(x::Type{NCubeV.AST.Predicate}, head::Symbol, args::Vector{NCubeV.AST.Variable}, symtype::Type; metadata::Nothing, exprhead::Symbol)
 	return Predicate(string(c), args)
 end
 

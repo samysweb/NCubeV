@@ -1,3 +1,3 @@
-using SNNT
+using NCubeV
 
-SNNT.run_cmd(ARGS)
+NCubeV.run_cmd(ARGS)

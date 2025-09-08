@@ -60,7 +60,7 @@ function get_approx_query(initial_query :: Query)
 			if Config.RIGOROUS_APPROXIMATIONS
 				verify_approximation(approx_query, new_approx)
 			else
-				print_msg("[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))")
+				print_msg("[APPROX] Skipping verification of approximation (switch on using NCubeV.Config.set_rigorous_approximations(true))")
 			end
 			query_approximations[approx_query] = new_approx
 			for i in 1:num_vars
@@ -114,7 +114,7 @@ function get_approx_normalized_query(initial_query :: NormalizedQuery, approx_ca
 		if Config.RIGOROUS_APPROXIMATIONS
 			verify_approximation(approx_query, new_approx)
 		else
-			print_msg("[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))")
+			print_msg("[APPROX] Skipping verification of approximation (switch on using NCubeV.Config.set_rigorous_approximations(true))")
 		end
 		ready_approximations[approx_query] = new_approx
 		cur_bounds = generate_bounds(approx_query.term, bounds)

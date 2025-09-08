@@ -1,4 +1,4 @@
-@info "Initiating build of SNNT"
+@info "Initiating build of NCubeV"
 using Pkg
 
 @info "Loading Conda"
@@ -28,4 +28,4 @@ using PackageCompiler
 deps_dir = @__DIR__
 create_app("$deps_dir/../", "NCubeV", precompile_execution_file="$deps_dir/sysimage/trace_run.jl",executables= ["NCubeV" => "main_NCubeV"],incremental=true,force=true)
 
-@info "SNNT can be found in the bin directory"
+@info "NCubeV can be found in the bin directory"

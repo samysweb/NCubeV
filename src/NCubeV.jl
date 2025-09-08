@@ -1,4 +1,4 @@
-module SNNT
+module NCubeV
 
 ENV["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"]="python"
 

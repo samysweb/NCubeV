@@ -6,8 +6,8 @@ args = [
 	joinpath(@__DIR__,"../../test/networks/acc-3000000-64-64.onnx")
 	"/tmp/results.jld"
 ]
-using SNNT
-SNNT.run_cmd(args)
+using NCubeV
+NCubeV.run_cmd(args)
 
-SNNT.run_cmd([["--rigorous"];args])
-SNNT.run_cmd([["--no-normalization","--no-cores"];args])
+NCubeV.run_cmd([["--rigorous"];args])
+NCubeV.run_cmd([["--no-normalization","--no-cores"];args])
