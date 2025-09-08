@@ -26,13 +26,15 @@ module NNEnum
 		append_python_path = py"append_python_path"
 		append_python_path(string(nnenum_path))
 py"""
-import argparse
-import numpy as np
-import pickle
 import os
 import sys
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
+
+import argparse
+import numpy as np
+import pickle
 
 from pathlib import Path
 

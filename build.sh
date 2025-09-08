@@ -3,9 +3,6 @@ if [ -z $1 ]; then
     echo "Usage: ./build.sh <path-to-julia-executable>"
     exit 1
 fi
-echo "Pulling Submodules..."
-git submodule init
-git submodule update --recursive
 
 echo "Building NCubeV with $1"
 

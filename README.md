@@ -7,6 +7,12 @@ We require an installation of Julia 1.10.
 Moreover, if the installation fails it may be necessary to install Conda (we use `Conda.jl` to manage a python environment).
 This tool has a dependency on [PicoSAT.jl](https://github.com/sisl/PicoSAT.jl) which is only compatible with the platforms listed [here](https://github.com/JuliaBinaryWrappers/PicoSAT_jll.jl)
 
+**Version troubles:**
+Right now we require specific version of Z3 and Overt:
+- OVERT: https://github.com/samysweb/OVERT.jl#bf900b4
+- Z3: 0.4.4
+- z3_jll: https://github.com/JuliaBinaryWrappers/z3_jll.jl#aa24fe1 (4.13.0+1)
+
 ### Setup
 The setup script can be run via `./build.sh <path to julia 1.10 executable>`.
 
