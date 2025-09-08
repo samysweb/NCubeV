@@ -1,5 +1,6 @@
 module NNEnum
 	using PyCall
+	using Pkg.Artifacts
 
 	using ....Util
 	using ....AST
@@ -16,7 +17,7 @@ module NNEnum
 		register_verifier("NNEnumIterative",verify_iterative_all_filtered)
 
 		# Python Setup
-		nnenum_path = joinpath(@__DIR__, "../../deps/nnenum/src")
+		nnenum_path = artifact"nnenum"*"/nnenum-64eb69329f5c52e4ccec46963b1b09941c4e7942/src"
 		py"""
 		import sys
 		def append_python_path(path):

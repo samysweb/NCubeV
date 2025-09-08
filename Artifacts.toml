@@ -1,0 +1,6 @@
+[nnenum]
+git-tree-sha1 = "ee206d7e61c09140febdb6523bdf990f597749e3"
+
+    [[nnenum.download]]
+    url = "https://github.com/samysweb/nnenum/archive/64eb69329f5c52e4ccec46963b1b09941c4e7942.tar.gz"
+    sha256 = "aed9ee2d1009229d62a2584ea78a9d008a51eac82cd2c91b7f3171e39e9db5a4"

@@ -1,3 +1,0 @@
-[submodule "SNNT/vendor/nnenum"]
-	path = deps/nnenum
-	url = https://github.com/samysweb/nnenum.git
