@@ -1,3 +1,17 @@
+"""
+LP
+==
+
+Helper utilities for linear programming with JuMP/GLPK.
+
+This module provides primitive operations to check feasibility of (semi-)linear
+constraints and to perform simple per-dimension optimizations. It is used in
+approximation and when generating input regions.
+
+Notes:
+- Coefficients are normalized for numerical stability (`1/norm(coeffs)`).
+- The default solver is GLPK; configure via JuMP if needed.
+"""
 module LP
 	using JuMP
 	using GLPK
@@ -10,14 +24,34 @@ module LP
 
 	export is_infeasible, get_model, optimize_dim
 
+	"""
+		to_linear_constraint_coeff(c::LinearConstraint) -> Vector{Float32}
+
+	Return the rounded coefficients of a `LinearConstraint`.
+	Rounding is applied component-wise via `Util.round_minimize`.
+	"""
 	function to_linear_constraint_coeff(c :: LinearConstraint)
 		return round_minimize.(c.coefficients)
 	end
 
+	"""
+		to_linear_constraint_bias(c::LinearConstraint) -> Float32
+
+	Return the rounded right-hand side (bias) of a
+	`LinearConstraint`. Rounding is applied via `Util.round_maximize`.
+	"""
 	function to_linear_constraint_bias(c :: LinearConstraint)
 		return round_maximize(c.bias)
 	end
 
+	"""
+		get_model(linear_constraints::Vector{LinearConstraint})
+			-> (model::Model, x::JuMP.Containers.DenseAxisArray)
+
+	Build a JuMP/GLPK model with constraints `A*x <= b` according to the
+	provided `LinearConstraint`s and return the model and the variable array.
+	Constraints are scaled for stability.
+	"""
 	function get_model(linear_constraints :: Vector{LinearConstraint})
 		model = Model(GLPK.Optimizer)
 		var_num = length(linear_constraints[1].coefficients)
@@ -34,6 +68,13 @@ module LP
 		return model,x
 	end
 
+	"""
+		optimize_dim(dim::Int, dir::Float64, model_input) -> Float64
+
+	Optimize variable `x[dim]` in direction `dir ∈ {-1.0, 1.0}` and return the
+	optimal value. `model_input` is the tuple `(model, x)` as returned by
+	`get_model`.
+	"""
 	function optimize_dim(dim :: Int, dir :: Float64, model_input)
 		model,x = model_input
 		@assert dir==-1.0 || dir==1.0 "Direction must be -1 or 1"
@@ -42,6 +83,12 @@ module LP
 		return value(x[dim])
 	end
 
+	"""
+		is_infeasible(linear_constraints::Vector{LinearConstraint}) -> Bool
+
+	Check infeasibility of a system `A*x <= b` based on a list of
+	`LinearConstraint`. Returns `true` if GLPK deems the system infeasible.
+	"""
 	function is_infeasible(linear_constraints :: Vector{LinearConstraint})
 		@timeit Config.TIMER "LP_create_model" begin
 		model = Model(GLPK.Optimizer)
@@ -70,6 +117,12 @@ module LP
 		return termination_status(model) == MOI.INFEASIBLE
 	end
 
+	"""
+		is_infeasible(bounds, matrix, bias) -> Bool
+
+	Variant with explicit box bounds `bounds::Vector{Tuple{Float64,Float64}}`
+	and additional inequalities `matrix * x <= bias`.
+	"""
 	function is_infeasible(bounds :: Vector{Tuple{Float64,Float64}},matrix :: Matrix{Float32}, bias :: Vector{Float32})
 		@assert size(matrix)[1] == size(bias)[1]
 		model = Model(GLPK.Optimizer)
