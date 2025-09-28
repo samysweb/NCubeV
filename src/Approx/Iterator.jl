@@ -1,5 +1,20 @@
+#
+# NCubeV Approx Iterator — Generate linear open-loop queries (Appendix B.2)
+#
+# !!! note
+# These days we are resolving the approximation **before**
+# running Mosaic. Therefore, we no longer need to generate/decompose
+# approximations here. We should probably remove this some time
+# Keep `bounds_iterator` for Verify.jl
 import Base.iterate
 
+"""
+    bounds_iterator(bounds; limit_bounds=nothing)
+
+Iterator over admissible bound combinations as given by bounds in `IncompleteApproximation`.
+
+Returns an iterator of vectors of `(low, high)` intervals.
+"""
 function bounds_iterator(bounds :: AbstractArray{Vector{Float64}};limit_bounds :: Union{Nothing,Vector{Tuple{Float64, Float64}}}=nothing)
 	#TODO(steuber): This should be possible without any memory allocation
 	if isnothing(limit_bounds)
@@ -25,6 +40,18 @@ function bounds_iterator(bounds :: AbstractArray{Vector{Float64}};limit_bounds :
 		)
 end
 
+"""
+    iterate(approx::ApproxNormalizedQueryPrototype{Approximation})
+        -> (OlnnvQuery, state)
+
+Custom iterator that yields linear, normalized open-loop queries by:
+1. Initializing bound grids for input and output constraints.
+2. Enumerating input azulejos and constructing input constraint matrices.
+3. For each output conjunction, enumerating local bounds and assembling a disjunction
+   of output linear constraints.
+
+Implements Mosaic’s per-azulejo linear query generation (Appendix B.2, Proposition 9).
+"""
 function iterate(approx :: ApproxNormalizedQueryPrototype{Approximation}, state)
 	iter = state[1]
 	iter_res = iterate(iter, state[2])
@@ -64,6 +91,13 @@ function iterate(approx :: ApproxNormalizedQueryPrototype{Approximation})
 	end
 end
 
+"""
+    generate_linear_constraint!(...)
+
+Internal helper to append a semi-linear constraint to a coefficient matrix and bias vector,
+by substituting any symbolic `ApproxQuery` occurrences with their current linear terms for
+the given local bounds.
+"""
 function generate_linear_constraint(
 	coefficient_matrix :: Matrix{Float32}, bias_vector :: Vector{Float32}, row :: Int64,
 	bounds :: Vector{Tuple{Float64, Float64}}, semi :: SemiLinearConstraint, approximations :: Dict{ApproxQuery,Approximation},startpos,endpos)
@@ -82,6 +116,16 @@ function generate_linear_constraint(
 	end
 end
 
+"""
+    generate_conjunction(approx, bounds) -> OlnnvQuery
+
+Materialize a single linear query for a given input azulejo `bounds`, consisting of:
+- Input constraint matrix and bias vector
+- Disjunction of output linear constraints for all output conjunctions
+and the tightened input bounds for the current tile.
+
+See Appendix B.2 for Mosaic normalization details.
+"""
 function generate_conjunction(approx :: ApproxNormalizedQueryPrototype{Approximation}, bounds :: Vector{Tuple{Float64, Float64}})
 	num_input_vars = length(approx.input_bounds)
 	num_output_vars = length(approx.output_bounds)

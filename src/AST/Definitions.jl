@@ -7,6 +7,11 @@ abstract type Term <: ParsedNode end
 @as_record struct TermNumber <: Term
 	value :: Rational{BigInt}
 end
+Base.Docs.@doc """
+	TermNumber(value::Rational{BigInt}) <: Term
+
+Numeric literal term stored as an exact rational. Use `from_expr`/`to_expr` for conversions.
+""" TermNumber
 
 @enum VariableType Input=1 Output=2
 MLStyle.is_enum(::VariableType)=true
@@ -20,6 +25,11 @@ MLStyle.pattern_uncall(e::VariableType, _, _, _, _) = literal(e)
 	# Full constructor
 	Variable(name :: String, mapping :: Union{Nothing,Tuple{VariableType, Int64}}, position :: Union{Nothing,Int64}) = new(name, mapping, position)
 end
+Base.Docs.@doc """
+    Variable(name; mapping=nothing, position=nothing) <: Term
+
+Term representing an input or output variable. `mapping` encodes role and index.
+""" Variable
 @enum Operation Add=0 Sub=1 Mul=2 Div=3 Pow=4 Neg=5 Min=6 Max=7
 MLStyle.is_enum(::Operation)=true
 MLStyle.pattern_uncall(o::Operation, _, _, _, _) = literal(o)
@@ -29,6 +39,12 @@ MLStyle.pattern_uncall(o::Operation, _, _, _, _) = literal(o)
 	args_hash :: UInt
 	CompositeTerm(operation :: Operation, args :: Vector{T}) where {T <: Term} = new(operation, args, reduce(+,Iterators.map(hash,args),init=0))
 end
+Base.Docs.@doc """
+    CompositeTerm(operation::Operation, args::Vector{Term}) <: Term
+
+Composite term built from an operator and arguments; hash caches the argument hash.
+Supports arithmetic and min/max used during linearization.
+""" CompositeTerm
 
 # Formulae
 abstract type Formula <: ParsedNode end
@@ -43,6 +59,11 @@ MLStyle.pattern_uncall(e::Comparator, _, _, _, _) = literal(e)
 	left :: Term
 	right :: Term
 end
+Base.Docs.@doc """
+    Atom(comparator, left::Term, right::Term) <: Formula
+
+Atomic comparison between two terms. After simplification only ≤, <, =, ≠ remain.
+""" Atom
 
 @as_record struct Predicate <: Formula
 	predicate_name :: String
@@ -50,6 +71,11 @@ end
 	args_hash :: UInt
 	Predicate(predicate_name :: String, args :: Vector{T}) where {T <: Term} = new(predicate_name, args, reduce(+,Iterators.map(hash,args),init=0))
 end
+Base.Docs.@doc """
+    Predicate(name, parameters) <: Formula
+
+Application of a named predicate; primarily used before normalization.
+""" Predicate
 
 @as_record struct TrueAtom <: Formula end
 @as_record struct FalseAtom <: Formula end
@@ -60,8 +86,18 @@ abstract type ApproxNode <: Formula end
 MLStyle.is_enum(::BoundType)=true
 MLStyle.pattern_uncall(e::BoundType, _, _, _, _) = literal(e)
 
+"""
+    flip(b::BoundType) -> BoundType
+
+Flip overall bound direction Lower ↔ Upper.
+"""
 flip(b :: BoundType) = if b == Lower Upper else Lower end
 
+"""
+    ApproxQuery(bound::BoundType, term::Term)
+
+Key for addressing linearization requests for `term` under an upper or lower bound.
+"""
 struct ApproxQuery
 	bound :: BoundType
 	term :: Term
@@ -78,6 +114,12 @@ end
 		end
 	end
 end
+Base.Docs.@doc """
+    SemiLinearConstraint(semilinears)(coefficients, bias, equality)
+
+A linear constraint potentially containing references to approximated subterms via
+`semilinears`. After substitution these become purely linear constraints.
+""" SemiLinearConstraint
 
 @as_record struct OverApprox <: ApproxNode
 	formula :: Formula
@@ -106,11 +148,21 @@ end
 	bias :: Rational{BigInt}
 	equality :: Bool
 end
+Base.Docs.@doc """
+    LinearConstraint(coefficients, bias, equality) <: Formula
+
+Represents a row in A·x ≤ b (or equality) over concatenated input/output variables.
+""" LinearConstraint
 
 @as_record struct LinearTerm <: Term
 	coefficients :: Array{Rational{BigInt}}
 	bias :: Rational{BigInt}
 end
+Base.Docs.@doc """
+    LinearTerm(coefficients, bias) <: Term
+
+Affine term a·x + b. Used for approximated subterms and output maps inside stars.
+""" LinearTerm
 
 # Composite formulae
 @enum Connective Not=0 And=1 Or=2 Implies=3 ITE=4
@@ -122,15 +174,43 @@ MLStyle.pattern_uncall(e::Connective, _, _, _, _) = literal(e)
 	args_hash :: UInt
 	CompositeFormula(connective :: Connective, args :: Vector{T}) where {T <: Formula} = new(connective, args, reduce(+,Iterators.map(hash,args),init=0))
 end
+Base.Docs.@doc """
+    CompositeFormula(connective, args) <: Formula
+
+Boolean composition of sub-formulas. After normalization and Mosaic, inputs become
+conjunctions and outputs a disjunction of conjunctions.
+""" CompositeFormula
 
 abstract type ApproximationPrototype end
 
+"""
+    Approximation <: ApproximationPrototype
+
+Finalized approximation containing grid `bounds` and purely linear terms for constraints.
+Produced by `resolve_approximation`.
+
+See also `IncompleteApproximation` for details on bounds structure.
+"""
 struct Approximation <: ApproximationPrototype
 	bounds :: Vector{Vector{Float64}}
 	# Coefficients for linear constraint
 	linear_constraints :: Vector{LinearTerm}
 end
 
+"""
+    IncompleteApproximation <: ApproximationPrototype
+
+Intermediate representation with symbolic `constraints` potentially containing `min`/`max`.
+Each component of `bounds` contains a list with split positions.
+The corresponding terms to a split are stored sorted in `constraints`.
+Input to univariate/multivariate resolution.
+
+!!! note
+	Consider the case where `bounds = [[0,100],[-200,0,200],[-100,100]]`.
+	In this case we have two approximations:
+	- One for bounds `[[0,100],[-200,0],[-100,100]]` (stored first in `constraints`)
+	- One for bounds `[[0,100],[0,200],[-100,100]]` (stored second in `constraints`)
+"""
 struct IncompleteApproximation <: ApproximationPrototype
 	bounds :: Vector{Vector{Float64}}
 	# [[0,100],[-200,0,200],[-100,100]]
@@ -143,6 +223,12 @@ struct IncompleteApproximation <: ApproximationPrototype
 end
 
 
+"""
+    Query(formula, variables)
+
+Top-level query with variable set and book-keeping fields used across the pipeline.
+`num_input_vars`/`num_output_vars` are derived from variable mappings.
+"""
 struct Query
 	formula :: Formula
 	variables :: Set{Variable}
@@ -158,6 +244,12 @@ struct Query
 	Query(formula :: Formula, variables :: Set{Variable}, approximations :: Dict{ApproxQuery, Approximation}, bounds :: Vector{Vector{Float64}}) = new(formula, variables, length(filter(x->x.mapping[1]==Input,variables)), length(variables)-length(filter(x->x.mapping[1]==Input,variables)), approximations, bounds)
 end
 
+"""
+    PwlConjunction
+
+Container for piece-wise linear conjunctions, differentiating already-linear constraints
+from semi-linear constraints that still contain approximated subterms.
+"""
 struct PwlConjunction
 	bounds :: Vector{Vector{Float64}}
 	linear_constraints :: Vector{LinearConstraint}
@@ -171,6 +263,13 @@ struct PwlConjunction
 	end
 end
 
+"""
+    NormalizedQuery(input, disjunction, approx_queries, query)
+
+Normalized representation with explicit input bounds and a DNF over mixed (input/output)
+constraints. Builds initial bounds from unit linear constraints and collects approximation
+requests.
+"""
 struct NormalizedQuery
 	input_bounds :: Vector{Vector{Float64}}
 	output_bounds :: Vector{Vector{Float64}}
@@ -239,6 +338,12 @@ struct NormalizedQuery
 					
 end
 
+"""
+    init_linear_to_bound(f, bounds, tighten, offset)
+
+Initialize or tighten variable bounds from a single-variable linear constraint `f`.
+`offset` corrects indices when applied to output variables.
+"""
 function init_linear_to_bound(f :: LinearConstraint, bounds :: Vector{Vector{Float64}},tighten::Bool, offset::Int64)
 	var_index = findnext(map(!=(0.0),f.coefficients),1)
 	coeff = f.coefficients[var_index]

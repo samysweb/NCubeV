@@ -1,6 +1,19 @@
 import Base.hash
 import Base.isequal
 
+"""
+    ApproxNormalizedQueryPrototype{T}
+
+Holds a `NormalizedQuery` together with per-term approximations and refined input/output
+bound grids. The `IncompleteApproximation` variant stores symbolic constraints, and the
+`Approximation` variant stores fully linearized terms and merged grids.
+
+Constructors
+- `ApproxNormalizedQueryPrototype{IncompleteApproximation}(nlq)` builds OVERT-based seeds.
+- `ApproxNormalizedQueryPrototype{Approximation}(incomplete, approximations)` merges bounds.
+
+Used by the iterator to generate linear per-azulejo queries (Appendix B.2).
+"""
 struct ApproxNormalizedQueryPrototype{T <: ApproximationPrototype}
 	nonlinear_query :: NormalizedQuery
 	input_bounds :: Vector{Vector{Float64}}
@@ -36,6 +49,11 @@ struct ApproxNormalizedQueryPrototype{T <: ApproximationPrototype}
 	end
 end
 
+"""
+    ApproxCacheObject
+
+Key for caching approximations computed at specific local bounds.
+"""
 struct ApproxCacheObject
 	query :: ApproxQuery
 	bounds :: Vector{Tuple{Float64,Float64}}
@@ -44,4 +62,9 @@ end
 isequal(a :: ApproxCacheObject, b :: ApproxCacheObject) = isequal(a.query, b.query) && isequal(a.bounds, b.bounds)
 hash(a :: ApproxCacheObject) = hash(a.query) + hash(a.bounds)
 
+"""
+    ApproxCache
+
+Cache mapping `(query, bounds)` pairs to computed `Approximation`s to avoid recomputation.
+"""
 ApproxCache = Dict{ApproxCacheObject, Approximation}

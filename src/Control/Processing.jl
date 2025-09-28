@@ -1,3 +1,27 @@
+"""
+    load_query(file, fixed_variables, mapping) -> Query
+
+Parse a specification file and produce a `Query` with variables mapped and optional
+variables fixed to constants. Performs translation to NCubeV AST linear/nonlinear atoms.
+
+Arguments
+- `file::String`: Path to the problem file (currently only supports custom format) understood by `Parsing`.
+- `fixed_variables::Dict{String,Union{String,Number}}`: Variable assignments to inline.
+- `mapping::Dict{String,Tuple{AST.VariableType,Int64}}`: Variable roles and positions.
+
+Returns
+- `Query`: A query with `formula::Formula` and `variables::Set{Variable}`.
+
+Example
+```julia
+julia> using NCubeV.Control
+julia> q = load_query("test/parsing/examples/acc.smt2", Dict(), Dict());
+```
+
+Notes
+- This prepares the problem for subsequent normalization and approximation.
+See also: [`prepare_for_olnnv`](@ref), [`run_query`](@ref).
+"""
 function load_query(file::String,
 						fixed_variables::Dict{String, Union{String, Number}},
 						mapping::Dict{String, Tuple{AST.VariableType, Int64}})
@@ -14,6 +38,14 @@ function load_query(file::String,
 	return Query(AST.simplify(constraints_translated_constraints), variable_set)
 end
 
+"""
+    prepare_for_olnnv(query::Query) -> Query
+
+Transform the query into the open-loop NNV view by taking an under-approximation
+and negating the property to search for counterexamples.
+
+Implements the standard reduction to reachability used by open-loop tools.
+"""
 function prepare_for_olnnv(query :: Query)
 	formula = query.formula
 	variable_set = query.variables
@@ -23,14 +55,50 @@ function prepare_for_olnnv(query :: Query)
 	return Query(olnnv_formula, variable_set)
 end
 
+"""
+    run_query(f, query, ctx, smt_timeout, variables; backup=nothing, backup_meta=nothing)
+        -> (results, cex_count)
+
+Run the full NCubeV pipeline on `query`, invoking a callback `f` for each linear
+open-loop query.
+Typically, `f` is used to:
+- Search for counterexamples to the concrete open-loop query;
+- Check counterexamples via SMT solving (via the `star_filter` generated here);
+- Return the an OlnnvResult containing all (non-spurious) counterexamples.
+
+Arguments
+- `f`: Callback of type `(linear_query, star_filter) -> OlnnvResult`.
+  `star_filter` is of type `OlnnvResult -> OlnnvResult`
+- `query::Query`: Input query (will be approximated via `Approx`).
+- `ctx`: SMT context handle; see `SMTInterface.smt_context`.
+- `smt_timeout`: Timeout bound for SMT filtering per region.
+- `variables`: Variable vector consistent with the query.
+- `backup`: Optional destination for periodic state dump.
+- `backup_meta`: Optional metadata to be saved along with the periodic state dump.
+
+Returns
+- `results::Vector{OlnnvResult}`: Collected backend results (potentially filtered).
+- `cex_count::Int`: Number of counterexample regions discovered (post-filter).
+
+References
+- Mosaic iteration over conjunctions: Appendix B.2
+- Counterexample generalization and filtering: Appendix B.3 (Definition 11, Lemma 12)
+  Note this method does not perform the start filtering itself!
+  It only provides the appropriate filter primitive to be passed to `f`.
+
+Example
+```julia
+julia> using NCubeV
+julia> res, n = NCubeV.Control.run_query(backend_callback, q, ctx, 5.0, vars);
+```
+
+!!! note
+    Counterexample enumeration can be exponential in the number of piece-wise linear
+    nodes.
+"""
 function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothing,backup_meta=nothing)
 	approx_cache :: ApproxCache = ApproxCache()
 	print_msg("[CTRL] Iterating over conjunctions...")
-	# TODO(steuber):
-	#  - Reintroduce Over/Under formula wrappers
-	#  - Compute variable bounds
-	#  - Compute approximations
-	#  - Substiute Over/Under with approximations AND (bounds -> approx)
 	results = []
 	cex_count = 0
 	num_invocations = 1
@@ -59,6 +127,10 @@ function run_query(f, query :: Query, ctx, smt_timeout, variables; backup=nothin
 					#SMTFilter = SMTInterface.get_star_filter(ctx, variables, original_query.formula, smt_timeout)
 				end
 				#end
+				# TODO(steuber): These days we are resolving the approximation **before**
+				# running Mosaic. Therefore, we no longer need to generate/decompose
+				# approximations here. We should probably remove this some time
+				# (as well as the for loop around what is below)
 				@timeit Config.TIMER "legacy_approx" begin
 					approx_normalized :: ApproxNormalizedQueryPrototype{Approximation} = get_approx_normalized_query(current_conjunction, approx_cache)
 				end

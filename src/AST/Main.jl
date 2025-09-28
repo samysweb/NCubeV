@@ -1,3 +1,13 @@
+"""
+module AST
+
+Core abstract syntax tree (AST) types and constructors for NCubeV formulas and terms.
+
+Defines terms, linear terms, atoms, linear constraints, and composite formulas used
+throughout parsing, linearization, Mosaic decomposition, and SMT translation.
+
+See also: `AST.Definitions`, `AST.Operations`, `SMTInterface.AST2SMT`.
+"""
 module AST
 
 using SymbolicUtils
