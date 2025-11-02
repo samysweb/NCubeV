@@ -1,3 +1,17 @@
+"""
+SMTInterface
+============
+
+Abstractions over SMT solvers (Z3, CVC5, …) and AST translations used by the
+Mosaic pipeline. Provides QF_LRA and QF_NRA contexts, translation helpers, and
+the star-based counterexample filter per Lemma 12 (Appendix B.3).
+
+Exports
+- `smt_context`: Create and manage solver contexts
+- `nl_feasible`, `lin_feasible`: Feasibility checks (with optional unsat cores)
+
+See also: `SMTInterface.AST2SMT`, `SMTInterface.StarFilter`.
+"""
 module SMTInterface
 	using MLStyle
 	using TimerOutputs
@@ -27,6 +41,13 @@ module SMTInterface
 	include("Base.jl")
 	include("StarFilter.jl")
 
+	"""
+		nl_feasible(constraints::Vector{Union{Formula}}, ctx, variables, conflicts; print_model=false) -> Bool
+
+	Check feasibility of a set of (possibly nonlinear) constraints under QF_NRA.
+	Uses activation literals to optionally extract an unsat core into `conflicts`
+	(indices of `constraints`). Returns `true` if satisfiable or unknown.
+	"""
 	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables,conflicts;print_model=false)
 		res = smt_solver(ctx) do s
 			smt_internal_set(s,"unsat-core",true)
@@ -79,6 +100,12 @@ module SMTInterface
 	end
 
 
+	"""
+		lin_feasible(constraints::Vector{LinearConstraint}, ctx, variables, conflicts; print_model=false) -> Bool
+
+	Check feasibility of linear constraints under QF_LRA with activation literals
+	for unsat core extraction. Returns `true` if satisfiable or unknown.
+	"""
 	function lin_feasible(constraints :: Vector{LinearConstraint}, ctx, variables,conflicts;print_model=false)
 		res = smt_solver(ctx;theory="qflra") do s
 			smt_internal_set(s,"unsat-core",true)
