@@ -1,5 +1,13 @@
 #import ..AST : And, Or, Not, Implies
 
+"""
+	transform_formula(skeleton::BooleanSkeleton)
+
+Build a boolean SAT skeleton from the high-level query formula. Creates a
+variable for each atomic constraint and encodes boolean structure (And/Or/Not/
+Implies) in CNF using PicoSAT. Introduces `ApproxCase` variables for input
+dimension splits and `IsMaxCase` variables for max predicates.
+"""
 function transform_formula(skeleton :: BooleanSkeleton)
 	variable_number_dict = Dict{Union{Atom,Predicate,LinearConstraint,ApproxNode}, Int64}()
 	fun = get_skeleton_generator_function(skeleton, variable_number_dict)
@@ -35,7 +43,6 @@ function transform_formula(skeleton :: BooleanSkeleton)
 			for x in skeleton.variable_mapping
 				@match x.second begin
 					IntermediateVariable => begin
-						#print_msg("IntermediateVariable")
 						comments *= "c " * repr(x.first) * " -> Intermediate\n"
 						continue
 					end
@@ -46,10 +53,8 @@ function transform_formula(skeleton :: BooleanSkeleton)
 						end
 					end
 					ApproxCase(dim,_) => begin
-						#if dim <= skeleton.query.num_input_vars
 							print(f, x.first, " ")
 							comments *= "c " * repr(x.first) * " -> " * repr(x.second) * "\n"
-						#end
 						continue
 					end
 					IsMaxCase(_) => begin
@@ -67,6 +72,13 @@ function transform_formula(skeleton :: BooleanSkeleton)
 	end
 end
 
+"""
+	get_skeleton_generator_function(skeleton, variable_number_dict)
+
+Return a post-walk function that replaces subformulas with `SkeletonFormula`
+variables and adds the corresponding CNF clauses to the PicoSAT instance.
+Also deduplicates equivalent atoms and introduces dependency clauses.
+"""
 function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_number_dict :: Dict{Union{Atom,Predicate,LinearConstraint,ApproxNode}, Int64})
 	return function(formula :: Formula)
 		return @match formula begin
@@ -125,7 +137,6 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 				end
 			end
 			LinearConstraint() => begin
-				#@debug "Atom or LinearConstraint => constraint variable"
 				if haskey(variable_number_dict, formula)
 					return SkeletonFormula(variable_number_dict[formula])
 				else
@@ -138,9 +149,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 					skeleton.variable_mapping[variable_number] = ConstraintVariable(formula)
 					variable_number_dict[formula] = variable_number
 					search_term = LinearTerm(factor.*formula.coefficients,0//1)
-					#print_msg("[SKELETON] Searching $(search_term)")
 					if !haskey(skeleton.similar_formula_cache, search_term)
-						#print_msg("[SKELETON] NO KEY")
 						skeleton.similar_formula_cache[search_term] = Tuple{Bool,TermNumber,Int}[(!formula.equality, TermNumber(factor*formula.bias), variable_number)]
 					else
 						for (strict, constant, other_var) in skeleton.similar_formula_cache[search_term]
@@ -174,12 +183,10 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 				end
 			end
 			CompositeFormula(c, args,_) => begin
-				#@debug "CompositeFormula => intermediate variable"
 				variable_number = next_var(skeleton.sat_instance)
 				skeleton.variable_mapping[variable_number] = IntermediateVariable
 				@match c begin
 					Or => begin
-						#@debug "OR"
 						# variable_number => [args]
 						add_clause(skeleton.sat_instance,append!([-variable_number], map(x->x.variable_number, args)))
 						# args[i] => variable_number
@@ -188,7 +195,6 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 						end
 					end
 					Not => begin
-						#@debug "NOT"
 						@assert length(args) == 1
 						# variable_number => -args[1]
 						add_clause(skeleton.sat_instance, [-variable_number, -args[1].variable_number])
@@ -196,7 +202,6 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 						add_clause(skeleton.sat_instance, [variable_number, args[1].variable_number])
 					end
 					And => begin
-						#@debug "AND"
 						# variable_number => args[i]
 						for arg in args
 							add_clause(skeleton.sat_instance, [-variable_number, arg.variable_number])
@@ -205,7 +210,6 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 						add_clause(skeleton.sat_instance, append!(map(x->-x.variable_number, args), [variable_number]))
 					end
 					Implies => begin
-						#@debug "IMPLIES"
 						@assert length(args) == 2
 						# variable_number => -args[1] | args[2]
 						add_clause(skeleton.sat_instance, [-variable_number, -args[1].variable_number, args[2].variable_number])
@@ -218,9 +222,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 				return SkeletonFormula(variable_number)
 			end
 			OverApprox(internal_formula, under_approx, over_approx) || UnderApprox(internal_formula, under_approx, over_approx) => begin
-				#@debug "Atom or LinearConstraint => constraint variable"
 				@assert !isnothing(under_approx) && !isnothing(over_approx) ("Under/over approx must be defined for " * term_to_string(formula) * " ("* string(skeleton.variable_mapping[internal_formula.variable_number]) *")")
-				#return_variable = next_var(skeleton.sat_instance)
 				if haskey(variable_number_dict, formula)
 					return SkeletonFormula(variable_number_dict[formula])
 				else
@@ -236,10 +238,6 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 					if formula isa OverApprox
 						new_formula = OverApprox(internal, under_approx, over_approx)
 						new_formula_complementary = UnderApprox(internal, under_approx, over_approx)
-						# We want (-internal_formula.variable_number) AND (variable_number) <=> return_variable
-						#add_clause(skeleton.sat_instance, [-internal_formula.variable_number, -variable_number_actual, return_variable])
-						#add_clause(skeleton.sat_instance, [-return_variable, internal_formula.variable_number])
-						#add_clause(skeleton.sat_instance, [-return_variable, variable_number_actual])
 						# If formula is true then so is the overapproximation:
 						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, variable_number_actual])
 						# If underapproximation is true then so is the original formula:
@@ -247,10 +245,6 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 					elseif formula isa UnderApprox
 						new_formula = UnderApprox(internal, under_approx, over_approx)
 						new_formula_complementary = OverApprox(internal, under_approx, over_approx)
-						# We want (-internal_formula.variable_number) OR (variable_number) <=> return_variable
-						#add_clause(skeleton.sat_instance, [-internal_formula.variable_number, return_variable])
-						#add_clause(skeleton.sat_instance, [-variable_number_actual, return_variable])
-						#add_clause(skeleton.sat_instance, [-return_variable, internal_formula.variable_number, variable_number_actual])
 						# If underapproximation is true then so is the original formula:
 						add_clause(skeleton.sat_instance, [-variable_number_actual, internal_formula.variable_number])
 						# If formula is true then so is the overapproximation:

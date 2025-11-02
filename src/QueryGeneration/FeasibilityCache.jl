@@ -15,6 +15,13 @@
 #     end
 # end
 
+"""
+FeasibilityCache
+----------------
+
+Lightweight cache storing known-feasible combinations of SAT literals (w.r.t. theory solvers).
+Membership checks are performed by subsequence matching on sorted literals.
+"""
 struct FeasibilityCache
     combinations :: Vector{Vector{Int64}}
     function FeasibilityCache(max_used_var :: Int64)
@@ -24,6 +31,13 @@ struct FeasibilityCache
     end
 end
 
+"""
+MultiFeasibilityCache
+---------------------
+
+Bundle of caches for different stages: linear, bound+linear, approx, nonlinear,
+bound+nonlinear, no_approx, and all combined.
+"""
 struct MultiFeasibilityCache
     linear :: FeasibilityCache
     bound_linear :: FeasibilityCache
@@ -59,6 +73,11 @@ end
 #         cache.free_var[] = new_free_var
 #     end
 # end
+"""
+    add_feasible(cache::FeasibilityCache, combination::Vector{Int64})
+
+Record a feasible combination of literals.
+"""
 function add_feasible(cache :: FeasibilityCache, combination :: Vector{Int64})
     @timeit Config.TIMER "feasibility_cache_add" begin
         push!(cache.combinations, sort(combination))
@@ -78,6 +97,12 @@ end
 #     end
 # end
 
+"""
+    check_feasible(cache::FeasibilityCache, combination::Vector{Int64}) -> Bool
+
+Return true if `combination` is subsumed by a previously recorded feasible
+combination.
+"""
 function check_feasible(cache :: FeasibilityCache, combination :: Vector{Int64})
     return @timeit Config.TIMER "feasibility_cache_check" begin
         sort!(combination)

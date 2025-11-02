@@ -1,4 +1,12 @@
 
+"""
+InternalPicoSAT
+---------------
+
+Thin wrapper around PicoSAT exposing a few extra helpers and preserving the
+original clause set for restart. Provides `next_var`, `push`/`pop`, and a
+partial-model extractor to speed up enumeration.
+"""
 # Some extensions and additional exports for the PicoSAT interface
 module InternalPicoSAT
 using PicoSAT
@@ -21,6 +29,12 @@ function add_clause_internal(p::PicoPtr, clause)
     return
 end
 
+"""
+    add_clause(p::PicoPtr, clause)
+
+Append a clause to the solver and optionally mirror it into the `.dimacs`
+output when `Config.QUERY_GEN_SAVE_SAT` is configured.
+"""
 function add_clause(p::PicoPtr, clause)
     add_clause_internal(p, clause)
     if !isnothing(Config.QUERY_GEN_SAVE_SAT)
@@ -49,6 +63,12 @@ picosat_set_more_important_lit(p::PicoPtr, lit::Int) = ccall(
     (:picosat_set_more_important_lit, libpicosat), Cvoid, (PicoPtr, Cint), p, lit
 )
 
+"""
+    get_partial_solution(p::PicoPtr) -> Vector{Int}
+
+Extract a partial model as a compact literal vector, avoiding full assignment
+enumeration.
+"""
 function get_partial_solution(p::PicoPtr)
     nvar = PicoSAT.picosat_variables(p)
     if nvar < 0
@@ -67,6 +87,12 @@ function get_partial_solution(p::PicoPtr)
     return sol[1:(array_pos-1)]
 end
 
+"""
+    solve(p::PicoPtr)
+
+Run PicoSAT and return `:unsatisfiable` or a compact vector of non-zero
+assigned literals (partial model).
+"""
 function solve(p::PicoPtr)
     @timeit Config.TIMER "PicoSAT_solve" begin
         res =  PicoSAT.picosat_sat(p, -1)
