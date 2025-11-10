@@ -1,4 +1,7 @@
 # $N^3V$ - A Non-linear Neural Network Verifier
+
+[![Documentation](https://github.com/samysweb/NCubeV/actions/workflows/documentation.yml/badge.svg)](https://samysweb.github.io/NCubeV/)
+
 This repository contains the non-linear neural network verifier $N^3V$ (and its evaluation).
 
 ## Installation
