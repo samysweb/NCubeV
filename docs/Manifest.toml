@@ -839,12 +839,6 @@ git-tree-sha1 = "22df8573f8e7c593ac205455ca088989d0a2c7a0"
 uuid = "d8a4904e-b15c-11e9-3269-09a3773c0cb0"
 version = "1.6.7"
 
-[[deps.NCubeV]]
-deps = ["ArgParse", "Conda", "CxxWrap", "GLPK", "Glob", "IterTools", "JLD", "JuMP", "LinearAlgebra", "MLStyle", "Metatheory", "OVERT", "PackageCompiler", "PicoSAT", "Pkg", "PyCall", "SymbolicUtils", "TermInterface", "TimerOutputs", "Tokenize", "Z3", "libcxxwrap_julia_jll", "z3_jll"]
-path = "/home/samuel/Dokumente/Projects/NNV/NCubeV/repos/NCubeV-2/docs/.."
-uuid = "7b70dde2-2dce-46fe-8bfa-c0ba9c54c2e7"
-version = "0.1.0"
-
 [[deps.NLSolversBase]]
 deps = ["ADTypes", "DifferentiationInterface", "Distributed", "FiniteDiff", "ForwardDiff"]
 git-tree-sha1 = "25a6638571a902ecfb1ae2a18fc1575f86b1d4df"
