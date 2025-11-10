@@ -13,7 +13,7 @@ After building the tool (see README), run:
 ```
 
 Useful flags:
-- `--smt Z3` or `--smt CVC5`
+- `--smt Z3`
 - `--approx N` controls approximation density
 - `--rigorous` enables SMT-based validation of approximations
 - `--no-cores` disables activation literals for unsat cores (helps for high-degree polynomials)
