@@ -1,0 +1,1503 @@
+p cnf 471 1093
+c ind 56 215 73 251 422 376 224 12 75 23 59 26 127 468 141 450 46 448 78 438 258 436 252 1 22 454 270 40 5 114 444 460 28 36 118 7 25 93 18 157 16 19 44 61 412 212 101 17 214 80 462 48 15 413 110 30 419 6 470 90 4 13 456 410 11 108 382 2 10 261 20 81 187 9 346 161 466 249 297 24 8 281 14 464 32 54 150 434 173 277 385 34 42 458 442 452 102 21 38 375 440 221 373 47 338 3 306 65 446 293 0
+-28 27 0
+-27 -30 0
+-27 29 0
+-30 29 0
+-29 -32 0
+-29 31 0
+-32 31 0
+-31 -34 0
+-31 33 0
+-34 33 0
+-33 -36 0
+-33 35 0
+-36 35 0
+-35 -38 0
+-35 37 0
+-38 37 0
+-37 -40 0
+-37 39 0
+-40 39 0
+-39 -42 0
+-39 41 0
+-42 41 0
+-41 -44 0
+-41 43 0
+-44 43 0
+28 30 32 34 36 38 40 42 44 0
+-45 -30 0
+45 30 0
+-48 6 0
+-49 46 0
+-49 47 0
+-49 48 0
+-46 -47 -48 49 0
+-50 51 0
+-52 50 0
+-53 -49 50 0
+53 49 0
+53 -50 0
+-54 5 0
+-54 -48 0
+-55 46 0
+-55 54 0
+-46 -54 55 0
+-57 56 0
+-57 48 0
+-56 -48 57 0
+-58 55 57 0
+58 -55 0
+58 -57 0
+-59 4 0
+-60 59 0
+-60 54 0
+-59 -54 60 0
+-47 61 0
+-62 61 0
+-62 48 0
+-61 -48 62 0
+-63 60 62 0
+63 -60 0
+63 -62 0
+-64 58 0
+-64 63 0
+-58 -63 64 0
+-65 2 0
+-66 65 0
+-66 54 0
+-65 -54 66 0
+-67 68 0
+-69 67 0
+-70 67 0
+-70 48 0
+-67 -48 70 0
+-71 66 70 0
+71 -66 0
+71 -70 0
+-72 -64 71 0
+72 64 0
+72 -71 0
+-73 46 0
+-73 -59 0
+-74 73 0
+-74 54 0
+-73 -54 74 0
+-75 56 0
+-76 75 0
+-76 48 0
+-75 -48 76 0
+-77 74 76 0
+77 -74 0
+77 -76 0
+-78 5 0
+-78 54 0
+-78 -6 0
+-78 -48 0
+-79 59 0
+-79 78 0
+-59 -78 79 0
+-6 81 0
+-48 81 0
+-81 -78 0
+-82 80 0
+-82 81 0
+-80 -81 82 0
+-83 79 82 0
+83 -79 0
+83 -82 0
+-84 77 0
+-84 83 0
+-77 -83 84 0
+-85 86 0
+-87 85 0
+-88 -84 85 0
+88 84 0
+88 -85 0
+-89 73 0
+-89 78 0
+-73 -78 89 0
+-91 90 0
+-91 81 0
+-90 -81 91 0
+-92 89 91 0
+92 -89 0
+92 -91 0
+-94 93 0
+-94 78 0
+-93 -78 94 0
+-95 96 0
+-97 95 0
+-98 95 0
+-98 81 0
+-95 -81 98 0
+-99 94 98 0
+99 -94 0
+99 -98 0
+-100 -92 99 0
+100 92 0
+100 -99 0
+-102 5 0
+-102 54 0
+-78 102 0
+-102 -48 0
+-103 46 0
+-103 101 0
+-103 102 0
+-46 -101 -102 103 0
+-105 104 0
+-104 106 0
+-107 -103 104 0
+107 103 0
+107 -104 0
+-108 6 0
+-48 108 0
+-108 81 0
+-108 -78 0
+-108 -102 0
+-109 46 0
+-109 108 0
+-46 -108 109 0
+-111 110 0
+-111 102 0
+-110 -102 111 0
+-112 109 111 0
+112 -109 0
+112 -111 0
+-113 59 0
+-113 108 0
+-59 -108 113 0
+-101 114 0
+-115 114 0
+-115 102 0
+-114 -102 115 0
+-116 113 115 0
+116 -113 0
+116 -115 0
+-117 112 0
+-117 116 0
+-112 -116 117 0
+-118 1 0
+-118 -65 0
+-119 118 0
+-119 108 0
+-118 -108 119 0
+-121 120 0
+-120 122 0
+-123 120 0
+-123 102 0
+-120 -102 123 0
+-124 119 123 0
+124 -119 0
+124 -123 0
+-125 -117 124 0
+125 117 0
+125 -124 0
+-126 73 0
+-126 108 0
+-73 -108 126 0
+-127 110 0
+-128 127 0
+-128 102 0
+-127 -102 128 0
+-129 126 128 0
+129 -126 0
+129 -128 0
+-130 59 0
+-130 108 0
+-59 -108 130 0
+-131 114 0
+-131 102 0
+-114 -102 131 0
+-132 130 131 0
+132 -130 0
+132 -131 0
+-133 129 0
+-133 132 0
+-129 -132 133 0
+-135 134 0
+-134 136 0
+-137 -133 134 0
+137 133 0
+137 -134 0
+-138 73 0
+-138 108 0
+-73 -108 138 0
+-139 127 0
+-139 102 0
+-127 -102 139 0
+-140 138 139 0
+140 -138 0
+140 -139 0
+-141 1 0
+-118 141 0
+-141 -65 0
+-142 141 0
+-142 108 0
+-141 -108 142 0
+-144 143 0
+-143 145 0
+-146 143 0
+-146 102 0
+-143 -102 146 0
+-147 142 146 0
+147 -142 0
+147 -146 0
+-148 -140 147 0
+148 140 0
+148 -147 0
+-149 34 0
+-149 107 0
+-149 125 0
+-149 137 0
+-149 148 0
+-34 -107 -125 -137 -148 149 0
+-151 46 0
+-151 150 0
+-151 48 0
+-46 -150 -48 151 0
+-153 152 0
+-152 154 0
+-155 -151 152 0
+155 151 0
+155 -152 0
+-156 46 0
+-156 54 0
+-46 -54 156 0
+-158 157 0
+-158 48 0
+-157 -48 158 0
+-159 156 158 0
+159 -156 0
+159 -158 0
+-160 59 0
+-160 54 0
+-59 -54 160 0
+-150 161 0
+-162 161 0
+-162 48 0
+-161 -48 162 0
+-163 160 162 0
+163 -160 0
+163 -162 0
+-164 159 0
+-164 163 0
+-159 -163 164 0
+-165 65 0
+-165 54 0
+-65 -54 165 0
+-167 166 0
+-166 168 0
+-169 166 0
+-169 48 0
+-166 -48 169 0
+-170 165 169 0
+170 -165 0
+170 -169 0
+-171 -164 170 0
+171 164 0
+171 -170 0
+-172 73 0
+-172 54 0
+-73 -54 172 0
+-173 157 0
+-174 173 0
+-174 48 0
+-173 -48 174 0
+-175 172 174 0
+175 -172 0
+175 -174 0
+-176 59 0
+-176 54 0
+-59 -54 176 0
+-177 161 0
+-177 48 0
+-161 -48 177 0
+-178 176 177 0
+178 -176 0
+178 -177 0
+-179 175 0
+-179 178 0
+-175 -178 179 0
+-181 180 0
+-180 182 0
+-183 -179 180 0
+183 179 0
+183 -180 0
+-184 73 0
+-184 54 0
+-73 -54 184 0
+-185 173 0
+-185 48 0
+-173 -48 185 0
+-186 184 185 0
+186 -184 0
+186 -185 0
+-187 2 0
+-65 187 0
+-187 -118 0
+-187 -141 0
+-188 187 0
+-188 54 0
+-187 -54 188 0
+-190 189 0
+-189 191 0
+-192 189 0
+-192 48 0
+-189 -48 192 0
+-193 188 192 0
+193 -188 0
+193 -192 0
+-194 -186 193 0
+194 186 0
+194 -193 0
+-195 36 0
+-195 155 0
+-195 171 0
+-195 183 0
+-195 194 0
+-36 -155 -171 -183 -194 195 0
+-196 46 0
+-196 101 0
+-196 102 0
+-46 -101 -102 196 0
+-197 -196 104 0
+197 196 0
+197 -104 0
+-198 46 0
+-198 108 0
+-46 -108 198 0
+-199 110 0
+-199 102 0
+-110 -102 199 0
+-200 198 199 0
+200 -198 0
+200 -199 0
+-201 59 0
+-201 108 0
+-59 -108 201 0
+-202 114 0
+-202 102 0
+-114 -102 202 0
+-203 201 202 0
+203 -201 0
+203 -202 0
+-204 200 0
+-204 203 0
+-200 -203 204 0
+-205 118 0
+-205 108 0
+-118 -108 205 0
+-206 120 0
+-206 102 0
+-120 -102 206 0
+-207 205 206 0
+207 -205 0
+207 -206 0
+-208 -204 207 0
+208 204 0
+208 -207 0
+-209 73 0
+-209 108 0
+-73 -108 209 0
+-210 127 0
+-210 102 0
+-127 -102 210 0
+-211 209 210 0
+211 -209 0
+211 -210 0
+-212 6 0
+-212 48 0
+-212 81 0
+-212 108 0
+-212 -54 0
+-212 -78 0
+-212 -102 0
+-213 59 0
+-213 212 0
+-59 -212 213 0
+-215 5 0
+-54 215 0
+-78 215 0
+-102 215 0
+-215 -212 0
+-216 214 0
+-216 215 0
+-214 -215 216 0
+-217 213 216 0
+217 -213 0
+217 -216 0
+-218 211 0
+-218 217 0
+-211 -217 218 0
+-219 -218 134 0
+219 218 0
+219 -134 0
+-220 73 0
+-220 212 0
+-73 -212 220 0
+-222 221 0
+-222 215 0
+-221 -215 222 0
+-223 220 222 0
+223 -220 0
+223 -222 0
+-225 224 0
+-225 212 0
+-224 -212 225 0
+-227 226 0
+-226 228 0
+-229 226 0
+-229 215 0
+-226 -215 229 0
+-230 225 229 0
+230 -225 0
+230 -229 0
+-231 -223 230 0
+231 223 0
+231 -230 0
+-232 197 0
+-232 208 0
+-232 219 0
+-232 231 0
+-232 32 0
+-197 -208 -219 -231 -32 232 0
+-233 46 0
+-233 150 0
+-233 48 0
+-46 -150 -48 233 0
+-234 -233 152 0
+234 233 0
+234 -152 0
+-235 46 0
+-235 54 0
+-46 -54 235 0
+-236 157 0
+-236 48 0
+-157 -48 236 0
+-237 235 236 0
+237 -235 0
+237 -236 0
+-238 59 0
+-238 54 0
+-59 -54 238 0
+-239 161 0
+-239 48 0
+-161 -48 239 0
+-240 238 239 0
+240 -238 0
+240 -239 0
+-241 237 0
+-241 240 0
+-237 -240 241 0
+-242 65 0
+-242 54 0
+-65 -54 242 0
+-243 166 0
+-243 48 0
+-166 -48 243 0
+-244 242 243 0
+244 -242 0
+244 -243 0
+-245 -241 244 0
+245 241 0
+245 -244 0
+-246 73 0
+-246 54 0
+-73 -54 246 0
+-247 173 0
+-247 48 0
+-173 -48 247 0
+-248 246 247 0
+248 -246 0
+248 -247 0
+-249 5 0
+-249 54 0
+-78 249 0
+-249 102 0
+-249 215 0
+-249 -48 0
+-249 -108 0
+-249 -212 0
+-250 59 0
+-250 249 0
+-59 -249 250 0
+-252 6 0
+-48 252 0
+-252 81 0
+-108 252 0
+-212 252 0
+-252 -78 0
+-252 -249 0
+-253 251 0
+-253 252 0
+-251 -252 253 0
+-254 250 253 0
+254 -250 0
+254 -253 0
+-255 248 0
+-255 254 0
+-248 -254 255 0
+-256 -255 180 0
+256 255 0
+256 -180 0
+-257 73 0
+-257 249 0
+-73 -249 257 0
+-258 157 0
+-258 173 0
+-259 258 0
+-259 252 0
+-258 -252 259 0
+-260 257 259 0
+260 -257 0
+260 -259 0
+-262 261 0
+-262 249 0
+-261 -249 262 0
+-264 263 0
+-263 265 0
+-266 263 0
+-266 252 0
+-263 -252 266 0
+-267 262 266 0
+267 -262 0
+267 -266 0
+-268 -260 267 0
+268 260 0
+268 -267 0
+-269 234 0
+-269 245 0
+-269 256 0
+-269 268 0
+-269 28 0
+-234 -245 -256 -268 -28 269 0
+-271 46 0
+-271 270 0
+-271 102 0
+-46 -270 -102 271 0
+-273 272 0
+-272 274 0
+-275 -271 272 0
+275 271 0
+275 -272 0
+-276 46 0
+-276 108 0
+-46 -108 276 0
+-278 277 0
+-278 102 0
+-277 -102 278 0
+-279 276 278 0
+279 -276 0
+279 -278 0
+-280 59 0
+-280 108 0
+-59 -108 280 0
+-270 281 0
+-282 281 0
+-282 102 0
+-281 -102 282 0
+-283 280 282 0
+283 -280 0
+283 -282 0
+-284 279 0
+-284 283 0
+-279 -283 284 0
+-285 118 0
+-285 108 0
+-118 -108 285 0
+-287 286 0
+-286 288 0
+-289 286 0
+-289 102 0
+-286 -102 289 0
+-290 285 289 0
+290 -285 0
+290 -289 0
+-291 -284 290 0
+291 284 0
+291 -290 0
+-292 73 0
+-292 108 0
+-73 -108 292 0
+-293 277 0
+-294 293 0
+-294 102 0
+-293 -102 294 0
+-295 292 294 0
+295 -292 0
+295 -294 0
+-296 59 0
+-296 212 0
+-59 -212 296 0
+-298 297 0
+-298 215 0
+-297 -215 298 0
+-299 296 298 0
+299 -296 0
+299 -298 0
+-300 295 0
+-300 299 0
+-295 -299 300 0
+-302 301 0
+-301 303 0
+-304 -300 301 0
+304 300 0
+304 -301 0
+-305 73 0
+-305 212 0
+-73 -212 305 0
+-307 306 0
+-307 215 0
+-306 -215 307 0
+-308 305 307 0
+308 -305 0
+308 -307 0
+-309 224 0
+-309 212 0
+-224 -212 309 0
+-311 310 0
+-310 312 0
+-313 310 0
+-313 215 0
+-310 -215 313 0
+-314 309 313 0
+314 -309 0
+314 -313 0
+-315 -308 314 0
+315 308 0
+315 -314 0
+-316 275 0
+-316 291 0
+-316 304 0
+-316 315 0
+-316 42 0
+-275 -291 -304 -315 -42 316 0
+-317 46 0
+-317 47 0
+-317 48 0
+-46 -47 -48 317 0
+-318 50 0
+-50 319 0
+-320 -317 50 0
+320 317 0
+320 -50 0
+-321 46 0
+-321 54 0
+-46 -54 321 0
+-322 56 0
+-322 48 0
+-56 -48 322 0
+-323 321 322 0
+323 -321 0
+323 -322 0
+-324 59 0
+-324 54 0
+-59 -54 324 0
+-325 61 0
+-325 48 0
+-61 -48 325 0
+-326 324 325 0
+326 -324 0
+326 -325 0
+-327 323 0
+-327 326 0
+-323 -326 327 0
+-328 65 0
+-328 54 0
+-65 -54 328 0
+-329 67 0
+-67 330 0
+-331 67 0
+-331 48 0
+-67 -48 331 0
+-332 328 331 0
+332 -328 0
+332 -331 0
+-333 -327 332 0
+333 327 0
+333 -332 0
+-334 73 0
+-334 54 0
+-73 -54 334 0
+-335 75 0
+-335 48 0
+-75 -48 335 0
+-336 334 335 0
+336 -334 0
+336 -335 0
+-337 59 0
+-337 249 0
+-59 -249 337 0
+-338 80 0
+-339 338 0
+-339 252 0
+-338 -252 339 0
+-340 337 339 0
+340 -337 0
+340 -339 0
+-341 336 0
+-341 340 0
+-336 -340 341 0
+-342 85 0
+-85 343 0
+-344 -341 85 0
+344 341 0
+344 -85 0
+-345 73 0
+-345 249 0
+-73 -249 345 0
+-90 346 0
+-347 346 0
+-347 252 0
+-346 -252 347 0
+-348 345 347 0
+348 -345 0
+348 -347 0
+-349 261 0
+-349 249 0
+-261 -249 349 0
+-351 350 0
+-350 352 0
+-353 350 0
+-353 252 0
+-350 -252 353 0
+-354 349 353 0
+354 -349 0
+354 -353 0
+-355 -348 354 0
+355 348 0
+355 -354 0
+-356 320 0
+-356 333 0
+-356 344 0
+-356 355 0
+-356 40 0
+-320 -333 -344 -355 -40 356 0
+-357 46 0
+-357 270 0
+-357 102 0
+-46 -270 -102 357 0
+-358 -357 272 0
+358 357 0
+358 -272 0
+-359 46 0
+-359 108 0
+-46 -108 359 0
+-360 277 0
+-360 102 0
+-277 -102 360 0
+-361 359 360 0
+361 -359 0
+361 -360 0
+-362 59 0
+-362 108 0
+-59 -108 362 0
+-363 281 0
+-363 102 0
+-281 -102 363 0
+-364 362 363 0
+364 -362 0
+364 -363 0
+-365 361 0
+-365 364 0
+-361 -364 365 0
+-366 118 0
+-366 108 0
+-118 -108 366 0
+-367 286 0
+-367 102 0
+-286 -102 367 0
+-368 366 367 0
+368 -366 0
+368 -367 0
+-369 -365 368 0
+369 365 0
+369 -368 0
+-370 73 0
+-370 108 0
+-73 -108 370 0
+-371 293 0
+-371 102 0
+-293 -102 371 0
+-372 370 371 0
+372 -370 0
+372 -371 0
+-373 6 0
+-373 48 0
+-373 81 0
+-373 108 0
+-373 212 0
+-373 252 0
+-373 -54 0
+-373 -78 0
+-373 -102 0
+-373 -215 0
+-373 -249 0
+-374 59 0
+-374 373 0
+-59 -373 374 0
+-297 375 0
+-376 5 0
+-54 376 0
+-78 376 0
+-102 376 0
+-215 376 0
+-249 376 0
+-376 -373 0
+-377 375 0
+-377 376 0
+-375 -376 377 0
+-378 374 377 0
+378 -374 0
+378 -377 0
+-379 372 0
+-379 378 0
+-372 -378 379 0
+-380 -379 301 0
+380 379 0
+380 -301 0
+-381 73 0
+-381 373 0
+-73 -373 381 0
+-382 306 0
+-383 382 0
+-383 376 0
+-382 -376 383 0
+-384 381 383 0
+384 -381 0
+384 -383 0
+-386 385 0
+-386 373 0
+-385 -373 386 0
+-388 387 0
+-387 389 0
+-390 387 0
+-390 376 0
+-387 -376 390 0
+-391 386 390 0
+391 -386 0
+391 -390 0
+-392 -384 391 0
+392 384 0
+392 -391 0
+-393 358 0
+-393 369 0
+-393 380 0
+-393 392 0
+-393 44 0
+-358 -369 -380 -392 -44 393 0
+-394 46 0
+-394 47 0
+-394 48 0
+-46 -47 -48 394 0
+-395 -394 50 0
+395 394 0
+395 -50 0
+-396 46 0
+-396 54 0
+-46 -54 396 0
+-397 56 0
+-397 48 0
+-56 -48 397 0
+-398 396 397 0
+398 -396 0
+398 -397 0
+-399 59 0
+-399 54 0
+-59 -54 399 0
+-400 61 0
+-400 48 0
+-61 -48 400 0
+-401 399 400 0
+401 -399 0
+401 -400 0
+-402 398 0
+-402 401 0
+-398 -401 402 0
+-403 65 0
+-403 54 0
+-65 -54 403 0
+-404 67 0
+-404 48 0
+-67 -48 404 0
+-405 403 404 0
+405 -403 0
+405 -404 0
+-406 -402 405 0
+406 402 0
+406 -405 0
+-407 73 0
+-407 54 0
+-73 -54 407 0
+-408 75 0
+-408 48 0
+-75 -48 408 0
+-409 407 408 0
+409 -407 0
+409 -408 0
+-410 5 0
+-410 54 0
+-78 410 0
+-410 102 0
+-410 215 0
+-410 249 0
+-410 376 0
+-410 -48 0
+-410 -108 0
+-410 -212 0
+-410 -252 0
+-410 -373 0
+-411 59 0
+-411 410 0
+-59 -410 411 0
+-412 80 0
+-338 412 0
+-413 6 0
+-48 413 0
+-413 81 0
+-108 413 0
+-212 413 0
+-252 413 0
+-373 413 0
+-413 -78 0
+-413 -410 0
+-414 412 0
+-414 413 0
+-412 -413 414 0
+-415 411 414 0
+415 -411 0
+415 -414 0
+-416 409 0
+-416 415 0
+-409 -415 416 0
+-417 -416 85 0
+417 416 0
+417 -85 0
+-418 73 0
+-418 410 0
+-73 -410 418 0
+-90 419 0
+-419 346 0
+-420 419 0
+-420 413 0
+-419 -413 420 0
+-421 418 420 0
+421 -418 0
+421 -420 0
+-423 422 0
+-423 410 0
+-422 -410 423 0
+-425 424 0
+-424 426 0
+-427 424 0
+-427 413 0
+-424 -413 427 0
+-428 423 427 0
+428 -423 0
+428 -427 0
+-429 -421 428 0
+429 421 0
+429 -428 0
+-430 395 0
+-430 406 0
+-430 417 0
+-430 429 0
+-430 38 0
+-395 -406 -417 -429 -38 430 0
+-431 149 195 232 269 316 356 393 430 0
+431 -149 0
+431 -195 0
+431 -232 0
+431 -269 0
+431 -316 0
+431 -356 0
+431 -393 0
+431 -430 0
+-432 -431 0
+432 431 0
+-433 1 0
+-433 2 0
+-433 3 0
+-433 4 0
+-433 5 0
+-433 6 0
+-433 7 0
+-433 8 0
+-433 9 0
+-433 10 0
+-433 11 0
+-433 12 0
+-433 13 0
+-433 14 0
+-433 15 0
+-433 16 0
+-433 17 0
+-433 18 0
+-433 19 0
+-433 20 0
+-433 21 0
+-433 22 0
+-433 23 0
+-433 24 0
+-433 25 0
+-433 26 0
+-433 45 0
+-433 53 0
+-433 72 0
+-433 88 0
+-433 100 0
+-433 432 0
+-1 -2 -3 -4 -5 -6 -7 -8 -9 -10 -11 -12 -13 -14 -15 -16 -17 -18 -19 -20 -21 -22 -23 -24 -25 -26 -45 -53 -72 -88 -100 -432 433 0
+433 0
+-434 435 0
+434 0
+-436 437 0
+-437 -438 0
+-437 439 0
+-438 439 0
+-439 -440 0
+-439 441 0
+-440 441 0
+-441 -442 0
+-441 443 0
+-442 443 0
+436 438 440 442 0
+-444 445 0
+444 0
+-446 447 0
+-447 -448 0
+-447 449 0
+-448 449 0
+-449 -450 0
+-449 451 0
+-450 451 0
+-451 -452 0
+-451 453 0
+-452 453 0
+446 448 450 452 0
+-454 455 0
+454 0
+-456 457 0
+456 0
+-458 459 0
+458 0
+-460 461 0
+460 0
+-462 463 0
+462 0
+-464 465 0
+464 0
+-466 467 0
+466 0
+-468 469 0
+468 0
+-470 471 0
+470 0
+c 56 -> SNNT.QueryGeneration.ConstraintVariable(-0.47*x2-1.0*x4<=0.51)
+c 35 -> Intermediate
+c 429 -> Intermediate
+c 60 -> Intermediate
+c 220 -> Intermediate
+c 308 -> Intermediate
+c 215 -> SNNT.QueryGeneration.ConstraintVariable(-200.0*x2<25.0)
+c 73 -> SNNT.QueryGeneration.ConstraintVariable(-88000.0*x4<44000.0)
+c 251 -> SNNT.QueryGeneration.ConstraintVariable(0.12*x20.2*x4<=-0.08)
+c 115 -> Intermediate
+c 112 -> Intermediate
+c 185 -> Intermediate
+c 348 -> Intermediate
+c 420 -> Intermediate
+c 404 -> Intermediate
+c 365 -> Intermediate
+c 417 -> Intermediate
+c 333 -> Intermediate
+c 364 -> Intermediate
+c 207 -> Intermediate
+c 422 -> SNNT.QueryGeneration.ConstraintVariable(1.0*x1-0.1*x4<0.05)
+c 431 -> Intermediate
+c 242 -> Intermediate
+c 183 -> Intermediate
+c 376 -> SNNT.QueryGeneration.ConstraintVariable(-200.0*x2<41.67)
+c 224 -> SNNT.QueryGeneration.ConstraintVariable(-1.0*x1-0.06*x4<0.02)
+c 465 -> Intermediate
+c 177 -> Intermediate
+c 430 -> Intermediate
+c 12 -> SNNT.QueryGeneration.ConstraintVariable(1.0*x8<=100.0)
+c 75 -> SNNT.QueryGeneration.ConstraintVariable(-0.47*x2-1.0*x4<0.5)
+c 23 -> SNNT.QueryGeneration.ConstraintVariable(-1.0*x10<=100.0)
+c 111 -> Intermediate
+c 41 -> Intermediate
+c 82 -> Intermediate
+c 130 -> Intermediate
+c 125 -> Intermediate
+c 77 -> Intermediate
+c 172 -> Intermediate
+c 71 -> Intermediate
+c 339 -> Intermediate
+c 66 -> Intermediate
+c 103 -> Intermediate
+c 280 -> Intermediate
+c 59 -> SNNT.QueryGeneration.ConstraintVariable(88000.0*x4<=-44000.0)
+c 208 -> Intermediate
+c 336 -> Intermediate
+c 26 -> SNNT.QueryGeneration.ConstraintVariable(-1.0*x13<=100.0)
+c 211 -> Intermediate
+c 358 -> Intermediate
+c 366 -> Intermediate
+c 127 -> SNNT.QueryGeneration.ConstraintVariable(0.62*x2-1.0*x4<0.5)
+c 116 -> Intermediate
+c 100 -> Intermediate
+c 414 -> Intermediate
+c 468 -> SNNT.QueryGeneration.ApproxCase(12, 1)
+c 79 -> Intermediate
+c 230 -> Intermediate
+c 279 -> Intermediate
+c 195 -> Intermediate
+c 374 -> Intermediate
+c 141 -> SNNT.QueryGeneration.ConstraintVariable(-3.52e7*x1<-220000.0)
+c 278 -> Intermediate
+c 450 -> SNNT.QueryGeneration.ApproxCase(4, 3)
+c 138 -> Intermediate
+c 222 -> Intermediate
+c 107 -> Intermediate
+c 46 -> SNNT.QueryGeneration.ConstraintVariable(-88000.0*x4<=45000.0)
+c 276 -> Intermediate
+c 295 -> Intermediate
+c 57 -> Intermediate
+c 381 -> Intermediate
+c 247 -> Intermediate
+c 170 -> Intermediate
+c 397 -> Intermediate
+c 129 -> Intermediate
+c 238 -> Intermediate
+c 250 -> Intermediate
+c 448 -> SNNT.QueryGeneration.ApproxCase(4, 2)
+c 78 -> SNNT.QueryGeneration.ConstraintVariable(-200.0*x2<=-1500.0)
+c 438 -> SNNT.QueryGeneration.ApproxCase(2, 2)
+c 133 -> Intermediate
+c 72 -> Intermediate
+c 258 -> SNNT.QueryGeneration.ConstraintVariable(-0.12*x2-0.2*x4<0.08)
+c 436 -> SNNT.QueryGeneration.ApproxCase(2, 1)
+c 184 -> Intermediate
+c 252 -> SNNT.QueryGeneration.ConstraintVariable(200.0*x2<25.0)
+c 1 -> SNNT.QueryGeneration.ConstraintVariable(-16000.0*x1<=8000.0)
+c 137 -> Intermediate
+c 22 -> SNNT.QueryGeneration.ConstraintVariable(-1.0*x9<=100.0)
+c 313 -> Intermediate
+c 435 -> Intermediate
+c 427 -> Intermediate
+c 454 -> SNNT.QueryGeneration.ApproxCase(5, 1)
+c 391 -> Intermediate
+c 237 -> Intermediate
+c 206 -> Intermediate
+c 270 -> SNNT.QueryGeneration.ConstraintVariable(-0.47*x21.0*x4<-0.51)
+c 354 -> Intermediate
+c 299 -> Intermediate
+c 33 -> Intermediate
+c 345 -> Intermediate
+c 40 -> SNNT.QueryGeneration.IsMaxCase(Formula[1.0*x9-1.0*x11<0.0, 1.0*x5-1.0*x11<0.0, 1.0*x8-1.0*x11<0.0, 1.0*x6-1.0*x11<0.0, 1.0*x7-1.0*x11<0.0, -1.0*x111.0*x13<0.0, 1.0*x10-1.0*x11<0.0, -1.0*x111.0*x12<0.0])
+c 400 -> Intermediate
+c 113 -> Intermediate
+c 231 -> Intermediate
+c 432 -> Intermediate
+c 245 -> Intermediate
+c 254 -> Intermediate
+c 283 -> Intermediate
+c 165 -> Intermediate
+c 309 -> Intermediate
+c 142 -> Intermediate
+c 416 -> Intermediate
+c 5 -> SNNT.QueryGeneration.ConstraintVariable(-200.0*x2<=100.0)
+c 55 -> Intermediate
+c 114 -> SNNT.QueryGeneration.ConstraintVariable(-0.62*x21.0*x4<=-0.5)
+c 325 -> Intermediate
+c 117 -> Intermediate
+c 45 -> Intermediate
+c 418 -> Intermediate
+c 444 -> SNNT.QueryGeneration.ApproxCase(3, 1)
+c 282 -> Intermediate
+c 449 -> Intermediate
+c 275 -> Intermediate
+c 337 -> Intermediate
+c 393 -> Intermediate
+c 457 -> Intermediate
+c 460 -> SNNT.QueryGeneration.ApproxCase(8, 1)
+c 363 -> Intermediate
+c 378 -> Intermediate
+c 158 -> Intermediate
+c 218 -> Intermediate
+c 176 -> Intermediate
+c 437 -> Intermediate
+c 28 -> SNNT.QueryGeneration.IsMaxCase(Formula[1.0*x5-1.0*x9<0.0, 1.0*x8-1.0*x9<0.0, 1.0*x6-1.0*x9<0.0, 1.0*x7-1.0*x9<0.0, -1.0*x91.0*x13<0.0, -1.0*x91.0*x11<0.0, -1.0*x91.0*x10<0.0, -1.0*x91.0*x12<0.0])
+c 148 -> Intermediate
+c 92 -> Intermediate
+c 36 -> SNNT.QueryGeneration.IsMaxCase(Formula[-1.0*x71.0*x9<0.0, 1.0*x5-1.0*x7<0.0, -1.0*x71.0*x8<0.0, 1.0*x6-1.0*x7<0.0, -1.0*x71.0*x13<0.0, -1.0*x71.0*x11<0.0, -1.0*x71.0*x10<0.0, -1.0*x71.0*x12<0.0])
+c 469 -> Intermediate
+c 451 -> Intermediate
+c 118 -> SNNT.QueryGeneration.ConstraintVariable(-16000.0*x1<-100.0)
+c 162 -> Intermediate
+c 84 -> Intermediate
+c 7 -> SNNT.QueryGeneration.ConstraintVariable(-200.0*x3<=0.0)
+c 25 -> SNNT.QueryGeneration.ConstraintVariable(-1.0*x12<=100.0)
+c 203 -> Intermediate
+c 292 -> Intermediate
+c 353 -> Intermediate
+c 232 -> Intermediate
+c 93 -> SNNT.QueryGeneration.ConstraintVariable(0.27*x1-1.0*x4<0.5)
+c 296 -> Intermediate
+c 304 -> Intermediate
+c 18 -> SNNT.QueryGeneration.ConstraintVariable(-1.0*x5<=100.0)
+c 240 -> Intermediate
+c 147 -> Intermediate
+c 157 -> SNNT.QueryGeneration.ConstraintVariable(-0.62*x2-1.0*x4<=0.51)
+c 16 -> SNNT.QueryGeneration.ConstraintVariable(1.0*x12<=100.0)
+c 370 -> Intermediate
+c 392 -> Intermediate
+c 341 -> Intermediate
+c 415 -> Intermediate
+c 349 -> Intermediate
+c 19 -> SNNT.QueryGeneration.ConstraintVariable(-1.0*x6<=100.0)
+c 44 -> SNNT.QueryGeneration.IsMaxCase(Formula[1.0*x9-1.0*x12<0.0, 1.0*x5-1.0*x12<0.0, 1.0*x8-1.0*x12<0.0, 1.0*x6-1.0*x12<0.0, 1.0*x7-1.0*x12<0.0, -1.0*x121.0*x13<0.0, 1.0*x11-1.0*x12<0.0, 1.0*x10-1.0*x12<0.0])
+c 266 -> Intermediate
+c 31 -> Intermediate
+c 217 -> Intermediate
+c 146 -> Intermediate
+c 368 -> Intermediate
+c 74 -> Intermediate
+c 61 -> SNNT.QueryGeneration.ConstraintVariable(0.47*x21.0*x4<=-0.5)
+c 29 -> Intermediate
+c 412 -> SNNT.QueryGeneration.ConstraintVariable(0.09*x20.2*x4<=-0.08)
+c 390 -> Intermediate
+c 380 -> Intermediate
+c 212 -> SNNT.QueryGeneration.ConstraintVariable(200.0*x2<=-25.0)
+c 159 -> Intermediate
+c 193 -> Intermediate
+c 463 -> Intermediate
+c 101 -> SNNT.QueryGeneration.ConstraintVariable(-0.62*x21.0*x4<-0.51)
+c 360 -> Intermediate
+c 223 -> Intermediate
+c 399 -> Intermediate
+c 285 -> Intermediate
+c 17 -> SNNT.QueryGeneration.ConstraintVariable(1.0*x13<=100.0)
+c 421 -> Intermediate
+c 271 -> Intermediate
+c 335 -> Intermediate
+c 89 -> Intermediate
+c 198 -> Intermediate
+c 214 -> SNNT.QueryGeneration.ConstraintVariable(-0.12*x20.2*x4<=-0.08)
+c 80 -> SNNT.QueryGeneration.ConstraintVariable(0.09*x20.2*x4<=0.6)
+c 331 -> Intermediate
+c 462 -> SNNT.QueryGeneration.ApproxCase(9, 1)
+c 246 -> Intermediate
+c 48 -> SNNT.QueryGeneration.ConstraintVariable(200.0*x2<0.0)
+c 15 -> SNNT.QueryGeneration.ConstraintVariable(1.0*x11<=100.0)
+c 284 -> Intermediate
+c 402 -> Intermediate
+c 413 -> SNNT.QueryGeneration.ConstraintVariable(200.0*x2<41.67)
+c 110 -> SNNT.QueryGeneration.ConstraintVariable(0.62*x2-1.0*x4<=0.51)
+c 30 -> SNNT.QueryGeneration.IsMaxCase(Formula[-1.0*x51.0*x9<0.0, -1.0*x51.0*x8<0.0, -1.0*x51.0*x6<0.0, -1.0*x51.0*x7<0.0, -1.0*x51.0*x13<0.0, -1.0*x51.0*x11<0.0, -1.0*x51.0*x10<0.0, -1.0*x51.0*x12<0.0])
+c 419 -> SNNT.QueryGeneration.ConstraintVariable(-0.09*x2-0.2*x4<0.08)
+c 6 -> SNNT.QueryGeneration.ConstraintVariable(200.0*x2<=100.0)
+c 234 -> Intermediate
+c 219 -> Intermediate
+c 367 -> Intermediate
+c 164 -> Intermediate
+c 186 -> Intermediate
+c 253 -> Intermediate
+c 470 -> SNNT.QueryGeneration.ApproxCase(13, 1)
+c 64 -> Intermediate
+c 267 -> Intermediate
+c 394 -> Intermediate
+c 90 -> SNNT.QueryGeneration.ConstraintVariable(-0.09*x2-0.2*x4<-0.6)
+c 139 -> Intermediate
+c 4 -> SNNT.QueryGeneration.ConstraintVariable(40.0*x4<=20.0)
+c 13 -> SNNT.QueryGeneration.ConstraintVariable(1.0*x9<=100.0)
+c 359 -> Intermediate
+c 405 -> Intermediate
+c 316 -> Intermediate
+c 456 -> SNNT.QueryGeneration.ApproxCase(6, 1)
+c 328 -> Intermediate
+c 179 -> Intermediate
+c 369 -> Intermediate
+c 410 -> SNNT.QueryGeneration.ConstraintVariable(-200.0*x2<=-41.67)
+c 356 -> Intermediate
+c 300 -> Intermediate
+c 43 -> Intermediate
+c 11 -> SNNT.QueryGeneration.ConstraintVariable(1.0*x7<=100.0)
+c 171 -> Intermediate
+c 119 -> Intermediate
+c 39 -> Intermediate
+c 406 -> Intermediate
+c 216 -> Intermediate
+c 126 -> Intermediate
+c 108 -> SNNT.QueryGeneration.ConstraintVariable(200.0*x2<=0.0)
+c 441 -> Intermediate
+c 443 -> Intermediate
+c 382 -> SNNT.QueryGeneration.ConstraintVariable(0.09*x2-0.2*x4<0.08)
+c 156 -> Intermediate
+c 439 -> Intermediate
+c 2 -> SNNT.QueryGeneration.ConstraintVariable(16000.0*x1<=8000.0)
+c 10 -> SNNT.QueryGeneration.ConstraintVariable(1.0*x6<=100.0)
+c 27 -> Intermediate
+c 124 -> Intermediate
+c 261 -> SNNT.QueryGeneration.ConstraintVariable(1.0*x1-0.06*x4<0.02)
+c 307 -> Intermediate
+c 257 -> Intermediate
+c 200 -> Intermediate
+c 290 -> Intermediate
+c 20 -> SNNT.QueryGeneration.ConstraintVariable(-1.0*x7<=100.0)
+c 81 -> SNNT.QueryGeneration.ConstraintVariable(200.0*x2<1500.0)
+c 340 -> Intermediate
+c 187 -> SNNT.QueryGeneration.ConstraintVariable(3.52e7*x1<-220000.0)
+c 213 -> Intermediate
+c 398 -> Intermediate
+c 9 -> SNNT.QueryGeneration.ConstraintVariable(1.0*x5<=100.0)
+c 344 -> Intermediate
+c 346 -> SNNT.QueryGeneration.ConstraintVariable(-0.09*x2-0.2*x4<0.09)
+c 294 -> Intermediate
+c 109 -> Intermediate
+c 409 -> Intermediate
+c 161 -> SNNT.QueryGeneration.ConstraintVariable(0.62*x21.0*x4<=-0.5)
+c 445 -> Intermediate
+c 453 -> Intermediate
+c 466 -> SNNT.QueryGeneration.ApproxCase(11, 1)
+c 249 -> SNNT.QueryGeneration.ConstraintVariable(-200.0*x2<=-25.0)
+c 383 -> Intermediate
+c 395 -> Intermediate
+c 372 -> Intermediate
+c 241 -> Intermediate
+c 401 -> Intermediate
+c 88 -> Intermediate
+c 209 -> Intermediate
+c 236 -> Intermediate
+c 323 -> Intermediate
+c 260 -> Intermediate
+c 297 -> SNNT.QueryGeneration.ConstraintVariable(-0.09*x20.2*x4<=-0.09)
+c 24 -> SNNT.QueryGeneration.ConstraintVariable(-1.0*x11<=100.0)
+c 8 -> SNNT.QueryGeneration.ConstraintVariable(200.0*x3<=0.0)
+c 37 -> Intermediate
+c 83 -> Intermediate
+c 201 -> Intermediate
+c 99 -> Intermediate
+c 281 -> SNNT.QueryGeneration.ConstraintVariable(-0.47*x21.0*x4<=-0.5)
+c 14 -> SNNT.QueryGeneration.ConstraintVariable(1.0*x10<=100.0)
+c 464 -> SNNT.QueryGeneration.ApproxCase(10, 1)
+c 386 -> Intermediate
+c 433 -> Intermediate
+c 447 -> Intermediate
+c 314 -> Intermediate
+c 357 -> Intermediate
+c 461 -> Intermediate
+c 334 -> Intermediate
+c 403 -> Intermediate
+c 174 -> Intermediate
+c 322 -> Intermediate
+c 269 -> Intermediate
+c 315 -> Intermediate
+c 123 -> Intermediate
+c 305 -> Intermediate
+c 268 -> Intermediate
+c 423 -> Intermediate
+c 32 -> SNNT.QueryGeneration.IsMaxCase(Formula[-1.0*x81.0*x9<0.0, 1.0*x5-1.0*x8<0.0, 1.0*x6-1.0*x8<0.0, 1.0*x7-1.0*x8<0.0, -1.0*x81.0*x13<0.0, -1.0*x81.0*x11<0.0, -1.0*x81.0*x10<0.0, -1.0*x81.0*x12<0.0])
+c 197 -> Intermediate
+c 233 -> Intermediate
+c 196 -> Intermediate
+c 262 -> Intermediate
+c 320 -> Intermediate
+c 408 -> Intermediate
+c 471 -> Intermediate
+c 324 -> Intermediate
+c 210 -> Intermediate
+c 151 -> Intermediate
+c 239 -> Intermediate
+c 54 -> SNNT.QueryGeneration.ConstraintVariable(-200.0*x2<=0.0)
+c 63 -> Intermediate
+c 91 -> Intermediate
+c 62 -> Intermediate
+c 205 -> Intermediate
+c 244 -> Intermediate
+c 327 -> Intermediate
+c 150 -> SNNT.QueryGeneration.ConstraintVariable(0.62*x21.0*x4<-0.51)
+c 58 -> Intermediate
+c 199 -> Intermediate
+c 434 -> SNNT.QueryGeneration.ApproxCase(1, 1)
+c 173 -> SNNT.QueryGeneration.ConstraintVariable(-0.62*x2-1.0*x4<0.5)
+c 256 -> Intermediate
+c 188 -> Intermediate
+c 277 -> SNNT.QueryGeneration.ConstraintVariable(0.47*x2-1.0*x4<=0.51)
+c 361 -> Intermediate
+c 98 -> Intermediate
+c 355 -> Intermediate
+c 235 -> Intermediate
+c 204 -> Intermediate
+c 385 -> SNNT.QueryGeneration.ConstraintVariable(-1.0*x1-0.1*x4<0.05)
+c 377 -> Intermediate
+c 411 -> Intermediate
+c 321 -> Intermediate
+c 371 -> Intermediate
+c 384 -> Intermediate
+c 76 -> Intermediate
+c 34 -> SNNT.QueryGeneration.IsMaxCase(Formula[-1.0*x61.0*x9<0.0, 1.0*x5-1.0*x6<0.0, -1.0*x61.0*x8<0.0, -1.0*x61.0*x7<0.0, -1.0*x61.0*x13<0.0, -1.0*x61.0*x11<0.0, -1.0*x61.0*x10<0.0, -1.0*x61.0*x12<0.0])
+c 243 -> Intermediate
+c 194 -> Intermediate
+c 42 -> SNNT.QueryGeneration.IsMaxCase(Formula[1.0*x9-1.0*x10<0.0, 1.0*x5-1.0*x10<0.0, 1.0*x8-1.0*x10<0.0, 1.0*x6-1.0*x10<0.0, 1.0*x7-1.0*x10<0.0, -1.0*x101.0*x13<0.0, -1.0*x101.0*x11<0.0, -1.0*x101.0*x12<0.0])
+c 132 -> Intermediate
+c 140 -> Intermediate
+c 202 -> Intermediate
+c 248 -> Intermediate
+c 169 -> Intermediate
+c 317 -> Intermediate
+c 458 -> SNNT.QueryGeneration.ApproxCase(7, 1)
+c 442 -> SNNT.QueryGeneration.ApproxCase(2, 4)
+c 455 -> Intermediate
+c 255 -> Intermediate
+c 160 -> Intermediate
+c 289 -> Intermediate
+c 49 -> Intermediate
+c 291 -> Intermediate
+c 452 -> SNNT.QueryGeneration.ApproxCase(4, 4)
+c 94 -> Intermediate
+c 225 -> Intermediate
+c 428 -> Intermediate
+c 102 -> SNNT.QueryGeneration.ConstraintVariable(-200.0*x2<0.0)
+c 128 -> Intermediate
+c 259 -> Intermediate
+c 70 -> Intermediate
+c 347 -> Intermediate
+c 332 -> Intermediate
+c 21 -> SNNT.QueryGeneration.ConstraintVariable(-1.0*x8<=100.0)
+c 229 -> Intermediate
+c 38 -> SNNT.QueryGeneration.IsMaxCase(Formula[1.0*x9-1.0*x13<0.0, 1.0*x5-1.0*x13<0.0, 1.0*x8-1.0*x13<0.0, 1.0*x6-1.0*x13<0.0, 1.0*x7-1.0*x13<0.0, 1.0*x11-1.0*x13<0.0, 1.0*x10-1.0*x13<0.0, 1.0*x12-1.0*x13<0.0])
+c 163 -> Intermediate
+c 375 -> SNNT.QueryGeneration.ConstraintVariable(-0.09*x20.2*x4<=-0.08)
+c 379 -> Intermediate
+c 131 -> Intermediate
+c 396 -> Intermediate
+c 440 -> SNNT.QueryGeneration.ApproxCase(2, 3)
+c 192 -> Intermediate
+c 326 -> Intermediate
+c 221 -> SNNT.QueryGeneration.ConstraintVariable(0.12*x2-0.2*x4<0.08)
+c 373 -> SNNT.QueryGeneration.ConstraintVariable(200.0*x2<=-41.67)
+c 53 -> Intermediate
+c 362 -> Intermediate
+c 47 -> SNNT.QueryGeneration.ConstraintVariable(0.47*x21.0*x4<-0.51)
+c 175 -> Intermediate
+c 407 -> Intermediate
+c 338 -> SNNT.QueryGeneration.ConstraintVariable(0.09*x20.2*x4<=-0.09)
+c 467 -> Intermediate
+c 3 -> SNNT.QueryGeneration.ConstraintVariable(-40.0*x4<=14.0)
+c 178 -> Intermediate
+c 306 -> SNNT.QueryGeneration.ConstraintVariable(0.09*x2-0.2*x4<0.09)
+c 459 -> Intermediate
+c 149 -> Intermediate
+c 155 -> Intermediate
+c 65 -> SNNT.QueryGeneration.ConstraintVariable(16000.0*x1<-100.0)
+c 446 -> SNNT.QueryGeneration.ApproxCase(4, 1)
+c 293 -> SNNT.QueryGeneration.ConstraintVariable(0.47*x2-1.0*x4<0.5)
+c 298 -> Intermediate
+c ----------------------------------------
+c s pmc 18 273 218 789 376
+c next_query           21.8k
+c check_infeasib...  88.5k
+c query_construc...  76.0k

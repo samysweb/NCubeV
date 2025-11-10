@@ -27,7 +27,7 @@ MLStyle.pattern_uncall(o::Operation, _, _, _, _) = literal(o)
 	operation :: Operation
 	args :: Vector{Term}
 	args_hash :: UInt
-	CompositeTerm(operation :: Operation, args :: Vector{T}) where {T <: Term} = new(operation, args, reduce(+,Iterators.map(hash,args)))
+	CompositeTerm(operation :: Operation, args :: Vector{T}) where {T <: Term} = new(operation, args, reduce(+,Iterators.map(hash,args),init=0))
 end
 
 # Formulae
@@ -42,6 +42,13 @@ MLStyle.pattern_uncall(e::Comparator, _, _, _, _) = literal(e)
 	comparator :: Comparator
 	left :: Term
 	right :: Term
+end
+
+@as_record struct Predicate <: Formula
+	predicate_name :: String
+	parameters :: Vector{Term}
+	args_hash :: UInt
+	Predicate(predicate_name :: String, args :: Vector{T}) where {T <: Term} = new(predicate_name, args, reduce(+,Iterators.map(hash,args),init=0))
 end
 
 @as_record struct TrueAtom <: Formula end
@@ -113,7 +120,7 @@ MLStyle.pattern_uncall(e::Connective, _, _, _, _) = literal(e)
 	connective :: Connective
 	args :: Vector{Formula}
 	args_hash :: UInt
-	CompositeFormula(connective :: Connective, args :: Vector{T}) where {T <: Formula} = new(connective, args, reduce(+,Iterators.map(hash,args)))
+	CompositeFormula(connective :: Connective, args :: Vector{T}) where {T <: Formula} = new(connective, args, reduce(+,Iterators.map(hash,args),init=0))
 end
 
 abstract type ApproximationPrototype end

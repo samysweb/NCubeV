@@ -1,0 +1,408 @@
+Lemma "ACAS_Reimport/Lemma 1e): Equivalence of non-max explicit safe regions (flexible alo)"
+Definitions
+  Real hp;   /* puck height */
+  Real rp;   /* puck radius */
+
+  /* velocity bound 1 = lower, -1 = upper */
+  Real wUp = -1;
+  Real wLo = 1;
+
+  Real minI(Real v, Real w) = min(0, v*w);
+  Real maxI(Real v, Real w, Real vlo) = max(0, w * (vlo - v));
+  
+  
+  Bool is1MinI(Real v, Real w) <-> 0 <= v*w;
+  Real minI1(Real v, Real w) = 0;
+  Real minI2(Real v, Real w) = v*w;
+  Bool is1MaxI(Real v, Real w, Real vlo) <-> 0 >= w * (vlo - v);
+  Real maxI1(Real v, Real w, Real vlo) = 0;
+  Real maxI2(Real v, Real w, Real vlo) = w * (vlo - v);
+
+  Bool Limpl(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> 
+    \forall t \forall ro \forall ho (
+        (0 <= t & t < maxI(v,w,vlo)/alo & ro = rv * t & ho = (w * alo)/2 * t^2 + v * t)
+      | (t >= maxI(v,w,vlo)/alo & ro = rv * t & ho = vlo * t - w * maxI(v,w,vlo)^2/(2*alo))
+      -> (abs(r - ro) > rp | w * h < w * ho - hp)
+    );
+
+  Bool init(Real rv, Real alo) <-> rp>=0 & hp>0 & rv>=0 & alo>0;
+  
+  HP motion ::= { {r' = -rv, h' = -v, v' = a & w*v>=w*vlo|w*a>=alo } };
+  
+  Bool case1(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp <= r & r < -rp - rv * minI(v,w)/alo;
+  Bool bound1(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r + rp)^2 + w * rv * v * (r+rp) - rv^2 * hp;
+  Bool case2(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp - rv * minI(v,w)/alo <= r & r <= rp - rv * minI(v,w)/alo;
+  Bool bound2(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * h < (-(minI(v,w)^2))/(2*alo) - hp;
+  Bool case3(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> rp - rv * minI(v,w)/alo < r & r <= rp + rv * maxI(v,w,vlo)/alo;
+  Bool bound3(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r - rp)^2 + w * rv * v * (r - rp) - rv^2 * hp;
+  Bool case4(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> rp + rv * maxI(v,w,vlo)/alo < r;
+  Bool bound4(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> rv = 0 | w * rv * h  <  w * vlo * (r - rp) - rv * maxI(v,w,vlo)^2/(2*alo) - rv * hp;
+  Bool case5(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp <= r & r < -rp + rv * maxI(v,w,vlo)/alo;
+  Bool bound5(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r + rp)^2 + w * rv * v * (r + rp) - rv^2 * hp;
+  Bool case6(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp + rv * maxI(v,w,vlo)/alo <= r;
+  Bool bound6(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> ( (rv = 0 & r > rp)
+                    | w * rv * h <  w * vlo * (r + rp) - rv * maxI(v,w,vlo)^2/(2*alo) - rv * hp );
+                    
+  Bool case1NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp <= r & 
+    (r < -rp - rv * minI1(v,w)/alo & is1MinI(v,w) | r < -rp - rv * minI2(v,w)/alo & !is1MinI(v,w));
+  Bool bound1NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r + rp)^2 + w * rv * v * (r+rp) - rv^2 * hp;
+  Bool case2NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <->  
+    (-rp - rv * minI1(v,w)/alo <= r & is1MinI(v,w) | -rp - rv * minI2(v,w)/alo <= r & !is1MinI(v,w)) &
+    (r <= rp - rv * minI1(v,w)/alo  & is1MinI(v,w) | r <= rp - rv * minI2(v,w)/alo  & !is1MinI(v,w));
+  Bool bound2NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <->
+    (w * h < (-(minI1(v,w)^2))/(2*alo) - hp & is1MinI(v,w) | w * h < (-(minI2(v,w)^2))/(2*alo) - hp & !is1MinI(v,w));
+  Bool case3NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <->
+    (rp - rv * minI1(v,w)/alo < r & is1MinI(v,w) | rp - rv * minI2(v,w)/alo < r & !is1MinI(v,w)) &
+    (r <= rp + rv * maxI1(v,w,vlo)/alo & is1MaxI(v,w,vlo) | r <= rp + rv * maxI2(v,w,vlo)/alo  & !is1MaxI(v,w,vlo));
+  Bool bound3NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r - rp)^2 + w * rv * v * (r - rp) - rv^2 * hp;
+  Bool case4NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <->
+    (rp + rv * maxI1(v,w,vlo)/alo < r & is1MaxI(v,w,vlo) | rp + rv * maxI2(v,w,vlo)/alo < r & !is1MaxI(v,w,vlo));
+  Bool bound4NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> rv = 0 | 
+    (w * rv * h  <  w * vlo * (r - rp) - rv * maxI1(v,w,vlo)^2/(2*alo) - rv * hp & is1MaxI(v,w,vlo) | 
+     w * rv * h  <  w * vlo * (r - rp) - rv * maxI2(v,w,vlo)^2/(2*alo) - rv * hp & !is1MaxI(v,w,vlo));
+  Bool case5NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp <= r &
+    (r < -rp + rv * maxI1(v,w,vlo)/alo & is1MaxI(v,w,vlo) | r < -rp + rv * maxI2(v,w,vlo)/alo & !is1MaxI(v,w,vlo));
+  Bool bound5NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r + rp)^2 + w * rv * v * (r + rp) - rv^2 * hp;
+  Bool case6NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <->
+    (-rp + rv * maxI1(v,w,vlo)/alo <= r & is1MaxI(v,w,vlo) | -rp + rv * maxI2(v,w,vlo)/alo <= r & !is1MaxI(v,w,vlo));
+  Bool bound6NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> ( (rv = 0 & r > rp) |
+                    ( w * rv * h <  w * vlo * (r + rp) - rv * maxI1(v,w,vlo)^2/(2*alo) - rv * hp & is1MaxI(v,w,vlo) |
+                      w * rv * h <  w * vlo * (r + rp) - rv * maxI2(v,w,vlo)^2/(2*alo) - rv * hp & !is1MaxI(v,w,vlo)) );
+
+  Bool Lexpl(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> (
+    (w * vlo >= 0 ->
+        (case1(r,v,w,vlo,rv,alo) -> bound1(r,h,v,w,vlo,rv,alo))
+      & (case2(r,v,w,vlo,rv,alo) -> bound2(r,h,v,w,vlo,rv,alo))
+      & (case3(r,v,w,vlo,rv,alo) -> bound3(r,h,v,w,vlo,rv,alo))
+      & (case4(r,v,w,vlo,rv,alo) -> bound4(r,h,v,w,vlo,rv,alo))
+    )
+    &
+    (w * vlo < 0 ->
+        (case5(r,v,w,vlo,rv,alo) -> bound5(r,h,v,w,vlo,rv,alo))
+      & (case6(r,v,w,vlo,rv,alo) -> bound6(r,h,v,w,vlo,rv,alo))
+    )
+  );
+  
+  Bool LexplNonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> (
+    (w * vlo >= 0 ->
+        (case1NonMax(r,v,w,vlo,rv,alo) -> bound1NonMax(r,h,v,w,vlo,rv,alo))
+      & (case2NonMax(r,v,w,vlo,rv,alo) -> bound2NonMax(r,h,v,w,vlo,rv,alo))
+      & (case3NonMax(r,v,w,vlo,rv,alo) -> bound3NonMax(r,h,v,w,vlo,rv,alo))
+      & (case4NonMax(r,v,w,vlo,rv,alo) -> bound4NonMax(r,h,v,w,vlo,rv,alo))
+    )
+    &
+    (w * vlo < 0 ->
+        (case5NonMax(r,v,w,vlo,rv,alo) -> bound5NonMax(r,h,v,w,vlo,rv,alo))
+      & (case6NonMax(r,v,w,vlo,rv,alo) -> bound6NonMax(r,h,v,w,vlo,rv,alo))
+    )
+  );
+End.
+
+ProgramVariables  /** Variables **/
+   /* horizontal */
+  Real alo;  /* minimal vertical acceleration. Typically g/4 */
+  Real r;    /* relative distance in ft; xi - xo */
+             /* x = r */
+  Real rv;   /* relative speed -(vi - vo) */
+   /* vertical */
+  Real h;    /* relative altitude in ft */
+             /* if negative: the intruder is lower than the ownship */
+             /* h := hi - ho */
+             /* z = h */
+  Real v;    /* vertical velocity of ownship */
+  Real vlo;  /* target minimum velocity */
+  Real w;    /* velocity bound 1 = lower, -1 = upper */
+  Real a;    /* vertical acceleration of ownship */
+End.
+
+Problem  
+  LexplNonMax(r, h, v, w, vlo, rv,alo) <-> Lexpl(r, h, v, w, vlo, rv,alo)
+End.
+
+Tactic "Proof for ACAS_Reimport/Lemma 1c): Equivalence of non-max explicit safe regions"
+equivR('R=="LexplNonMax(r,h,v,w,vlo,rv,alo)<->Lexpl(r,h,v,w,vlo,rv,alo)"); <(
+  "LexplNonMax(r,h,v,w,vlo,rv,alo)&Lexpl(r,h,v,w,vlo,rv,alo)":
+    expand("Lexpl");
+    expand("LexplNonMax");
+    cut("(case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))"); <(
+      "Use":
+        andL('L=="(case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+        andL('L=="(case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+        andL('L=="(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+        andL('L=="(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+        andL('L=="(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+        andL('L=="(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+        andL('L=="(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+        andL('L=="(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+        andL('L=="(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+        andL('L=="(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+        andL('L=="(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+        andL('L=="(w*vlo>=0->(case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo))&(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo)))&(w*vlo < 0->(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo)))");
+        andR('R=="(w*vlo>=0->(case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo)))&(w*vlo < 0->(case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo)))"); <(
+          "w*vlo>=0->(case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo))":
+            implyR('R=="w*vlo>=0->(case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo))");
+            hideL('L=="w*vlo < 0->(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+            implyL('L=="w*vlo>=0->(case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo))&(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo))"); <(
+              "w*vlo>=0":
+                hideR('R=="(case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo))");
+                propClose,
+              "(case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo))&(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo))":
+                unfold; <(
+                  "case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo)//Use//Use//Use//Use":
+                    propClose,
+                  "case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo)//Use//Use//Use//Use":
+                    propClose,
+                  "case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo)//Use//Use//Use//Use":
+                    propClose,
+                  "case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo)//Use//Use//Use//Use":
+                    propClose
+                )
+            ),
+          "w*vlo < 0->(case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo))":
+            implyR('R=="w*vlo < 0->(case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo))");
+            andR('R=="(case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo))"); <(
+              "case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo)":
+                implyR('R=="case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo)");
+                hideL('L=="w*vlo>=0->(case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo))&(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo))");
+                implyL('L=="w*vlo < 0->(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo))"); <(
+                  "w*vlo < 0":
+                    id,
+                  "(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo))":
+                    andL('L=="(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    implyL('L=="case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo)"); <(
+                      "case5NonMax(r,v,w,vlo,rv,alo)":
+                        hideR('R=="bound5(r,h,v,w,vlo,rv,alo)");
+                        propClose,
+                      "bound5NonMax(r,h,v,w,vlo,rv,alo)":
+                        hideL('L=="case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo)");
+                        hideL('L=="case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo)");
+                        hideL('L=="case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo)");
+                        hideL('L=="case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo)");
+                        hideL('L=="case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo)");
+                        hideL('L=="case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo)");
+                        hideL('L=="bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo)");
+                        hideL('L=="bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo)");
+                        hideL('L=="bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo)");
+                        hideL('L=="bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo)");
+                        hideL('L=="bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo)");
+                        hideL('L=="case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo)");
+                        propClose
+                    )
+                ),
+              "case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo)":
+                implyR('R=="case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo)");
+                implyL('L=="w*vlo < 0->(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo))"); <(
+                  "w*vlo < 0":
+                    hideR('R=="bound6(r,h,v,w,vlo,rv,alo)");
+                    propClose,
+                  "(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo))":
+                    andL('L=="(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    implyL('L=="case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo)"); <(
+                      "case6NonMax(r,v,w,vlo,rv,alo)":
+                        hideR('R=="bound6(r,h,v,w,vlo,rv,alo)");
+                        propClose,
+                      "bound6NonMax(r,h,v,w,vlo,rv,alo)":
+                        hideL('L=="case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo)");
+                        hideL('L=="case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo)");
+                        hideL('L=="case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo)");
+                        hideL('L=="case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo)");
+                        hideL('L=="case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo)");
+                        hideL('L=="case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo)");
+                        hideL('L=="bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo)");
+                        hideL('L=="bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo)");
+                        hideL('L=="bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo)");
+                        hideL('L=="bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo)");
+                        hideL('L=="bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo)");
+                        propClose
+                    )
+                )
+            )
+        ),
+      "Show":
+        hideR('R=="(w*vlo>=0->(case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo)))&(w*vlo < 0->(case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo)))");
+        hideL('L=="(w*vlo>=0->(case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo))&(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo)))&(w*vlo < 0->(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo)))");
+        expandAllDefs();
+        useLemma("ACAS_Reimport/Lemma 1d): Equivalence of non-max explicit cases (flexible alo)", "prop")
+    ),
+  "!LexplNonMax(r,h,v,w,vlo,rv,alo)&!Lexpl(r,h,v,w,vlo,rv,alo)":
+    expand("Lexpl");
+    expand("LexplNonMax");
+    andL('L=="(w*vlo>=0->(case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo)))&(w*vlo < 0->(case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo)))");
+    cut("(case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))"); <(
+      "Use":
+        andR('R=="(w*vlo>=0->(case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo))&(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo)))&(w*vlo < 0->(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo)))"); <(
+          "w*vlo>=0->(case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo))&(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo))":
+            implyR('R=="w*vlo>=0->(case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo))&(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo))");
+            hideL('L=="w*vlo < 0->(case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo))");
+            implyL('L=="w*vlo>=0->(case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo))"); <(
+              "w*vlo>=0":
+                hideR('R=="(case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo))&(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo))");
+                hideL('L=="(case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                propClose,
+              "(case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo))":
+                hideL('L=="w*vlo>=0");
+                andR('R=="(case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo))&(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo))"); <(
+                  "case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo)":
+                    andL('L=="(case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo))");
+                    hideL('L=="(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    implyL('L=="case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo)"); <(
+                      "case1(r,v,w,vlo,rv,alo)":
+                        implyR('R=="case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo)");
+                        hideR('R=="bound1NonMax(r,h,v,w,vlo,rv,alo)");
+                        hideL('L=="(case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                        propClose,
+                      "bound1(r,h,v,w,vlo,rv,alo)":
+                        implyR('R=="case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo)");
+                        hideL('L=="case1NonMax(r,v,w,vlo,rv,alo)");
+                        propClose
+                    ),
+                  "(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo))":
+                    andL('L=="(case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    andL('L=="(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                    andR('R=="(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo))"); <(
+                      "case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo)":
+                        implyR('R=="case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo)");
+                        implyL('L=="case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo)"); <(
+                          "case2(r,v,w,vlo,rv,alo)":
+                            hideR('R=="bound2NonMax(r,h,v,w,vlo,rv,alo)");
+                            propClose,
+                          "bound2(r,h,v,w,vlo,rv,alo)":
+                            hideL('L=="case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo)");
+                            hideL('L=="case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo)");
+                            hideL('L=="case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo)");
+                            hideL('L=="case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo)");
+                            hideL('L=="bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo)");
+                            hideL('L=="case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo)");
+                            hideL('L=="case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo)");
+                            hideL('L=="case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo)");
+                            hideL('L=="case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo)");
+                            hideL('L=="case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo)");
+                            hideL('L=="bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo)");
+                            propClose
+                        ),
+                      "(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo))":
+                        andR('R=="(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo))"); <(
+                          "case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo)":
+                            implyL('L=="case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo)"); <(
+                              "case3(r,v,w,vlo,rv,alo)":
+                                implyR('R=="case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo)");
+                                hideR('R=="bound3NonMax(r,h,v,w,vlo,rv,alo)");
+                                propClose,
+                              "bound3(r,h,v,w,vlo,rv,alo)":
+                                implyR('R=="case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo)");
+                                hideL('L=="case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo)");
+                                hideL('L=="case3NonMax(r,v,w,vlo,rv,alo)");
+                                hideL('L=="bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo)");
+                                hideL('L=="case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo)");
+                                hideL('L=="case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo)");
+                                hideL('L=="case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo)");
+                                hideL('L=="case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo)");
+                                hideL('L=="case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo)");
+                                hideL('L=="case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo)");
+                                hideL('L=="case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo)");
+                                hideL('L=="case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo)");
+                                hideL('L=="bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo)");
+                                hideL('L=="bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo)");
+                                hideL('L=="bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo)");
+                                hideL('L=="bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo)");
+                                propClose
+                            ),
+                          "case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo)":
+                            hideL('L=="case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo)");
+                            hideL('L=="case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo)");
+                            hideL('L=="case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo)");
+                            hideL('L=="case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo)");
+                            hideL('L=="case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo)");
+                            hideL('L=="case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo)");
+                            hideL('L=="case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo)");
+                            hideL('L=="case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo)");
+                            hideL('L=="bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo)");
+                            hideL('L=="bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo)");
+                            hideL('L=="bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo)");
+                            hideL('L=="bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo)");
+                            hideL('L=="bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo)");
+                            implyR('R=="case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo)");
+                            implyL('L=="case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo)"); <(
+                              "case4(r,v,w,vlo,rv,alo)":
+                                propClose,
+                              "bound4(r,h,v,w,vlo,rv,alo)":
+                                propClose
+                            )
+                        )
+                    )
+                )
+            ),
+          "w*vlo < 0->(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo))":
+            hideL('L=="w*vlo>=0->(case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo))");
+            implyR('R=="w*vlo < 0->(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+            implyL('L=="w*vlo < 0->(case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo))"); <(
+              "w*vlo < 0":
+                hideR('R=="(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                propClose,
+              "(case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo))":
+                andL('L=="(case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo))");
+                andL('L=="(case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                andL('L=="(case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                andL('L=="(case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                andL('L=="(case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo))&(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                andL('L=="(case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                andL('L=="(case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo))&(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                andL('L=="(bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo))&(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                andL('L=="(bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo))&(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                andL('L=="(bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo))&(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                andL('L=="(bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo))&(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                andL('L=="(bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo))&(bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo))");
+                hideL('L=="w*vlo < 0");
+                hideL('L=="case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo)");
+                hideL('L=="case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo)");
+                hideL('L=="case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo)");
+                hideL('L=="case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo)");
+                hideL('L=="bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo)");
+                hideL('L=="bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo)");
+                hideL('L=="bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo)");
+                hideL('L=="bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo)");
+                andR('R=="(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo))"); <(
+                  "case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo)":
+                    implyR('R=="case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo)");
+                    implyL('L=="case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo)"); <(
+                      "case5(r,v,w,vlo,rv,alo)":
+                        propClose,
+                      "bound5(r,h,v,w,vlo,rv,alo)":
+                        propClose
+                    ),
+                  "case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo)":
+                    implyR('R=="case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo)");
+                    implyL('L=="case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo)"); <(
+                      "case6(r,v,w,vlo,rv,alo)":
+                        propClose,
+                      "bound6(r,h,v,w,vlo,rv,alo)":
+                        propClose
+                    )
+                )
+            )
+        ),
+      "Show":
+        hideR('R=="(w*vlo>=0->(case1NonMax(r,v,w,vlo,rv,alo)->bound1NonMax(r,h,v,w,vlo,rv,alo))&(case2NonMax(r,v,w,vlo,rv,alo)->bound2NonMax(r,h,v,w,vlo,rv,alo))&(case3NonMax(r,v,w,vlo,rv,alo)->bound3NonMax(r,h,v,w,vlo,rv,alo))&(case4NonMax(r,v,w,vlo,rv,alo)->bound4NonMax(r,h,v,w,vlo,rv,alo)))&(w*vlo < 0->(case5NonMax(r,v,w,vlo,rv,alo)->bound5NonMax(r,h,v,w,vlo,rv,alo))&(case6NonMax(r,v,w,vlo,rv,alo)->bound6NonMax(r,h,v,w,vlo,rv,alo)))");
+        hideL('L=="w*vlo>=0->(case1(r,v,w,vlo,rv,alo)->bound1(r,h,v,w,vlo,rv,alo))&(case2(r,v,w,vlo,rv,alo)->bound2(r,h,v,w,vlo,rv,alo))&(case3(r,v,w,vlo,rv,alo)->bound3(r,h,v,w,vlo,rv,alo))&(case4(r,v,w,vlo,rv,alo)->bound4(r,h,v,w,vlo,rv,alo))");
+        hideL('L=="w*vlo < 0->(case5(r,v,w,vlo,rv,alo)->bound5(r,h,v,w,vlo,rv,alo))&(case6(r,v,w,vlo,rv,alo)->bound6(r,h,v,w,vlo,rv,alo))");
+        expandAllDefs();
+        useLemma("ACAS_Reimport/Lemma 1d): Equivalence of non-max explicit cases (flexible alo)", "prop")
+    )
+)
+End.
+
+
+End.

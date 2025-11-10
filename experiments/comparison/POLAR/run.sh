@@ -1,0 +1,12 @@
+runlim ./nn_acc 3 10 20000 Taylor Concrete
+runlim ./nn_acc 3 10 20000 Taylor Symbolic
+runlim ./nn_acc 3 10 20000 Berns Concrete
+runlim ./nn_acc 3 10 20000 Berns Symbolic
+runlim ./nn_acc 3 10 20000 Mix Concrete
+runlim ./nn_acc 3 10 20000 Mix Symbolic
+runlim ./nn_acc 10 50 20000 Taylor Concrete
+runlim ./nn_acc 10 50 20000 Taylor Symbolic
+runlim ./nn_acc 10 50 20000 Berns Concrete
+runlim ./nn_acc 10 50 20000 Berns Symbolic
+runlim ./nn_acc 10 50 20000 Mix Concrete
+runlim ./nn_acc 10 50 20000 Mix Symbolic

@@ -2,6 +2,7 @@ module LP
 	using JuMP
 	using GLPK
 	using TimerOutputs
+	using LinearAlgebra
 
 	using ..Util
 	using ..AST
@@ -24,8 +25,9 @@ module LP
 		constraints = Array{Float32}(undef,(length(linear_constraints),var_num))
 		biases = Array{Float32}(undef,length(linear_constraints))
 		for (i,c) in enumerate(linear_constraints)
-			constraints[i,:] .= to_linear_constraint_coeff(c)
-			biases[i] = to_linear_constraint_bias(c)
+			coeff_normalization = 1.0/norm(c.coefficients)
+			constraints[i,:] .= coeff_normalization.*to_linear_constraint_coeff(c)
+			biases[i] = coeff_normalization*to_linear_constraint_bias(c)
 		end
 		@debug "Checking feasibility of ", constraints, " * x <= ", biases
 		@constraint(model, constraints * x .<= biases)
@@ -50,12 +52,14 @@ module LP
 		constraints = Array{Float32}(undef,(length(linear_constraints),var_num))
 		biases = Array{Float32}(undef,(length(linear_constraints),1))
 		for (i,c) in enumerate(linear_constraints)
-			constraints[i,:] .= to_linear_constraint_coeff(c)
-			biases[i] = to_linear_constraint_bias(c)
+			coeff_normalization = 1.0/norm(c.coefficients)
+			constraints[i,:] .= coeff_normalization.*to_linear_constraint_coeff(c)
+			biases[i] = coeff_normalization.*to_linear_constraint_bias(c)
 		end
 		@debug "Checking feasibility of ", constraints, " * x <= ", biases
 		end
 		@timeit Config.TIMER "LP_add_constraints" begin
+		#println(constraints)
 		@constraint(model, constraints * x .<= biases)
 		@objective(model, Min, 0)
 		end

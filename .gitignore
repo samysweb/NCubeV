@@ -4,3 +4,5 @@ bin/
 *.so
 **/.ipynb_checkpoints
 **/__pycache__
+test/parsing/examples/acas/old*
+_stuff

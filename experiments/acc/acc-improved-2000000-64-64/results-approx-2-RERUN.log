@@ -1,0 +1,1668 @@
+[runlim] version:		1.10
+[runlim] time limit:		311040000 seconds
+[runlim] real time limit:	311040000 seconds
+[runlim] space limit:		30900 MB
+[runlim] argv[0]:		./deps/NCubeV/bin/NCubeV
+[runlim] argv[1]:		test/parsing/examples/acc/formula
+[runlim] argv[2]:		test/parsing/examples/acc/fixed
+[runlim] argv[3]:		test/parsing/examples/acc/mapping
+[runlim] argv[4]:		test/networks/acc-improved-2000000-64-64.onnx
+[runlim] argv[5]:		experiments/acc/acc-improved-2000000-64-64/results-approx-2-RERUN
+[runlim] argv[6]:		--approx
+[runlim] argv[7]:		2
+[runlim] start:			Mon May 20 11:43:35 2024
+[runlim] main pid:		1866483
+[CMD] Using SMT solver: Z3
+[CMD] Parsed initial query: SNNT.AST.Query(((-1.0*x1<0.0&((-1.0*rPos)+(0.004999999999999999*(rVel^2.0)))<=0.0&-1.0*x1<=0.0&1.0*x1<=100.0&-1.0*x2<=200.0&1.0*x2<=200.0&-1.0*x3<=100.0&1.0*x3<=100.0)->(-1.0*x3<=-100.0|(-1.0*x3<=100.0&1.0*x3<100.0&(1.0*x3<0.0|-1.0*x3<0.0)&(((1.0*x20.1*x3<0.0|-1.0*x2<0.0)&((-0.005000000000000001*rAccpost)+(-0.1*rVel)+(-1.0*rPos)+(5.0e-5*(rAccpost^2.0))+(0.004999999999999999*(rVel^2.0))+(0.001*rAccpost*rVel))<0.0)|(((-0.005000000000000001*rAccpost)+(-0.1*rVel)+(-1.0*rPos)+(5.0e-5*(rAccpost^2.0))+(0.004999999999999999*(rVel^2.0))+(0.001*rAccpost*rVel))<0.0&((0.5*(rVel^2.0))+(-1.0*rAccpost*rPos))<0.0)))|(1.0*x3<=0.0&-1.0*x3<=0.0&((-0.1*rVel)+(-1.0*rPos)+(0.004999999999999999*(rVel^2.0)))<0.0))), Set(SNNT.AST.Variable[rAccpost, rVel, rPos]), 2, 1, Dict{SNNT.AST.ApproxQuery, SNNT.AST.Approximation}(), Vector{Float64}[])
+[CMD] SMT Timeout: 10s
+[CTRL] Iterating over conjunctions...
+[APPROX] Trying to build approximation...
+[APPROX] Generating expression for (rAccpost*rPos)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+Using N=2, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost^2.0)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+Using N=2, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost*rVel)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+Using N=2, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rVel^2.0)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+[runlim] sample:		10.0 time, 10.5 real, 1405.5 MB
+Using N=2, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[runlim] sample:		19.9 time, 20.5 real, 1398.8 MB
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Approximation Bounds: Vector{Float64}[]
+[APPROX] Approximations: Dict{SNNT.AST.ApproxQuery, SNNT.AST.Approximation}()
+[APPROX] Approximation is ready
+[SKELETON] Adding linear dependency constraint
+Float32[-1.0, 0.0, 0.0]+0.0<0.0 -> -1.0*x1<=0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=-100.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+-100.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=100.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+100.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<=-100.0 -> -1.0*x3<=100.0
+100.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<100.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00099999999999
+100.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<0.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<0.0 -> Float32[0.0, 0.0, 1.0]+0.0<100.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<0.0 | !Float32[0.0, 0.0, -1.0]+0.0<=-100.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<=-100.0 -> -1.0*x3<0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!-1.0*x3<0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x2<0.0 -> Float32[0.0, -1.0, 0.0]+0.0<=200.0
+0.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<=0.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<=0.0 -> Float32[0.0, 0.0, 1.0]+0.0<100.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, 1.0]+0.0<0.0 -> 1.0*x3<=0.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<=0.0 | !Float32[0.0, 0.0, -1.0]+0.0<=-100.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<=0.0 | !Float32[0.0, 0.0, -1.0]+0.0<0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<=-100.0 -> -1.0*x3<=0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<0.0 -> -1.0*x3<=0.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!-1.0*x3<=0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
+.[QUERY] Found all non-linear combinations. Count: 1
+..[QUERY] Found all non-linear combinations. Count: 1
+..[QUERY] Found all non-linear combinations. Count: 2
+..[QUERY] Found all non-linear combinations. Count: 1
+..[QUERY] Found all non-linear combinations. Count: 1
+...[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 3
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 13
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 13
+[CTRL] Processing linear query no. 2
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, -0.7958693597231216]
+[NNENUM] ub: [8.881798002219755, 0.0]
+[runlim] sample:		30.5 time, 30.5 real, 1518.2 MB
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  13
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 11/19  (28.394%) CEs: 11 ETA: 0.3 sec (expected 39 stars)   
+(0.2 sec) Q: 0, Sets: 18/25  (28.711%) CEs: 25 ETA: 0.6 sec (expected 63 stars)   (0.3 sec) Q: 0, Sets: 32/39  (29.785%) CEs: 39 ETA: 0.8 sec (expected 107 stars)   
+(0.4 sec) Q: 0, Sets: 47/51  (32.812%) CEs: 53 ETA: 0.9 sec (expected 143 stars)   (0.5 sec) Q: 0, Sets: 62/67  (33.398%) CEs: 66 ETA: 1.1 sec (expected 186 stars)   (0.6 sec) Q: 0, Sets: 75/79  (35.156%) CEs: 79 ETA: 1.2 sec (expected 213 stars)   (0.7 sec) Q: 0, Sets: 89/93  (41.406%) CEs: 93 ETA: 1.0 sec (expected 215 stars)   
+(0.8 sec) Q: 0, Sets: 104/106  (50.0%) CEs: 105 ETA: 0.8 sec (expected 208 stars)   (0.9 sec) Q: 0, Sets: 116/125  (50.476%) CEs: 119 ETA: 0.9 sec (expected 230 stars)   (1.0 sec) Q: 0, Sets: 130/138  (50.879%) CEs: 133 ETA: 1.0 sec (expected 256 stars)   (1.1 sec) Q: 0, Sets: 144/153  (51.306%) CEs: 146 ETA: 1.1 sec (expected 281 stars)   (1.3 sec) Q: 0, Sets: 158/166  (51.45%) CEs: 160 ETA: 1.2 sec (expected 307 stars)   (1.4 sec) Q: 0, Sets: 172/180  (51.709%) CEs: 173 ETA: 1.3 sec (expected 333 stars)   (1.5 sec) Q: 0, Sets: 187/197  (51.813%) CEs: 188 ETA: 1.4 sec (expected 361 stars)   (1.6 sec) Q: 0, Sets: 201/213  (51.857%) CEs: 203 ETA: 1.4 sec (expected 388 stars)   
+(1.7 sec) Q: 0, Sets: 215/226  (51.871%) CEs: 215 ETA: 1.5 sec (expected 414 stars)   (1.8 sec) Q: 0, Sets: 228/238  (51.894%) CEs: 229 ETA: 1.6 sec (expected 439 stars)   (1.9 sec) Q: 0, Sets: 243/251  (52.051%) CEs: 243 ETA: 1.7 sec (expected 467 stars)   (2.0 sec) Q: 0, Sets: 250/261  (52.055%) CEs: 257 ETA: 1.8 sec (expected 480 stars)   (2.1 sec) Q: 0, Sets: 265/276  (52.068%) CEs: 271 ETA: 1.9 sec (expected 509 stars)   (2.2 sec) Q: 0, Sets: 279/288  (52.092%) CEs: 282 ETA: 2.0 sec (expected 536 stars)   (2.3 sec) Q: 0, Sets: 292/303  (52.127%) CEs: 297 ETA: 2.1 sec (expected 560 stars)   (2.4 sec) Q: 0, Sets: 307/316  (52.136%) CEs: 312 ETA: 2.2 sec (expected 589 stars)   (2.5 sec) Q: 0, Sets: 322/331  (52.255%) CEs: 326 ETA: 2.3 sec (expected 616 stars)   (2.6 sec) Q: 0, Sets: 335/344  (52.275%) CEs: 339 ETA: 2.4 sec (expected 641 stars)   (2.7 sec) Q: 0, Sets: 349/356  (52.292%) CEs: 352 ETA: 2.4 sec (expected 667 stars)   (2.8 sec) Q: 0, Sets: 363/369  (52.539%) CEs: 365 ETA: 2.5 sec (expected 691 stars)   (2.9 sec) Q: 0, Sets: 377/384  (52.661%) CEs: 380 ETA: 2.6 sec (expected 716 stars)   (3.0 sec) Q: 0, Sets: 391/401  (52.74%) CEs: 393 ETA: 2.7 sec (expected 741 stars)   (3.1 sec) Q: 0, Sets: 403/411  (52.771%) CEs: 405 ETA: 2.8 sec (expected 764 stars)   (3.2 sec) Q: 0, Sets: 416/423  (52.82%) CEs: 417 ETA: 2.9 sec (expected 788 stars)   
+(3.3 sec) Q: 0, Sets: 428/437  (52.936%) CEs: 430 ETA: 2.9 sec (expected 809 stars)   (3.4 sec) Q: 0, Sets: 443/449  (53.021%) CEs: 444 ETA: 3.0 sec (expected 836 stars)   (3.5 sec) Q: 0, Sets: 456/463  (54.004%) CEs: 457 ETA: 3.0 sec (expected 844 stars)   (3.6 sec) Q: 0, Sets: 464/470  (54.578%) CEs: 471 ETA: 3.0 sec (expected 850 stars)   (3.7 sec) Q: 0, Sets: 478/484  (55.176%) CEs: 484 ETA: 3.0 sec (expected 866 stars)   (3.8 sec) Q: 0, Sets: 491/498  (56.25%) CEs: 496 ETA: 3.0 sec (expected 873 stars)   (3.9 sec) Q: 0, Sets: 504/512  (57.388%) CEs: 510 ETA: 2.9 sec (expected 878 stars)   (4.0 sec) Q: 0, Sets: 518/526  (57.544%) CEs: 524 ETA: 3.0 sec (expected 900 stars)   (4.1 sec) Q: 0, Sets: 530/538  (57.648%) CEs: 536 ETA: 3.0 sec (expected 919 stars)   (4.2 sec) Q: 0, Sets: 543/550  (58.203%) CEs: 549 ETA: 3.0 sec (expected 933 stars)   (4.3 sec) Q: 0, Sets: 558/564  (58.35%) CEs: 564 ETA: 3.1 sec (expected 956 stars)   (4.4 sec) Q: 0, Sets: 572/581  (58.376%) CEs: 579 ETA: 3.2 sec (expected 980 stars)   (4.5 sec) Q: 0, Sets: 587/595  (58.594%) CEs: 593 ETA: 3.2 sec (expected 1002 stars)   (4.7 sec) Q: 0, Sets: 601/606  (58.96%) CEs: 607 ETA: 3.2 sec (expected 1019 stars)   (4.8 sec) Q: 0, Sets: 617/624  (59.07%) CEs: 623 ETA: 3.3 sec (expected 1045 stars)   (4.9 sec) Q: 0, Sets: 632/639  (59.113%) CEs: 638 ETA: 3.4 sec (expected 1069 stars)   (5.0 sec) Q: 0, Sets: 646/653  (59.161%) CEs: 652 ETA: 3.4 sec (expected 1092 stars)   (5.1 sec) Q: 0, Sets: 662/667  (59.167%) CEs: 667 ETA: 3.5 sec (expected 1119 stars)   (5.2 sec) Q: 0, Sets: 677/685  (59.277%) CEs: 682 ETA: 3.6 sec (expected 1142 stars)   (5.3 sec) Q: 0, Sets: 692/698  (59.57%) CEs: 696 ETA: 3.6 sec (expected 1162 stars)   (5.4 sec) Q: 0, Sets: 707/714  (60.742%) CEs: 711 ETA: 3.5 sec (expected 1164 stars)   (5.5 sec) Q: 0, Sets: 721/727  (60.938%) CEs: 724 ETA: 3.5 sec (expected 1183 stars)   (5.6 sec) Q: 0, Sets: 737/741  (61.914%) CEs: 740 ETA: 3.4 sec (expected 1190 stars)   (5.7 sec) Q: 0, Sets: 750/758  (63.11%) CEs: 752 ETA: 3.3 sec (expected 1188 stars)   (5.8 sec) Q: 0, Sets: 765/771  (64.844%) CEs: 768 ETA: 3.1 sec (expected 1180 stars)   (5.9 sec) Q: 0, Sets: 778/786  (68.799%) CEs: 780 ETA: 2.7 sec (expected 1131 stars)   (6.0 sec) Q: 0, Sets: 793/798  (69.141%) CEs: 793 ETA: 2.7 sec (expected 1147 stars)   (6.1 sec) Q: 0, Sets: 806/814  (69.943%) CEs: 806 ETA: 2.6 sec (expected 1152 stars)   (6.2 sec) Q: 0, Sets: 817/824  (70.135%) CEs: 817 ETA: 2.6 sec (expected 1165 stars)   (6.3 sec) Q: 0, Sets: 829/836  (70.157%) CEs: 829 ETA: 2.7 sec (expected 1182 stars)   (6.4 sec) Q: 0, Sets: 842/849  (70.911%) CEs: 842 ETA: 2.6 sec (expected 1187 stars)   (6.5 sec) Q: 0, Sets: 858/862  (72.266%) CEs: 858 ETA: 2.5 sec (expected 1187 stars)   
+(6.6 sec) Q: 0, Sets: 873/877  (78.906%) CEs: 873 ETA: 1.8 sec (expected 1106 stars)   (6.7 sec) Q: 0, Sets: 880/883  (83.594%) CEs: 886 ETA: 1.3 sec (expected 1053 stars)   (6.8 sec) Q: 0, Sets: 893/897  (84.277%) CEs: 899 ETA: 1.3 sec (expected 1060 stars)   (6.9 sec) Q: 0, Sets: 906/908  (87.5%) CEs: 909 ETA: 1.0 sec (expected 1035 stars)   (7.0 sec) Q: 0, Sets: 916/923  (87.964%) CEs: 920 ETA: 1.0 sec (expected 1041 stars)   (7.1 sec) Q: 0, Sets: 928/934  (88.428%) CEs: 932 ETA: 0.9 sec (expected 1049 stars)   (7.2 sec) Q: 0, Sets: 941/948  (89.282%) CEs: 944 ETA: 0.9 sec (expected 1054 stars)   (7.3 sec) Q: 0, Sets: 953/957  (89.453%) CEs: 957 ETA: 0.9 sec (expected 1065 stars)   (7.4 sec) Q: 0, Sets: 967/971  (89.795%) CEs: 970 ETA: 0.8 sec (expected 1077 stars)   (7.6 sec) Q: 0, Sets: 981/986  (90.308%) CEs: 985 ETA: 0.8 sec (expected 1086 stars)   (7.7 sec) Q: 0, Sets: 995/1000  (91.26%) CEs: 998 ETA: 0.7 sec (expected 1090 stars)   (7.8 sec) Q: 0, Sets: 1006/1009  (93.457%) CEs: 1008 ETA: 0.5 sec (expected 1076 stars)   (7.9 sec) Q: 0, Sets: 1016/1023  (93.835%) CEs: 1019 ETA: 0.5 sec (expected 1083 stars)   (8.0 sec) Q: 0, Sets: 1029/1036  (93.945%) CEs: 1031 ETA: 0.5 sec (expected 1095 stars)   (8.1 sec) Q: 0, Sets: 1045/1050  (94.092%) CEs: 1047 ETA: 0.5 sec (expected 1111 stars)   (8.2 sec) Q: 0, Sets: 1061/1067  (94.299%) CEs: 1062 ETA: 0.5 sec (expected 1125 stars)   (8.3 sec) Q: 0, Sets: 1076/1082  (94.629%) CEs: 1077 ETA: 0.5 sec (expected 1137 stars)   (8.4 sec) Q: 0, Sets: 1088/1094  (94.788%) CEs: 1089 ETA: 0.5 sec (expected 1148 stars)   (8.5 sec) Q: 0, Sets: 1096/1099  (94.922%) CEs: 1102 ETA: 0.5 sec (expected 1155 stars)   (8.6 sec) Q: 0, Sets: 1111/1115  (95.212%) CEs: 1117 ETA: 0.4 sec (expected 1167 stars)   (8.7 sec) Q: 0, Sets: 1125/1128  (95.703%) CEs: 1131 ETA: 0.4 sec (expected 1176 stars)   (8.8 sec) Q: 0, Sets: 1140/1145  (96.216%) CEs: 1146 ETA: 0.3 sec (expected 1185 stars)   (8.9 sec) Q: 0, Sets: 1156/1162  (96.32%) CEs: 1162 ETA: 0.3 sec (expected 1200 stars)   (9.0 sec) Q: 0, Sets: 1172/1175  (96.472%) CEs: 1176 ETA: 0.3 sec (expected 1215 stars)   (9.1 sec) Q: 0, Sets: 1186/1193  (96.494%) CEs: 1190 ETA: 0.3 sec (expected 1229 stars)   (9.2 sec) Q: 0, Sets: 1197/1203  (96.533%) CEs: 1201 ETA: 0.3 sec (expected 1240 stars)   (9.3 sec) Q: 0, Sets: 1208/1214  (96.588%) CEs: 1211 ETA: 0.3 sec (expected 1251 stars)   (9.4 sec) Q: 0, Sets: 1221/1225  (96.606%) CEs: 1225 ETA: 0.3 sec (expected 1264 stars)   (9.5 sec) Q: 0, Sets: 1234/1240  (96.638%) CEs: 1238 ETA: 0.3 sec (expected 1277 stars)   (9.6 sec) Q: 0, Sets: 1247/1253  (96.698%) CEs: 1252 ETA: 0.3 sec (expected 1290 stars)   (9.7 sec) Q: 0, Sets: 1263/1271  (96.712%) CEs: 1268 ETA: 0.3 sec (expected 1306 stars)   (9.8 sec) Q: 0, Sets: 1279/1283  (96.722%) CEs: 1283 ETA: 0.3 sec (expected 1322 stars)   (9.9 sec) Q: 0, Sets: 1292/1297  (96.735%) CEs: 1293 ETA: 0.3 sec (expected 1336 stars)   (10.0 sec) Q: 0, Sets: 1304/1309  (96.741%) CEs: 1305 ETA: 0.3 sec (expected 1348 stars)   (10.1 sec) Q: 0, Sets: 1317/1323  (96.748%) CEs: 1319 ETA: 0.3 sec (expected 1361 stars)   (10.2 sec) Q: 0, Sets: 1332/1338  (96.782%) CEs: 1333 ETA: 0.3 sec (expected 1376 stars)   (10.3 sec) Q: 0, Sets: 1348/1354  (96.805%) CEs: 1349 ETA: 0.3 sec (expected 1392 stars)   (10.4 sec) Q: 0, Sets: 1361/1366  (96.838%) CEs: 1362 ETA: 0.3 sec (expected 1405 stars)   (10.5 sec) Q: 0, Sets: 1377/1379  (97.656%) CEs: 1377 ETA: 0.3 sec (expected 1410 stars)   (10.6 sec) Q: 0, Sets: 1386/1389  (97.852%) CEs: 1386 ETA: 0.2 sec (expected 1416 stars)   (10.7 sec) Q: 0, Sets: 1397/1400  (98.035%) CEs: 1397 ETA: 0.2 sec (expected 1425 stars)   (10.8 sec) Q: 0, Sets: 1411/1415  (98.438%) CEs: 1411 ETA: 0.2 sec (expected 1433 stars)   (10.9 sec) Q: 0, Sets: 1427/1430  (98.999%) CEs: 1427 ETA: 0.1 sec (expected 1441 stars)   (11.0 sec) Q: 0, Sets: 1439/1446  (99.228%) CEs: 1439 ETA: 0.1 sec (expected 1450 stars)   (11.1 sec) Q: 0, Sets: 1445/1450  (99.255%) CEs: 1451 ETA: 0.1 sec (expected 1456 stars)   (11.2 sec) Q: 0, Sets: 1458/1462  (99.463%) CEs: 1464 ETA: 0.1 sec (expected 1466 stars)   (11.3 sec) Q: 0, Sets: 1472/1475  (99.573%) CEs: 1478 ETA: 0.0 sec (expected 1478 stars)   (11.4 sec) Q: 0, Sets: 1485/1492  (99.635%) CEs: 1491 ETA: 0.0 sec (expected 1490 stars)   (11.5 sec) Q: 0, Sets: 1500/1505  (99.658%) CEs: 1505 ETA: 0.0 sec (expected 1505 stars)   
+Total Stars: 1512 (1512 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 11.6 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 21053
+Total Num Lps: 21053
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [0.0, 0.0]
+Output: [9.147181510925293]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce4a610>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 1512
+[NNENUM] Filtering result using SMT solver...
+[runlim] sample:		40.5 time, 40.5 real, 1563.0 MB
+[runlim] sample:		50.5 time, 50.5 real, 1563.0 MB
+[runlim] sample:		60.6 time, 60.5 real, 1571.2 MB
+[runlim] sample:		70.6 time, 70.5 real, 1571.2 MB
+[runlim] sample:		80.7 time, 80.5 real, 1587.5 MB
+[SMT] SMT filtered out 1511 stars (out of 1512; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 13
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 13
+[CTRL] Processing linear query no. 3
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, -0.7958693597231216]
+[NNENUM] ub: [8.881798002219755, 0.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  13
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 5/11  (2.344%) CEs: 11 ETA: 5.6 sec (expected 213 stars)   
+(0.2 sec) Q: 0, Sets: 19/27  (4.932%) CEs: 27 ETA: 4.6 sec (expected 385 stars)   (0.3 sec) Q: 0, Sets: 36/44  (5.688%) CEs: 46 ETA: 5.6 sec (expected 633 stars)   
+(0.4 sec) Q: 0, Sets: 55/61  (6.006%) CEs: 63 ETA: 6.9 sec (expected 916 stars)   (0.5 sec) Q: 0, Sets: 73/77  (11.719%) CEs: 79 ETA: 4.1 sec (expected 623 stars)   (0.6 sec) Q: 0, Sets: 90/94  (15.625%) CEs: 96 ETA: 3.5 sec (expected 576 stars)   (0.7 sec) Q: 0, Sets: 108/111  (24.609%) CEs: 115 ETA: 2.3 sec (expected 439 stars)   
+(0.8 sec) Q: 0, Sets: 126/131  (53.906%) CEs: 132 ETA: 0.7 sec (expected 234 stars)   (0.9 sec) Q: 0, Sets: 144/147  (71.875%) CEs: 150 ETA: 0.4 sec (expected 200 stars)   
+Total Stars: 151 (151 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 1.0 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 2064
+Total Num Lps: 2064
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [0.0, 0.0]
+Output: [9.147181510925293]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce6b0a0>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 151
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 88 stars (out of 151; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[runlim] sample:		91.6 time, 90.5 real, 1589.2 MB
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 8
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 8
+[CTRL] Processing linear query no. 4
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, 0.0]
+[NNENUM] ub: [8.881798002219755, 22.628080946204435]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  8
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 6/10  (35.156%) CEs: 0 ETA: 0.3 sec (expected 17 stars)   
+(0.3 sec) Q: 0, Sets: 9/11  (50.0%) CEs: 0 ETA: 0.3 sec (expected 18 stars)   (0.4 sec) Q: 0, Sets: 15/20  (52.734%) CEs: 0 ETA: 0.4 sec (expected 28 stars)   
+(0.5 sec) Q: 0, Sets: 37/37  (100.0%) CEs: 0 ETA: 0.0 sec (expected 37 stars)   
+Total Stars: 37 (0 exact, 37 approx)
+Unfinished Stars: 0
+Runtime: 0.5 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 0
+Total Num Lps: 0
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce5e1c0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+..[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 5
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [17.846105329549037, -0.7958693597231216]
+[NNENUM] ub: [49.80103266006922, 0.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce5e4c0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 2 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 6
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, -0.7958693597231216]
+[NNENUM] ub: [100.0, 0.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9ca67785e0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 2 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 7
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [49.80103266006922, -0.7958693597231216]
+[NNENUM] ub: [55.657020236551105, 0.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9cea9d90>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 2 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 8
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [8.881798002219755, 0.0]
+[NNENUM] ub: [17.846105329549037, 22.628080946204435]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce6bca0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 4
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 4
+[CTRL] Processing linear query no. 9
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [17.846105329549037, 0.0]
+[NNENUM] ub: [49.80103266006922, 22.628080946204435]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  4
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9ca671cf40>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 10
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, 0.0]
+[NNENUM] ub: [100.0, 22.628080946204435]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce6b5e0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 11
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [49.80103266006922, 0.0]
+[NNENUM] ub: [55.657020236551105, 22.628080946204435]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9cea9fd0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 12
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [17.846105329549037, 0.0]
+[NNENUM] ub: [49.80103266006922, 22.628080946204435]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce5e3a0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 13
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [8.881798002219755, -0.7958693597231216]
+[NNENUM] ub: [17.846105329549037, 0.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce5ed30>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 14
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [17.846105329549037, -0.7958693597231216]
+[NNENUM] ub: [49.80103266006922, 0.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce5e520>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 3
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 14
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 14
+[CTRL] Processing linear query no. 15
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [17.846105329549037, -66.66666666666667]
+[NNENUM] ub: [49.80103266006922, -0.7958693597231216]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  14
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 4/9  (7.812%) CEs: 4 ETA: 1.7 sec (expected 51 stars)   
+(0.2 sec) Q: 0, Sets: 8/14  (9.766%) CEs: 8 ETA: 2.3 sec (expected 82 stars)   (0.4 sec) Q: 0, Sets: 14/18  (15.625%) CEs: 14 ETA: 2.0 sec (expected 90 stars)   
+(0.5 sec) Q: 0, Sets: 22/26  (30.469%) CEs: 20 ETA: 1.1 sec (expected 72 stars)   (0.6 sec) Q: 0, Sets: 26/31  (32.422%) CEs: 25 ETA: 1.2 sec (expected 80 stars)   (0.7 sec) Q: 0, Sets: 34/38  (53.125%) CEs: 30 ETA: 0.6 sec (expected 64 stars)   (0.8 sec) Q: 0, Sets: 40/44  (60.156%) CEs: 36 ETA: 0.5 sec (expected 66 stars)   
+(0.9 sec) Q: 0, Sets: 43/45  (62.5%) CEs: 41 ETA: 0.5 sec (expected 69 stars)   (1.0 sec) Q: 0, Sets: 50/52  (87.5%) CEs: 48 ETA: 0.1 sec (expected 57 stars)   
+Total Stars: 59 (59 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 1.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 974
+Total Num Lps: 974
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [17.846105575561523, -0.7958693504333496]
+Output: [5.051430702209473]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9b3e65b0>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 54
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 52 stars (out of 54; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 9
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 9
+[CTRL] Processing linear query no. 16
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [17.846105329549037, -66.66666666666667]
+[NNENUM] ub: [49.80103266006922, -0.7958693597231216]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  9
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 1/3  (50.0%) CEs: 0 ETA: 0.1 sec (expected 2 stars)   
+
+Total Stars: 8 (1 exact, 7 approx)
+Unfinished Stars: 0
+Runtime: 0.2 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 5
+Total Num Lps: 5
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9c15a0a0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+.[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+.[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 20
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 20
+[CTRL] Processing linear query no. 17
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, -66.66666666666667]
+[NNENUM] ub: [8.881798002219755, -0.7958693597231216]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  20
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 5/5  (100.0%) CEs: 5 ETA: 0.0 sec (expected 5 stars)   
+
+Total Stars: 5 (5 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 0.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 144
+Total Num Lps: 144
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [0.0, -0.7958693504333496]
+Output: [9.451469421386719]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9b3e6d90>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 5
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 3 stars (out of 5; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 18
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [49.80103266006922, -66.66666666666667]
+[NNENUM] ub: [55.657020236551105, -0.7958693597231216]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9c15adc0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 19
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, -66.66666666666667]
+[NNENUM] ub: [100.0, -0.7958693597231216]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+
+Total Stars: 2 (0 exact, 2 approx)
+Unfinished Stars: 0
+Runtime: 0.0 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 0
+Total Num Lps: 0
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9b3e6a60>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 3
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 14
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 14
+[CTRL] Processing linear query no. 20
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [8.881798002219755, -66.66666666666667]
+[NNENUM] ub: [17.846105329549037, -0.7958693597231216]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  14
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 1/6  (3.125%) CEs: 3 ETA: 4.0 sec (expected 32 stars)   
+(0.2 sec) Q: 0, Sets: 7/10  (21.875%) CEs: 9 ETA: 0.8 sec (expected 32 stars)   (0.3 sec) Q: 0, Sets: 12/17  (28.906%) CEs: 14 ETA: 0.8 sec (expected 42 stars)   
+(0.4 sec) Q: 0, Sets: 18/20  (37.5%) CEs: 19 ETA: 0.7 sec (expected 48 stars)   (0.5 sec) Q: 0, Sets: 24/30  (39.258%) CEs: 24 ETA: 0.8 sec (expected 61 stars)   (0.7 sec) Q: 0, Sets: 27/32  (40.039%) CEs: 29 ETA: 1.0 sec (expected 67 stars)   (0.8 sec) Q: 0, Sets: 33/37  (43.75%) CEs: 35 ETA: 1.0 sec (expected 75 stars)   
+(0.9 sec) Q: 0, Sets: 39/43  (46.094%) CEs: 41 ETA: 1.0 sec (expected 85 stars)   (1.0 sec) Q: 0, Sets: 46/48  (50.0%) CEs: 47 ETA: 1.0 sec (expected 92 stars)   (1.1 sec) Q: 0, Sets: 54/58  (55.469%) CEs: 53 ETA: 0.9 sec (expected 97 stars)   (1.2 sec) Q: 0, Sets: 61/65  (58.984%) CEs: 59 ETA: 0.8 sec (expected 103 stars)   (1.3 sec) Q: 0, Sets: 68/70  (71.875%) CEs: 65 ETA: 0.5 sec (expected 95 stars)   (1.4 sec) Q: 0, Sets: 71/74  (78.125%) CEs: 70 ETA: 0.4 sec (expected 91 stars)   
+Total Stars: 77 (77 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 1.4 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 1430
+Total Num Lps: 1430
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [8.881797790527344, -0.7958693504333496]
+Output: [7.462779998779297]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9cea9b50>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 71
+[NNENUM] Filtering result using SMT solver...
+[runlim] sample:		116.5 time, 100.5 real, 1659.6 MB
+[SMT] SMT filtered out 68 stars (out of 71; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 3
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 16
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 16
+[CTRL] Processing linear query no. 21
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, -66.66666666666667]
+[NNENUM] ub: [8.881798002219755, -0.7958693597231216]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  16
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 3/9  (12.5%) CEs: 3 ETA: 0.9 sec (expected 24 stars)   
+(0.2 sec) Q: 0, Sets: 6/10  (17.188%) CEs: 9 ETA: 1.1 sec (expected 35 stars)   (0.3 sec) Q: 0, Sets: 13/18  (27.344%) CEs: 16 ETA: 0.9 sec (expected 48 stars)   
+(0.4 sec) Q: 0, Sets: 24/28  (37.5%) CEs: 23 ETA: 0.7 sec (expected 64 stars)   (0.5 sec) Q: 0, Sets: 31/38  (38.281%) CEs: 33 ETA: 0.9 sec (expected 81 stars)   (0.6 sec) Q: 0, Sets: 39/45  (39.6%) CEs: 40 ETA: 1.0 sec (expected 98 stars)   (0.7 sec) Q: 0, Sets: 47/52  (40.625%) CEs: 47 ETA: 1.1 sec (expected 116 stars)   
+(0.9 sec) Q: 0, Sets: 58/61  (46.094%) CEs: 57 ETA: 1.0 sec (expected 126 stars)   (1.0 sec) Q: 0, Sets: 65/69  (55.469%) CEs: 63 ETA: 0.8 sec (expected 117 stars)   (1.1 sec) Q: 0, Sets: 69/72  (59.375%) CEs: 70 ETA: 0.7 sec (expected 116 stars)   (1.2 sec) Q: 0, Sets: 80/83  (78.125%) CEs: 77 ETA: 0.3 sec (expected 102 stars)   
+Total Stars: 84 (84 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 1.2 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 1984
+Total Num Lps: 1984
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [8.881797790527344, -16.865243911743164]
+Output: [38.175655364990234]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9b3e6c70>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 81
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 73 stars (out of 81; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 22
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, 22.628080946204435]
+[NNENUM] ub: [8.881798002219755, 66.66666666666666]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9b3e6640>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 23
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [17.846105329549037, 22.628080946204435]
+[NNENUM] ub: [49.80103266006922, 66.66666666666666]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9cef4910>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 24
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [8.881798002219755, 22.628080946204435]
+[NNENUM] ub: [17.846105329549037, 66.66666666666666]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce6b8b0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 25
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, 22.628080946204435]
+[NNENUM] ub: [100.0, 66.66666666666666]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9cea9ee0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 26
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [49.80103266006922, 22.628080946204435]
+[NNENUM] ub: [55.657020236551105, 66.66666666666666]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9c15a070>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 27
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [17.846105329549037, 22.628080946204435]
+[NNENUM] ub: [49.80103266006922, 66.66666666666666]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9cef4fa0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 28
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [8.881798002219755, 22.628080946204435]
+[NNENUM] ub: [17.846105329549037, 66.66666666666666]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9b3e6c70>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 29
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, 100.0]
+[NNENUM] ub: [100.0, 200.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9b3e6cd0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 3
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 13
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 13
+[CTRL] Processing linear query no. 30
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [49.80103266006922, -100.0]
+[NNENUM] ub: [55.657020236551105, -66.66666666666667]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  13
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+
+Total Stars: 6 (6 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 0.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 66
+Total Num Lps: 66
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [49.80103302001953, -81.25653076171875]
+Output: [100.00000762939453]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9b3e6160>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 4
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 3 stars (out of 4; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 3
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 3
+[CTRL] Processing linear query no. 31
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [49.80103266006922, -100.0]
+[NNENUM] ub: [55.657020236551105, -66.66666666666667]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  3
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9c15a0d0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+.[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 15
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 15
+[CTRL] Processing linear query no. 32
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [17.846105329549037, -100.0]
+[NNENUM] ub: [49.80103266006922, -66.66666666666667]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  15
+[NNENUM] Enumeration in progress... 
+(0.0 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.1 sec) Q: 0, Sets: 10/12  (43.75%) CEs: 7 ETA: 0.2 sec (expected 23 stars)   
+
+Total Stars: 22 (22 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 0.2 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 297
+Total Num Lps: 297
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [17.846105575561523, -66.66666412353516]
+Output: [100.0]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce533a0>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 14
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 10 stars (out of 14; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 3
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 11
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 11
+[CTRL] Processing linear query no. 33
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, -100.0]
+[NNENUM] ub: [100.0, -66.66666666666667]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  11
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9c15afa0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 34
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, -100.0]
+[NNENUM] ub: [100.0, -66.66666666666667]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce5ed90>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 10
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 10
+[CTRL] Processing linear query no. 35
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [17.846105329549037, -100.0]
+[NNENUM] ub: [49.80103266006922, -66.66666666666667]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  10
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9cef4b50>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 14
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 14
+[CTRL] Processing linear query no. 36
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [49.80103266006922, -128.61557868180387]
+[NNENUM] ub: [55.657020236551105, -100.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  14
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9cea9ca0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 3
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 20
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 20
+[CTRL] Processing linear query no. 37
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, -128.61557868180387]
+[NNENUM] ub: [100.0, -100.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  20
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9cea95e0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+.[QUERY] Found all non-linear combinations. Count: 1
+.[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 2
+.[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 2
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 20
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 20
+[CTRL] Processing linear query no. 38
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, -164.472807991121]
+[NNENUM] ub: [100.0, -128.61557868180387]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  20
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9ca67785e0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 39
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, 66.66666666666666]
+[NNENUM] ub: [100.0, 100.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce5ed60>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 40
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, -128.61557868180387]
+[NNENUM] ub: [100.0, -100.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9c15aa90>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 41
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, 66.66666666666666]
+[NNENUM] ub: [100.0, 100.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9c15acd0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 42
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [55.657020236551105, 100.0]
+[NNENUM] ub: [100.0, 200.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce6b820>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 43
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [17.846105329549037, 66.66666666666666]
+[NNENUM] ub: [49.80103266006922, 100.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9c15a880>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 44
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [17.846105329549037, 66.66666666666666]
+[NNENUM] ub: [49.80103266006922, 100.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce5ec10>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 45
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [49.80103266006922, 100.0]
+[NNENUM] ub: [55.657020236551105, 200.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce5efd0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 2
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 2
+[CTRL] Processing linear query no. 46
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [49.80103266006922, 66.66666666666666]
+[NNENUM] ub: [55.657020236551105, 100.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  2
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9cea9dc0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 3 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries
+[APPROX] # Conjunctions over output: 1
+[CTRL] Processing linear query no. 47
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [49.80103266006922, 66.66666666666666]
+[NNENUM] ub: [55.657020236551105, 100.0]
+[NNENUM] Creating LP Star...
+[NNENUM] Checking feasibility
+[NNENUM] Generating output Spec...
+[NNENUM] Spec list length:  1
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7c9c9ce6b520>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0; TO: 0).
+[runlim] sample:		149.5 time, 110.5 real, 1688.0 MB
+108.799344 seconds (455.47 M allocations: 7.528 GiB, 2.68% gc time, 8.22% compilation time)
+----------------------------------------------------------
+# Unsafe Stars: 84
+Saving final results in experiments/acc/acc-improved-2000000-64-64/results-approx-2-RERUN...
+ ────────────────────────────────────────────────────────────────────────────────
+                                        Time                    Allocations      
+                               ───────────────────────   ────────────────────────
+       Tot / % measured:             111s /  97.3%           7.61GiB /  96.8%    
+
+ Section               ncalls     time    %tot     avg     alloc    %tot      avg
+ ────────────────────────────────────────────────────────────────────────────────
+ query_iteration            1    88.7s   82.4%   88.7s   3.64GiB   49.4%  3.64GiB
+   olnnv_query_proc...     46    82.2s   76.4%   1.79s   3.17GiB   43.0%  70.6MiB
+     nnv                   46    82.2s   76.4%   1.79s   3.17GiB   43.0%  70.6MiB
+       star_filter         46    61.0s   56.7%   1.33s   3.14GiB   42.6%  69.9MiB
+         z3_check       26.9k    59.1s   54.9%  2.20ms   2.98GiB   40.5%   116KiB
+   next_query              47    5.86s    5.4%   125ms    460MiB    6.1%  9.78MiB
+     check_infeasib...    977    4.72s    4.4%  4.83ms    333MiB    4.4%   349KiB
+       check_infeas...    977    2.43s    2.3%  2.48ms    230MiB    3.1%   241KiB
+         SMTprep        2.75k    969ms    0.9%   352μs   56.3MiB    0.7%  20.9KiB
+         LP_create_...    882    584ms    0.5%   662μs   46.7MiB    0.6%  54.2KiB
+         z3_check       1.38k    447ms    0.4%   325μs   4.79MiB    0.1%  3.57KiB
+         LP_populat...    882    275ms    0.3%   312μs   76.0MiB    1.0%  88.2KiB
+         LP_check         882   77.0ms    0.1%  87.4μs   17.3MiB    0.2%  20.0KiB
+         LP_add_con...    882   24.5ms    0.0%  27.8μs   25.1MiB    0.3%  29.1KiB
+         feasibilit...  1.95k   14.6ms    0.0%  7.47μs   61.1KiB    0.0%    32.0B
+         feasibilit...    882    845μs    0.0%   958ns    207KiB    0.0%     240B
+       check_infeas...    977    2.29s    2.1%  2.35ms    103MiB    1.4%   107KiB
+         SMTprep        1.41k    1.13s    1.0%   799μs   65.8MiB    0.9%  47.7KiB
+         z3_check         706    1.13s    1.0%  1.60ms   33.7MiB    0.4%  48.9KiB
+         feasibilit...  1.03k   10.3ms    0.0%  10.0μs   32.1KiB    0.0%    32.0B
+         feasibilit...    593    799μs    0.0%  1.35μs    214KiB    0.0%     369B
+     query_construc...    259    685ms    0.6%  2.64ms   38.7MiB    0.5%   153KiB
+       z3_check           135    273ms    0.3%  2.03ms   10.8MiB    0.1%  81.6KiB
+       SMTprep            270    220ms    0.2%   814μs   13.7MiB    0.2%  51.8KiB
+       PicoSAT_solve      394   15.4ms    0.0%  39.0μs   12.3KiB    0.0%    32.0B
+       atom_recovery      135   4.51ms    0.0%  33.4μs   1.01MiB    0.0%  7.64KiB
+         atom_compu...    135   3.07ms    0.0%  22.7μs    952KiB    0.0%  7.05KiB
+         bound_comp...    135   1.15ms    0.0%  8.50μs   59.1KiB    0.0%     448B
+       feasibility_...    135   1.66ms    0.0%  12.3μs   4.22KiB    0.0%    32.0B
+       feasibility_...     95    131μs    0.0%  1.38μs   33.8KiB    0.0%     365B
+     approx_resolution    977    204ms    0.2%   209μs   46.5MiB    0.6%  48.7KiB
+     PicoSAT_solve      1.02k   40.8ms    0.0%  39.9μs   32.0KiB    0.0%    32.0B
+     atom_recovery        977   37.1ms    0.0%  38.0μs   7.25MiB    0.1%  7.60KiB
+       atom_computa...    977   26.5ms    0.0%  27.1μs   6.69MiB    0.1%  7.01KiB
+       bound_comput...    977   8.50ms    0.0%  8.70μs    427KiB    0.0%     448B
+     bound_atoms          977   13.6ms    0.0%  14.0μs   7.01MiB    0.1%  7.35KiB
+     check_infeasib...  1.95k   5.61ms    0.0%  2.87μs   3.35MiB    0.0%  1.76KiB
+   boolean_skeleton         1   74.0ms    0.1%  74.0ms   3.86MiB    0.1%  3.86MiB
+   olnnv_query_gen         46   69.3ms    0.1%  1.51ms   12.8MiB    0.2%   286KiB
+   legacy_approx           46   26.8ms    0.0%   584μs   1.58MiB    0.0%  35.3KiB
+   smt_filter_creation     46   45.7μs    0.0%   993ns   1.44KiB    0.0%    32.0B
+ get_approx_query           1    19.0s   17.6%   19.0s   3.73GiB   50.6%  3.73GiB
+   OVERT                    4    8.07s    7.5%   2.02s    778MiB   10.3%   195MiB
+ ──────────────────────────────────────────────────────────────────────────────── Done
+[runlim] end:			Mon May 20 11:45:28 2024
+[runlim] status:		ok
+[runlim] result:		0
+[runlim] children:		1114
+[runlim] real:			113.09 seconds
+[runlim] time:			152.86 seconds
+[runlim] space:			1697.5 MB
+[runlim] samples:		1125

@@ -25,58 +25,65 @@ function smt_internal_variable(ctx, name)
 	return var
 end
 function smt_internal_set_timeout(ctx, timeout)
-	set_param("timeout", timeout)
+	#set_param("timeout", timeout)
+	set(ctx, "timeout", timeout)
 end
-function smt_internal_solver(ctx, theory)
-	s = Solver(ctx, theory)
-	set(s,"smt.arith.solver",convert(Int32,2))
-	return s
+function smt_internal_solver(f, ctx, theory;stars=false)
+	# Unfortunately, this is broken with the new Z3 version
+	# It seems one step inside the and_then does not work; possibly solve-eqs
+	# if stars
+	# 	t_solve = Tactic(ctx,"solve-eqs")
+	# 	t_purify = Tactic(ctx,"purify-arith")
+	# 	pre_step = par_and_then(t_solve,t_purify)
+	# else
+		
+	# end
+	res = nothing
+	begin
+		s = nothing
+		#solver_tactic = nothing
+		if theory=="qfnra"
+			#s = Solver(ctx,"QF_NRA")
+			if stars
+				s = mk_solver( Tactic(ctx, "solve-eqs") & Tactic(ctx, "purify-arith") & Tactic(ctx, "qfnra"))
+			elseif !USE_CORES
+				s = mk_solver(Tactic(ctx, "purify-arith") & Tactic(ctx, "qfnra"))
+			else
+				s = Solver(ctx,"QF_NRA")
+			end
+		elseif theory=="qflra"
+			if stars
+				s = mk_solver( Tactic(ctx, "solve-eqs") & Tactic(ctx, "purify-arith") & Tactic(ctx, "qflra"))
+			elseif !USE_CORES
+				s = mk_solver(Tactic(ctx, "purify-arith") & Tactic(ctx, "qflra"))
+			else
+				s = Solver(ctx,"QF_LRA")
+			end
+			#set(s,"smt.arith.solver",convert(Int32,2))
+		else
+			s = Solver(ctx,theory)
+		end
+		
+		res =  GC.@preserve s f(s)
+	end
+	return res
 end
 function smt_internal_add(solver, formula)
 	add(solver, formula)
 end
 function smt_internal_check(solver)
-	#if timeout==0
-	@timeit Config.TIMER "z3_check" begin
+	#println("[Z3] Checking...")
+	@timeit TIMER "z3_check" begin
 		res =  check(solver)
 	end
 	return res
-	# else
-	# 	wid = get_wid()
-	# 	print_msg("[SMT] timeout of ", timeout/1000, " seconds")
-	# 	result = RemoteChannel(()->Channel{Any}(0))
-	# 	#remotecall(process_check, wid, result, solver)
-	# 	sendto(wid; result=result, solver=solver)
-	# 	call_future = remotecall(Main.eval, wid, quote
-	# 		print_msg("[SMT] Test!!!!", solver, result)
-	# 		res = Z3.check(solver)
-	# 		print("[SMT] Worker found result: ", res)
-	# 		put!(result, res)
-	# 	end)
-	# 	# call_future = @spawnat wid eval(Main,quote
-	# 	# 	print_msg("[SMT] Starting check...")
-	# 	# 	# res = Z3.check(solver)
-	# 	# 	# print("[SMT] Worker found result: ", res)
-	# 	# 	# put!(result, res)
-	# 	# end)
-	# 	timedwait(()->begin
-	# 		res = isready(result)
-	# 		return res
-	# 	end, timeout/1000;pollint=1)
-	# 	if !isready(result)
-	# 		print_msg("Computation at $wid will be terminated")
-	# 		print_msg("Result: ", fetch(call_future))
-	# 		try
-	# 			rmprocs(wid;waitfor=1)
-	# 		catch e
-	# 			print("When terminating worker $wid:", e)
-	# 		end
-	# 		return Z3.unknown
-	# 	else
-	# 		print_msg("Result: ", fetch(call_future))
-	# 		return take!(result)
-	# 	end
-	# end
+end
+function smt_internal_check(solver, exprs)
+	#println("[Z3] Checking...")
+	@timeit TIMER "z3_check" begin
+		res =  check(solver, exprs)
+	end
+	return res
 end
 function smt_internal_is_sat(res)
 	return res == Z3.sat
@@ -108,6 +115,11 @@ function smt_print_model(solver)
 	print_msg(model)
 end
 
+function smt_internal_get_model(solver)
+	model = get_model(solver)
+	return model
+end
+
 function smt_internal_formula_dict(solver, full_ctx)
 	res = Dict{Int64, Any}()
 	return (solver, full_ctx, res)
@@ -135,5 +147,14 @@ function smt_internal_add_to_dict(dict, i, formula, additional, dict_copy)
 			smt_internal_add(solver, a)
 		end
 		return v
+	end
+end
+function smt_internal_set(solver, name, value)
+	if name == "unsat-core"
+		if USE_CORES || !value
+			set(solver, "unsat-core", value)
+		end
+	else
+		set(solver, name, value)
 	end
 end

@@ -1,0 +1,31 @@
+# DeepZ
+flowpipe construction
+  0.339376 seconds (4.24 M allocations: 327.439 MiB, 31.80% gc time)
+The property may be violated.
+property checking
+  0.000007 seconds (3 allocations: 272 bytes)
+The property may be violated.
+
+# BoxSolver
+flowpipe construction
+  0.244343 seconds (4.24 M allocations: 323.047 MiB, 15.69% gc time)
+The property may be violated.
+property checking
+  0.000009 seconds (3 allocations: 272 bytes)
+The property may be violated.
+
+# VertexSolver (smaller property)
+flowpipe construction
+ 28.291550 seconds (260.12 M allocations: 19.896 GiB, 10.17% gc time)
+The property may be violated.
+property checking
+  0.000007 seconds (3 allocations: 272 bytes)
+The property may be violated.
+
+# ApproxSolver (unsound)
+flowpipe construction
+328.715974 seconds (2.97 G allocations: 108.839 GiB, 7.03% gc time)
+The property may be violated.
+property checking
+  0.000012 seconds (3 allocations: 272 bytes)
+The property may be violated.

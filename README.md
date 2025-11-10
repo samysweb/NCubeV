@@ -1,65 +1,63 @@
 # $N^3V$ - A Non-linear Neural Network Verifier
-This repository contains the non-linear neural network verifier $N^3V$ and its evaluation in the course of my Master's thesis.
+This repository contains the non-linear neural network verifier $N^3V$ (and its evaluation).
 
-## Running $N^3V$
->*Note:*
-Due to legacy reasons the code currently still uses the name "SNNT" for this project, this will be updated in the future.
-### Prerequisites
-In order to install this tool you need to have `julia` and `gcc` installed.
-This tool will install a number of julia and python packages upon installation
+## Installation
+### Requirements
+We require an installation of Julia 1.10.
+Moreover, if the installation fails it may be necessary to install Conda (we use `Conda.jl` to manage a python environment).
+This tool has a dependency on [PicoSAT.jl](https://github.com/sisl/PicoSAT.jl) which is only compatible with the platforms listed [here](https://github.com/JuliaBinaryWrappers/PicoSAT_jll.jl)
 
-### Installation
-In order to run $N^3V$ you have to clone the git repository.
-Afterwards you will have to initialize the NNEnum neural network verifier:
-```
-git submodule init
-git submodule sync
-```
-Following up on this, we need to install the tool.
-Due to its use of submodules this currently only possible in Julia's development mode.
-To this end run the following commands in the repository folder:
-```
-julia
-> ] develop ./
-...
-> ] build SNNT
-...
-```
-The second step will take approximately twenty minutes and precompile the tool.
-> *This did not work as expected!*  
-> First, please ensure that you have `gcc` installed.  
-> Usually the python package installation should have run through fine, however the build script might have failed.  
-> To debug this manually run `julia deps/sysimage/build_sysimage.jl`. This should either succeed or the log might contain some helpful information for debugging.
+### Setup
+The setup script can be run via `./build.sh <path to julia 1.10 executable>`.
 
-### Running a verification task
-Following up on this you should be able to run a first verification task from the repository directory (takes < 2min):
-```
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./bin/SNNT --smtfilter-timeout=10000 "test/parsing/examples/acc/formula" "test/parsing/examples/acc/fixed" "test/parsing/examples/acc/mapping" "test/networks/acc-3000000-64-64.onnx" myresult.jld
-```
-This runs `./bin/SNNT` with the provided `formula`, `fixed` variables and variable to NN in/out `mapping` and checks whether there is an assignment satisfying the negation of `formula` using the network `acc-3000000-64-64.onnx`.
-The tool creates a file `myresult.jld` which contains the analysis results.
-The tool should return something like this:
-```
- 59.728373 seconds (92.84 M allocations: 4.626 GiB, 8.70% gc time, 42.90% compilation time)
- 62.642351 seconds (96.18 M allocations: 4.800 GiB, 9.81% gc time, 44.40% compilation time)
-----------------------------------------------------------
-Status: Unsafe
-# Unsafe Stars: 82
-Saving result in myresult.jld... Done
-```
-Note, that the environment variable settings are necessary for NNEnum to run without error.
->*This did not work as expected!*  
->In some newer instatllations there may be an incompatibility of packages, in this case it may help to include the following environment variable: `PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python` (append this before `OPENBLAS_NUM_THREADS`)
+This should run Julia and build the tool.
+**Beware:**
+Julia's building process may take 10-20 minutes.
+This is, because Julia's building system requires us to execute trace runs for determining the functions that will be precompiled.
 
-## Experiments
-This repository also contains a number of experiments which were run in the course of my Master's Thesis.
-The experiments can be found in the `experiments` folder.
-All further information can be found in the Readme there.
+## Reproducing Experiments
+
+To start of, you can run `./run_example.sh` which should run the verification of an ACC controller.
+This process takes about 130 seconds on a 16 core AMD Ryzen 7 PRO 5850U CPU and returns that there exist counterexamples.
+
+The logs of experiments can be found in the corresponding sub-folders of `./experiments`.
+To rerun all experiments, you can use the script `./run_experiments.sh` (**Beware:** This takes approx. 2 days!) which will write the experimental results into the corresponding log files.
+
+## Verifying your own NN.
+To verify a model we need four things:
+- A specification given as a formula (see e.g. `./test/parsing/examples/acc/formula`)
+- A description of variables that should be fixed (see e.g. `./test/parsing/examples/acc/fixed`)
+- A mapping from variables in the formula to input/output variables (see e.g. `./test/parsing/examples/acc/mapping`)
+- An NN to verify in ONNX format
+
+After building the tool (see above), you can then run the following bash command to verify a model:
+```bash
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./deps/NCubeV/bin/NCubeV <formula> <fixed vars> <mapping> <onnx file> <file-prefix to save results to>
+```
+To save memory for large verification tasks, it is necessary to provide a file prefix (!), e.g. `/tmp/my-ncubev-results`, as the tool may save results intermittently (e.g. `/tmp/my-ncubev-results-100.jld`).
+
+Further options of the tool can be found via `./deps/NCubeV/bin/NCubeV`; for very complicated arithmetic (square roots, high degree polynomials etc.) it may be worthwhile to switch of core reasoning with `--no-cores`.
+
+## Interpreting results
+After completion, the tool will tell you if it found counterexamples.
+If there are counterexamples the model is generally unsafe.
+The counterexample regions can be found in the `.jld` files saved during execution.
+For an example how such regions can be analyzed see `./experiments/acas/Analysis-leveled.ipynb` (and the associated julia file `Analysis.jl`).
 
 ## Naming
 $N^3V$ (pronounced "N Cube V") stands for **N**on-linear **N**eural **N**etwork **V**erifier.  
 Incidentally, interpreted as a unit $N^3V$ corresponds to $m^5kg^4A^{-1}s^{-9}$ which signifies the CPS mission of the tool: "**m**a**k**in**g** **a**utonomy **s**afer (which in turn has $5+4+1+9=19$ letters).
 
 ## Citation
-This work is not published (yet).  
-If you want to cite this work in your research, please reach out so we can figure something out.
+Please refer to our upcoming [NeurIPS publication](https://arxiv.org/abs/2402.10998):
+```bibtex
+@inproceedings{NCubeV,
+	title        = {Provably Safe Neural Network Controllers via Differential Dynamic Logic},
+	author       = {Teuber, Samuel and Mitsch, Stefan and Platzer, Andr\'{e}},
+	year         = {2024},
+	booktitle    = {Advances in Neural Information Processing Systems},
+	publisher    = {Curran Associates, Inc.},
+	editor       = {A. Globerson and L. Mackey and A. Fan and C. Zhang and D. Belgrave and J. Tomczak and U. Paquet}
+}
+
+```

@@ -12,7 +12,7 @@ struct Star
 	output_map_matrix :: Matrix{Float32}
 	output_map_bias :: Vector{Float32}
 	bounds :: Vector{Tuple{Float64,Float64}}
-	counter_example :: Tuple{Vector{Float32},Vector{Float32}}
+	counter_example :: Tuple{Vector{Float64},Vector{Float64}}
 	certain :: Bool
 	function Star(star_tuple)
 		bound_result = star_tuple[5]

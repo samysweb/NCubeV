@@ -1,7 +1,7 @@
 #import ..AST : And, Or, Not, Implies
 
 function transform_formula(skeleton :: BooleanSkeleton)
-	variable_number_dict = Dict{Union{Atom,LinearConstraint,ApproxNode}, Int64}()
+	variable_number_dict = Dict{Union{Atom,Predicate,LinearConstraint,ApproxNode}, Int64}()
 	fun = get_skeleton_generator_function(skeleton, variable_number_dict)
 	res = Postwalk(x -> if typeof(x) <: Formula fun(x) end)(skeleton.query.formula)
 	add_clause(skeleton.sat_instance, [res.variable_number])
@@ -28,12 +28,59 @@ function transform_formula(skeleton :: BooleanSkeleton)
 			add_clause(skeleton.sat_instance, all_cases)
 		end
 	end
+	if !isnothing(Config.QUERY_GEN_SAVE_SAT)
+		comments = ""
+		open(Config.QUERY_GEN_SAVE_SAT, "a") do f
+			print(f, "c ind ")
+			for x in skeleton.variable_mapping
+				@match x.second begin
+					IntermediateVariable => begin
+						#print_msg("IntermediateVariable")
+						comments *= "c " * repr(x.first) * " -> Intermediate\n"
+						continue
+					end
+					ConstraintVariable(y) => begin
+						if y isa LinearConstraint #|| y isa ApproxNode
+							print(f, x.first, " ")
+							comments *= "c " * repr(x.first) * " -> " * repr(x.second) * "\n"
+						end
+					end
+					ApproxCase(dim,_) => begin
+						#if dim <= skeleton.query.num_input_vars
+							print(f, x.first, " ")
+							comments *= "c " * repr(x.first) * " -> " * repr(x.second) * "\n"
+						#end
+						continue
+					end
+					IsMaxCase(_) => begin
+						print(f, x.first, " ")
+						comments *= "c " * repr(x.first) * " -> " * repr(x.second) * "\n"
+						continue
+					end
+				end
+			end
+			print(f, "0\n")
+			print(f, comments)
+			print(f, "c ----------------------------------------\n")
+		end
+		Config.QUERY_GEN_SAVE_SAT = nothing
+	end
 end
 
-function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_number_dict :: Dict{Union{Atom,LinearConstraint,ApproxNode}, Int64})
+function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_number_dict :: Dict{Union{Atom,Predicate,LinearConstraint,ApproxNode}, Int64})
 	return function(formula :: Formula)
 		return @match formula begin
-			Atom() || LinearConstraint() => begin
+			TrueAtom() => begin
+				variable_number = next_var(skeleton.sat_instance)
+				add_clause(skeleton.sat_instance, [variable_number])
+				return SkeletonFormula(variable_number)
+			end
+			FalseAtom() => begin
+				variable_number = next_var(skeleton.sat_instance)
+				add_clause(skeleton.sat_instance, [-variable_number])
+				return SkeletonFormula(variable_number)
+			end
+			Atom() => begin
 				#@debug "Atom or LinearConstraint => constraint variable"
 				if haskey(variable_number_dict, formula)
 					return SkeletonFormula(variable_number_dict[formula])
@@ -41,6 +88,88 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 					variable_number = next_var(skeleton.sat_instance)
 					skeleton.variable_mapping[variable_number] = ConstraintVariable(formula)
 					variable_number_dict[formula] = variable_number
+					search_term = simplify(formula.left)
+					#print_msg("[SKELETON] Searching $(search_term)")
+					if is_literal_number(formula.right)
+						@assert formula.comparator == AST.Less || formula.comparator == AST.LessEq
+						if !haskey(skeleton.similar_formula_cache, search_term)
+							skeleton.similar_formula_cache[search_term] = Tuple{Bool,TermNumber,Int}[(formula.comparator == AST.Less, formula.right, variable_number)]
+						else
+							for (strict, constant, other_var) in skeleton.similar_formula_cache[search_term]
+								print_msg("[SKELETON] Adding atom dependency constraint:")
+								if (strict && formula.right.value < constant.value) || (!strict && formula.right.value <= constant.value)
+									print_msg(formula," -> ",search_term,ifelse(strict,"<","<="),constant)
+									add_clause(skeleton.sat_instance, [-variable_number, other_var])
+								else
+									print_msg(search_term,ifelse(strict,"<","<="),constant," -> ",formula)
+									add_clause(skeleton.sat_instance, [-other_var, variable_number])
+								end
+							end
+							search_term2 = simplify(-1.0*formula.left)
+							if haskey(skeleton.similar_formula_cache,search_term2)
+								for (strict, constant, other_var) in skeleton.similar_formula_cache[search_term2]
+									if (!strict && -constant.value > formula.right.value) || (strict && -constant.value >= formula.right.value)
+										print_msg("[SKELETON] Adding negated atom dependency constraint:")
+										print_msg("!",formula," | !",search_term2,ifelse(strict,"<","<="),constant_value)
+										add_clause(skeleton.sat_instance, [-variable_number, -other_var])
+									end
+								end
+							end
+							push!(
+								skeleton.similar_formula_cache[search_term],
+								(formula.comparator == AST.Less, formula.right, variable_number)
+							)
+						end
+					end
+					return SkeletonFormula(variable_number)
+				end
+			end
+			LinearConstraint() => begin
+				#@debug "Atom or LinearConstraint => constraint variable"
+				if haskey(variable_number_dict, formula)
+					return SkeletonFormula(variable_number_dict[formula])
+				else
+					if !iszero(norm(formula.coefficients))
+						factor=1/norm(formula.coefficients)
+					else
+						factor=one(Rational{BigInt})
+					end
+					variable_number = next_var(skeleton.sat_instance)
+					skeleton.variable_mapping[variable_number] = ConstraintVariable(formula)
+					variable_number_dict[formula] = variable_number
+					search_term = LinearTerm(factor.*formula.coefficients,0//1)
+					#print_msg("[SKELETON] Searching $(search_term)")
+					if !haskey(skeleton.similar_formula_cache, search_term)
+						#print_msg("[SKELETON] NO KEY")
+						skeleton.similar_formula_cache[search_term] = Tuple{Bool,TermNumber,Int}[(!formula.equality, TermNumber(factor*formula.bias), variable_number)]
+					else
+						for (strict, constant, other_var) in skeleton.similar_formula_cache[search_term]
+							print_msg("[SKELETON] Adding linear dependency constraint")
+							if (strict && factor*formula.bias < constant.value) || (!strict && factor*formula.bias <= constant.value)
+								print_msg(formula," -> ",search_term,ifelse(strict,"<","<="),constant)
+								print_msg(formula.bias*factor)
+								add_clause(skeleton.sat_instance, [-variable_number, other_var])
+							else
+								print_msg(search_term,ifelse(strict,"<","<="),constant," -> ",formula)
+								print_msg(formula.bias*factor)
+								add_clause(skeleton.sat_instance, [-other_var, variable_number])
+							end
+						end
+						search_term2 = LinearTerm(-factor.*formula.coefficients,0//1)
+						if haskey(skeleton.similar_formula_cache,search_term2)
+							for (strict, constant, other_var) in skeleton.similar_formula_cache[search_term2]
+								if (!strict && -constant.value > factor*formula.bias) || (strict && -constant.value >= factor*formula.bias)
+									print_msg("[SKELETON] Adding negated linear dependency constraint")
+									print_msg("!",formula," | !",search_term2,ifelse(strict,"<","<="),constant)
+									add_clause(skeleton.sat_instance, [-variable_number, -other_var])
+								end
+							end
+						end
+						push!(
+							skeleton.similar_formula_cache[search_term],
+							(!formula.equality, TermNumber(factor*formula.bias), variable_number)
+						)
+					end
 					return SkeletonFormula(variable_number)
 				end
 			end
@@ -91,7 +220,7 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 			OverApprox(internal_formula, under_approx, over_approx) || UnderApprox(internal_formula, under_approx, over_approx) => begin
 				#@debug "Atom or LinearConstraint => constraint variable"
 				@assert !isnothing(under_approx) && !isnothing(over_approx) ("Under/over approx must be defined for " * term_to_string(formula) * " ("* string(skeleton.variable_mapping[internal_formula.variable_number]) *")")
-				return_variable = next_var(skeleton.sat_instance)
+				#return_variable = next_var(skeleton.sat_instance)
 				if haskey(variable_number_dict, formula)
 					return SkeletonFormula(variable_number_dict[formula])
 				else
@@ -108,9 +237,9 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 						new_formula = OverApprox(internal, under_approx, over_approx)
 						new_formula_complementary = UnderApprox(internal, under_approx, over_approx)
 						# We want (-internal_formula.variable_number) AND (variable_number) <=> return_variable
-						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, -variable_number_actual, return_variable])
-						add_clause(skeleton.sat_instance, [-return_variable, internal_formula.variable_number])
-						add_clause(skeleton.sat_instance, [-return_variable, variable_number_actual])
+						#add_clause(skeleton.sat_instance, [-internal_formula.variable_number, -variable_number_actual, return_variable])
+						#add_clause(skeleton.sat_instance, [-return_variable, internal_formula.variable_number])
+						#add_clause(skeleton.sat_instance, [-return_variable, variable_number_actual])
 						# If formula is true then so is the overapproximation:
 						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, variable_number_actual])
 						# If underapproximation is true then so is the original formula:
@@ -119,9 +248,9 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 						new_formula = UnderApprox(internal, under_approx, over_approx)
 						new_formula_complementary = OverApprox(internal, under_approx, over_approx)
 						# We want (-internal_formula.variable_number) OR (variable_number) <=> return_variable
-						add_clause(skeleton.sat_instance, [-internal_formula.variable_number, return_variable])
-						add_clause(skeleton.sat_instance, [-variable_number_actual, return_variable])
-						add_clause(skeleton.sat_instance, [-return_variable, internal_formula.variable_number, variable_number_actual])
+						#add_clause(skeleton.sat_instance, [-internal_formula.variable_number, return_variable])
+						#add_clause(skeleton.sat_instance, [-variable_number_actual, return_variable])
+						#add_clause(skeleton.sat_instance, [-return_variable, internal_formula.variable_number, variable_number_actual])
 						# If underapproximation is true then so is the original formula:
 						add_clause(skeleton.sat_instance, [-variable_number_actual, internal_formula.variable_number])
 						# If formula is true then so is the overapproximation:
@@ -129,36 +258,65 @@ function get_skeleton_generator_function(skeleton :: BooleanSkeleton, variable_n
 					end
 					skeleton.variable_mapping[variable_number_actual] = ConstraintVariable(new_formula)
 					skeleton.variable_mapping[variable_number_complementary] = ConstraintVariable(new_formula_complementary)
-					variable_number_dict[formula] = return_variable
-					return SkeletonFormula(return_variable)
+					variable_number_dict[formula] = internal_formula.variable_number
+					return SkeletonFormula(internal_formula.variable_number)
 				end
 			end
-			SemiLinearConstraint => formula
-			# OverApprox(internal_formula) || UnderApprox(internal_formula) => begin
-			# 	#@debug "OverApprox or UnderApprox => propagating from below"
-			# 	# print("Encountered ")
-			# 	# print_msg(formula)
-			# 	# print_msg(internal)
-			# 	if haskey(variable_number_dict, formula)
-			# 		return SkeletonFormula(variable_number_dict[formula])
-			# 	else
-			# 		variable_number = next_var(skeleton.sat_instance)
-			# 		skeleton.variable_mapping[variable_number] = formula
-			# 		variable_number_dict[formula] = variable_number
-			# 		return SkeletonFormula(variable_number)
-			# 	end
-			# 	# return @match skeleton.variable_mapping[internal_formula.variable_number] begin
-			# 	# 	ConstraintVariable(internal) => begin
-			# 	# 		# May have already happened at other location...
-			# 	# 		if !(internal isa UnderApprox || internal isa OverApprox)
-			# 	# 			new_formula = (typeof(formula))(internal)
-			# 	# 			skeleton.variable_mapping[internal_formula.variable_number] = ConstraintVariable(new_formula)
-			# 	# 		end
-			# 	# 		return internal_formula
-			# 	# 	end
-			# 	# 	_ => throw("ApproxNode is supposed to contain a ConstraintVariable")
-			# 	# end
-			# end
+			Predicate("isMax", parameters,_) => begin
+				@assert length(parameters) >= 3
+				cur_max = parameters[1]
+				options = @view parameters[2:end]
+				@warn "Beware: Use of isMax assumes that there always exists a *unique* maximum!"
+				if !(cur_max in options)
+					println(cur_max)
+					println(options)
+					print(cur_max == options[1])
+					throw("isMax requires that first argument is also one of the remaining arguments!")
+				end
+				if !(allunique(options))
+					raise("All options must be unique")
+				end
+				# Identical ordering of options
+				option_order = sortperm(term_to_string.(options))
+				options = options[option_order]
+				normalized_predicate = Predicate("isMax", [cur_max; options[option_order]])
+				if !haskey(variable_number_dict, normalized_predicate)
+					option_variables = []
+					# Exactly 1 encoding
+					last_counter_var = nothing
+					current_counter_var = nothing
+					for i in 1:length(options)
+						option_atoms = Formula[]
+						for (j,cur_option) in enumerate(options)
+							if i!=j
+								cur_atom = simplify(Atom(AST.Greater, options[i], cur_option))
+								if is_linear(cur_atom)
+									var_number = skeleton.query.num_input_vars + skeleton.query.num_output_vars
+									cur_atom = make_linear(cur_atom.left,cur_atom.right,cur_atom.comparator,var_number)
+								end
+								push!(option_atoms, cur_atom)
+							end
+						end
+						last_counter_var = current_counter_var
+						current_counter_var = next_var(skeleton.sat_instance)
+						skeleton.variable_mapping[current_counter_var] = IntermediateVariable
+						option_var = next_var(skeleton.sat_instance)
+						skeleton.variable_mapping[option_var] = IsMaxCase(option_atoms)
+						push!(option_variables, option_var)
+						if !isnothing(last_counter_var)
+							add_clause(skeleton.sat_instance, [-last_counter_var, -option_var])
+							add_clause(skeleton.sat_instance, [-last_counter_var, current_counter_var])
+						end
+						add_clause(skeleton.sat_instance, [-option_var, current_counter_var])
+						println("Adding ", Predicate("isMax", [options[i]; options[option_order]]))
+						variable_number_dict[Predicate("isMax", [options[i]; options[option_order]])] = option_var
+					end
+					add_clause(skeleton.sat_instance, option_variables)
+				end
+				println("Searching ",normalized_predicate)
+				return SkeletonFormula(variable_number_dict[normalized_predicate])
+			end
+			SemiLinearConstraint() => formula
 			x => begin
 				print(x)
 				throw("Missing case!")

@@ -1,0 +1,792 @@
+﻿/* Model or tactics did not reparse, printed verbatim, needs manual editing */
+
+/* Input content */
+Theorem "ACAS_Reimport/Property-SCL1500-Limited"
+ProgramVariables
+  /* horizontal */
+  Real r;    /* relative distance in ft; xi - xo */
+  Real rpost;
+  Real ho;
+  Real hopost;
+             /* x = r */
+  Real rv;   /* relative speed -(vi - vo) */
+  Real rvpost;
+  
+  Real ro;
+  Real ropost;
+  
+  Real t;
+  Real tpost;
+  
+  Real tNMAC; /* Time to loss of vertical separation */
+
+  /* vertical */
+  Real h;    /* relative altitude in ft */
+  Real hpost;
+             /* if negative: the intruder is lower than the ownship */
+             /* h := hi - ho */
+             /* z = h */
+  Real v;    /* vertical velocity of ownship */
+  Real vpost;
+  Real vlo;  /* target minimum velocity */
+  Real vlopost;
+  Real w;    /* velocity direction */
+  Real wpost;
+  Real a;
+  Real apost;
+  
+  Real alo;
+  Real alopost;
+  
+  Real nnCOC;
+  Real nnDNC;
+  Real nnDND;
+  Real nnDES1500;
+  Real nnCLI1500;
+  Real nnSDES1500;
+  Real nnSCLI1500;
+  Real nnSDES2500;
+  Real nnSCL2500;
+  
+  Real nnCOCpost;
+  Real nnDNCpost;
+  Real nnDNDpost;
+  Real nnDES1500post;
+  Real nnCLI1500post;
+  Real nnSDES1500post;
+  Real nnSCLI1500post;
+  Real nnSDES2500post;
+  Real nnSCL2500post;
+
+End.
+
+Definitions
+  Real hp = 100; /*ft*/  /* puck height */
+  Real rp = 500; /*ft*/   /* puck radius */
+  Real aloLow  = 8.046;  /* Typically g/4 */  /* g/4 = 9.81m/s^2 / 4 = 2,4525 m/s^2 = 8.04625984 ft/s^2 */
+  Real aloHigh = 10.725; /* Typically g/3 */  /* g/4 = 9.81m/s^2 / 3 = 3.2699 m/s^2 = 10.725 ft/s^2 */
+
+  /* velocity bound 1 = lower, -1 = upper */
+  Real wUp = -1;
+  Real wLo = 1;
+
+  Real minI(Real v, Real w) = min(0, v*w);
+  Real maxI(Real v, Real w, Real vlo) = max(0, w * (vlo - v));
+  
+  
+  Bool is1MinI(Real v, Real w) <-> 0 <= v*w;
+  Real minI1(Real v, Real w) = 0;
+  Real minI2(Real v, Real w) = v*w;
+  Bool is1MaxI(Real v, Real w, Real vlo) <-> 0 >= w * (vlo - v);
+  Real maxI1(Real v, Real w, Real vlo) = 0;
+  Real maxI2(Real v, Real w, Real vlo) = w * (vlo - v);
+
+  Bool Limpl(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> 
+    \forall t \forall ro \forall ho (
+        (0 <= t & t < maxI(v,w,vlo)/alo & ro = rv * t & ho = (w * alo)/2 * t^2 + v * t)
+ (t >= maxI(v,w,vlo)/alo & ro = rv * t & ho = vlo * t - w * maxI(v,w,vlo)^2/(2*alo))
+      -> (abs(r - ro) > rp | w * h < w * ho - hp)
+    );
+    
+  Bool isMaximalVal(Real maxVal, Real nnCOC, Real nnDNC, Real nnDND, Real nnDES1500, Real nnCLI1500, Real nnSDES1500, Real nnSCLI1500, Real nnSDES2500, Real nnSCL2500)
+    <-> (maxVal >= nnCOC & maxVal >= nnDNC & maxVal >= nnDND & maxVal >= nnDES1500 & maxVal >= nnCLI1500 & maxVal >= nnSDES1500 & maxVal >= nnSCLI1500 & maxVal >= nnSDES2500 & maxVal >= nnSCL2500);
+
+  Bool init(Real rv, Real alo) <-> rp>=0 & hp>0 & rv>=0 & alo>0;
+
+  Bool loopInv(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> ( (w=wUp | w=wLo) & alo>0 & Limpl(r,h,v,w,vlo,rv, alo) );
+  
+  HP motion ::= { {r' = -rv, h' = -v, v' = a & w*v>=w*vlo|w*a>=alo } };
+  
+  Bool case1(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp <= r & r < -rp - rv * minI(v,w)/alo;
+  Bool bound1(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r + rp)^2 + w * rv * v * (r+rp) - rv^2 * hp;
+  Bool case2(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp - rv * minI(v,w)/alo <= r & r <= rp - rv * minI(v,w)/alo;
+  Bool bound2(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * h < (-(minI(v,w)^2))/(2*alo) - hp;
+  Bool case3(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> rp - rv * minI(v,w)/alo < r & r <= rp + rv * maxI(v,w,vlo)/alo;
+  Bool bound3(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r - rp)^2 + w * rv * v * (r - rp) - rv^2 * hp;
+  Bool case4(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> rp + rv * maxI(v,w,vlo)/alo < r;
+  Bool bound4(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> rv = 0 | w * rv * h  <  w * vlo * (r - rp) - rv * maxI(v,w,vlo)^2/(2*alo) - rv * hp;
+  Bool case5(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp <= r & r < -rp + rv * maxI(v,w,vlo)/alo;
+  Bool bound5(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r + rp)^2 + w * rv * v * (r + rp) - rv^2 * hp;
+  Bool case6(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp + rv * maxI(v,w,vlo)/alo <= r;
+  Bool bound6(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> ( (rv = 0 & r > rp)
+ w * rv * h <  w * vlo * (r + rp) - rv * maxI(v,w,vlo)^2/(2*alo) - rv * hp );
+                    
+  Bool case1NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp <= r & 
+    (r < -rp - rv * minI1(v,w)/alo & is1MinI(v,w) | r < -rp - rv * minI2(v,w)/alo & !is1MinI(v,w));
+  Bool bound1NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r + rp)^2 + w * rv * v * (r+rp) - rv^2 * hp;
+  Bool case2NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <->  
+    (-rp - rv * minI1(v,w)/alo <= r & is1MinI(v,w) | -rp - rv * minI2(v,w)/alo <= r & !is1MinI(v,w)) &
+    (r <= rp - rv * minI1(v,w)/alo  & is1MinI(v,w) | r <= rp - rv * minI2(v,w)/alo  & !is1MinI(v,w));
+  Bool bound2NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <->
+    (w * h < (-(minI1(v,w)^2))/(2*alo) - hp & is1MinI(v,w) | w * h < (-(minI2(v,w)^2))/(2*alo) - hp & !is1MinI(v,w));
+  Bool case3NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <->
+    (rp - rv * minI1(v,w)/alo < r & is1MinI(v,w) | rp - rv * minI2(v,w)/alo < r & !is1MinI(v,w)) &
+    (r <= rp + rv * maxI1(v,w,vlo)/alo & is1MaxI(v,w,vlo) | r <= rp + rv * maxI2(v,w,vlo)/alo  & !is1MaxI(v,w,vlo));
+  Bool bound3NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r - rp)^2 + w * rv * v * (r - rp) - rv^2 * hp;
+  Bool case4NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <->
+    (rp + rv * maxI1(v,w,vlo)/alo < r & is1MaxI(v,w,vlo) | rp + rv * maxI2(v,w,vlo)/alo < r & !is1MaxI(v,w,vlo));
+  Bool bound4NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> rv = 0 | 
+    (w * rv * h  <  w * vlo * (r - rp) - rv * maxI1(v,w,vlo)^2/(2*alo) - rv * hp & is1MaxI(v,w,vlo) | 
+     w * rv * h  <  w * vlo * (r - rp) - rv * maxI2(v,w,vlo)^2/(2*alo) - rv * hp & !is1MaxI(v,w,vlo));
+  Bool case5NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp <= r &
+    (r < -rp + rv * maxI1(v,w,vlo)/alo & is1MaxI(v,w,vlo) | r < -rp + rv * maxI2(v,w,vlo)/alo & !is1MaxI(v,w,vlo));
+  Bool bound5NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r + rp)^2 + w * rv * v * (r + rp) - rv^2 * hp;
+  Bool case6NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <->
+    (-rp + rv * maxI1(v,w,vlo)/alo <= r & is1MaxI(v,w,vlo) | -rp + rv * maxI2(v,w,vlo)/alo <= r & !is1MaxI(v,w,vlo));
+  Bool bound6NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> ( (rv = 0 & r > rp) |
+                    ( w * rv * h <  w * vlo * (r + rp) - rv * maxI1(v,w,vlo)^2/(2*alo) - rv * hp & is1MaxI(v,w,vlo) |
+                      w * rv * h <  w * vlo * (r + rp) - rv * maxI2(v,w,vlo)^2/(2*alo) - rv * hp & !is1MaxI(v,w,vlo)) );
+
+  Bool Lexpl(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> (
+    (w * vlo >= 0 ->
+        (case1(r,v,w,vlo,rv,alo) -> bound1(r,h,v,w,vlo,rv,alo))
+      & (case2(r,v,w,vlo,rv,alo) -> bound2(r,h,v,w,vlo,rv,alo))
+      & (case3(r,v,w,vlo,rv,alo) -> bound3(r,h,v,w,vlo,rv,alo))
+      & (case4(r,v,w,vlo,rv,alo) -> bound4(r,h,v,w,vlo,rv,alo))
+    )
+    &
+    (w * vlo < 0 ->
+        (case5(r,v,w,vlo,rv,alo) -> bound5(r,h,v,w,vlo,rv,alo))
+      & (case6(r,v,w,vlo,rv,alo) -> bound6(r,h,v,w,vlo,rv,alo))
+    )
+  );
+  
+  Bool LexplNonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> (
+    (w * vlo >= 0 ->
+        (case1NonMax(r,v,w,vlo,rv,alo) -> bound1NonMax(r,h,v,w,vlo,rv,alo))
+      & (case2NonMax(r,v,w,vlo,rv,alo) -> bound2NonMax(r,h,v,w,vlo,rv,alo))
+      & (case3NonMax(r,v,w,vlo,rv,alo) -> bound3NonMax(r,h,v,w,vlo,rv,alo))
+      & (case4NonMax(r,v,w,vlo,rv,alo) -> bound4NonMax(r,h,v,w,vlo,rv,alo))
+    )
+    &
+    (w * vlo < 0 ->
+        (case5NonMax(r,v,w,vlo,rv,alo) -> bound5NonMax(r,h,v,w,vlo,rv,alo))
+      & (case6NonMax(r,v,w,vlo,rv,alo) -> bound6NonMax(r,h,v,w,vlo,rv,alo))
+    )
+  );
+  
+End.
+
+Problem
+/* DNC -> */ w = 1 & vlo = 1500 &
+/* Constants */
+/* The way the NN is designed we need fix the horizontal velocity */
+rv = 2200 /* ft/s; see Jeannin et al. TACAS'2015 -> must be that high as it is the *relative* velocity (we assume worst case) */ &
+/*rv = (r - rp) / tNMAC &*/
+r = rv*tNMAC + rp() &
+alo=aloHigh()&
+( (w=wUp | w=wLo) & LexplNonMax(r,h,v,w,vlo,rv,alo) ) & 
+(
+hpost = h &
+hopost = ho &
+nnCLI1500post = nnCLI1500 &
+nnCOCpost = nnCOC &
+nnDES1500post = nnDES1500 &
+nnDNCpost = nnDNC &
+nnDNDpost = nnDND &
+nnSCL2500post = nnSCL2500 &
+nnSCLI1500post = nnSCLI1500 &
+nnSDES1500post = nnSDES1500 &
+nnSDES2500post = nnSDES2500 &
+rpost = r & ropost = ro & tpost = t & vpost = v
+)
+->
+(
+
+(w * v >= w * vlo | w * apost >= alo) &
+alopost = alo &
+hpost = h &
+hopost = ho &
+nnCLI1500post = nnCLI1500 &
+nnCOCpost = nnCOC &
+nnDES1500post = nnDES1500 &
+nnDNCpost = nnDNC &
+nnDNDpost = nnDND &
+nnSCL2500post = nnSCL2500 &
+nnSCLI1500post = nnSCLI1500 &
+nnSDES1500post = nnSDES1500 &
+nnSDES2500post = nnSDES2500 &
+rpost = r & ropost = ro & tpost = t & vpost = v & vlopost = vlo & wpost = w |
+nnDNCpost >= nnCOCpost &
+nnDNCpost >= nnDNDpost &
+nnDNCpost >= nnDES1500post &
+nnDNCpost >= nnCLI1500post &
+nnDNCpost >= nnSDES1500post &
+nnDNCpost >= nnSCLI1500post &
+nnDNCpost >= nnSDES2500post &
+nnDNCpost >= nnSCL2500post &
+(
+  -rp() <= r &
+  (
+    r  <  -rp() - 0 / aloLow() & 0 <= v * (-1) |
+    r  <  -rp() - rv * (v * (-1)) / aloLow() & 0 > v * (-1)
+  ) ->
+  (-rv^2) * h  <
+   aloLow() / 2 * (r + rp())^2 + (-rv) * v * (r + rp()) - rv^2 * hp()
+) &
+(
+  (
+    -rp() - 0 / aloLow() <= r & 0 <= v * (-1) |
+    -rp() - rv * (v * (-1)) / aloLow() <= r & 0 > v * (-1)
+  ) &
+  (
+    r <= rp() - 0 / aloLow() & 0 <= v * (-1) |
+    r <= rp() - rv * (v * (-1)) / aloLow() & 0 > v * (-1)
+  ) ->
+  -h  <  0 / (2 * aloLow()) - hp() & 0 <= v * (-1) |
+  -h  <  (-(v * (-1))^2) / (2 * aloLow()) - hp() & 0 > v * (-1)
+) &
+(
+  (
+    rp() - 0 / aloLow()  <  r & 0 <= v * (-1) |
+    rp() - rv * (v * (-1)) / aloLow()  <  r & 0 > v * (-1)
+  ) &
+  (r <= rp() + 0 / aloLow() & 0 >= v | r <= rp() + rv * v / aloLow() & 0  <  v) ->
+  (-rv^2) * h  <
+   aloLow() / 2 * (r - rp())^2 + (-rv) * v * (r - rp()) - rv^2 * hp()
+) &
+(
+  rp() + 0 / aloLow()  <  r & 0 >= v | rp() + rv * v / aloLow()  <  r & 0  <  v ->
+  rv = 0 |
+  (-rv) * h  <  -0 / (2 * aloLow()) - rv * hp() & 0 >= v |
+  (-rv) * h  <  -rv * v^2 / (2 * aloLow()) - rv * hp() & 0  <  v
+) &
+(-v >= 0 | -apost >= aloLow()) &
+alopost = aloLow() &
+hpost = h &
+hopost = ho &
+rpost = r & ropost = ro & tpost = t & vpost = v & vlopost = 0 & wpost = (-1) |
+nnDNDpost >= nnCOCpost &
+nnDNDpost >= nnDNCpost &
+nnDNDpost >= nnDES1500post &
+nnDNDpost >= nnCLI1500post &
+nnDNDpost >= nnSDES1500post &
+nnDNDpost >= nnSCLI1500post &
+nnDNDpost >= nnSDES2500post &
+nnDNDpost >= nnSCL2500post &
+(
+  -rp() <= r &
+  (r  <  -rp() - 0 / aloLow() & 0 <= v | r  <  -rp() - rv * v / aloLow() & 0 > v) ->
+  rv^2 * h  <  aloLow() / 2 * (r + rp())^2 + rv * v * (r + rp()) - rv^2 * hp()
+) &
+(
+  (
+    -rp() - 0 / aloLow() <= r & 0 <= v | -rp() - rv * v / aloLow() <= r & 0 > v
+  ) &
+  (r <= rp() - 0 / aloLow() & 0 <= v | r <= rp() - rv * v / aloLow() & 0 > v) ->
+  h  <  0 / (2 * aloLow()) - hp() & 0 <= v |
+  h  <  (-v^2) / (2 * aloLow()) - hp() & 0 > v
+) &
+(
+  (rp() - 0 / aloLow()  <  r & 0 <= v | rp() - rv * v / aloLow()  <  r & 0 > v) &
+  (
+    r <= rp() + 0 / aloLow() & 0 >= -v |
+    r <= rp() + rv * (-v) / aloLow() & 0  <  -v
+  ) ->
+  rv^2 * h  <  aloLow() / 2 * (r - rp())^2 + rv * v * (r - rp()) - rv^2 * hp()
+) &
+(
+  rp() + 0 / aloLow()  <  r & 0 >= -v |
+  rp() + rv * (-v) / aloLow()  <  r & 0  <  -v ->
+  rv = 0 |
+  rv * h  <  -0 / (2 * aloLow()) - rv * hp() & 0 >= -v |
+  rv * h  <  -rv * (-v)^2 / (2 * aloLow()) - rv * hp() & 0  <  -v
+) &
+(v >= 0 | apost >= aloLow()) &
+alopost = aloLow() &
+hpost = h &
+hopost = ho &
+rpost = r & ropost = ro & tpost = t & vpost = v & vlopost = 0 & wpost = 1 |
+nnDES1500post >= nnCOCpost &
+nnDES1500post >= nnDNCpost &
+nnDES1500post >= nnDNDpost &
+nnDES1500post >= nnCLI1500post &
+nnDES1500post >= nnSDES1500post &
+nnDES1500post >= nnSCLI1500post &
+nnDES1500post >= nnSDES2500post &
+nnDES1500post >= nnSCL2500post &
+(
+  25 >= 0 ->
+  (
+    -rp() <= r &
+    (
+      r  <  -rp() - 0 / aloLow() & 0 <= v * (-1) |
+      r  <  -rp() - rv * (v * (-1)) / aloLow() & 0 > v * (-1)
+    ) ->
+    (-rv^2) * h  <
+     aloLow() / 2 * (r + rp())^2 + (-rv) * v * (r + rp()) - rv^2 * hp()
+  ) &
+  (
+    (
+      -rp() - 0 / aloLow() <= r & 0 <= v * (-1) |
+      -rp() - rv * (v * (-1)) / aloLow() <= r & 0 > v * (-1)
+    ) &
+    (
+      r <= rp() - 0 / aloLow() & 0 <= v * (-1) |
+      r <= rp() - rv * (v * (-1)) / aloLow() & 0 > v * (-1)
+    ) ->
+    -h  <  0 / (2 * aloLow()) - hp() & 0 <= v * (-1) |
+    -h  <  (-(v * (-1))^2) / (2 * aloLow()) - hp() & 0 > v * (-1)
+  ) &
+  (
+    (
+      rp() - 0 / aloLow()  <  r & 0 <= v * (-1) |
+      rp() - rv * (v * (-1)) / aloLow()  <  r & 0 > v * (-1)
+    ) &
+    (
+      r <= rp() + 0 / aloLow() & 0 >= v - (-25) |
+      r <= rp() + rv * (v - (-25)) / aloLow() & 0  <  v - (-25)
+    ) ->
+    (-rv^2) * h  <
+     aloLow() / 2 * (r - rp())^2 + (-rv) * v * (r - rp()) - rv^2 * hp()
+  ) &
+  (
+    rp() + 0 / aloLow()  <  r & 0 >= v - (-25) |
+    rp() + rv * (v - (-25)) / aloLow()  <  r & 0  <  v - (-25) ->
+    rv = 0 |
+    (-rv) * h  <  25 * (r - rp()) - 0 / (2 * aloLow()) - rv * hp() &
+    0 >= v - (-25) |
+    (-rv) * h  <
+     25 * (r - rp()) - rv * (v - (-25))^2 / (2 * aloLow()) - rv * hp() &
+    0  <  v - (-25)
+  )
+) &
+(
+  25  <  0 ->
+  (
+    -rp() <= r &
+    (
+      r  <  -rp() + 0 / aloLow() & 0 >= v - (-25) |
+      r  <  -rp() + rv * (v - (-25)) / aloLow() & 0  <  v - (-25)
+    ) ->
+    (-rv^2) * h  <
+     aloLow() / 2 * (r + rp())^2 + (-rv) * v * (r + rp()) - rv^2 * hp()
+  ) &
+  (
+    -rp() + 0 / aloLow() <= r & 0 >= v - (-25) |
+    -rp() + rv * (v - (-25)) / aloLow() <= r & 0  <  v - (-25) ->
+    rv = 0 & r > rp() |
+    (-rv) * h  <  25 * (r + rp()) - 0 / (2 * aloLow()) - rv * hp() &
+    0 >= v - (-25) |
+    (-rv) * h  <
+     25 * (r + rp()) - rv * (v - (-25))^2 / (2 * aloLow()) - rv * hp() &
+    0  <  v - (-25)
+  )
+) &
+(-v >= 25 | -apost >= aloLow()) &
+alopost = aloLow() &
+hpost = h &
+hopost = ho &
+rpost = r &
+ropost = ro & tpost = t & vpost = v & vlopost = (-25) & wpost = (-1) |
+nnCLI1500post >= nnCOCpost &
+nnCLI1500post >= nnDNCpost &
+nnCLI1500post >= nnDNDpost &
+nnCLI1500post >= nnDES1500post &
+nnCLI1500post >= nnSDES1500post &
+nnCLI1500post >= nnSCLI1500post &
+nnCLI1500post >= nnSDES2500post &
+nnCLI1500post >= nnSCL2500post &
+(
+  25 >= 0 ->
+  (
+    -rp() <= r &
+    (
+      r  <  -rp() - 0 / aloLow() & 0 <= v | r  <  -rp() - rv * v / aloLow() & 0 > v
+    ) ->
+    rv^2 * h  <  aloLow() / 2 * (r + rp())^2 + rv * v * (r + rp()) - rv^2 * hp()
+  ) &
+  (
+    (
+      -rp() - 0 / aloLow() <= r & 0 <= v |
+      -rp() - rv * v / aloLow() <= r & 0 > v
+    ) &
+    (
+      r <= rp() - 0 / aloLow() & 0 <= v | r <= rp() - rv * v / aloLow() & 0 > v
+    ) ->
+    h  <  0 / (2 * aloLow()) - hp() & 0 <= v |
+    h  <  (-v^2) / (2 * aloLow()) - hp() & 0 > v
+  ) &
+  (
+    (rp() - 0 / aloLow()  <  r & 0 <= v | rp() - rv * v / aloLow()  <  r & 0 > v) &
+    (
+      r <= rp() + 0 / aloLow() & 0 >= 25 - v |
+      r <= rp() + rv * (25 - v) / aloLow() & 0  <  25 - v
+    ) ->
+    rv^2 * h  <  aloLow() / 2 * (r - rp())^2 + rv * v * (r - rp()) - rv^2 * hp()
+  ) &
+  (
+    rp() + 0 / aloLow()  <  r & 0 >= 25 - v |
+    rp() + rv * (25 - v) / aloLow()  <  r & 0  <  25 - v ->
+    rv = 0 |
+    rv * h  <  25 * (r - rp()) - 0 / (2 * aloLow()) - rv * hp() & 0 >= 25 - v |
+    rv * h  <  25 * (r - rp()) - rv * (25 - v)^2 / (2 * aloLow()) - rv * hp() &
+    0  <  25 - v
+  )
+) &
+(
+  25  <  0 ->
+  (
+    -rp() <= r &
+    (
+      r  <  -rp() + 0 / aloLow() & 0 >= 25 - v |
+      r  <  -rp() + rv * (25 - v) / aloLow() & 0  <  25 - v
+    ) ->
+    rv^2 * h  <  aloLow() / 2 * (r + rp())^2 + rv * v * (r + rp()) - rv^2 * hp()
+  ) &
+  (
+    -rp() + 0 / aloLow() <= r & 0 >= 25 - v |
+    -rp() + rv * (25 - v) / aloLow() <= r & 0  <  25 - v ->
+    rv = 0 & r > rp() |
+    rv * h  <  25 * (r + rp()) - 0 / (2 * aloLow()) - rv * hp() & 0 >= 25 - v |
+    rv * h  <  25 * (r + rp()) - rv * (25 - v)^2 / (2 * aloLow()) - rv * hp() &
+    0  <  25 - v
+  )
+) &
+(v >= 25 | apost >= aloLow()) &
+alopost = aloLow() &
+hpost = h &
+hopost = ho &
+rpost = r & ropost = ro & tpost = t & vpost = v & vlopost = 25 & wpost = 1 |
+nnSDES1500post >= nnCOCpost &
+nnSDES1500post >= nnDNCpost &
+nnSDES1500post >= nnDNDpost &
+nnSDES1500post >= nnDES1500post &
+nnSDES1500post >= nnCLI1500post &
+nnSDES1500post >= nnSCLI1500post &
+nnSDES1500post >= nnSDES2500post &
+nnSDES1500post >= nnSCL2500post &
+(
+  25 >= 0 ->
+  (
+    -rp() <= r &
+    (
+      r  <  -rp() - 0 / aloHigh() & 0 <= v * (-1) |
+      r  <  -rp() - rv * (v * (-1)) / aloHigh() & 0 > v * (-1)
+    ) ->
+    (-rv^2) * h  <
+     aloHigh() / 2 * (r + rp())^2 + (-rv) * v * (r + rp()) - rv^2 * hp()
+  ) &
+  (
+    (
+      -rp() - 0 / aloHigh() <= r & 0 <= v * (-1) |
+      -rp() - rv * (v * (-1)) / aloHigh() <= r & 0 > v * (-1)
+    ) &
+    (
+      r <= rp() - 0 / aloHigh() & 0 <= v * (-1) |
+      r <= rp() - rv * (v * (-1)) / aloHigh() & 0 > v * (-1)
+    ) ->
+    -h  <  0 / (2 * aloHigh()) - hp() & 0 <= v * (-1) |
+    -h  <  (-(v * (-1))^2) / (2 * aloHigh()) - hp() & 0 > v * (-1)
+  ) &
+  (
+    (
+      rp() - 0 / aloHigh()  <  r & 0 <= v * (-1) |
+      rp() - rv * (v * (-1)) / aloHigh()  <  r & 0 > v * (-1)
+    ) &
+    (
+      r <= rp() + 0 / aloHigh() & 0 >= v - (-25) |
+      r <= rp() + rv * (v - (-25)) / aloHigh() & 0  <  v - (-25)
+    ) ->
+    (-rv^2) * h  <
+     aloHigh() / 2 * (r - rp())^2 + (-rv) * v * (r - rp()) - rv^2 * hp()
+  ) &
+  (
+    rp() + 0 / aloHigh()  <  r & 0 >= v - (-25) |
+    rp() + rv * (v - (-25)) / aloHigh()  <  r & 0  <  v - (-25) ->
+    rv = 0 |
+    (-rv) * h  <  25 * (r - rp()) - 0 / (2 * aloHigh()) - rv * hp() &
+    0 >= v - (-25) |
+    (-rv) * h  <
+     25 * (r - rp()) - rv * (v - (-25))^2 / (2 * aloHigh()) - rv * hp() &
+    0  <  v - (-25)
+  )
+) &
+(
+  25  <  0 ->
+  (
+    -rp() <= r &
+    (
+      r  <  -rp() + 0 / aloHigh() & 0 >= v - (-25) |
+      r  <  -rp() + rv * (v - (-25)) / aloHigh() & 0  <  v - (-25)
+    ) ->
+    (-rv^2) * h  <
+     aloHigh() / 2 * (r + rp())^2 + (-rv) * v * (r + rp()) - rv^2 * hp()
+  ) &
+  (
+    -rp() + 0 / aloHigh() <= r & 0 >= v - (-25) |
+    -rp() + rv * (v - (-25)) / aloHigh() <= r & 0  <  v - (-25) ->
+    rv = 0 & r > rp() |
+    (-rv) * h  <  25 * (r + rp()) - 0 / (2 * aloHigh()) - rv * hp() &
+    0 >= v - (-25) |
+    (-rv) * h  <
+     25 * (r + rp()) - rv * (v - (-25))^2 / (2 * aloHigh()) - rv * hp() &
+    0  <  v - (-25)
+  )
+) &
+(-v >= 25 | -apost >= aloHigh()) &
+alopost = aloHigh() &
+hpost = h &
+hopost = ho &
+rpost = r &
+ropost = ro & tpost = t & vpost = v & vlopost = (-25) & wpost = (-1) |
+nnSCLI1500post >= nnCOCpost &
+nnSCLI1500post >= nnDNCpost &
+nnSCLI1500post >= nnDNDpost &
+nnSCLI1500post >= nnDES1500post &
+nnSCLI1500post >= nnCLI1500post &
+nnSCLI1500post >= nnSDES1500post &
+nnSCLI1500post >= nnSDES2500post &
+nnSCLI1500post >= nnSCL2500post &
+(
+  25 >= 0 ->
+  (
+    -rp() <= r &
+    (
+      r  <  -rp() - 0 / aloHigh() & 0 <= v |
+      r  <  -rp() - rv * v / aloHigh() & 0 > v
+    ) ->
+    rv^2 * h  <  aloHigh() / 2 * (r + rp())^2 + rv * v * (r + rp()) - rv^2 * hp()
+  ) &
+  (
+    (
+      -rp() - 0 / aloHigh() <= r & 0 <= v |
+      -rp() - rv * v / aloHigh() <= r & 0 > v
+    ) &
+    (
+      r <= rp() - 0 / aloHigh() & 0 <= v |
+      r <= rp() - rv * v / aloHigh() & 0 > v
+    ) ->
+    h  <  0 / (2 * aloHigh()) - hp() & 0 <= v |
+    h  <  (-v^2) / (2 * aloHigh()) - hp() & 0 > v
+  ) &
+  (
+    (
+      rp() - 0 / aloHigh()  <  r & 0 <= v | rp() - rv * v / aloHigh()  <  r & 0 > v
+    ) &
+    (
+      r <= rp() + 0 / aloHigh() & 0 >= 25 - v |
+      r <= rp() + rv * (25 - v) / aloHigh() & 0  <  25 - v
+    ) ->
+    rv^2 * h  <  aloHigh() / 2 * (r - rp())^2 + rv * v * (r - rp()) - rv^2 * hp()
+  ) &
+  (
+    rp() + 0 / aloHigh()  <  r & 0 >= 25 - v |
+    rp() + rv * (25 - v) / aloHigh()  <  r & 0  <  25 - v ->
+    rv = 0 |
+    rv * h  <  25 * (r - rp()) - 0 / (2 * aloHigh()) - rv * hp() & 0 >= 25 - v |
+    rv * h  <  25 * (r - rp()) - rv * (25 - v)^2 / (2 * aloHigh()) - rv * hp() &
+    0  <  25 - v
+  )
+) &
+(
+  25  <  0 ->
+  (
+    -rp() <= r &
+    (
+      r  <  -rp() + 0 / aloHigh() & 0 >= 25 - v |
+      r  <  -rp() + rv * (25 - v) / aloHigh() & 0  <  25 - v
+    ) ->
+    rv^2 * h  <  aloHigh() / 2 * (r + rp())^2 + rv * v * (r + rp()) - rv^2 * hp()
+  ) &
+  (
+    -rp() + 0 / aloHigh() <= r & 0 >= 25 - v |
+    -rp() + rv * (25 - v) / aloHigh() <= r & 0  <  25 - v ->
+    rv = 0 & r > rp() |
+    rv * h  <  25 * (r + rp()) - 0 / (2 * aloHigh()) - rv * hp() & 0 >= 25 - v |
+    rv * h  <  25 * (r + rp()) - rv * (25 - v)^2 / (2 * aloHigh()) - rv * hp() &
+    0  <  25 - v
+  )
+) &
+(v >= 25 | apost >= aloHigh()) &
+alopost = aloHigh() &
+hpost = h &
+hopost = ho &
+rpost = r & ropost = ro & tpost = t & vpost = v & vlopost = 25 & wpost = 1 |
+nnSDES2500post >= nnCOCpost &
+nnSDES2500post >= nnDNCpost &
+nnSDES2500post >= nnDNDpost &
+nnSDES2500post >= nnDES1500post &
+nnSDES2500post >= nnCLI1500post &
+nnSDES2500post >= nnSDES1500post &
+nnSDES2500post >= nnSCLI1500post &
+nnSDES2500post >= nnSCL2500post &
+(
+  41.67 >= 0 ->
+  (
+    -rp() <= r &
+    (
+      r  <  -rp() - 0 / aloHigh() & 0 <= v * (-1) |
+      r  <  -rp() - rv * (v * (-1)) / aloHigh() & 0 > v * (-1)
+    ) ->
+    (-rv^2) * h  <
+     aloHigh() / 2 * (r + rp())^2 + (-rv) * v * (r + rp()) - rv^2 * hp()
+  ) &
+  (
+    (
+      -rp() - 0 / aloHigh() <= r & 0 <= v * (-1) |
+      -rp() - rv * (v * (-1)) / aloHigh() <= r & 0 > v * (-1)
+    ) &
+    (
+      r <= rp() - 0 / aloHigh() & 0 <= v * (-1) |
+      r <= rp() - rv * (v * (-1)) / aloHigh() & 0 > v * (-1)
+    ) ->
+    -h  <  0 / (2 * aloHigh()) - hp() & 0 <= v * (-1) |
+    -h  <  (-(v * (-1))^2) / (2 * aloHigh()) - hp() & 0 > v * (-1)
+  ) &
+  (
+    (
+      rp() - 0 / aloHigh()  <  r & 0 <= v * (-1) |
+      rp() - rv * (v * (-1)) / aloHigh()  <  r & 0 > v * (-1)
+    ) &
+    (
+      r <= rp() + 0 / aloHigh() & 0 >= v - - 41.67 |
+      r <= rp() + rv * (v - - 41.67) / aloHigh() & 0  <  v - - 41.67
+    ) ->
+    (-rv^2) * h  <
+     aloHigh() / 2 * (r - rp())^2 + (-rv) * v * (r - rp()) - rv^2 * hp()
+  ) &
+  (
+    rp() + 0 / aloHigh()  <  r & 0 >= v - - 41.67 |
+    rp() + rv * (v - - 41.67) / aloHigh()  <  r & 0  <  v - - 41.67 ->
+    rv = 0 |
+    (-rv) * h  <  41.67 * (r - rp()) - 0 / (2 * aloHigh()) - rv * hp() &
+    0 >= v - - 41.67 |
+    (-rv) * h  <
+     41.67 * (r - rp()) - rv * (v - - 41.67)^2 / (2 * aloHigh()) - rv * hp() &
+    0  <  v - - 41.67
+  )
+) &
+(
+  41.67  <  0 ->
+  (
+    -rp() <= r &
+    (
+      r  <  -rp() + 0 / aloHigh() & 0 >= v - - 41.67 |
+      r  <  -rp() + rv * (v - - 41.67) / aloHigh() & 0  <  v - - 41.67
+    ) ->
+    (-rv^2) * h  <
+     aloHigh() / 2 * (r + rp())^2 + (-rv) * v * (r + rp()) - rv^2 * hp()
+  ) &
+  (
+    -rp() + 0 / aloHigh() <= r & 0 >= v - - 41.67 |
+    -rp() + rv * (v - - 41.67) / aloHigh() <= r & 0  <  v - - 41.67 ->
+    rv = 0 & r > rp() |
+    (-rv) * h  <  41.67 * (r + rp()) - 0 / (2 * aloHigh()) - rv * hp() &
+    0 >= v - - 41.67 |
+    (-rv) * h  <
+     41.67 * (r + rp()) - rv * (v - - 41.67)^2 / (2 * aloHigh()) - rv * hp() &
+    0  <  v - - 41.67
+  )
+) &
+(-v >= 41.67 | -apost >= aloHigh()) &
+alopost = aloHigh() &
+hpost = h &
+hopost = ho &
+rpost = r &
+ropost = ro & tpost = t & vpost = v & vlopost = -41.67 & wpost = (-1) |
+nnSCL2500post >= nnCOCpost &
+nnSCL2500post >= nnDNCpost &
+nnSCL2500post >= nnDNDpost &
+nnSCL2500post >= nnDES1500post &
+nnSCL2500post >= nnCLI1500post &
+nnSCL2500post >= nnSDES1500post &
+nnSCL2500post >= nnSCLI1500post &
+nnSCL2500post >= nnSDES2500post &
+(
+  41.67 >= 0 ->
+  (
+    -rp() <= r &
+    (
+      r  <  -rp() - 0 / aloHigh() & 0 <= v |
+      r  <  -rp() - rv * v / aloHigh() & 0 > v
+    ) ->
+    rv^2 * h  <  aloHigh() / 2 * (r + rp())^2 + rv * v * (r + rp()) - rv^2 * hp()
+  ) &
+  (
+    (
+      -rp() - 0 / aloHigh() <= r & 0 <= v |
+      -rp() - rv * v / aloHigh() <= r & 0 > v
+    ) &
+    (
+      r <= rp() - 0 / aloHigh() & 0 <= v |
+      r <= rp() - rv * v / aloHigh() & 0 > v
+    ) ->
+    h  <  0 / (2 * aloHigh()) - hp() & 0 <= v |
+    h  <  (-v^2) / (2 * aloHigh()) - hp() & 0 > v
+  ) &
+  (
+    (
+      rp() - 0 / aloHigh()  <  r & 0 <= v | rp() - rv * v / aloHigh()  <  r & 0 > v
+    ) &
+    (
+      r <= rp() + 0 / aloHigh() & 0 >= 41.67 - v |
+      r <= rp() + rv * (41.67 - v) / aloHigh() & 0  <  41.67 - v
+    ) ->
+    rv^2 * h  <  aloHigh() / 2 * (r - rp())^2 + rv * v * (r - rp()) - rv^2 * hp()
+  ) &
+  (
+    rp() + 0 / aloHigh()  <  r & 0 >= 41.67 - v |
+    rp() + rv * (41.67 - v) / aloHigh()  <  r & 0  <  41.67 - v ->
+    rv = 0 |
+    rv * h  <  41.67 * (r - rp()) - 0 / (2 * aloHigh()) - rv * hp() &
+    0 >= 41.67 - v |
+    rv * h  <
+     41.67 * (r - rp()) - rv * (41.67 - v)^2 / (2 * aloHigh()) - rv * hp() &
+    0  <  41.67 - v
+  )
+) &
+(
+  41.67  <  0 ->
+  (
+    -rp() <= r &
+    (
+      r  <  -rp() + 0 / aloHigh() & 0 >= 41.67 - v |
+      r  <  -rp() + rv * (41.67 - v) / aloHigh() & 0  <  41.67 - v
+    ) ->
+    rv^2 * h  <  aloHigh() / 2 * (r + rp())^2 + rv * v * (r + rp()) - rv^2 * hp()
+  ) &
+  (
+    -rp() + 0 / aloHigh() <= r & 0 >= 41.67 - v |
+    -rp() + rv * (41.67 - v) / aloHigh() <= r & 0  <  41.67 - v ->
+    rv = 0 & r > rp() |
+    rv * h  <  41.67 * (r + rp()) - 0 / (2 * aloHigh()) - rv * hp() &
+    0 >= 41.67 - v |
+    rv * h  <
+     41.67 * (r + rp()) - rv * (41.67 - v)^2 / (2 * aloHigh()) - rv * hp() &
+    0  <  41.67 - v
+  )
+) &
+(v >= 41.67 | apost >= aloHigh()) &
+alopost = aloHigh() &
+hpost = h &
+hopost = ho &
+rpost = r & ropost = ro & tpost = t & vpost = v & vlopost = 41.67 & wpost = 1
+
+)
+End.
+
+End.
+/* End input content */
+
+/* Printed tactics */
+Tactic "ACAS_Reimport/Property-SCL1500-Limited: Proof"
+unfold ; hideR(1) ; fullSimplify ; allL2R(-1) ; hideL(-1) ; allL2R(-1) ; hideL(-1) ; allL2R(-1) ; hideL(-1) ; allL2R(-1) ; hideL(-1) ; allL2R(-1) ; hideL(-1) ; hideL(-1) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; allL2R(-2) ; hideL(-2) ; expandAllDefs() ; fullSimplify ; edit("nnSCL2500>=nnCOC&nnSCL2500>=nnDNC&nnSCL2500>=nnDND&nnSCL2500>=nnDES1500&nnSCL2500>=nnCLI1500&nnSCL2500>=nnSDES1500&nnSCL2500>=nnSCLI1500&nnSCL2500>=nnSDES2500&(41.67>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/10.725&0>v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/10.725<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/10.725&0>v)->h < 0/(2*10.725)-100&0<=v|h < (-v^2)/(2*10.725)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/10.725 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=41.67-v|2200*tNMAC+500<=500+2200*(41.67-v)/10.725&0 < 41.67-v)->4840000*h < 10.725/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=41.67-v|500+2200*(41.67-v)/10.725 < 2200*tNMAC+500&0 < 41.67-v->2200=0|2200*h < 41.67*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=41.67-v|2200*h < 41.67*(2200*tNMAC+500-500)-2200*(41.67-v)^2/(2*10.725)-220000&0 < 41.67-v))&(false->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(41.67-v)/10.725&0 < 41.67-v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=41.67-v|(-500)+2200*(41.67-v)/10.725<=2200*tNMAC+500&0 < 41.67-v->2200=0&2200*tNMAC+500>500|2200*h < 41.67*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=41.67-v|2200*h < 41.67*(2200*tNMAC+500+500)-2200*(41.67-v)^2/(2*10.725)-220000&0 < 41.67-v))&(v>=41.67|apost>=10.725)&alopost=10.725&vlopost=41.67&wpost=1", 'R=="nnSCL2500>=nnCOC&nnSCL2500>=nnDNC&nnSCL2500>=nnDND&nnSCL2500>=nnDES1500&nnSCL2500>=nnCLI1500&nnSCL2500>=nnSDES1500&nnSCL2500>=nnSCLI1500&nnSCL2500>=nnSDES2500&(41.67>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/10.725&0>v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/10.725<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/10.725&0>v)->h < 0/(2*10.725)-100&0<=v|h < (-v^2)/(2*10.725)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/10.725 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=41.67-v|2200*tNMAC+500<=500+2200*(41.67-v)/10.725&0 < 41.67-v)->4840000*h < 10.725/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=41.67-v|500+2200*(41.67-v)/10.725 < 2200*tNMAC+500&0 < 41.67-v->2200=0|2200*h < 41.67*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=41.67-v|2200*h < 41.67*(2200*tNMAC+500-500)-2200*(41.67-v)^2/(2*10.725)-220000&0 < 41.67-v))&(41.67 < 0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(41.67-v)/10.725&0 < 41.67-v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=41.67-v|(-500)+2200*(41.67-v)/10.725<=2200*tNMAC+500&0 < 41.67-v->2200=0&2200*tNMAC+500>500|2200*h < 41.67*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=41.67-v|2200*h < 41.67*(2200*tNMAC+500+500)-2200*(41.67-v)^2/(2*10.725)-220000&0 < 41.67-v))&(v>=41.67|apost>=10.725)&alopost=10.725&vlopost=41.67&wpost=1") ; edit("nnSCL2500>=nnCOC&nnSCL2500>=nnDNC&nnSCL2500>=nnDND&nnSCL2500>=nnDES1500&nnSCL2500>=nnCLI1500&nnSCL2500>=nnSDES1500&nnSCL2500>=nnSCLI1500&nnSCL2500>=nnSDES2500&(true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/10.725&0>v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/10.725<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/10.725&0>v)->h < 0/(2*10.725)-100&0<=v|h < (-v^2)/(2*10.725)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/10.725 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=41.67-v|2200*tNMAC+500<=500+2200*(41.67-v)/10.725&0 < 41.67-v)->4840000*h < 10.725/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=41.67-v|500+2200*(41.67-v)/10.725 < 2200*tNMAC+500&0 < 41.67-v->2200=0|2200*h < 41.67*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=41.67-v|2200*h < 41.67*(2200*tNMAC+500-500)-2200*(41.67-v)^2/(2*10.725)-220000&0 < 41.67-v))&(false->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(41.67-v)/10.725&0 < 41.67-v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=41.67-v|(-500)+2200*(41.67-v)/10.725<=2200*tNMAC+500&0 < 41.67-v->2200=0&2200*tNMAC+500>500|2200*h < 41.67*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=41.67-v|2200*h < 41.67*(2200*tNMAC+500+500)-2200*(41.67-v)^2/(2*10.725)-220000&0 < 41.67-v))&(v>=41.67|apost>=10.725)&alopost=10.725&vlopost=41.67&wpost=1", 'R=="nnSCL2500>=nnCOC&nnSCL2500>=nnDNC&nnSCL2500>=nnDND&nnSCL2500>=nnDES1500&nnSCL2500>=nnCLI1500&nnSCL2500>=nnSDES1500&nnSCL2500>=nnSCLI1500&nnSCL2500>=nnSDES2500&(41.67>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/10.725&0>v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/10.725<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/10.725&0>v)->h < 0/(2*10.725)-100&0<=v|h < (-v^2)/(2*10.725)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/10.725 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=41.67-v|2200*tNMAC+500<=500+2200*(41.67-v)/10.725&0 < 41.67-v)->4840000*h < 10.725/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=41.67-v|500+2200*(41.67-v)/10.725 < 2200*tNMAC+500&0 < 41.67-v->2200=0|2200*h < 41.67*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=41.67-v|2200*h < 41.67*(2200*tNMAC+500-500)-2200*(41.67-v)^2/(2*10.725)-220000&0 < 41.67-v))&(false->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(41.67-v)/10.725&0 < 41.67-v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=41.67-v|(-500)+2200*(41.67-v)/10.725<=2200*tNMAC+500&0 < 41.67-v->2200=0&2200*tNMAC+500>500|2200*h < 41.67*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=41.67-v|2200*h < 41.67*(2200*tNMAC+500+500)-2200*(41.67-v)^2/(2*10.725)-220000&0 < 41.67-v))&(v>=41.67|apost>=10.725)&alopost=10.725&vlopost=41.67&wpost=1") ; edit("nnSDES2500>=nnCOC&nnSDES2500>=nnDNC&nnSDES2500>=nnDND&nnSDES2500>=nnDES1500&nnSDES2500>=nnCLI1500&nnSDES2500>=nnSDES1500&nnSDES2500>=nnSCLI1500&nnSDES2500>=nnSCL2500&(41.67>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*(v*(-1))/10.725&0>v*(-1)->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v*(-1)|(-500)-2200*(v*(-1))/10.725<=2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0<=v*(-1)|2200*tNMAC+500<=500-2200*(v*(-1))/10.725&0>v*(-1))->-h < 0/(2*10.725)-100&0<=v*(-1)|-h < (-(v*(-1))^2)/(2*10.725)-100&0>v*(-1))&((500 < 2200*tNMAC+500&0<=v*(-1)|500-2200*(v*(-1))/10.725 < 2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0>=v-- 41.67|2200*tNMAC+500<=500+2200*(v-- 41.67)/10.725&0 < v-- 41.67)->(-4840000)*h < 10.725/2*(2200*tNMAC+500-500)^2+(-2200)*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=v-- 41.67|500+2200*(v-- 41.67)/10.725 < 2200*tNMAC+500&0 < v-- 41.67->2200=0|(-2200)*h < 41.67*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=v-- 41.67|(-2200)*h < 41.67*(2200*tNMAC+500-500)-2200*(v-- 41.67)^2/(2*10.725)-220000&0 < v-- 41.67))&(false->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(v-- 41.67)/10.725&0 < v-- 41.67->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=v-- 41.67|(-500)+2200*(v-- 41.67)/10.725<=2200*tNMAC+500&0 < v-- 41.67->2200=0&2200*tNMAC+500>500|(-2200)*h < 41.67*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=v-- 41.67|(-2200)*h < 41.67*(2200*tNMAC+500+500)-2200*(v-- 41.67)^2/(2*10.725)-220000&0 < v-- 41.67))&(-v>=41.67|-apost>=10.725)&alopost=10.725&vlopost=-41.67&wpost=(-1)", 'R=="nnSDES2500>=nnCOC&nnSDES2500>=nnDNC&nnSDES2500>=nnDND&nnSDES2500>=nnDES1500&nnSDES2500>=nnCLI1500&nnSDES2500>=nnSDES1500&nnSDES2500>=nnSCLI1500&nnSDES2500>=nnSCL2500&(41.67>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*(v*(-1))/10.725&0>v*(-1)->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v*(-1)|(-500)-2200*(v*(-1))/10.725<=2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0<=v*(-1)|2200*tNMAC+500<=500-2200*(v*(-1))/10.725&0>v*(-1))->-h < 0/(2*10.725)-100&0<=v*(-1)|-h < (-(v*(-1))^2)/(2*10.725)-100&0>v*(-1))&((500 < 2200*tNMAC+500&0<=v*(-1)|500-2200*(v*(-1))/10.725 < 2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0>=v-- 41.67|2200*tNMAC+500<=500+2200*(v-- 41.67)/10.725&0 < v-- 41.67)->(-4840000)*h < 10.725/2*(2200*tNMAC+500-500)^2+(-2200)*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=v-- 41.67|500+2200*(v-- 41.67)/10.725 < 2200*tNMAC+500&0 < v-- 41.67->2200=0|(-2200)*h < 41.67*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=v-- 41.67|(-2200)*h < 41.67*(2200*tNMAC+500-500)-2200*(v-- 41.67)^2/(2*10.725)-220000&0 < v-- 41.67))&(41.67 < 0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(v-- 41.67)/10.725&0 < v-- 41.67->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=v-- 41.67|(-500)+2200*(v-- 41.67)/10.725<=2200*tNMAC+500&0 < v-- 41.67->2200=0&2200*tNMAC+500>500|(-2200)*h < 41.67*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=v-- 41.67|(-2200)*h < 41.67*(2200*tNMAC+500+500)-2200*(v-- 41.67)^2/(2*10.725)-220000&0 < v-- 41.67))&(-v>=41.67|-apost>=10.725)&alopost=10.725&vlopost=-41.67&wpost=(-1)") ; edit("nnSDES2500>=nnCOC&nnSDES2500>=nnDNC&nnSDES2500>=nnDND&nnSDES2500>=nnDES1500&nnSDES2500>=nnCLI1500&nnSDES2500>=nnSDES1500&nnSDES2500>=nnSCLI1500&nnSDES2500>=nnSCL2500&(true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*(v*(-1))/10.725&0>v*(-1)->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v*(-1)|(-500)-2200*(v*(-1))/10.725<=2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0<=v*(-1)|2200*tNMAC+500<=500-2200*(v*(-1))/10.725&0>v*(-1))->-h < 0/(2*10.725)-100&0<=v*(-1)|-h < (-(v*(-1))^2)/(2*10.725)-100&0>v*(-1))&((500 < 2200*tNMAC+500&0<=v*(-1)|500-2200*(v*(-1))/10.725 < 2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0>=v-- 41.67|2200*tNMAC+500<=500+2200*(v-- 41.67)/10.725&0 < v-- 41.67)->(-4840000)*h < 10.725/2*(2200*tNMAC+500-500)^2+(-2200)*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=v-- 41.67|500+2200*(v-- 41.67)/10.725 < 2200*tNMAC+500&0 < v-- 41.67->2200=0|(-2200)*h < 41.67*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=v-- 41.67|(-2200)*h < 41.67*(2200*tNMAC+500-500)-2200*(v-- 41.67)^2/(2*10.725)-220000&0 < v-- 41.67))&(false->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(v-- 41.67)/10.725&0 < v-- 41.67->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=v-- 41.67|(-500)+2200*(v-- 41.67)/10.725<=2200*tNMAC+500&0 < v-- 41.67->2200=0&2200*tNMAC+500>500|(-2200)*h < 41.67*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=v-- 41.67|(-2200)*h < 41.67*(2200*tNMAC+500+500)-2200*(v-- 41.67)^2/(2*10.725)-220000&0 < v-- 41.67))&(-v>=41.67|-apost>=10.725)&alopost=10.725&vlopost=-41.67&wpost=(-1)", 'R=="nnSDES2500>=nnCOC&nnSDES2500>=nnDNC&nnSDES2500>=nnDND&nnSDES2500>=nnDES1500&nnSDES2500>=nnCLI1500&nnSDES2500>=nnSDES1500&nnSDES2500>=nnSCLI1500&nnSDES2500>=nnSCL2500&(41.67>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*(v*(-1))/10.725&0>v*(-1)->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v*(-1)|(-500)-2200*(v*(-1))/10.725<=2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0<=v*(-1)|2200*tNMAC+500<=500-2200*(v*(-1))/10.725&0>v*(-1))->-h < 0/(2*10.725)-100&0<=v*(-1)|-h < (-(v*(-1))^2)/(2*10.725)-100&0>v*(-1))&((500 < 2200*tNMAC+500&0<=v*(-1)|500-2200*(v*(-1))/10.725 < 2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0>=v-- 41.67|2200*tNMAC+500<=500+2200*(v-- 41.67)/10.725&0 < v-- 41.67)->(-4840000)*h < 10.725/2*(2200*tNMAC+500-500)^2+(-2200)*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=v-- 41.67|500+2200*(v-- 41.67)/10.725 < 2200*tNMAC+500&0 < v-- 41.67->2200=0|(-2200)*h < 41.67*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=v-- 41.67|(-2200)*h < 41.67*(2200*tNMAC+500-500)-2200*(v-- 41.67)^2/(2*10.725)-220000&0 < v-- 41.67))&(false->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(v-- 41.67)/10.725&0 < v-- 41.67->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=v-- 41.67|(-500)+2200*(v-- 41.67)/10.725<=2200*tNMAC+500&0 < v-- 41.67->2200=0&2200*tNMAC+500>500|(-2200)*h < 41.67*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=v-- 41.67|(-2200)*h < 41.67*(2200*tNMAC+500+500)-2200*(v-- 41.67)^2/(2*10.725)-220000&0 < v-- 41.67))&(-v>=41.67|-apost>=10.725)&alopost=10.725&vlopost=-41.67&wpost=(-1)") ; edit("nnSCLI1500>=nnCOC&nnSCLI1500>=nnDNC&nnSCLI1500>=nnDND&nnSCLI1500>=nnDES1500&nnSCLI1500>=nnCLI1500&nnSCLI1500>=nnSDES1500&nnSCLI1500>=nnSDES2500&nnSCLI1500>=nnSCL2500&(true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/10.725&0>v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/10.725<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/10.725&0>v)->h < 0/(2*10.725)-100&0<=v|h < (-v^2)/(2*10.725)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/10.725 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=25-v|2200*tNMAC+500<=500+2200*(25-v)/10.725&0 < 25-v)->4840000*h < 10.725/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=25-v|500+2200*(25-v)/10.725 < 2200*tNMAC+500&0 < 25-v->2200=0|2200*h < 25*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500-500)-2200*(25-v)^2/(2*10.725)-220000&0 < 25-v))&(25 < 0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(25-v)/10.725&0 < 25-v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=25-v|(-500)+2200*(25-v)/10.725<=2200*tNMAC+500&0 < 25-v->2200=0&2200*tNMAC+500>500|2200*h < 25*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500+500)-2200*(25-v)^2/(2*10.725)-220000&0 < 25-v))&(v>=25|apost>=10.725)&alopost=10.725&vlopost=25&wpost=1", 'R=="nnSCLI1500>=nnCOC&nnSCLI1500>=nnDNC&nnSCLI1500>=nnDND&nnSCLI1500>=nnDES1500&nnSCLI1500>=nnCLI1500&nnSCLI1500>=nnSDES1500&nnSCLI1500>=nnSDES2500&nnSCLI1500>=nnSCL2500&(25>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/10.725&0>v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/10.725<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/10.725&0>v)->h < 0/(2*10.725)-100&0<=v|h < (-v^2)/(2*10.725)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/10.725 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=25-v|2200*tNMAC+500<=500+2200*(25-v)/10.725&0 < 25-v)->4840000*h < 10.725/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=25-v|500+2200*(25-v)/10.725 < 2200*tNMAC+500&0 < 25-v->2200=0|2200*h < 25*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500-500)-2200*(25-v)^2/(2*10.725)-220000&0 < 25-v))&(25 < 0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(25-v)/10.725&0 < 25-v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=25-v|(-500)+2200*(25-v)/10.725<=2200*tNMAC+500&0 < 25-v->2200=0&2200*tNMAC+500>500|2200*h < 25*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500+500)-2200*(25-v)^2/(2*10.725)-220000&0 < 25-v))&(v>=25|apost>=10.725)&alopost=10.725&vlopost=25&wpost=1") ; edit("nnSCLI1500>=nnCOC&nnSCLI1500>=nnDNC&nnSCLI1500>=nnDND&nnSCLI1500>=nnDES1500&nnSCLI1500>=nnCLI1500&nnSCLI1500>=nnSDES1500&nnSCLI1500>=nnSDES2500&nnSCLI1500>=nnSCL2500&(true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/10.725&0>v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/10.725<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/10.725&0>v)->h < 0/(2*10.725)-100&0<=v|h < (-v^2)/(2*10.725)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/10.725 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=25-v|2200*tNMAC+500<=500+2200*(25-v)/10.725&0 < 25-v)->4840000*h < 10.725/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=25-v|500+2200*(25-v)/10.725 < 2200*tNMAC+500&0 < 25-v->2200=0|2200*h < 25*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500-500)-2200*(25-v)^2/(2*10.725)-220000&0 < 25-v))&(false->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(25-v)/10.725&0 < 25-v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=25-v|(-500)+2200*(25-v)/10.725<=2200*tNMAC+500&0 < 25-v->2200=0&2200*tNMAC+500>500|2200*h < 25*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500+500)-2200*(25-v)^2/(2*10.725)-220000&0 < 25-v))&(v>=25|apost>=10.725)&alopost=10.725&vlopost=25&wpost=1", 'R=="nnSCLI1500>=nnCOC&nnSCLI1500>=nnDNC&nnSCLI1500>=nnDND&nnSCLI1500>=nnDES1500&nnSCLI1500>=nnCLI1500&nnSCLI1500>=nnSDES1500&nnSCLI1500>=nnSDES2500&nnSCLI1500>=nnSCL2500&(true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/10.725&0>v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/10.725<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/10.725&0>v)->h < 0/(2*10.725)-100&0<=v|h < (-v^2)/(2*10.725)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/10.725 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=25-v|2200*tNMAC+500<=500+2200*(25-v)/10.725&0 < 25-v)->4840000*h < 10.725/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=25-v|500+2200*(25-v)/10.725 < 2200*tNMAC+500&0 < 25-v->2200=0|2200*h < 25*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500-500)-2200*(25-v)^2/(2*10.725)-220000&0 < 25-v))&(25 < 0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(25-v)/10.725&0 < 25-v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=25-v|(-500)+2200*(25-v)/10.725<=2200*tNMAC+500&0 < 25-v->2200=0&2200*tNMAC+500>500|2200*h < 25*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500+500)-2200*(25-v)^2/(2*10.725)-220000&0 < 25-v))&(v>=25|apost>=10.725)&alopost=10.725&vlopost=25&wpost=1") ; edit("nnSDES1500>=nnCOC&nnSDES1500>=nnDNC&nnSDES1500>=nnDND&nnSDES1500>=nnDES1500&nnSDES1500>=nnCLI1500&nnSDES1500>=nnSCLI1500&nnSDES1500>=nnSDES2500&nnSDES1500>=nnSCL2500&(25>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*(v*(-1))/10.725&0>v*(-1)->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v*(-1)|(-500)-2200*(v*(-1))/10.725<=2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0<=v*(-1)|2200*tNMAC+500<=500-2200*(v*(-1))/10.725&0>v*(-1))->-h < 0/(2*10.725)-100&0<=v*(-1)|-h < (-(v*(-1))^2)/(2*10.725)-100&0>v*(-1))&((500 < 2200*tNMAC+500&0<=v*(-1)|500-2200*(v*(-1))/10.725 < 2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0>=v-(-25)|2200*tNMAC+500<=500+2200*(v-(-25))/10.725&0 < v-(-25))->(-4840000)*h < 10.725/2*(2200*tNMAC+500-500)^2+(-2200)*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=v-(-25)|500+2200*(v-(-25))/10.725 < 2200*tNMAC+500&0 < v-(-25)->2200=0|(-2200)*h < 25*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500-500)-2200*(v-(-25))^2/(2*10.725)-220000&0 < v-(-25)))&(false->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(v-(-25))/10.725&0 < v-(-25)->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=v-(-25)|(-500)+2200*(v-(-25))/10.725<=2200*tNMAC+500&0 < v-(-25)->2200=0&2200*tNMAC+500>500|(-2200)*h < 25*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500+500)-2200*(v-(-25))^2/(2*10.725)-220000&0 < v-(-25)))&(-v>=25|-apost>=10.725)&alopost=10.725&vlopost=(-25)&wpost=(-1)", 'R=="nnSDES1500>=nnCOC&nnSDES1500>=nnDNC&nnSDES1500>=nnDND&nnSDES1500>=nnDES1500&nnSDES1500>=nnCLI1500&nnSDES1500>=nnSCLI1500&nnSDES1500>=nnSDES2500&nnSDES1500>=nnSCL2500&(25>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*(v*(-1))/10.725&0>v*(-1)->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v*(-1)|(-500)-2200*(v*(-1))/10.725<=2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0<=v*(-1)|2200*tNMAC+500<=500-2200*(v*(-1))/10.725&0>v*(-1))->-h < 0/(2*10.725)-100&0<=v*(-1)|-h < (-(v*(-1))^2)/(2*10.725)-100&0>v*(-1))&((500 < 2200*tNMAC+500&0<=v*(-1)|500-2200*(v*(-1))/10.725 < 2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0>=v-(-25)|2200*tNMAC+500<=500+2200*(v-(-25))/10.725&0 < v-(-25))->(-4840000)*h < 10.725/2*(2200*tNMAC+500-500)^2+(-2200)*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=v-(-25)|500+2200*(v-(-25))/10.725 < 2200*tNMAC+500&0 < v-(-25)->2200=0|(-2200)*h < 25*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500-500)-2200*(v-(-25))^2/(2*10.725)-220000&0 < v-(-25)))&(25 < 0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(v-(-25))/10.725&0 < v-(-25)->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=v-(-25)|(-500)+2200*(v-(-25))/10.725<=2200*tNMAC+500&0 < v-(-25)->2200=0&2200*tNMAC+500>500|(-2200)*h < 25*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500+500)-2200*(v-(-25))^2/(2*10.725)-220000&0 < v-(-25)))&(-v>=25|-apost>=10.725)&alopost=10.725&vlopost=(-25)&wpost=(-1)") ; edit("nnSDES1500>=nnCOC&nnSDES1500>=nnDNC&nnSDES1500>=nnDND&nnSDES1500>=nnDES1500&nnSDES1500>=nnCLI1500&nnSDES1500>=nnSCLI1500&nnSDES1500>=nnSDES2500&nnSDES1500>=nnSCL2500&(true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*(v*(-1))/10.725&0>v*(-1)->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v*(-1)|(-500)-2200*(v*(-1))/10.725<=2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0<=v*(-1)|2200*tNMAC+500<=500-2200*(v*(-1))/10.725&0>v*(-1))->-h < 0/(2*10.725)-100&0<=v*(-1)|-h < (-(v*(-1))^2)/(2*10.725)-100&0>v*(-1))&((500 < 2200*tNMAC+500&0<=v*(-1)|500-2200*(v*(-1))/10.725 < 2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0>=v-(-25)|2200*tNMAC+500<=500+2200*(v-(-25))/10.725&0 < v-(-25))->(-4840000)*h < 10.725/2*(2200*tNMAC+500-500)^2+(-2200)*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=v-(-25)|500+2200*(v-(-25))/10.725 < 2200*tNMAC+500&0 < v-(-25)->2200=0|(-2200)*h < 25*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500-500)-2200*(v-(-25))^2/(2*10.725)-220000&0 < v-(-25)))&(false->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(v-(-25))/10.725&0 < v-(-25)->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=v-(-25)|(-500)+2200*(v-(-25))/10.725<=2200*tNMAC+500&0 < v-(-25)->2200=0&2200*tNMAC+500>500|(-2200)*h < 25*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500+500)-2200*(v-(-25))^2/(2*10.725)-220000&0 < v-(-25)))&(-v>=25|-apost>=10.725)&alopost=10.725&vlopost=(-25)&wpost=(-1)", 'R=="nnSDES1500>=nnCOC&nnSDES1500>=nnDNC&nnSDES1500>=nnDND&nnSDES1500>=nnDES1500&nnSDES1500>=nnCLI1500&nnSDES1500>=nnSCLI1500&nnSDES1500>=nnSDES2500&nnSDES1500>=nnSCL2500&(25>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*(v*(-1))/10.725&0>v*(-1)->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v*(-1)|(-500)-2200*(v*(-1))/10.725<=2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0<=v*(-1)|2200*tNMAC+500<=500-2200*(v*(-1))/10.725&0>v*(-1))->-h < 0/(2*10.725)-100&0<=v*(-1)|-h < (-(v*(-1))^2)/(2*10.725)-100&0>v*(-1))&((500 < 2200*tNMAC+500&0<=v*(-1)|500-2200*(v*(-1))/10.725 < 2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0>=v-(-25)|2200*tNMAC+500<=500+2200*(v-(-25))/10.725&0 < v-(-25))->(-4840000)*h < 10.725/2*(2200*tNMAC+500-500)^2+(-2200)*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=v-(-25)|500+2200*(v-(-25))/10.725 < 2200*tNMAC+500&0 < v-(-25)->2200=0|(-2200)*h < 25*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500-500)-2200*(v-(-25))^2/(2*10.725)-220000&0 < v-(-25)))&(false->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(v-(-25))/10.725&0 < v-(-25)->(-4840000)*h < 10.725/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=v-(-25)|(-500)+2200*(v-(-25))/10.725<=2200*tNMAC+500&0 < v-(-25)->2200=0&2200*tNMAC+500>500|(-2200)*h < 25*(2200*tNMAC+500+500)-0/(2*10.725)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500+500)-2200*(v-(-25))^2/(2*10.725)-220000&0 < v-(-25)))&(-v>=25|-apost>=10.725)&alopost=10.725&vlopost=(-25)&wpost=(-1)") ; edit("nnCLI1500>=nnCOC&nnCLI1500>=nnDNC&nnCLI1500>=nnDND&nnCLI1500>=nnDES1500&nnCLI1500>=nnSDES1500&nnCLI1500>=nnSCLI1500&nnCLI1500>=nnSDES2500&nnCLI1500>=nnSCL2500&(true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/8.046&0>v->4840000*h < 8.046/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/8.046<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/8.046&0>v)->h < 0/(2*8.046)-100&0<=v|h < (-v^2)/(2*8.046)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/8.046 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=25-v|2200*tNMAC+500<=500+2200*(25-v)/8.046&0 < 25-v)->4840000*h < 8.046/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=25-v|500+2200*(25-v)/8.046 < 2200*tNMAC+500&0 < 25-v->2200=0|2200*h < 25*(2200*tNMAC+500-500)-0/(2*8.046)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500-500)-2200*(25-v)^2/(2*8.046)-220000&0 < 25-v))&(25 < 0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(25-v)/8.046&0 < 25-v->4840000*h < 8.046/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=25-v|(-500)+2200*(25-v)/8.046<=2200*tNMAC+500&0 < 25-v->2200=0&2200*tNMAC+500>500|2200*h < 25*(2200*tNMAC+500+500)-0/(2*8.046)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500+500)-2200*(25-v)^2/(2*8.046)-220000&0 < 25-v))&(v>=25|apost>=8.046)&alopost=8.046&vlopost=25&wpost=1", 'R=="nnCLI1500>=nnCOC&nnCLI1500>=nnDNC&nnCLI1500>=nnDND&nnCLI1500>=nnDES1500&nnCLI1500>=nnSDES1500&nnCLI1500>=nnSCLI1500&nnCLI1500>=nnSDES2500&nnCLI1500>=nnSCL2500&(25>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/8.046&0>v->4840000*h < 8.046/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/8.046<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/8.046&0>v)->h < 0/(2*8.046)-100&0<=v|h < (-v^2)/(2*8.046)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/8.046 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=25-v|2200*tNMAC+500<=500+2200*(25-v)/8.046&0 < 25-v)->4840000*h < 8.046/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=25-v|500+2200*(25-v)/8.046 < 2200*tNMAC+500&0 < 25-v->2200=0|2200*h < 25*(2200*tNMAC+500-500)-0/(2*8.046)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500-500)-2200*(25-v)^2/(2*8.046)-220000&0 < 25-v))&(25 < 0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(25-v)/8.046&0 < 25-v->4840000*h < 8.046/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=25-v|(-500)+2200*(25-v)/8.046<=2200*tNMAC+500&0 < 25-v->2200=0&2200*tNMAC+500>500|2200*h < 25*(2200*tNMAC+500+500)-0/(2*8.046)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500+500)-2200*(25-v)^2/(2*8.046)-220000&0 < 25-v))&(v>=25|apost>=8.046)&alopost=8.046&vlopost=25&wpost=1") ; edit("nnCLI1500>=nnCOC&nnCLI1500>=nnDNC&nnCLI1500>=nnDND&nnCLI1500>=nnDES1500&nnCLI1500>=nnSDES1500&nnCLI1500>=nnSCLI1500&nnCLI1500>=nnSDES2500&nnCLI1500>=nnSCL2500&(true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/8.046&0>v->4840000*h < 8.046/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/8.046<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/8.046&0>v)->h < 0/(2*8.046)-100&0<=v|h < (-v^2)/(2*8.046)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/8.046 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=25-v|2200*tNMAC+500<=500+2200*(25-v)/8.046&0 < 25-v)->4840000*h < 8.046/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=25-v|500+2200*(25-v)/8.046 < 2200*tNMAC+500&0 < 25-v->2200=0|2200*h < 25*(2200*tNMAC+500-500)-0/(2*8.046)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500-500)-2200*(25-v)^2/(2*8.046)-220000&0 < 25-v))&(false->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(25-v)/8.046&0 < 25-v->4840000*h < 8.046/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=25-v|(-500)+2200*(25-v)/8.046<=2200*tNMAC+500&0 < 25-v->2200=0&2200*tNMAC+500>500|2200*h < 25*(2200*tNMAC+500+500)-0/(2*8.046)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500+500)-2200*(25-v)^2/(2*8.046)-220000&0 < 25-v))&(v>=25|apost>=8.046)&alopost=8.046&vlopost=25&wpost=1", 'R=="nnCLI1500>=nnCOC&nnCLI1500>=nnDNC&nnCLI1500>=nnDND&nnCLI1500>=nnDES1500&nnCLI1500>=nnSDES1500&nnCLI1500>=nnSCLI1500&nnCLI1500>=nnSDES2500&nnCLI1500>=nnSCL2500&(true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/8.046&0>v->4840000*h < 8.046/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/8.046<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/8.046&0>v)->h < 0/(2*8.046)-100&0<=v|h < (-v^2)/(2*8.046)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/8.046 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=25-v|2200*tNMAC+500<=500+2200*(25-v)/8.046&0 < 25-v)->4840000*h < 8.046/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=25-v|500+2200*(25-v)/8.046 < 2200*tNMAC+500&0 < 25-v->2200=0|2200*h < 25*(2200*tNMAC+500-500)-0/(2*8.046)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500-500)-2200*(25-v)^2/(2*8.046)-220000&0 < 25-v))&(25 < 0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(25-v)/8.046&0 < 25-v->4840000*h < 8.046/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=25-v|(-500)+2200*(25-v)/8.046<=2200*tNMAC+500&0 < 25-v->2200=0&2200*tNMAC+500>500|2200*h < 25*(2200*tNMAC+500+500)-0/(2*8.046)-220000&0>=25-v|2200*h < 25*(2200*tNMAC+500+500)-2200*(25-v)^2/(2*8.046)-220000&0 < 25-v))&(v>=25|apost>=8.046)&alopost=8.046&vlopost=25&wpost=1") ; edit("nnDES1500>=nnCOC&nnDES1500>=nnDNC&nnDES1500>=nnDND&nnDES1500>=nnCLI1500&nnDES1500>=nnSDES1500&nnDES1500>=nnSCLI1500&nnDES1500>=nnSDES2500&nnDES1500>=nnSCL2500&(true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*(v*(-1))/8.046&0>v*(-1)->(-4840000)*h < 8.046/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v*(-1)|(-500)-2200*(v*(-1))/8.046<=2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0<=v*(-1)|2200*tNMAC+500<=500-2200*(v*(-1))/8.046&0>v*(-1))->-h < 0/(2*8.046)-100&0<=v*(-1)|-h < (-(v*(-1))^2)/(2*8.046)-100&0>v*(-1))&((500 < 2200*tNMAC+500&0<=v*(-1)|500-2200*(v*(-1))/8.046 < 2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0>=v-(-25)|2200*tNMAC+500<=500+2200*(v-(-25))/8.046&0 < v-(-25))->(-4840000)*h < 8.046/2*(2200*tNMAC+500-500)^2+(-2200)*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=v-(-25)|500+2200*(v-(-25))/8.046 < 2200*tNMAC+500&0 < v-(-25)->2200=0|(-2200)*h < 25*(2200*tNMAC+500-500)-0/(2*8.046)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500-500)-2200*(v-(-25))^2/(2*8.046)-220000&0 < v-(-25)))&(25 < 0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(v-(-25))/8.046&0 < v-(-25)->(-4840000)*h < 8.046/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=v-(-25)|(-500)+2200*(v-(-25))/8.046<=2200*tNMAC+500&0 < v-(-25)->2200=0&2200*tNMAC+500>500|(-2200)*h < 25*(2200*tNMAC+500+500)-0/(2*8.046)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500+500)-2200*(v-(-25))^2/(2*8.046)-220000&0 < v-(-25)))&(-v>=25|-apost>=8.046)&alopost=8.046&vlopost=(-25)&wpost=(-1)", 'R=="nnDES1500>=nnCOC&nnDES1500>=nnDNC&nnDES1500>=nnDND&nnDES1500>=nnCLI1500&nnDES1500>=nnSDES1500&nnDES1500>=nnSCLI1500&nnDES1500>=nnSDES2500&nnDES1500>=nnSCL2500&(25>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*(v*(-1))/8.046&0>v*(-1)->(-4840000)*h < 8.046/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v*(-1)|(-500)-2200*(v*(-1))/8.046<=2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0<=v*(-1)|2200*tNMAC+500<=500-2200*(v*(-1))/8.046&0>v*(-1))->-h < 0/(2*8.046)-100&0<=v*(-1)|-h < (-(v*(-1))^2)/(2*8.046)-100&0>v*(-1))&((500 < 2200*tNMAC+500&0<=v*(-1)|500-2200*(v*(-1))/8.046 < 2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0>=v-(-25)|2200*tNMAC+500<=500+2200*(v-(-25))/8.046&0 < v-(-25))->(-4840000)*h < 8.046/2*(2200*tNMAC+500-500)^2+(-2200)*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=v-(-25)|500+2200*(v-(-25))/8.046 < 2200*tNMAC+500&0 < v-(-25)->2200=0|(-2200)*h < 25*(2200*tNMAC+500-500)-0/(2*8.046)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500-500)-2200*(v-(-25))^2/(2*8.046)-220000&0 < v-(-25)))&(25 < 0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(v-(-25))/8.046&0 < v-(-25)->(-4840000)*h < 8.046/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=v-(-25)|(-500)+2200*(v-(-25))/8.046<=2200*tNMAC+500&0 < v-(-25)->2200=0&2200*tNMAC+500>500|(-2200)*h < 25*(2200*tNMAC+500+500)-0/(2*8.046)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500+500)-2200*(v-(-25))^2/(2*8.046)-220000&0 < v-(-25)))&(-v>=25|-apost>=8.046)&alopost=8.046&vlopost=(-25)&wpost=(-1)") ; edit("nnDES1500>=nnCOC&nnDES1500>=nnDNC&nnDES1500>=nnDND&nnDES1500>=nnCLI1500&nnDES1500>=nnSDES1500&nnDES1500>=nnSCLI1500&nnDES1500>=nnSDES2500&nnDES1500>=nnSCL2500&(true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*(v*(-1))/8.046&0>v*(-1)->(-4840000)*h < 8.046/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v*(-1)|(-500)-2200*(v*(-1))/8.046<=2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0<=v*(-1)|2200*tNMAC+500<=500-2200*(v*(-1))/8.046&0>v*(-1))->-h < 0/(2*8.046)-100&0<=v*(-1)|-h < (-(v*(-1))^2)/(2*8.046)-100&0>v*(-1))&((500 < 2200*tNMAC+500&0<=v*(-1)|500-2200*(v*(-1))/8.046 < 2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0>=v-(-25)|2200*tNMAC+500<=500+2200*(v-(-25))/8.046&0 < v-(-25))->(-4840000)*h < 8.046/2*(2200*tNMAC+500-500)^2+(-2200)*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=v-(-25)|500+2200*(v-(-25))/8.046 < 2200*tNMAC+500&0 < v-(-25)->2200=0|(-2200)*h < 25*(2200*tNMAC+500-500)-0/(2*8.046)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500-500)-2200*(v-(-25))^2/(2*8.046)-220000&0 < v-(-25)))&(false->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(v-(-25))/8.046&0 < v-(-25)->(-4840000)*h < 8.046/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=v-(-25)|(-500)+2200*(v-(-25))/8.046<=2200*tNMAC+500&0 < v-(-25)->2200=0&2200*tNMAC+500>500|(-2200)*h < 25*(2200*tNMAC+500+500)-0/(2*8.046)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500+500)-2200*(v-(-25))^2/(2*8.046)-220000&0 < v-(-25)))&(-v>=25|-apost>=8.046)&alopost=8.046&vlopost=(-25)&wpost=(-1)", 'R=="nnDES1500>=nnCOC&nnDES1500>=nnDNC&nnDES1500>=nnDND&nnDES1500>=nnCLI1500&nnDES1500>=nnSDES1500&nnDES1500>=nnSCLI1500&nnDES1500>=nnSDES2500&nnDES1500>=nnSCL2500&(true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*(v*(-1))/8.046&0>v*(-1)->(-4840000)*h < 8.046/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v*(-1)|(-500)-2200*(v*(-1))/8.046<=2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0<=v*(-1)|2200*tNMAC+500<=500-2200*(v*(-1))/8.046&0>v*(-1))->-h < 0/(2*8.046)-100&0<=v*(-1)|-h < (-(v*(-1))^2)/(2*8.046)-100&0>v*(-1))&((500 < 2200*tNMAC+500&0<=v*(-1)|500-2200*(v*(-1))/8.046 < 2200*tNMAC+500&0>v*(-1))&(2200*tNMAC+500<=500&0>=v-(-25)|2200*tNMAC+500<=500+2200*(v-(-25))/8.046&0 < v-(-25))->(-4840000)*h < 8.046/2*(2200*tNMAC+500-500)^2+(-2200)*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=v-(-25)|500+2200*(v-(-25))/8.046 < 2200*tNMAC+500&0 < v-(-25)->2200=0|(-2200)*h < 25*(2200*tNMAC+500-500)-0/(2*8.046)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500-500)-2200*(v-(-25))^2/(2*8.046)-220000&0 < v-(-25)))&(25 < 0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)+2200*(v-(-25))/8.046&0 < v-(-25)->(-4840000)*h < 8.046/2*(2200*tNMAC+500+500)^2+(-2200)*v*(2200*tNMAC+500+500)-484000000)&((-500)<=2200*tNMAC+500&0>=v-(-25)|(-500)+2200*(v-(-25))/8.046<=2200*tNMAC+500&0 < v-(-25)->2200=0&2200*tNMAC+500>500|(-2200)*h < 25*(2200*tNMAC+500+500)-0/(2*8.046)-220000&0>=v-(-25)|(-2200)*h < 25*(2200*tNMAC+500+500)-2200*(v-(-25))^2/(2*8.046)-220000&0 < v-(-25)))&(-v>=25|-apost>=8.046)&alopost=8.046&vlopost=(-25)&wpost=(-1)") ; fullSimplify ; cut("(v-(-25))^2=v^2+2*v*25+25^2") ; <(
+  "Use": allL2R(-2) ; hideL(-2) ; cut("(25-v)^2=25^2-2*25*v+v^2") ; <(
+      "Use": allL2R(-2) ; hideL(-2) ; todo,
+      "Show": hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideL(-1) ; QE
+    ),
+  "Show": hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideL(-1) ; QE
+);
+cut("(v-- 41.67)^2=v^2+2*v*41.67+41.67^2") ; <(
+  "Use": allL2R(-2) ; hideL(-2) ; cut("(41.67-v)^2=41.67^2-2*41.67*v+v^2") ; <(
+      "Use": allL2R(-2) ; hideL(-2) ; todo,
+      "Show": hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideL(-1) ; QE
+    ),
+  "Show": hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideR(1) ; hideL(-1) ; QE
+) ; andL(-1) ; hideL(-2);
+edit("true->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/10.725&0>v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/10.725<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/10.725&0>v)->h < 0/(2*10.725)-100&0<=v|h < (-v^2)/(2*10.725)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/10.725 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=1500-v|2200*tNMAC+500<=500+2200*(1500-v)/10.725&0 < 1500-v)->4840000*h < 10.725/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=1500-v|500+2200*(1500-v)/10.725 < 2200*tNMAC+500&0 < 1500-v->2200=0|2200*h < 1500*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=1500-v|2200*h < 1500*(2200*tNMAC+500-500)-2200*(1500-v)^2/(2*10.725)-220000&0 < 1500-v)", 'L=="1500>=0->((-500)<=2200*tNMAC+500&2200*tNMAC+500 < (-500)-2200*v/10.725&0>v->4840000*h < 10.725/2*(2200*tNMAC+500+500)^2+2200*v*(2200*tNMAC+500+500)-484000000)&(((-500)<=2200*tNMAC+500&0<=v|(-500)-2200*v/10.725<=2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0<=v|2200*tNMAC+500<=500-2200*v/10.725&0>v)->h < 0/(2*10.725)-100&0<=v|h < (-v^2)/(2*10.725)-100&0>v)&((500 < 2200*tNMAC+500&0<=v|500-2200*v/10.725 < 2200*tNMAC+500&0>v)&(2200*tNMAC+500<=500&0>=1500-v|2200*tNMAC+500<=500+2200*(1500-v)/10.725&0 < 1500-v)->4840000*h < 10.725/2*(2200*tNMAC+500-500)^2+2200*v*(2200*tNMAC+500-500)-484000000)&(500 < 2200*tNMAC+500&0>=1500-v|500+2200*(1500-v)/10.725 < 2200*tNMAC+500&0 < 1500-v->2200=0|2200*h < 1500*(2200*tNMAC+500-500)-0/(2*10.725)-220000&0>=1500-v|2200*h < 1500*(2200*tNMAC+500-500)-2200*(1500-v)^2/(2*10.725)-220000&0 < 1500-v)");
+fullSimplify;
+todo
+End.
+/* End printed tactics */

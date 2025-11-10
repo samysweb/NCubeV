@@ -17,7 +17,7 @@ function smt_internal_set_timeout(ctx, timeout)
 	#ctx[1]["tlimit-per"] = timeout
 	@warn "smt_internal_set_timeout not implemented"
 end
-function smt_internal_solver(ctx, theory)
+function smt_internal_solver(ctx, theory;stars=false)
 	return ctx
 end
 function smt_internal_add(ctx, formula)

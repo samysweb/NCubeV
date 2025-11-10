@@ -11,21 +11,30 @@ import SymbolicUtils.is_literal_number
 import Base.isequal
 #import MultivariatePolynomials.similarvariable
 
+export istree, exprhead, operation, arguments, similarterm, symtype, issym, nameof, promote_symtype, is_literal_number
+
 istree(x :: TermNumber) = false
 istree(x :: Variable) = false
 istree(x::Type{CompositeTerm}) = true
 istree(x::Type{LinearTerm}) = true
 istree(x::Type{Atom}) = true
+istree(x::Type{Predicate}) = true
 istree(x::Type{LinearConstraint}) = true
 istree(x::Type{CompositeFormula}) = true
 istree(x::Type{OverApprox}) = true
 istree(x::Type{UnderApprox}) = true
+istree(x::Type{TrueAtom}) = false
+istree(x::Type{FalseAtom}) = false
 
 issym(x::Type{TermNumber}) = true
 issym(x::Type{Variable}) = true
+issym(x::Type{TrueAtom}) = true
+issym(x::Type{FalseAtom}) = true
 
 nameof(x :: TermNumber) = x
 nameof(x :: Variable) = x
+nameof(x :: TrueAtom) = :true
+nameof(x :: FalseAtom) = :false
 
 # function similarvariable(p,v::Variable)
 # 	return Variable(v.name)
@@ -39,6 +48,7 @@ function exprhead(x :: CompositeTerm)
 	return :call
 end
 exprhead(x :: Atom) = :call
+exprhead(x :: Predicate) = :call
 exprhead(x :: LinearConstraint) = :call
 exprhead(x :: LinearTerm) = :call
 exprhead(x :: CompositeFormula) = :call
@@ -77,11 +87,16 @@ function operation(x :: Atom)
 	elseif x.comparator == GreaterEq
 		return (>=)
 	elseif x.comparator == Eq
-		return (==)
+		return (is_eq)
 	elseif x.comparator == Neq
 		return (!=)
 	end
 end
+
+function operation(x :: Predicate)
+	return Symbol(x.predicate_name)
+end
+
 function operation(x :: LinearConstraint)
 	if x.equality
 		return linear_lesseq
@@ -143,7 +158,7 @@ function operation_to_ast(op)
 		return Greater
 	elseif op == (>=)
 		return GreaterEq
-	elseif op == (==)
+	elseif op == (is_eq)
 		return Eq
 	elseif op == (!=)
 		return Neq
@@ -156,6 +171,7 @@ function arguments(x :: CompositeTerm)
 	return x.args
 end
 arguments(x :: Atom) = [x.left, x.right]
+arguments(x :: Predicate) = x.parameters
 arguments(x :: LinearConstraint) = [x.coefficients, x.bias]
 arguments(x :: LinearTerm) = [x.coefficients, x.bias]
 arguments(x :: CompositeFormula) = x.args
@@ -163,7 +179,7 @@ arguments(x :: OverApprox) = [x.formula, x.under_approx, x.over_approx]
 arguments(x :: UnderApprox) = [x.formula, x.under_approx, x.over_approx]
 
 
-function similarterm(t::CompositeTerm, f, args, symtype=CompositeTerm;metadata=nothing, exprhead=:call)
+function similarterm(t::Type{CompositeTerm}, f, args, symtype=CompositeTerm;metadata=nothing, exprhead=:call)
 	# @debug "similarterm(CompositeTerm)"
 	# @debug "t: ", t
 	# @debug "f: ", f
@@ -213,6 +229,11 @@ function similarterm(::Type{Atom}, c, args, symtype=Atom;metadata=nothing, exprh
 	end
 end
 
+function similarterm(::Type{Predicate}, c, args, symtype=Predicate;metadata=nothing,exprhead=:call)
+	     #similarterm(x::Type{SNNT.AST.Predicate}, head::Symbol, args::Vector{SNNT.AST.Variable}, symtype::Type; metadata::Nothing, exprhead::Symbol)
+	return Predicate(string(c), args)
+end
+
 function similarterm(::Type{LinearConstraint}, c, args, symtype=LinearConstraint;metadata=nothing, exprhead=:call)
 	# @debug "similarterm(LinearConstraint)"
 	if length(args) == 2
@@ -239,8 +260,10 @@ function promote_symtype(f :: Symbol, arg_symtypes)
 		return CompositeTerm
 	elseif f == :(!) || f == :(&&) || f == :(||) || f == :implies
 		return CompositeFormula
-	elseif f == :(<) || f == :(<=) || f == :(>) || f == :(>=) || f == :(==) || f == :(!=)
+	elseif f == :(<) || f == :(<=) || f == :(>) || f == :(>=) || f == :(is_eq) || f == :(!=)
 		return Atom
+	else
+		raise("Unclear symtype for symbol $(f)")
 	end
 end
 
@@ -249,13 +272,18 @@ symtype(x :: Variable) = Number
 symtype(x :: CompositeTerm) = Number
 symtype(x :: LinearTerm) = Number
 symtype(x :: Atom) = Bool
+symtype(x :: Predicate) = Bool
 symtype(x :: LinearConstraint) = Bool
 symtype(x :: CompositeFormula) = Bool
 symtype(x :: OverApprox) = Bool
 symtype(x :: UnderApprox) = Bool
+symtype(x :: TrueAtom) = Bool
+symtype(x :: FalseAtom) = Bool
 
 
-is_literal_number(x :: TermNumber) = true
+function is_literal_number(x :: Term)
+	return x isa TermNumber
+end
 
 
 istree(x :: NonLinearSubstitution) = false

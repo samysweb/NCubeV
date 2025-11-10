@@ -13,6 +13,7 @@ module NNEnum
 		# Register Verifiers
 		register_verifier("NNEnum",verify_enumerative_filtered)
 		register_verifier("NNEnumSimple",verify_iterative_filtered)
+		register_verifier("NNEnumIterative",verify_iterative_all_filtered)
 
 		# Python Setup
 		nnenum_path = joinpath(@__DIR__, "../../deps/nnenum/src")
@@ -50,13 +51,22 @@ def prepare_star(star):
 	# Compute bounds
 	dims = star.lpi.get_num_cols()
 	should_skip = np.zeros((dims, 2), dtype=bool)
-	bounds = star.update_input_box_bounds_old(None, should_skip)
-	return (
+	bounds = None
+	try:
+		bounds = star.update_input_box_bounds_old(None, should_skip)
+	except:
+		bounds_lp = star.lpi._get_col_bounds()
+		bounds = []
+		for (i,cur_bound) in enumerate(bounds_lp):
+			bounds.append([i,cur_bound[0],cur_bound[1]])
+		print("[NNENUM] Substitute bounds due to unsat lp:", bounds)
+	result = (
 		A, b,
 		M, c,
 		bounds,
 		star.counter_example
 	)
+	return result
 
 def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 	Settings.UNDERFLOW_BEHAVIOR = "warn"
@@ -70,6 +80,7 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 	Settings.BRANCH_MODE = Settings.BRANCH_OVERAPPROX
 	Settings.NUM_PROCESSES = 1
 	Settings.ITERATE_COUNTEREXAMPLES = iterative
+	Settings.GLPK_TIMEOUT=15
 	
 	network = load_onnx_network(model)
 	ninputs = A_input.shape[1]
@@ -77,6 +88,7 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 	#b_output+=1e-3
 	#b_input+=1e-3
 
+	print("[NNENUM] Creating LP Star...")
 	init_box = np.array(
 		list(zip(lb.flatten(), ub.flatten())),
 		dtype=np.float32,
@@ -87,7 +99,18 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 	for a, b in zip(A_input, b_input):
 		a_ = a.reshape(network.get_input_shape()).flatten("F")
 		init_star.lpi.add_dense_row(a_, b)
+	
+	print("[NNENUM] Checking feasibility")
+	if not init_star.lpi.is_feasible():
+		print("[NNENUM] Region is safe as initial LP is unsatisfiable; stopping run")
+		sys.stdout.flush()
+		if iterative:
+			return
+		else:
+			yield ("safe", 0, (None, []))
+			return
 
+	print("[NNENUM] Generating output Spec...")
 	spec_list = []
 	for (A_mixed, b_mixed) in disjunction:
 		spec_list.append(MixedSpecification(A_mixed, b_mixed, ninputs))
@@ -97,7 +120,12 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 	if iterative:
 		print("[NNENUM] Iterative mode")
 		for star in enumerate_network(init_star, network, spec):
-			yield prepare_star(star)
+			if hasattr(star, "result_str"):
+				print("[NNENUM] Result: ", star.result_str)
+				print("[NNENUM] Terminating NNEnum Iteration")
+				return
+			else:
+				yield prepare_star(star)
 	else:
 		print("[NNENUM] Enumeration in progress... ")
 		result = next(enumerate_network(init_star, network, spec))
@@ -179,7 +207,7 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 						bounds[i,2] = b[1]
 						bounds[i,3] = b[2]
 					end
-					counter_example = (Vector{Float32}(undef,0),Vector{Float32}(undef,0))
+					counter_example = (Vector{Float64}(undef,0),Vector{Float64}(undef,0))
 					counter_star = Star((A,b,M,c,bounds,counter_example))
 					return OlnnvResult(res.status, res.metadata, Star[uncertain_stars;Star(counter_star, true)])
 				else
@@ -188,6 +216,36 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 			end
 		end
 		if isempty(uncertain_stars)
+			return OlnnvResult(Safe, nothing, [])
+		else
+			return OlnnvResult(Unknown, nothing, uncertain_stars)
+		end
+	end
+
+	function verify_iterative_all_filtered(model, SMTFilter, olnnv_query :: OlnnvQuery)
+		print_msg("[NNENUM] Running iterative nnenum...")
+		lb = [b[1] for b in olnnv_query.bounds]
+		ub = [b[2] for b in olnnv_query.bounds]
+		print_msg("[NNENUM] lb: ", lb)
+		print_msg("[NNENUM] ub: ", ub)
+		uncertain_stars = Star[]
+		certain_stars = Star[]
+		for star in run_nnenum(model, lb, ub, olnnv_query.input_matrix, olnnv_query.input_bias, olnnv_query.disjunction, true)
+			#print("\n[NNENUM] Found star; Filtering\n")
+			res = SMTFilter(OlnnvResult(Unsafe, nothing, [Star(star)]))
+			if res.status != Safe
+				filtered_star = res.stars[1]
+				if filtered_star.certain
+					push!(certain_stars, filtered_star)
+				else
+					push!(uncertain_stars,filtered_star)
+				end
+			end
+		end
+		print("\n[NNENUM] Found ",length(certain_stars)," certain stars and ",length(uncertain_stars)," uncertain stars\n")
+		if !isempty(certain_stars)
+			return OlnnvResult(Unsafe, nothing, [certain_stars;uncertain_stars])
+		elseif isempty(uncertain_stars)
 			return OlnnvResult(Safe, nothing, [])
 		else
 			return OlnnvResult(Unknown, nothing, uncertain_stars)

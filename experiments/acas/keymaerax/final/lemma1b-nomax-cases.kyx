@@ -1,0 +1,443 @@
+Lemma "ACAS_Reimport/Lemma 1d): Equivalence of non-max explicit cases (flexible alo)"
+Definitions
+  Real hp;   /* puck height */
+  Real rp;   /* puck radius */
+
+  /* velocity bound 1 = lower, -1 = upper */
+  Real wUp = -1;
+  Real wLo = 1;
+
+  Real minI(Real v, Real w) = min(0, v*w);
+  Real maxI(Real v, Real w, Real vlo) = max(0, w * (vlo - v));
+  
+  
+  Bool is1MinI(Real v, Real w) <-> 0 <= v*w;
+  Real minI1(Real v, Real w) = 0;
+  Real minI2(Real v, Real w) = v*w;
+  Bool is1MaxI(Real v, Real w, Real vlo) <-> 0 >= w * (vlo - v);
+  Real maxI1(Real v, Real w, Real vlo) = 0;
+  Real maxI2(Real v, Real w, Real vlo) = w * (vlo - v);
+
+  Bool Limpl(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> 
+    \forall t \forall ro \forall ho (
+        (0 <= t & t < maxI(v,w,vlo)/alo & ro = rv * t & ho = (w * alo)/2 * t^2 + v * t)
+      | (t >= maxI(v,w,vlo)/alo & ro = rv * t & ho = vlo * t - w * maxI(v,w,vlo)^2/(2*alo))
+      -> (abs(r - ro) > rp | w * h < w * ho - hp)
+    );
+
+  Bool init(Real rv, Real alo) <-> rp>=0 & hp>0 & rv>=0 & alo>0;
+
+  Bool loopInv(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> ( (w=wUp | w=wLo) & Limpl(r,h,v,w,vlo,rv, alo) );
+  
+  HP motion ::= { {r' = -rv, h' = -v, v' = a & w*v>=w*vlo|w*a>=alo } };
+  
+  Bool case1(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp <= r & r < -rp - rv * minI(v,w)/alo;
+  Bool bound1(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r + rp)^2 + w * rv * v * (r+rp) - rv^2 * hp;
+  Bool case2(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp - rv * minI(v,w)/alo <= r & r <= rp - rv * minI(v,w)/alo;
+  Bool bound2(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * h < (-(minI(v,w)^2))/(2*alo) - hp;
+  Bool case3(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> rp - rv * minI(v,w)/alo < r & r <= rp + rv * maxI(v,w,vlo)/alo;
+  Bool bound3(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r - rp)^2 + w * rv * v * (r - rp) - rv^2 * hp;
+  Bool case4(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> rp + rv * maxI(v,w,vlo)/alo < r;
+  Bool bound4(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> rv = 0 | w * rv * h  <  w * vlo * (r - rp) - rv * maxI(v,w,vlo)^2/(2*alo) - rv * hp;
+  Bool case5(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp <= r & r < -rp + rv * maxI(v,w,vlo)/alo;
+  Bool bound5(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r + rp)^2 + w * rv * v * (r + rp) - rv^2 * hp;
+  Bool case6(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp + rv * maxI(v,w,vlo)/alo <= r;
+  Bool bound6(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> ( (rv = 0 & r > rp)
+                    | w * rv * h <  w * vlo * (r + rp) - rv * maxI(v,w,vlo)^2/(2*alo) - rv * hp );
+                    
+  Bool case1NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp <= r & 
+    (r < -rp - rv * minI1(v,w)/alo & is1MinI(v,w) | r < -rp - rv * minI2(v,w)/alo & !is1MinI(v,w));
+  Bool bound1NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r + rp)^2 + w * rv * v * (r+rp) - rv^2 * hp;
+  Bool case2NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <->  
+    (-rp - rv * minI1(v,w)/alo <= r & is1MinI(v,w) | -rp - rv * minI2(v,w)/alo <= r & !is1MinI(v,w)) &
+    (r <= rp - rv * minI1(v,w)/alo  & is1MinI(v,w) | r <= rp - rv * minI2(v,w)/alo  & !is1MinI(v,w));
+  Bool bound2NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <->
+    (w * h < (-(minI1(v,w)^2))/(2*alo) - hp & is1MinI(v,w) | w * h < (-(minI2(v,w)^2))/(2*alo) - hp & !is1MinI(v,w));
+  Bool case3NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <->
+    (rp - rv * minI1(v,w)/alo < r & is1MinI(v,w) | rp - rv * minI2(v,w)/alo < r & !is1MinI(v,w)) &
+    (r <= rp + rv * maxI1(v,w,vlo)/alo & is1MaxI(v,w,vlo) | r <= rp + rv * maxI2(v,w,vlo)/alo  & !is1MaxI(v,w,vlo));
+  Bool bound3NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r - rp)^2 + w * rv * v * (r - rp) - rv^2 * hp;
+  Bool case4NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <->
+    (rp + rv * maxI1(v,w,vlo)/alo < r & is1MaxI(v,w,vlo) | rp + rv * maxI2(v,w,vlo)/alo < r & !is1MaxI(v,w,vlo));
+  Bool bound4NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> rv = 0 | 
+    (w * rv * h  <  w * vlo * (r - rp) - rv * maxI1(v,w,vlo)^2/(2*alo) - rv * hp & is1MaxI(v,w,vlo) | 
+     w * rv * h  <  w * vlo * (r - rp) - rv * maxI2(v,w,vlo)^2/(2*alo) - rv * hp & !is1MaxI(v,w,vlo));
+  Bool case5NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <-> -rp <= r &
+    (r < -rp + rv * maxI1(v,w,vlo)/alo & is1MaxI(v,w,vlo) | r < -rp + rv * maxI2(v,w,vlo)/alo & !is1MaxI(v,w,vlo));
+  Bool bound5NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> w * rv^2 * h < alo/2 * (r + rp)^2 + w * rv * v * (r + rp) - rv^2 * hp;
+  Bool case6NonMax(Real r, Real v, Real w, Real vlo, Real rv, Real alo)  <->
+    (-rp + rv * maxI1(v,w,vlo)/alo <= r & is1MaxI(v,w,vlo) | -rp + rv * maxI2(v,w,vlo)/alo <= r & !is1MaxI(v,w,vlo));
+  Bool bound6NonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> ( (rv = 0 & r > rp) |
+                    ( w * rv * h <  w * vlo * (r + rp) - rv * maxI1(v,w,vlo)^2/(2*alo) - rv * hp & is1MaxI(v,w,vlo) |
+                      w * rv * h <  w * vlo * (r + rp) - rv * maxI2(v,w,vlo)^2/(2*alo) - rv * hp & !is1MaxI(v,w,vlo)) );
+
+  Bool Lexpl(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> (
+    (w * vlo >= 0 ->
+        (case1(r,v,w,vlo,rv,alo) -> bound1(r,h,v,w,vlo,rv,alo))
+      & (case2(r,v,w,vlo,rv,alo) -> bound2(r,h,v,w,vlo,rv,alo))
+      & (case3(r,v,w,vlo,rv,alo) -> bound3(r,h,v,w,vlo,rv,alo))
+      & (case4(r,v,w,vlo,rv,alo) -> bound4(r,h,v,w,vlo,rv,alo))
+    )
+    &
+    (w * vlo < 0 ->
+        (case5(r,v,w,vlo,rv,alo) -> bound5(r,h,v,w,vlo,rv,alo))
+      & (case6(r,v,w,vlo,rv,alo) -> bound6(r,h,v,w,vlo,rv,alo))
+    )
+  );
+  
+  Bool LexplNonMax(Real r, Real h, Real v, Real w, Real vlo, Real rv, Real alo) <-> (
+    (w * vlo >= 0 ->
+        (case1NonMax(r,v,w,vlo,rv,alo) -> bound1NonMax(r,h,v,w,vlo,rv,alo))
+      & (case2NonMax(r,v,w,vlo,rv,alo) -> bound2NonMax(r,h,v,w,vlo,rv,alo))
+      & (case3NonMax(r,v,w,vlo,rv,alo) -> bound3NonMax(r,h,v,w,vlo,rv,alo))
+      & (case4NonMax(r,v,w,vlo,rv,alo) -> bound4NonMax(r,h,v,w,vlo,rv,alo))
+    )
+    &
+    (w * vlo < 0 ->
+        (case5NonMax(r,v,w,vlo,rv,alo) -> bound5NonMax(r,h,v,w,vlo,rv,alo))
+      & (case6NonMax(r,v,w,vlo,rv,alo) -> bound6NonMax(r,h,v,w,vlo,rv,alo))
+    )
+  );
+End.
+
+ProgramVariables  /** Variables **/
+   /* horizontal */
+  Real alo;  /* minimal vertical acceleration. Typically g/4 */
+  Real r;    /* relative distance in ft; xi - xo */
+             /* x = r */
+  Real rv;   /* relative speed -(vi - vo) */
+   /* vertical */
+  Real h;    /* relative altitude in ft */
+             /* if negative: the intruder is lower than the ownship */
+             /* h := hi - ho */
+             /* z = h */
+  Real v;    /* vertical velocity of ownship */
+  Real vlo;  /* target minimum velocity */
+  Real w;    /* velocity bound 1 = lower, -1 = upper */
+  Real a;    /* vertical acceleration of ownship */
+End.
+
+Problem  
+  (case1(r,v,w,vlo,rv,alo) <-> case1NonMax(r,v,w,vlo,rv,alo)) & 
+  (case2(r,v,w,vlo,rv,alo) <-> case2NonMax(r,v,w,vlo,rv,alo)) & 
+  (case3(r,v,w,vlo,rv,alo) <-> case3NonMax(r,v,w,vlo,rv,alo)) & 
+  (case4(r,v,w,vlo,rv,alo) <-> case4NonMax(r,v,w,vlo,rv,alo)) & 
+  (case5(r,v,w,vlo,rv,alo) <-> case5NonMax(r,v,w,vlo,rv,alo)) & 
+  (case6(r,v,w,vlo,rv,alo) <-> case6NonMax(r,v,w,vlo,rv,alo)) & 
+  (bound1(r,h,v,w,vlo,rv,alo) <-> bound1NonMax(r,h,v,w,vlo,rv,alo)) & 
+  (bound2(r,h,v,w,vlo,rv,alo) <-> bound2NonMax(r,h,v,w,vlo,rv,alo)) & 
+  (bound3(r,h,v,w,vlo,rv,alo) <-> bound3NonMax(r,h,v,w,vlo,rv,alo)) & 
+  (bound4(r,h,v,w,vlo,rv,alo) <-> bound4NonMax(r,h,v,w,vlo,rv,alo)) & 
+  (bound5(r,h,v,w,vlo,rv,alo) <-> bound5NonMax(r,h,v,w,vlo,rv,alo)) & 
+  (bound6(r,h,v,w,vlo,rv,alo) <-> bound6NonMax(r,h,v,w,vlo,rv,alo))
+End.
+
+Tactic "Proof for ACAS_Reimport/Lemma 1b): Equivalence of non-max explicit cases"
+unfold; <(
+  "case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo)":
+    equivR('R=="case1(r,v,w,vlo,rv,alo)<->case1NonMax(r,v,w,vlo,rv,alo)"); <(
+      "case1(r,v,w,vlo,rv,alo)&case1NonMax(r,v,w,vlo,rv,alo)":
+        expandAllDefs();
+        andR('R=="-rp()<=r&(r < -rp()-rv*0/alo&0<=v*w|r < -rp()-rv*(v*w)/alo&!0<=v*w)"); <(
+          "-rp()<=r":
+            propClose,
+          "r < -rp()-rv*0/alo&0<=v*w|r < -rp()-rv*(v*w)/alo&!0<=v*w":
+            orR('R=="r < -rp()-rv*0/alo&0<=v*w|r < -rp()-rv*(v*w)/alo&!0<=v*w");
+            unfold;
+            expandAll;
+            orL('L=="0<=v*w&min_=0|0>v*w&min_=v*w"); <(
+              "0<=v*w&min_=0":
+                QE,
+              "0>v*w&min_=v*w":
+                QE
+            )
+        ),
+      "!case1(r,v,w,vlo,rv,alo)&!case1NonMax(r,v,w,vlo,rv,alo)":
+        expandAllDefs();
+        andR('R=="-rp()<=r&r < -rp()-rv*min(0,v*w)/alo"); <(
+          "-rp()<=r":
+            propClose,
+          "r < -rp()-rv*min(0,v*w)/alo":
+            unfold;
+            expandAll;
+            orL('L=="r < -rp()-rv*0/alo&0<=v*w|r < -rp()-rv*(v*w)/alo&!0<=v*w"); <(
+              "r < -rp()-rv*0/alo&0<=v*w":
+                orL('L=="0<=v*w&min_=0|0>v*w&min_=v*w"); <(
+                  "0<=v*w&min_=0":
+                    QE,
+                  "0>v*w&min_=v*w":
+                    QE
+                ),
+              "r < -rp()-rv*(v*w)/alo&!0<=v*w":
+                orL('L=="0<=v*w&min_=0|0>v*w&min_=v*w"); <(
+                  "0<=v*w&min_=0":
+                    QE,
+                  "0>v*w&min_=v*w":
+                    QE
+                )
+            )
+        )
+    ),
+  "case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo)":
+    equivR('R=="case2(r,v,w,vlo,rv,alo)<->case2NonMax(r,v,w,vlo,rv,alo)"); <(
+      "case2(r,v,w,vlo,rv,alo)&case2NonMax(r,v,w,vlo,rv,alo)":
+        expandAllDefs();
+        andR('R=="(-rp()-rv*0/alo<=r&0<=v*w|-rp()-rv*(v*w)/alo<=r&!0<=v*w)&(r<=rp()-rv*0/alo&0<=v*w|r<=rp()-rv*(v*w)/alo&!0<=v*w)"); <(
+          "-rp()-rv*0/alo<=r&0<=v*w|-rp()-rv*(v*w)/alo<=r&!0<=v*w":
+            unfold;
+            expandAll;
+            orL('L=="0<=v*w&min_=0|0>v*w&min_=v*w"); <(
+              "0<=v*w&min_=0":
+                QE,
+              "0>v*w&min_=v*w":
+                QE
+            ),
+          "r<=rp()-rv*0/alo&0<=v*w|r<=rp()-rv*(v*w)/alo&!0<=v*w":
+            unfold;
+            expandAll;
+            orL('L=="0<=v*w&min_=0|0>v*w&min_=v*w"); <(
+              "0<=v*w&min_=0":
+                QE,
+              "0>v*w&min_=v*w":
+                QE
+            )
+        ),
+      "!case2(r,v,w,vlo,rv,alo)&!case2NonMax(r,v,w,vlo,rv,alo)":
+        expandAllDefs();
+        andR('R=="-rp()-rv*min(0,v*w)/alo<=r&r<=rp()-rv*min(0,v*w)/alo"); <(
+          "-rp()-rv*min(0,v*w)/alo<=r":
+            unfold;
+            expandAll;
+            orL('L=="0<=v*w&min_=0|0>v*w&min_=v*w"); <(
+              "0<=v*w&min_=0":
+                QE,
+              "0>v*w&min_=v*w":
+                QE
+            ),
+          "r<=rp()-rv*min(0,v*w)/alo":
+            unfold;
+            expandAll;
+            orL('L=="0<=v*w&min_=0|0>v*w&min_=v*w"); <(
+              "0<=v*w&min_=0":
+                QE,
+              "0>v*w&min_=v*w":
+                QE
+            )
+        )
+    ),
+  "case3(r,v,w,vlo,rv,alo)<->case3NonMax(r,v,w,vlo,rv,alo)":
+    expandAllDefs();
+    equivR('R=="rp()-rv*min(0,v*w)/alo < r&r<=rp()+rv*max(0,w*(vlo-v))/alo<->(rp()-rv*0/alo < r&0<=v*w|rp()-rv*(v*w)/alo < r&!0<=v*w)&(r<=rp()+rv*0/alo&0>=w*(vlo-v)|r<=rp()+rv*(w*(vlo-v))/alo&!0>=w*(vlo-v))"); <(
+      "(rp()-rv*min<< ._1 < ._2&._0=._1|._1>=._2&._0=._2 >>(0,v*w)/alo < r&r<=rp()+rv*max<< ._1 < ._2&._0=._2|._1>=._2&._0=._1 >>(0,w*(vlo-v))/alo)&(rp()-rv*0/alo < r&0<=v*w|rp()-rv*(v*w)/alo < r&!0<=v*w)&(r<=rp()+rv*0/alo&0>=w*(vlo-v)|r<=rp()+rv*(w*(vlo-v))/alo&!0>=w*(vlo-v))":
+        unfold;
+        expandAll;
+        andR('R=="(rp()-rv*0/alo < r&0<=v*w|rp()-rv*(v*w)/alo < r&!0<=v*w)&(r<=rp()+rv*0/alo&0>=w*(vlo-v)|r<=rp()+rv*(w*(vlo-v))/alo&!0>=w*(vlo-v))"); <(
+          "rp()-rv*0/alo < r&0<=v*w|rp()-rv*(v*w)/alo < r&!0<=v*w":
+            orL('L=="0<=v*w&min_=0|0>v*w&min_=v*w"); <(
+              "0<=v*w&min_=0":
+                orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+                  "0>=w*(vlo-v)&max_=0":
+                    QE,
+                  "0 < w*(vlo-v)&max_=w*(vlo-v)":
+                    QE
+                ),
+              "0>v*w&min_=v*w":
+                orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+                  "0>=w*(vlo-v)&max_=0":
+                    QE,
+                  "0 < w*(vlo-v)&max_=w*(vlo-v)":
+                    QE
+                )
+            ),
+          "r<=rp()+rv*0/alo&0>=w*(vlo-v)|r<=rp()+rv*(w*(vlo-v))/alo&!0>=w*(vlo-v)":
+            orL('L=="0<=v*w&min_=0|0>v*w&min_=v*w"); <(
+              "0<=v*w&min_=0":
+                orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+                  "0>=w*(vlo-v)&max_=0":
+                    QE,
+                  "0 < w*(vlo-v)&max_=w*(vlo-v)":
+                    QE
+                ),
+              "0>v*w&min_=v*w":
+                orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+                  "0>=w*(vlo-v)&max_=0":
+                    QE,
+                  "0 < w*(vlo-v)&max_=w*(vlo-v)":
+                    QE
+                )
+            )
+        ),
+      "!(rp()-rv*min<< ._1 < ._2&._0=._1|._1>=._2&._0=._2 >>(0,v*w)/alo < r&r<=rp()+rv*max<< ._1 < ._2&._0=._2|._1>=._2&._0=._1 >>(0,w*(vlo-v))/alo)&!((rp()-rv*0/alo < r&0<=v*w|rp()-rv*(v*w)/alo < r&!0<=v*w)&(r<=rp()+rv*0/alo&0>=w*(vlo-v)|r<=rp()+rv*(w*(vlo-v))/alo&!0>=w*(vlo-v)))":
+        andL('L=="(rp()-rv*0/alo < r&0<=v*w|rp()-rv*(v*w)/alo < r&!0<=v*w)&(r<=rp()+rv*0/alo&0>=w*(vlo-v)|r<=rp()+rv*(w*(vlo-v))/alo&!0>=w*(vlo-v))");
+        andR('R=="rp()-rv*min(0,v*w)/alo < r&r<=rp()+rv*max(0,w*(vlo-v))/alo"); <(
+          "rp()-rv*min(0,v*w)/alo < r":
+            expandAll;
+            orL('L=="0<=v*w&min_=0|0>v*w&min_=v*w"); <(
+              "0<=v*w&min_=0":
+                QE,
+              "0>v*w&min_=v*w":
+                QE
+            ),
+          "r<=rp()+rv*max(0,w*(vlo-v))/alo":
+            expandAll;
+            orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+              "0>=w*(vlo-v)&max_=0":
+                QE,
+              "0 < w*(vlo-v)&max_=w*(vlo-v)":
+                QE
+            )
+        )
+    ),
+  "case4(r,v,w,vlo,rv,alo)<->case4NonMax(r,v,w,vlo,rv,alo)":
+    expandAllDefs();
+    equivR('R=="rp()+rv*max(0,w*(vlo-v))/alo < r<->rp()+rv*0/alo < r&0>=w*(vlo-v)|rp()+rv*(w*(vlo-v))/alo < r&!0>=w*(vlo-v)"); <(
+      "rp()+rv*max<< ._1 < ._2&._0=._2|._1>=._2&._0=._1 >>(0,w*(vlo-v))/alo < r&(rp()+rv*0/alo < r&0>=w*(vlo-v)|rp()+rv*(w*(vlo-v))/alo < r&!0>=w*(vlo-v))":
+        expandAll;
+        orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+          "0>=w*(vlo-v)&max_=0":
+            QE,
+          "0 < w*(vlo-v)&max_=w*(vlo-v)":
+            QE
+        ),
+      "!rp()+rv*max<< ._1 < ._2&._0=._2|._1>=._2&._0=._1 >>(0,w*(vlo-v))/alo < r&!(rp()+rv*0/alo < r&0>=w*(vlo-v)|rp()+rv*(w*(vlo-v))/alo < r&!0>=w*(vlo-v))":
+        expandAll;
+        orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+          "0>=w*(vlo-v)&max_=0":
+            QE,
+          "0 < w*(vlo-v)&max_=w*(vlo-v)":
+            QE
+        )
+    ),
+  "case5(r,v,w,vlo,rv,alo)<->case5NonMax(r,v,w,vlo,rv,alo)":
+    expandAllDefs();
+    equivR('R=="-rp()<=r&r < -rp()+rv*max(0,w*(vlo-v))/alo<->-rp()<=r&(r < -rp()+rv*0/alo&0>=w*(vlo-v)|r < -rp()+rv*(w*(vlo-v))/alo&!0>=w*(vlo-v))"); <(
+      "(-rp()<=r&r < -rp()+rv*max<< ._1 < ._2&._0=._2|._1>=._2&._0=._1 >>(0,w*(vlo-v))/alo)&-rp()<=r&(r < -rp()+rv*0/alo&0>=w*(vlo-v)|r < -rp()+rv*(w*(vlo-v))/alo&!0>=w*(vlo-v))":
+        expandAll;
+        orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+          "0>=w*(vlo-v)&max_=0":
+            QE,
+          "0 < w*(vlo-v)&max_=w*(vlo-v)":
+            QE
+        ),
+      "!(-rp()<=r&r < -rp()+rv*max<< ._1 < ._2&._0=._2|._1>=._2&._0=._1 >>(0,w*(vlo-v))/alo)&!(-rp()<=r&(r < -rp()+rv*0/alo&0>=w*(vlo-v)|r < -rp()+rv*(w*(vlo-v))/alo&!0>=w*(vlo-v)))":
+        expandAll;
+        orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+          "0>=w*(vlo-v)&max_=0":
+            QE,
+          "0 < w*(vlo-v)&max_=w*(vlo-v)":
+            QE
+        )
+    ),
+  "case6(r,v,w,vlo,rv,alo)<->case6NonMax(r,v,w,vlo,rv,alo)":
+    expandAllDefs();
+    equivR('R=="-rp()+rv*max(0,w*(vlo-v))/alo<=r<->-rp()+rv*0/alo<=r&0>=w*(vlo-v)|-rp()+rv*(w*(vlo-v))/alo<=r&!0>=w*(vlo-v)"); <(
+      "-rp()+rv*max<< ._1 < ._2&._0=._2|._1>=._2&._0=._1 >>(0,w*(vlo-v))/alo<=r&(-rp()+rv*0/alo<=r&0>=w*(vlo-v)|-rp()+rv*(w*(vlo-v))/alo<=r&!0>=w*(vlo-v))":
+        expandAll;
+        orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+          "0>=w*(vlo-v)&max_=0":
+            QE,
+          "0 < w*(vlo-v)&max_=w*(vlo-v)":
+            QE
+        ),
+      "!-rp()+rv*max<< ._1 < ._2&._0=._2|._1>=._2&._0=._1 >>(0,w*(vlo-v))/alo<=r&!(-rp()+rv*0/alo<=r&0>=w*(vlo-v)|-rp()+rv*(w*(vlo-v))/alo<=r&!0>=w*(vlo-v))":
+        expandAll;
+        orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+          "0>=w*(vlo-v)&max_=0":
+            QE,
+          "0 < w*(vlo-v)&max_=w*(vlo-v)":
+            QE
+        )
+    ),
+  "bound1(r,h,v,w,vlo,rv,alo)<->bound1NonMax(r,h,v,w,vlo,rv,alo)":
+    expandAllDefs();
+    QE,
+  "bound2(r,h,v,w,vlo,rv,alo)<->bound2NonMax(r,h,v,w,vlo,rv,alo)":
+    expandAllDefs();
+    equivR('R=="w*h < (-min(0,v*w)^2)/(2*alo)-hp()<->w*h < (-0^2)/(2*alo)-hp()&0<=v*w|w*h < (-(v*w)^2)/(2*alo)-hp()&!0<=v*w"); <(
+      "w*h < (-min<< ._1 < ._2&._0=._1|._1>=._2&._0=._2 >>(0,v*w)^2)/(2*alo)-hp()&(w*h < (-0^2)/(2*alo)-hp()&0<=v*w|w*h < (-(v*w)^2)/(2*alo)-hp()&!0<=v*w)":
+        expandAll;
+        orL('L=="0<=v*w&min_=0|0>v*w&min_=v*w"); <(
+          "0<=v*w&min_=0":
+            QE,
+          "0>v*w&min_=v*w":
+            QE
+        ),
+      "!w*h < (-min<< ._1 < ._2&._0=._1|._1>=._2&._0=._2 >>(0,v*w)^2)/(2*alo)-hp()&!(w*h < (-0^2)/(2*alo)-hp()&0<=v*w|w*h < (-(v*w)^2)/(2*alo)-hp()&!0<=v*w)":
+        expandAll;
+        orL('L=="0<=v*w&min_=0|0>v*w&min_=v*w"); <(
+          "0<=v*w&min_=0":
+            QE,
+          "0>v*w&min_=v*w":
+            QE
+        )
+    ),
+  "bound3(r,h,v,w,vlo,rv,alo)<->bound3NonMax(r,h,v,w,vlo,rv,alo)":
+    expandAllDefs();
+    equivR('R=="w*rv^2*h < alo/2*(r-rp())^2+w*rv*v*(r-rp())-rv^2*hp()<->w*rv^2*h < alo/2*(r-rp())^2+w*rv*v*(r-rp())-rv^2*hp()"); <(
+      "w*rv^2*h < alo/2*(r-rp())^2+w*rv*v*(r-rp())-rv^2*hp()&w*rv^2*h < alo/2*(r-rp())^2+w*rv*v*(r-rp())-rv^2*hp()":
+        QE,
+      "!w*rv^2*h < alo/2*(r-rp())^2+w*rv*v*(r-rp())-rv^2*hp()&!w*rv^2*h < alo/2*(r-rp())^2+w*rv*v*(r-rp())-rv^2*hp()":
+        QE
+    ),
+  "bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo)":
+    equivR('R=="bound4(r,h,v,w,vlo,rv,alo)<->bound4NonMax(r,h,v,w,vlo,rv,alo)"); <(
+      "bound4(r,h,v,w,vlo,rv,alo)&bound4NonMax(r,h,v,w,vlo,rv,alo)":
+        expandAllDefs();
+        orR('R=="rv=0|w*rv*h < w*vlo*(r-rp())-rv*0^2/(2*alo)-rv*hp()&0>=w*(vlo-v)|w*rv*h < w*vlo*(r-rp())-rv*(w*(vlo-v))^2/(2*alo)-rv*hp()&!0>=w*(vlo-v)");
+        orL('L=="rv=0|w*rv*h < w*vlo*(r-rp())-rv*max(0,w*(vlo-v))^2/(2*alo)-rv*hp()"); <(
+          "rv=0":
+            propClose,
+          "w*rv*h < w*vlo*(r-rp())-rv*max(0,w*(vlo-v))^2/(2*alo)-rv*hp()":
+            hideR('R=="rv=0");
+            orR('R=="w*rv*h < w*vlo*(r-rp())-rv*0^2/(2*alo)-rv*hp()&0>=w*(vlo-v)|w*rv*h < w*vlo*(r-rp())-rv*(w*(vlo-v))^2/(2*alo)-rv*hp()&!0>=w*(vlo-v)");
+            expandAll;
+            orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+              "0>=w*(vlo-v)&max_=0":
+                QE,
+              "0 < w*(vlo-v)&max_=w*(vlo-v)":
+                QE
+            )
+        ),
+      "!bound4(r,h,v,w,vlo,rv,alo)&!bound4NonMax(r,h,v,w,vlo,rv,alo)":
+        expandAllDefs();
+        orR('R=="rv=0|w*rv*h < w*vlo*(r-rp())-rv*max(0,w*(vlo-v))^2/(2*alo)-rv*hp()");
+        orL('L=="rv=0|w*rv*h < w*vlo*(r-rp())-rv*0^2/(2*alo)-rv*hp()&0>=w*(vlo-v)|w*rv*h < w*vlo*(r-rp())-rv*(w*(vlo-v))^2/(2*alo)-rv*hp()&!0>=w*(vlo-v)"); <(
+          "rv=0":
+            QE,
+          "w*rv*h < w*vlo*(r-rp())-rv*0^2/(2*alo)-rv*hp()&0>=w*(vlo-v)|w*rv*h < w*vlo*(r-rp())-rv*(w*(vlo-v))^2/(2*alo)-rv*hp()&!0>=w*(vlo-v)":
+            hideR('R=="rv=0");
+            expandAll;
+            orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+              "0>=w*(vlo-v)&max_=0":
+                QE,
+              "0 < w*(vlo-v)&max_=w*(vlo-v)":
+                QE
+            )
+        )
+    ),
+  "bound5(r,h,v,w,vlo,rv,alo)<->bound5NonMax(r,h,v,w,vlo,rv,alo)":
+    expandAllDefs();
+    QE,
+  "bound6(r,h,v,w,vlo,rv,alo)<->bound6NonMax(r,h,v,w,vlo,rv,alo)":
+    expandAllDefs();
+    expandAll;
+    equivR('R=="rv=0&r>rp()|w*rv*h < w*vlo*(r+rp())-rv*max_^2/(2*alo)-rv*hp()<->rv=0&r>rp()|w*rv*h < w*vlo*(r+rp())-rv*0^2/(2*alo)-rv*hp()&0>=w*(vlo-v)|w*rv*h < w*vlo*(r+rp())-rv*(w*(vlo-v))^2/(2*alo)-rv*hp()&!0>=w*(vlo-v)"); <(
+      "(rv=0&r>rp()|w*rv*h < w*vlo*(r+rp())-rv*max_^2/(2*alo)-rv*hp())&(rv=0&r>rp()|w*rv*h < w*vlo*(r+rp())-rv*0^2/(2*alo)-rv*hp()&0>=w*(vlo-v)|w*rv*h < w*vlo*(r+rp())-rv*(w*(vlo-v))^2/(2*alo)-rv*hp()&!0>=w*(vlo-v))":
+        orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+          "0>=w*(vlo-v)&max_=0":
+            QE,
+          "0 < w*(vlo-v)&max_=w*(vlo-v)":
+            QE
+        ),
+      "!(rv=0&r>rp()|w*rv*h < w*vlo*(r+rp())-rv*max_^2/(2*alo)-rv*hp())&!(rv=0&r>rp()|w*rv*h < w*vlo*(r+rp())-rv*0^2/(2*alo)-rv*hp()&0>=w*(vlo-v)|w*rv*h < w*vlo*(r+rp())-rv*(w*(vlo-v))^2/(2*alo)-rv*hp()&!0>=w*(vlo-v))":
+        orL('L=="0>=w*(vlo-v)&max_=0|0 < w*(vlo-v)&max_=w*(vlo-v)"); <(
+          "0>=w*(vlo-v)&max_=0":
+            QE,
+          "0 < w*(vlo-v)&max_=w*(vlo-v)":
+            QE
+        )
+    )
+)
+End.
+
+End.

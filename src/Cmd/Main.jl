@@ -46,7 +46,7 @@ module Cmd
 			"--smtfilter-timeout"
 				help = "Timeout for SMT filter in seconds (unsolved SMT queries will be considered as possibly sat)"
 				arg_type = Int
-				default = 100
+				default = 10
 			"--linear"
 				help = "Calls OLNNV tool without any non-linear constraint approximations"
 				action = :store_true
@@ -57,6 +57,12 @@ module Cmd
 				help = "Number of approximation points to use"
 				arg_type = Int
 				default = 1
+			"--no-cores"
+				help = "Do not use cores for SMT queries (this allows another SMT solver which may be faster for higher-order polynomials)"
+				action = :store_true
+			"--no-normalization"
+				help = "Do not normalize atoms (this may throw errors when formulas contain large numbers)"
+				action = :store_true
 		end
 		return parse_args(cmd_args,s)
 	end
@@ -70,8 +76,21 @@ module Cmd
 			print_msg("[CMD] Running in rigorous mode")
 			Config.set_rigorous_approximations(true)
 		end
+		if args["no-cores"]
+			print_msg("[CMD] Not using cores for SMT queries")
+			SMTInterface.USE_CORES = false
+		else
+			SMTInterface.USE_CORES = true
+		end
+		if args["no-normalization"]
+			print_msg("[CMD] Not normalizing atoms")
+			Config.NORMALIZE_ATOMS = false
+		else
+			Config.NORMALIZE_ATOMS = true
+		end
 		set_approx_density(args["approx"])
 		print_msg("[CMD] Using SMT solver: ", args["smt"])
+		print_msg("[CMD] Using verifier: ", args["verifier"])
 		Config.set_smt_solver(args["smt"])
 		# Load fixed variables
 		fixed_vars_content = open(args["fixed"], "r") do f
@@ -90,7 +109,8 @@ module Cmd
 		print_msg("[CMD] Parsed initial query: ",initial_query)
 		prepared_query=prepare_for_olnnv(initial_query)
 		smt_timeout = convert(Int32,args["smtfilter-timeout"])
-		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=smt_timeout) do (ctx, variables)
+		print_msg("[CMD] SMT Timeout: ", smt_timeout, "s")
+		result = (SMTInterface.smt_context(prepared_query.num_input_vars+prepared_query.num_output_vars;timeout=smt_timeout*1000) do (ctx, variables)
 			return Control.run_query(prepared_query, ctx, smt_timeout, variables, backup=args["output"],backup_meta=args) do (linear_term,SMTFilter)
 				#print_msg("Generated terms")
 				@timeit Config.TIMER "nnv" begin
@@ -100,7 +120,7 @@ module Cmd
 							linear_term)
 				end
 			end
-		end) |> VerifierInterface.reduce_results
+		end)# |> VerifierInterface.reduce_results
 		return result
 	end
 
@@ -108,14 +128,15 @@ module Cmd
 		Config.reset_timer()
 		args = parse_commandline(cmd_args)
 		
-		@time result = run_internal(args)
+		@time result, cex_count = run_internal(args)
 
 		print_msg("----------------------------------------------------------")
-		print_msg("Status: "*string(result.status))
-		print_msg("# Unsafe Stars: "*string(length(result.stars)))
-		print_msg("Saving result in "*string(args["output"])*"...")
-		save(args["output"],"result",result,"args",args)
+		#print_msg("Status: "*string(result.status))
+		print_msg("# Unsafe Stars: "*string(cex_count))
+		print_msg("Saving final results in "*string(args["output"])*"...")
+		save(args["output"]*"-final.jld","result",result,"args",args)
 		show(Config.TIMER)
 		print_msg(" Done")
+		return (cex_count > 0) ? 1 : 0
 	end
 end
