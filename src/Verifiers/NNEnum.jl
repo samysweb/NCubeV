@@ -41,6 +41,13 @@ module NNEnum
 		NNEnum settings).
 		"""
 	function __init__()
+		# If only documentation is built, skip Python setup
+		if get(ENV,"NCUBEV_DOC_ONLY","0") == "1"
+			print_msg("[NNENUM] Documentation build only; skipping Python setup")
+			global run_nnenum = (_) -> nothing
+			return
+		end
+
 		# Register Verifiers
 		register_verifier("NNEnum",verify_enumerative_filtered)
 		register_verifier("NNEnumSimple",verify_iterative_filtered)
