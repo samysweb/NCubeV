@@ -1,3 +1,21 @@
+"""
+AST-to-SMT translation utilities
+--------------------------------
+
+Translate NCubeV AST nodes to solver-native expressions used by SMT backends.
+The functions here are solver-agnostic and produce intermediate `Formula`
+structures ready to be consumed by backend-specific translators (e.g., Z3 in
+`SMTInterface/Z3/AST2Z3.jl`).
+
+Key responsibilities:
+- Construct input/output box constraints from `NormalizedQuery`
+- Flatten piecewise-linear conjunctions (`PwlConjunction`) into AND terms
+- Convert semi-linear constraints to linear atoms
+
+See also:
+- `SMTInterface.StarFilter` for counterexample filtering logic (Lemma 12)
+- `SMTInterface.Z3.AST2Z3` for backend-specific lowering
+"""
 function ast2smt(q :: NormalizedQuery, variables, additional)
 	conjunction = Formula[]
 	num_inputs = length(q.input_bounds)
@@ -30,6 +48,13 @@ function ast2smt(q :: NormalizedQuery, variables, additional)
 	end
 end
 
+"""
+	pwl2term(pwl::PwlConjunction) -> Union{Formula,Nothing}
+
+Flatten a piecewise-linear conjunction into a single formula by combining
+variable bounds, linear constraints, and semi-linear constraints as an AND.
+Returns `nothing` if the conjunction is empty.
+"""
 function pwl2term(pwl :: PwlConjunction)
 	conjunction = Formula[]
 	for (i,b) in enumerate(pwl.bounds)
@@ -55,6 +80,17 @@ function pwl2term(pwl :: PwlConjunction)
 	end
 end
 
+"""
+	ast2smt(semi::SemiLinearConstraint, variables, additional)
+
+Convert a semi-linear constraint (linear part plus weighted approx queries)
+to an SMT atom by substituting the semi-linear components into the
+left-hand side term and creating a strict/weak inequality depending on
+`semi.equality`.
+
+Notes:
+- Coefficients are rationalized to improve solver stability.
+"""
 function ast2smt(semi :: SemiLinearConstraint, variables, additional)
 	term = TermNumber(0.0)
 	for (i,c) in enumerate(semi.coefficients)

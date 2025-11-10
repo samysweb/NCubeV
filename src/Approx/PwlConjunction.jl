@@ -1,3 +1,4 @@
+# NOTE: Only relevant for iterator
 function init_pwl_bounds(conjunction :: PwlConjunction, approximations :: Dict{ApproxQuery, Approximation}, init_bounds :: Vector{Vector{Float64}})
 	num_vars = length(conjunction.bounds)
 	if length(conjunction.semilinear_constraints) == 0

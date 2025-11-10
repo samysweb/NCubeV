@@ -1,3 +1,11 @@
+"""
+Analysis
+========
+
+Preprocessing and constraint analysis utilities: variable mapping, fixing
+variables, translating atoms into linear/semi-linear constraints, and building
+over-/under-approximations used by Mosaic.
+"""
 module Analysis
 	using SymbolicUtils
 	using MLStyle

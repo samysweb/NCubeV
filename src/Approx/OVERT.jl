@@ -1,3 +1,12 @@
+#
+# NCubeV OVERT integration — extracting PWL bounds (Appendix B.1)
+#
+"""
+    get_val_ranges(offset::Int, bounds::Vector{Vector{Float64}}) -> Dict{Symbol,Vector{Float64}}
+
+Construct value ranges for OVERT variables `x1, x2, …` with `offset` applied to
+the index base. Used when building OVERT approximation problems for given grids.
+"""
 function get_val_ranges(offset :: Int64, bounds :: Vector{Vector{Float64}})
 	val_ranges = Dict{Symbol, Array{Float64, 1}}()
 	for (i, bound) in enumerate(bounds)
@@ -6,6 +15,15 @@ function get_val_ranges(offset :: Int64, bounds :: Vector{Vector{Float64}})
 	return val_ranges
 end
 
+"""
+    construct_approx(approx_queries, bounds) -> Dict{ApproxQuery,IncompleteApproximation}
+
+Build initial piece-wise linear expressions for each `ApproxQuery` using OVERT,
+then wrap them as `IncompleteApproximation`s to be further resolved by
+`resolve_approximation`.
+
+Implements the approximation backbone for Definition 5 (Appendix B.1).
+"""
 function construct_approx(approx_queries :: Dict{Term, Vector{BoundType}}, bounds :: Vector{Vector{Float64}})
 	approximations = Dict{ApproxQuery, IncompleteApproximation}()
 	for (approx_term, bound_types) in approx_queries
@@ -42,6 +60,13 @@ function construct_approx(nonlinear_query :: NormalizedQuery) :: Dict{ApproxQuer
 	return construct_approx(nonlinear_query.approx_queries, bounds)
 end
 
+"""
+    generate_bound_from_overapprox(output_var, overapprox_result, bound) -> Any
+
+Extract the bound expression (upper or lower) for a given OVERT `output_var` from
+an `OverApproximation` result. Falls back to scanning inequalities if no equality
+definition is present. Returned expression is still symbolic in OVERT variables.
+"""
 function generate_bound_from_overapprox(
 	output_var::Symbol,
 	overapprox_result::OverApproximation,
@@ -70,6 +95,15 @@ function generate_bound_from_overapprox(
 	return result
 end
 
+"""
+    substitute_vars(term, overapprox_result, bound) -> Any
+
+Recursively substitute intermediate OVERT variables in `term` with their corresponding
+upper or lower bound expressions, honoring sign flips for subtraction and division.
+
+This produces a fully expanded symbolic expression in arithmetic, min, and max that
+can later be translated to NCubeV `Term`s.
+"""
 function substitute_vars(
 	term :: Any,
 	overapprox_result :: OverApproximation,

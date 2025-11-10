@@ -1,5 +1,13 @@
 using Metatheory.Rewriters
 
+"""
+	map_variables(x::ParsedNode, mapping::Dict{String, (VariableType, Int)})
+
+Collect variables and rewrite them to internal positions according to `mapping`.
+Returns `(variable_set, rewritten_node)` where positions are adjusted to input
+and output offsets.
+"""
+
 function map_variables(x :: ParsedNode, mapping::Dict{String, Tuple{VariableType, Int64}})
 	variable_set = Set{Variable}()
 	input_var_count = 0
@@ -39,6 +47,12 @@ function map_variables_internal(variable_set :: Set{Variable}, mapping::Dict{Str
 	end
 end
 
+"""
+	fix_variables(f::Formula, mapping::Dict{String, Union{String, Number}})
+
+Substitute variables in `f` using either numeric constants or inline formulas
+provided as strings. The latter are parsed via `Parsing.parse_term`.
+"""
 function fix_variables(f :: Formula, mapping::Dict{String, Union{String, Number}})
 	replacement_map = Dict{Variable, Term}()
 	for (k, v) in mapping
@@ -53,11 +67,23 @@ function fix_variables(f :: Formula, mapping::Dict{String, Union{String, Number}
 	return simplify(substitute(f, replacement_map, fold=false))
 end
 
+"""
+	translate_constraints(f::Formula, variable_set::Set{Variable})
+
+Translate linear atoms to `LinearConstraint`/`SemiLinearConstraint` using the
+current number of variables. Nonlinear atoms are left untouched.
+"""
 function translate_constraints(f :: Formula, variable_set :: Set{Variable})
 	var_number = length(variable_set)
 	return Postwalk(translate_constraints_internal(var_number))(f)
 end
 
+"""
+	make_linear(left, right, comp, var_number) -> Union{LinearConstraint, Formula}
+
+Build a linear or semi-linear constraint from an atom `left comp right`, moving
+everything to the left-hand side. Returns a conjunction/disjunction for Eq/Neq.
+"""
 function make_linear(left :: T1, right :: T2, comp :: Comparator, var_number :: Int64) where {T1 <: Term, T2 <: Term}
 	# @assert AST.is_linear(left) && right isa TermNumber
 	constraint_row = zeros(Rational{BigInt}, var_number)
@@ -177,6 +203,11 @@ function make_linear(left :: T1, right :: T2, comp :: Comparator, var_number :: 
 	end
 end
 
+"""
+	translate_constraints_internal(var_number)
+
+Return a rewriter function that applies `make_linear` to linear atoms.
+"""
 function translate_constraints_internal(var_number :: Int64)
 	return x -> begin
 		return @match x begin
@@ -187,6 +218,12 @@ function translate_constraints_internal(var_number :: Int64)
 	end
 end
 
+"""
+	get_overapprox(f)
+
+Construct the structural over-approximation of a formula, pushing the modality
+through connectives.
+"""
 function get_overapprox(f :: ParsedNode)
 	return @match f begin
 		Atom() => OverApprox(f)
@@ -206,6 +243,12 @@ function get_overapprox(f :: ParsedNode)
 	end
 end
 
+"""
+	get_underapprox(f)
+
+Construct the structural under-approximation of a formula, dual to
+`get_overapprox`.
+"""
 function get_underapprox(f :: ParsedNode)
 	return @match f begin
 		Atom() => UnderApprox(f)

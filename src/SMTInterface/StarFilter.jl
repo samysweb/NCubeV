@@ -1,10 +1,32 @@
+#
+# NCubeV SMT Star Filter — Counterexample region filtering (Appendix B.3)
+#
+# This file implements the SMT-based filtering of counterexample regions (stars)
+# following Lemma 12. Each star represents an azulejo-region with an affine output map,
+# and we check satisfiability of the nonlinear constraints restricted to that region.
+#
 using TimerOutputs
+
+"""
+    SmtFilterMeta
+
+Metadata returned by the SMT filter summarizing how many star regions were filtered
+out and preserving original backend metadata.
+"""
 struct SmtFilterMeta
 	original_meta :: Any
 	filtered_out :: Int64
 	#formula :: Formula
 end
 
+"""
+    add_to_solver(solver, variables, star, smt_cache)
+
+Assert the linear constraints of a `star` region into the given SMT solver, along with
+its input bounds and affine output mapping (x⁺ = ω(z)).
+
+Used by `check_star` to assemble both linear and nonlinear checks.
+"""
 function add_to_solver(solver, variables, star, smt_cache)
 	input_vars = size(star.constraint_matrix)[2]
 	additional = []
@@ -24,6 +46,18 @@ function add_to_solver(solver, variables, star, smt_cache)
 	@assert length(additional) == 0
 end
 
+"""
+    check_star(ctx, variables, disjunction_nonlinear, star, smt_cache)
+        -> (status::Int, star::Star)
+
+SMT-check a single `star` against the nonlinear disjunction. Builds a linear pre-filter
+and short-circuits obviously irrelevant regions. If the nonlinear check is SAT, attempts
+to extract a concrete model to refine the counterexample point.
+
+Returns 1 for confirmed counterexample, 2 for unknown/timeout, 0 for spurious.
+
+Implements Lemma 12 from Appendix B.3.
+"""
 function check_star(ctx,variables, disjunction_nonlinear, star :: Star, smt_cache)
 	smt_solver(ctx;theory="qfnra",stars=true) do solver
 		add_to_solver(solver, variables, star, smt_cache)
@@ -91,6 +125,29 @@ function check_star(ctx,variables, disjunction_nonlinear, star :: Star, smt_cach
 	end
 end
 
+"""
+	get_star_filter(ctx, variables, disjunction_nonlinear, smt_timeout)
+		-> (OlnnvResult -> OlnnvResult)
+
+Construct a star-filtering callback that post-processes backend results:
+- If status is `safe`, returns unchanged.
+- Otherwise, runs `check_star` on each star and keeps only confirmed or unknown ones.
+
+This function realizes the “Filter” step in Algorithm 1 (Appendix B.3).
+
+Example
+```julia
+using NCubeV
+
+# Assume `prepared_query::Query` and a disjunction of (linear, nonlinear) pairs
+result = SMTInterface.smt_context(prepared_query.num_input_vars + prepared_query.num_output_vars; timeout=10_000) do (ctx, vars)
+	# Build a filter bound to current SMT context
+	SMTFilter = SMTInterface.get_star_filter(ctx, vars, disjunction_nonlinear, 10)
+	# Run a verifier and then filter its result
+	Verifiers.VERIFIER_CALLBACKS["NNEnum"](network_path, SMTFilter, olnnv_query)
+end
+```
+"""
 function get_star_filter(ctx, variables, disjunction_nonlinear, smt_timeout)
 	return function(result :: OlnnvResult)
 		smt_cache = Dict()

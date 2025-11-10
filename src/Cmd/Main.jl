@@ -1,3 +1,11 @@
+"""
+Cmd
+===
+
+Command-line interface wiring NCubeV’s pipeline end-to-end. Parses arguments,
+configures approximation density and SMT/verifier backends, loads files, and
+invokes `Control.run_query` and the selected verifier.
+"""
 module Cmd
 	using ArgParse
 	using JLD
@@ -17,6 +25,12 @@ module Cmd
 
 	export run_cmd
 
+	"""
+		parse_commandline(cmd_args)
+
+	Parse arguments for the NCubeV CLI, including files (formula/fixed variables/variable mapping/network/output files location), verifier and SMT backend,
+	and flags like `--linear`, `--rigorous`, `--approx`, core usage, and normalization.
+	"""
 	function parse_commandline(cmd_args)
 		s = ArgParseSettings()
 		@add_arg_table s begin
@@ -67,6 +81,13 @@ module Cmd
 		return parse_args(cmd_args,s)
 	end
 	
+	"""
+		run_internal(args)
+
+	Execute a verification run using the parsed arguments. Prepares the query,
+	sets SMT and approximation configs, and uses `Control.run_query` plus a
+	selected verifier from `Verifiers.VERIFIER_CALLBACKS`.
+	"""
 	function run_internal(args)
 		if args["linear"]
 			println("[CMD] Running without any non-linear constraint approximations")
@@ -124,6 +145,13 @@ module Cmd
 		return result
 	end
 
+	"""
+		run_cmd(cmd_args)
+
+	Entry point used by the CLI script. Parses args, runs a verification, saves
+	results (JLD), prints timing info, and returns a process exit code
+	(non-zero if any unsafe stars were found).
+	"""
 	function run_cmd(cmd_args)
 		Config.reset_timer()
 		args = parse_commandline(cmd_args)

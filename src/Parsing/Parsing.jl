@@ -1,14 +1,35 @@
+"""
+	TokenManager
+
+Small wrapper around the token stream, providing `peek_token`/`next` with
+whitespace skipping and stateful iteration.
+
+Note: The first token can be whitespace (Tokenize behavior); helper functions
+therefore skip leading whitespace automatically.
+"""
 mutable struct TokenManager
 	tokens
 	TokenManager(tokens::Tokenize.Lexers.Lexer) = new(Iterators.Stateful(tokens))
 end
 
+"""
+	SyntaxParsingException <: Exception
+
+Exception thrown during parsing, contains an error message including a
+position hint.
+"""
 struct SyntaxParsingException <: Exception
 	message
 end
 
 # TODO(steuber): Upon initialization the first letter of tokenizer is always ' ' (i.e. a whitespace)
 # This means that currently our first token *must* be a whitespace or it is accidentally skipped
+"""
+	peek_token(tokenmanager::TokenManager)
+
+Return the next non-whitespace token without consuming it. Internally skips
+an arbitrary number of whitespace tokens.
+"""
 function peek_token(tokenmanager :: TokenManager)
 	#@debug "Peeking char"
 	found_token = false
@@ -28,6 +49,11 @@ function peek_token(tokenmanager :: TokenManager)
 	return next_token
 end
 
+"""
+	next(tokenmanager::TokenManager)
+
+Consume and return the next non-whitespace token.
+"""
 function next(tokenmanager :: TokenManager)
 	found_token = false
 	current_token = nothing
@@ -43,12 +69,25 @@ function next(tokenmanager :: TokenManager)
 	return current_token
 end
 
+"""
+	parse_constraint(filename::String)
+
+Parse a constraint file at path `filename` and return an AST formula
+(`Formula`) or, in some cases, a term.
+"""
 function parse_constraint(filename :: String)
 	open(filename, "r") do file_io
 		return parse_constraint_from_io(file_io)
 	end;
 end
 
+"""
+	parse_constraint_from_io(io::IO; parse_entry=parse_composite)
+
+Parse from an `IO` stream. The entry point can optionally be overridden via
+`parse_entry`. Throws `SyntaxParsingException` on errors or if, after a
+successful parse, unexpected tokens remain.
+"""
 function parse_constraint_from_io(io :: IO; parse_entry=parse_composite)
 	tokens = TokenManager(tokenize(io))
 	result = parse_entry(tokens)
@@ -60,6 +99,12 @@ function parse_constraint_from_io(io :: IO; parse_entry=parse_composite)
 	end
 end
 
+"""
+	parse_composite(tokenmanager::TokenManager)
+
+Top-level entry for parsing formulas: handles right-associative implication
+via `parse_implies_list` and boolean Or/And compositions.
+"""
 function parse_composite(tokenmanager :: TokenManager)
 	@debug "Parsing composite"
 	or_result = parse_or_composite(tokenmanager)
@@ -70,6 +115,11 @@ function parse_composite(tokenmanager :: TokenManager)
 	return result
 end
 
+"""
+	parse_implies_list(tokenmanager::TokenManager, or_result::Formula)
+
+Parse a right-associative chain of `->` (implies) after a parsed Or-result.
+"""
 function parse_implies_list(tokenmanager :: TokenManager, or_result :: Formula)
 	@debug "Parsing implies list"
 	if Tokens.exactkind(peek_token(tokenmanager)) == Tokens.ANON_FUNC
@@ -82,6 +132,11 @@ function parse_implies_list(tokenmanager :: TokenManager, or_result :: Formula)
 	end
 end
 
+"""
+	parse_or_composite(tokenmanager::TokenManager)
+
+Parse an Or-composition from And-components or forward a term.
+"""
 function parse_or_composite(tokenmanager :: TokenManager)
 	@debug "Parsing or composite"
 	and_result = parse_and_composite(tokenmanager)
@@ -91,6 +146,11 @@ function parse_or_composite(tokenmanager :: TokenManager)
 	return parse_or_list(tokenmanager, and_result)
 end
 
+"""
+	parse_or_list(tokenmanager::TokenManager, result::Formula)
+
+Parse a list of formulas connected by `||`.
+"""
 function parse_or_list(tokenmanager :: TokenManager, result :: Formula)
 	@debug "Parsing or list"
 	resulting_or = Formula[]
@@ -106,6 +166,11 @@ function parse_or_list(tokenmanager :: TokenManager, result :: Formula)
 	end
 end
 
+"""
+	parse_and_composite(tokenmanager::TokenManager)
+
+Parse an And-composition from atomic elements or forward a term.
+"""
 function parse_and_composite(tokenmanager :: TokenManager)
 	@debug "Parsing and composite"
 	atom_result = parse_elementary(tokenmanager)
@@ -115,6 +180,11 @@ function parse_and_composite(tokenmanager :: TokenManager)
 	return parse_and_list(tokenmanager, atom_result)
 end
 
+"""
+	parse_and_list(tokenmanager::TokenManager, result::Formula)
+
+Parse a list of formulas connected by `&&`.
+"""
 function parse_and_list(tokenmanager :: TokenManager, result :: Formula)
 	@debug "Parsing and list"
 	resulting_and = Formula[]
@@ -131,6 +201,11 @@ function parse_and_list(tokenmanager :: TokenManager, result :: Formula)
 	end
 end
 
+"""
+	parse_elementary(tokenmanager::TokenManager)
+
+Parse an elementary item: negation `!`, predicate, or atom.
+"""
 function parse_elementary(tokenmanager :: TokenManager)
 	@debug "Parsing elementary"
 	next_token = peek_token(tokenmanager)
@@ -158,6 +233,11 @@ function parse_elementary(tokenmanager :: TokenManager)
 	end
 end
 
+"""
+	parse_predicate(tokenmanager, predicate_name)
+
+Parse a predicate `name(term, term, ...)` and return a `Predicate`.
+"""
 function parse_predicate(tokenmanager, predicate_name)
 	current_token = next(tokenmanager)
 	if Tokens.kind(current_token) != Tokens.LPAREN
@@ -175,6 +255,12 @@ function parse_predicate(tokenmanager, predicate_name)
 	return Predicate(predicate_name, params)
 end
 
+"""
+	parse_atom(tokenmanager::TokenManager)
+
+Parse a comparison `term op term` or return a term/formula if no comparison
+follows.
+"""
 function parse_atom(tokenmanager :: TokenManager)
 	@debug "Parsing atom"
 	term1 = parse_term(tokenmanager)
@@ -208,6 +294,11 @@ function parse_atom(tokenmanager :: TokenManager)
 	end
 end
 
+"""
+	parse_term(tokenmanager::TokenManager)
+
+Parse additive chains of multiplication expressions.
+"""
 function parse_term(tokenmanager :: TokenManager)
 	@debug "Parsing term"
 	multiply_result = parse_multiply_composite(tokenmanager)
@@ -217,6 +308,11 @@ function parse_term(tokenmanager :: TokenManager)
 	return parse_term_list(tokenmanager, multiply_result)
 end
 
+"""
+	parse_term_list(tokenmanager::TokenManager, result::Term)
+
+Parse a sequence of `+`/`-` operations.
+"""
 function parse_term_list(tokenmanager :: TokenManager, result :: Term)
 	@debug "Parsing term list"
 	if Tokens.exactkind(peek_token(tokenmanager)) == Tokens.PLUS
@@ -234,6 +330,11 @@ function parse_term_list(tokenmanager :: TokenManager, result :: Term)
 	end
 end
 
+"""
+	parse_multiply_composite(tokenmanager::TokenManager)
+
+Parse multiplication/division chains of power factors.
+"""
 function parse_multiply_composite(tokenmanager :: TokenManager)
 	@debug "Parsing multiply composite"
 	result = parse_power_composite(tokenmanager)
@@ -243,6 +344,11 @@ function parse_multiply_composite(tokenmanager :: TokenManager)
 	return parse_multiply_list(tokenmanager, result)
 end
 
+"""
+	parse_multiply_list(tokenmanager::TokenManager, result::Term)
+
+Parse a sequence of `*` or `/` operations.
+"""
 function parse_multiply_list(tokenmanager :: TokenManager, result :: Term)
 	@debug "Parsing multiply list"
 	if Tokens.exactkind(peek_token(tokenmanager)) == Tokens.STAR
@@ -260,6 +366,11 @@ function parse_multiply_list(tokenmanager :: TokenManager, result :: Term)
 	end
 end
 
+"""
+	parse_power_composite(tokenmanager::TokenManager)
+
+Parse power chains from factors.
+"""
 function parse_power_composite(tokenmanager :: TokenManager)
 	@debug "Parsing power composite"
 	result = parse_factor(tokenmanager)
@@ -269,6 +380,11 @@ function parse_power_composite(tokenmanager :: TokenManager)
 	return parse_power_list(tokenmanager, result)
 end
 
+"""
+	parse_power_list(tokenmanager::TokenManager, result::Term)
+
+Parse a sequence of `^` operations.
+"""
 function parse_power_list(tokenmanager :: TokenManager, result :: Term)
 	@debug "Parsing power list"
 	if Tokens.exactkind(peek_token(tokenmanager)) == Tokens.CIRCUMFLEX_ACCENT
@@ -280,6 +396,12 @@ function parse_power_list(tokenmanager :: TokenManager, result :: Term)
 	end
 end
 
+"""
+	parse_factor(tokenmanager::TokenManager)
+
+Parse the basic units: parentheses, unary minus, numbers, variables. Numbers
+are parsed as `BigFloat`.
+"""
 function parse_factor(tokenmanager :: TokenManager)
 	@debug "Parsing factor"
 	current_token = peek_token(tokenmanager)
@@ -312,10 +434,20 @@ function parse_factor(tokenmanager :: TokenManager)
 end
 
 
+"""
+	throw_syntax_error(message::String, position)
+
+Throw a `SyntaxParsingException` with a composed message including position.
+"""
 function throw_syntax_error(message :: String, position)
 	throw(SyntaxParsingException(message*string(position)))
 end
 
+"""
+	is_predicate(token) -> Bool
+
+Recognize supported predicates (currently only `isMax`).
+"""
 function is_predicate(token)
 	@assert Tokens.kind(token) == Tokens.IDENTIFIER
 	identifier = untokenize(token)

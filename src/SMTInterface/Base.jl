@@ -1,3 +1,9 @@
+"""
+	smt_context(f, varnum::Int64; timeout=1000)
+
+Allocate an SMT context with `varnum` real variables named `x1..xN` and invoke
+`f((ctx, variables))`. The context is destroyed afterwards. Timeout is in ms.
+"""
 function smt_context(f, varnum :: Int64; timeout=1000)
 	res = nothing
 	begin
@@ -16,6 +22,12 @@ function smt_context(f, varnum :: Int64; timeout=1000)
 	return res
 end
 
+"""
+	smt_solver(f, ctx; stars=false, theory="qfnra")
+
+Create a solver for the given theory and execute `f(solver)`, returning its
+result. When `stars=true`, apply preprocessing tactics tuned for star filtering.
+"""
 function smt_solver(f, ctx;stars=false, theory="qfnra")
 	return smt_internal_solver(f, ctx, theory;stars=stars)
 end
