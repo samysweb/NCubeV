@@ -11,4 +11,7 @@ Links:
 - How to use: howto.md
 - API Reference: api.md
 
-Citation: see README.md and arXiv: 2402.10998.
+**Citation:** see README.md and arXiv: 2402.10998.
+
+**Caveat:** This documentation has been generated using GitHub Copilot with manual review.  
+Please report any issues and I will fix them
