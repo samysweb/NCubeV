@@ -42,6 +42,6 @@ makedocs(
 # Optional: deploy via GitHub Actions (disabled by default)
 deploydocs(
     repo = "github.com/samysweb/NCubeV.git",
-    devbranch="cleanup-0.10",
+    devbranch="dev",
     branch = "gh-pages"
 )
