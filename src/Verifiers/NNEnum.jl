@@ -1,3 +1,26 @@
+"""
+NNEnum
+======
+
+Integration of the Python-based NNEnum tool for enumerative verification of
+ONNX networks. This module registers several operating modes and provides
+filtering variants that check candidate regions found by NNEnum with an SMT
+filter (see `SMTInterface.StarFilter.get_star_filter`).
+
+Modes:
+- `verify_enumerative` – single enumeration with aggregate result
+- `verify_enumerative_filtered` – like above, followed by SMT filtering
+- `verify_iterative_filtered` – iterative enumeration; each region is filtered
+  immediately via SMT; aborts on a certain counterexample region
+- `verify_iterative_all_filtered` – iterative enumeration; collects certain and
+  uncertain regions separately and returns a combined assessment
+
+Notes:
+- The Python environment is configured in `__init__` via PyCall; NNEnum
+  artifacts are found via `Pkg.Artifacts`.
+- For more deterministic runs, thread-related environment variables in Python
+  (OMP/BLAS) are set and some NNEnum settings are adjusted.
+"""
 module NNEnum
 	using PyCall
 	using Pkg.Artifacts
@@ -10,6 +33,13 @@ module NNEnum
 
 	run_nnenum = nothing
 
+		"""
+		__init__()
+
+		Register available verifier modes with `Registry` and set up the Python
+		runtime for NNEnum (path adjustment, environment variables, predefined
+		NNEnum settings).
+		"""
 	function __init__()
 		# Register Verifiers
 		register_verifier("NNEnum",verify_enumerative_filtered)
@@ -156,6 +186,12 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 		global run_nnenum = py"run_nnenum"
 	end
 
+	"""
+		to_status(status::String) -> VerificationStatus
+
+	Translate a status string returned by NNEnum into the internal status type
+	(`Safe`, `Unsafe`, `Unknown`).
+	"""
 	function to_status(status :: String)
 		if status == "safe"
 			return Safe
@@ -166,6 +202,13 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 		end
 	end
 
+	"""
+		verify_enumerative(model, olnnv_query::OlnnvQuery) -> OlnnvResult
+
+	Run a single NNEnum enumeration and convert the result into an
+	`OlnnvResult`. When counterexamples exist, returns the counterexample
+	star regions produced by NNEnum (wrapped as `Star`).
+	"""
 	function verify_enumerative(model, olnnv_query :: OlnnvQuery)
 		print_msg("[NNENUM] Running nnenum now...")
 		lb = [b[1] for b in olnnv_query.bounds]
@@ -180,12 +223,28 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 		end
 	end
 
+	"""
+		verify_enumerative_filtered(model, SMTFilter, olnnv_query::OlnnvQuery)
+			-> OlnnvResult
+
+	Like `verify_enumerative`, but post-process the result with an SMT filter.
+	The filter has signature `OlnnvResult -> OlnnvResult`.
+	"""
 	function verify_enumerative_filtered(model, SMTFilter, olnnv_query :: OlnnvQuery)
 		res = verify_enumerative(model, olnnv_query)
 		print_msg("[NNENUM] Filtering result using SMT solver...")
 		return SMTFilter(res)
 	end
 
+	"""
+		verify_iterative_filtered(model, SMTFilter, olnnv_query::OlnnvQuery)
+			-> OlnnvResult
+
+	Iterative version: NNEnum yields candidate stars continuously. Each star is
+	immediately checked via `SMTFilter`. On a certain counterexample, a certain
+	`Star` region is produced and returned immediately; otherwise, uncertain
+	regions are accumulated.
+	"""
 	function verify_iterative_filtered(model, SMTFilter, olnnv_query :: OlnnvQuery)
 		print_msg("[NNENUM] Running iterative nnenum...")
 		lb = [b[1] for b in olnnv_query.bounds]
@@ -225,6 +284,14 @@ def run_nnenum(model, lb, ub, A_input, b_input, disjunction, iterative):
 		end
 	end
 
+	"""
+		verify_iterative_all_filtered(model, SMTFilter, olnnv_query::OlnnvQuery)
+			-> OlnnvResult
+
+	Iterative, but collects certain and uncertain stars. Returns `Unsafe` if
+	certain regions were found; otherwise `Safe` or `Unknown` depending on the
+	remaining uncertain regions.
+	"""
 	function verify_iterative_all_filtered(model, SMTFilter, olnnv_query :: OlnnvQuery)
 		print_msg("[NNENUM] Running iterative nnenum...")
 		lb = [b[1] for b in olnnv_query.bounds]
