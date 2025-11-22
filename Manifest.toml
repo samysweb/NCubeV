@@ -2,7 +2,7 @@
 
 julia_version = "1.10.5"
 manifest_format = "2.0"
-project_hash = "5436a3420335f555d64830f6866b549d651e3b95"
+project_hash = "ab3be97dc9dbe1b35d56a88d0319924659ff4a87"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "27cecae79e5cc9935255f90c53bb831cc3c870d7"
@@ -1041,6 +1041,12 @@ version = "0.5.16"
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 version = "0.7.0"
+
+[[deps.Satisfiability]]
+deps = ["Logging", "Unicode", "z3_jll"]
+git-tree-sha1 = "d82a71782d43eb054f489c78b714f5d9b2a9eff4"
+uuid = "160ab843-0bc6-4ba4-9585-b7478b70f443"
+version = "0.2.0"
 
 [[deps.Scratch]]
 deps = ["Dates"]
