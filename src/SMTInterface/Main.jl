@@ -22,14 +22,19 @@ module SMTInterface
 	import ..Config.SMT_SOLVER
 	import ..Config.TIMER
 
-	export smt_context, nl_feasible, nl_feasible_init
+	using Satisfiability
+	Sat = Satisfiability
 
-	USE_CORES = true
+	export smt_context, nl_feasible, nl_feasible_init
+	export ast2smt, pwl2term
+
+	#USE_CORES = true
+	USE_CORES = false
 
 	if SMT_SOLVER == "Z3"
-		include("Z3/Main.jl")
+		#include("Z3/Main.jl")
 	elseif SMT_SOLVER == "CVC5"
-		include("CVC5/Main.jl")
+		#include("CVC5/Main.jl")
 	#elseif SMT_SOLVER == "dreal"
 	#	include("dreal/Main.jl")
 	else
@@ -38,6 +43,7 @@ module SMTInterface
 
 
 	include("AST2SMT.jl")
+	include("AST2Satisfiability.jl")
 	include("Base.jl")
 	include("StarFilter.jl")
 
@@ -107,6 +113,32 @@ module SMTInterface
 	for unsat core extraction. Returns `true` if satisfiable or unknown.
 	"""
 	function lin_feasible(constraints :: Vector{LinearConstraint}, ctx, variables,conflicts;print_model=false)
+		
+		@show variables
+		@show typeof(variables)
+
+		expr = map(c -> ast2smt(c, variables, [], Dict()), constraints)
+		expr = Sat.and(expr...)
+		res, _ = sat!(expr)
+
+		@timeit TIMER "SMTprep" begin
+		#conflicts = []
+		if res == :SAT
+			if print_model
+				smt_print_model(s)
+			end
+		elseif res != :UNSAT
+			print_msg("[SMT] SMT returned status: ", res)
+		else # unsat
+			for (i,_) in enumerate(constraints)
+				push!(conflicts,i)
+			end
+		end
+		return (res == :SAT)
+	end
+	"""
+	function lin_feasible(constraints :: Vector{LinearConstraint}, ctx, variables,conflicts;print_model=false)
+		
 		res = smt_solver(ctx;theory="qflra") do s
 			smt_internal_set(s,"unsat-core",true)
 			conflict_clauses = Dict()
@@ -155,5 +187,7 @@ module SMTInterface
 			return res
 		end
 		return !smt_internal_is_unsat(res)
+	end
+	"""
 	end
 end

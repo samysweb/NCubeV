@@ -157,6 +157,7 @@ module Cmd
 		args = parse_commandline(cmd_args)
 		
 		@time result, cex_count = run_internal(args)
+		
 
 		print_msg("----------------------------------------------------------")
 		#print_msg("Status: "*string(result.status))

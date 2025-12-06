@@ -17,35 +17,29 @@ See also:
 - `SMTInterface.Z3.AST2Z3` for backend-specific lowering
 """
 function ast2smt(q :: NormalizedQuery, variables, additional)
-	conjunction = Formula[]
+	println("Translating NormalizedQuery to SMT formula...")
 	num_inputs = length(q.input_bounds)
-	num_outputs = length(q.output_bounds)
-	for (i,b) in enumerate(q.input_bounds)
-		push!(conjunction, Atom(LessEq, b[1], Variable("x"*string(i),nothing,i)))
-		push!(conjunction, Atom(LessEq, Variable("x"*string(i),nothing,i), b[end]))
-	end
-	for (i,b) in enumerate(q.output_bounds)
-		push!(conjunction, Atom(LessEq,b[1], Variable("x"*string(num_inputs + i),nothing,num_inputs + i)))
-		push!(conjunction, Atom(LessEq, Variable("x"*string(num_inputs + i),nothing,num_inputs + i), b[end]))
-	end
-	encoded_input =pwl2term(q.input_constraints)
-	if !isnothing(encoded_input)
-		push!(conjunction, encoded_input)
-	end
-	disjuntion = Formula[]
-	for c in q.mixed_constraints
-		push!(disjuntion, pwl2term(c))
-	end
-	if length(disjuntion) > 1
-		push!(conjunction, CompositeFormula(Or,disjuntion))
-	else
-		push!(conjunction, disjuntion[1])
-	end
-	if length(conjunction)==1
-		return ast2smt(conjunction[1], variables, additional)
-	else
-		return ast2smt(CompositeFormula(And,conjunction), variables, additional)
-	end
+	num_outputs = length(q.output_bounds)	
+
+	input_vars = variables[1:num_inputs]
+	output_vars = variables[num_inputs .+ (1:num_outputs)]
+	
+	input_lb = [b[1] for b in q.input_bounds]
+	input_ub = [b[end] for b in q.input_bounds]
+	input_bounds = Sat.and(input_lb .<= input_vars) ∧ Sat.and(input_vars .<= input_ub)
+	
+	output_lb = [b[1] for b in q.output_bounds]
+	output_ub = [b[end] for b in q.output_bounds]
+	output_bounds = Sat.and(output_lb .<= output_vars) ∧ Sat.and(output_vars .<= output_ub)
+
+	expr = 	
+		input_bounds ∧ 
+		output_bounds ∧ 
+		pwl2term(q.input_constraints, variables, additional) ∧
+		Sat.or([pwl2term(c, variables, additional) for c in q.mixed_constraints])
+
+	return expr
+
 end
 
 """
@@ -55,29 +49,19 @@ Flatten a piecewise-linear conjunction into a single formula by combining
 variable bounds, linear constraints, and semi-linear constraints as an AND.
 Returns `nothing` if the conjunction is empty.
 """
-function pwl2term(pwl :: PwlConjunction)
-	conjunction = Formula[]
-	for (i,b) in enumerate(pwl.bounds)
-		if length(b) < 2
-			# Skip if no bounds available
-			continue
-		end
-		push!(conjunction, Atom(LessEq,b[1], Variable("x"*string(i),nothing,i)))
-		push!(conjunction, Atom(LessEq,Variable("x"*string(i),nothing,i), b[end]))
-	end
-	for c in pwl.linear_constraints
-		push!(conjunction, c)
-	end
-	for c in pwl.semilinear_constraints
-		push!(conjunction, c)
-	end
-	if length(conjunction) > 1
-		return CompositeFormula(And,conjunction)
-	elseif length(conjunction)==1
-		return conjunction[1]
-	else
-		return nothing
-	end
+function pwl2term(pwl :: PwlConjunction, variables, additional)
+println("Translating PwlConjunction to SMT term...")
+	bounds = Sat.and([(b[1] <= variables[i]) ∧ (variables[i] <= b[end]) 
+				for (i,b) in enumerate(pwl.bounds) if length(b) >= 2])
+	
+	linear_constraints =
+    	Sat.and(((lc) -> ast2smt(lc, variables, additional)).(pwl.linear_constraints))
+
+	semilinear_constraints =
+    	Sat.and(((sc) -> ast2smt(sc, variables, additional)).(pwl.semilinear_constraints))
+
+	expr = bounds ∧ linear_constraints ∧ semilinear_constraints 
+	return expr
 end
 
 """
@@ -91,17 +75,16 @@ left-hand side term and creating a strict/weak inequality depending on
 Notes:
 - Coefficients are rationalized to improve solver stability.
 """
-function ast2smt(semi :: SemiLinearConstraint, variables, additional)
-	term = TermNumber(0.0)
-	for (i,c) in enumerate(semi.coefficients)
-		term = CompositeTerm(Add, Term[term, rationalize(Int32,BigFloat(c)) * Variable("x"*string(i),nothing,i)])
-	end
-	for (approx_query, coeff) in semi.semilinears
-		term = CompositeTerm(Add, Term[term, rationalize(Int32,BigFloat(coeff)) * approx_query.term])
-	end
-	if semi.equality
-		return ast2smt(Atom(LessEq, term, rationalize(Int32,BigFloat(semi.bias))), variables, additional)
-	else
-		return ast2smt(Atom(Less, term, rationalize(Int32,BigFloat(semi.bias))), variables, additional)
-	end
+function ast2smt(semi :: SemiLinearConstraint, variables, additional, smt_cache=Dict())
+	println("Translating SemiLinearConstraint to SMT...")
+	coeff = map(c -> Float64(c), semi.coefficients)	
+	bias = Float64(semi.bias)
+	n = length(coeff) # variables may have more entries than coefficients (input constraints)
+
+	term1 = coeff .* variables
+	term2 = [Float64(c) * ast2smt(approx_query.term, variables, additional, smt_cache) 
+		for (approx_query, c) in semi.semilinears]
+		
+	return semi.equality ? sum(term1) + sum(term2) ≤ bias :
+		sum(term1) + sum(term2) < bias
 end

@@ -1,4 +1,5 @@
 using Test
 using NCubeV
 
-include("integration/main.jl")
+#include("integration/main.jl")
+include("mytest.jl")
