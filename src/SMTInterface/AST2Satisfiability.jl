@@ -112,20 +112,22 @@ function ast2smt(f :: Atom, variables, additional, smt_cache=Dict())
 	smt_cache[f] = res
 	return res
 end
-function smt_pow()
-    @assert False, "Power operation not supported in Satisfiability backend yet."
-end
-"""
-	@assert length(arguments) == 2
-	exp = arguments[2]
+
+
+function smt_pow(term, exp)
 	if exp.den == 1
-		return ^(arguments...)
+		if exp.num > 0
+			return foldl(*, fill(term, exp.num))
+		elseif exp.num < 0
+			return 1.0 / foldl(*, fill(term, -exp.num))
+		else
+			return 1.0
+		end
 	else
-		@assert False, "Non-integer exponents not supported in SMT backend yet."
+		@assert false "Non-integer exponents not supported in SMT backend yet."
 		# TODO(steuber): Implement roots again (but probably hard for SMT solver anyway...)
 	end
 end
-"""
 
 """
 	ast2smt(f::CompositeTerm, ...)
@@ -137,15 +139,22 @@ function ast2smt(f :: CompositeTerm, variables, additional, smt_cache)
 	if haskey(smt_cache, f)
 		return smt_cache[f]
 	end
-	arguments = map(x -> ast2smt(x, variables, additional, smt_cache), f.args)
-	res = @match f.operation begin
-		Add => +(arguments...)
-		Sub => -(arguments...)
-		Mul => *(arguments...)
-		Div => /(arguments...)
-		Pow => smt_pow()
-		Neg => return -arguments[1]
+	if f.operation ≠ Pow
+		arguments = map(x -> ast2smt(x, variables, additional, smt_cache), f.args)
+		res = @match f.operation begin
+			Add => +(arguments...)
+			Sub => -(arguments...)
+			Mul => *(arguments...)
+			Div => /(arguments...)
+			Neg => return -arguments[1]
+		end
+	else
+		@assert length(f.args) == 2 "Pow operation requires exactly two arguments."
+		term = ast2smt(f.args[1], variables, additional, smt_cache)
+		exp = (f.args[2]).value
+		res = smt_pow(term, exp)
 	end
+	
 	smt_cache[f] = res
 	return res
 end

@@ -1,7 +1,37 @@
-using NCubeV.AST
-using NCubeV.SMTInterface
-using Satisfiability
-Sat = Satisfiability
+@testset "ast2smt - smt_pow" begin
+    @satvariable(x, Real)
+    v = Variable("x", nothing, 1)
+
+    # x⁰ = 1
+    n = TermNumber(0//1)
+    t = CompositeTerm(Pow, [v, n])
+    expr = ast2smt(t, [x], [], Dict())
+    @test isequal(expr, 1.0)
+    
+    # x¹ = x
+    n = TermNumber(1//1)
+    t = CompositeTerm(Pow, [v, n])
+    expr = ast2smt(t, [x], [], Dict())
+    @test isequal(expr, x)
+
+    # x³ = x * x * x
+    n = TermNumber(3//1)
+    t = CompositeTerm(Pow, [v, n])
+    expr = ast2smt(t, [x], [], Dict())
+    @test isequal(expr, x * x * x)
+
+    # x⁻² = 1 / (x * x)
+    n = TermNumber(-2//1)
+    t = CompositeTerm(Pow, [v, n])
+    expr = ast2smt(t, [x], [], Dict())
+    @test isequal(expr, 1.0 / (x * x))
+
+    # non-integer exponent should throw an error
+    n = TermNumber(1//2)
+    t = CompositeTerm(Pow, [v, n])
+    @test_throws AssertionError ast2smt(t, [x], [], Dict())
+end
+
 
 @testset "ast2smt - TermNumber" begin
     n = TermNumber(3.14)
