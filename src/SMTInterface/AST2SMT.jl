@@ -1,3 +1,5 @@
+
+
 """
 AST-to-SMT translation utilities
 --------------------------------
@@ -32,11 +34,10 @@ function ast2smt(q :: NormalizedQuery, variables, additional)
 	output_ub = [b[end] for b in q.output_bounds]
 	output_bounds = Sat.and(output_lb .<= output_vars) ∧ Sat.and(output_vars .<= output_ub)
 
-	expr = 	
-		input_bounds ∧ 
-		output_bounds ∧ 
-		pwl2term(q.input_constraints, variables, additional) ∧
-		Sat.or([pwl2term(c, variables, additional) for c in q.mixed_constraints])
+	expr = Sat.and(input_bounds, 
+				output_bounds,
+				pwl2term(q.input_constraints, variables, additional),
+				Sat.or([pwl2term(c, variables, additional) for c in q.mixed_constraints]))
 
 	return expr
 
@@ -60,7 +61,7 @@ println("Translating PwlConjunction to SMT term...")
 	semilinear_constraints =
     	Sat.and(((sc) -> ast2smt(sc, variables, additional)).(pwl.semilinear_constraints))
 
-	expr = bounds ∧ linear_constraints ∧ semilinear_constraints 
+	expr = Sat.and(bounds, linear_constraints, semilinear_constraints) 
 	return expr
 end
 
@@ -77,11 +78,12 @@ Notes:
 """
 function ast2smt(semi :: SemiLinearConstraint, variables, additional, smt_cache=Dict())
 	println("Translating SemiLinearConstraint to SMT...")
+
 	coeff = map(c -> Float64(c), semi.coefficients)	
 	bias = Float64(semi.bias)
 	n = length(coeff) # variables may have more entries than coefficients (input constraints)
 
-	term1 = coeff .* variables
+	term1 = coeff .* variables[1:n]
 	term2 = [Float64(c) * ast2smt(approx_query.term, variables, additional, smt_cache) 
 		for (approx_query, c) in semi.semilinears]
 		

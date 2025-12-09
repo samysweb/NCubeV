@@ -1,6 +1,7 @@
 using NCubeV.AST
 using NCubeV.SMTInterface
 using Satisfiability
+Sat = Satisfiability
 
 @testset "ast2smt - TermNumber" begin
     n = TermNumber(3.14)
@@ -65,7 +66,7 @@ end
 @testset "ast2smt — CompositeTerm" begin
 
     @satvariable(x[1:2], Real)
-    a, b = TermNumber(2.5), TermNumber(4.0)
+    a, b = TermNumber(2.5), TermNumber(-4.0)
     ã, b̃ = Float64(a.value), Float64(b.value)
 
     # Addition test
@@ -149,6 +150,28 @@ end
     @test isequal(expr, Float64(1//2) * x[1] + 3 * x[2] ≤ 4)
 end
 
+
+"""
+conversion into Float64 depends on the julia environment and casting to Rational{BigInt} may matter. Example:
+when using NCube.AST, we get:
+
+julia> Float64.(Rational{BigInt}[5//3])
+1-element Vector{Float64}:
+1.6666666666666665
+
+julia> Float64(5//3)
+1.6666666666666667
+
+but when using only Base, we get:
+
+julia> Float64.(Rational{BigInt}[5//3])
+1-element Vector{Float64}:
+1.6666666666666667
+
+julia> Float64(5//3)
+1.6666666666666667
+"""
+
 @testset "ast2smt - SemiLinearConstraint" begin
     @satvariable(x[1:3], Real)
 
@@ -157,15 +180,15 @@ end
     q = ApproxQuery(Upper, approx_term)
     semilinears =  Dict{ApproxQuery,Rational{BigInt}}(q => 1//2)
     
-    slc = SemiLinearConstraint(semilinears)(coeffs, Rational{BigInt}(4,1), true)
+    slc = SemiLinearConstraint(semilinears, coeffs, Rational{BigInt}(4,1), true)
 
     expr = ast2smt(slc, x, [])
     expected = (1.0 * x[1] +
                 -2.0 * x[2] +
-                Float64(5//3) * x[3] +
+                Float64(Rational{BigInt}(5//3)) * x[3] +
                 0.5 * x[2]) ≤ 4.0
 
-    #@test isequal(expr, expected)
+    @test isequal(expr, expected)
 end
 
 @testset "ast2smt - NormalizedQuery" begin
@@ -174,47 +197,82 @@ end
     # output x3
     @satvariable(x[1:3], Real)
 
-    input_bounds = [[-5.0, 5.0], [-5.0, 5.0]]
-    output_bounds = [[-10.0, 10.0]]
-
-    pwl_bounds = [[-3.0, 3.0], [-3.0, 3.0]]
-
-    # Lineare Constraints für Input/Output
-    lc_input = LinearConstraint([1//1, 1//1], 12//1, true)  # Input constraint
-    lc_output = LinearConstraint([1], 20//1, false)  # Output constraint
-
-    # SemiLinearConstraint für Input
-    term_var_in = Variable("x2", nothing, 2)
-    semilinears_in = Dict{ApproxQuery,Rational{BigInt}}(ApproxQuery(Upper, term_var_in) => 1//2)
-    coeffs_in = Rational{BigInt}.([1//1])
-    slc_in = SemiLinearConstraint(semilinears_in, coeffs_in, Rational{BigInt}(4,1), false)
     
-    # SemiLinearConstraint für Output
-    term_var_mixed = Variable("x3", nothing, 3)
-    semilinears_mixed = Dict{ApproxQuery,Rational{BigInt}}(ApproxQuery(Upper, term_var_mixed) => 3//4)
-    coeffs_mixed = Rational{BigInt}.([2//1])
-    slc_mixed = SemiLinearConstraint(semilinears_mixed, coeffs_mixed, Rational{BigInt}(15,1), true)
-
+    input_bounds = [
+        [-1.0, 1.0], # -1.0 ≤ x1 ≤ 1.0
+        [-2.0, 2.0]  # -2.0 ≤ x2 ≤ 2.0
+    ]
+    output_bounds = [[-3.0, 3.0]]  # -10.0 ≤ x3 ≤ 10.0
+    input_bounds_expr = Sat.and((-1.0 <= x[1]) ∧ (x[1] <= 1.0),
+                                (-2.0 <= x[2]) ∧ (x[2] <= 2.0))
+    output_bounds_expr = Sat.and((-3.0 <= x[3]) ∧ (x[3] <= 3.0))
     
-    input_constraints = PwlConjunction(pwl_bounds, [lc_input], [slc_in])
-    mixed_constraints = [PwlConjunction(pwl_bounds, [lc_output], [slc_mixed]),
-                            PwlConjunction(pwl_bounds, [lc_output], [slc_mixed])]
-    
-    # Konstruktion der NormalizedQuery
-    nq = NormalizedQuery(input_bounds, output_bounds, input_constraints, mixed_constraints, Dict{Term, Vector{BoundType}}())
 
+    # PwlConjunction für Input
+    input_pwl_bounds = [
+        [-10.0, 10.0], # -10.0 ≤ x1 ≤ 10.0
+        [-20.0, 20.0]  # -20.0 ≤ x2 ≤ 20.0
+    ]
+    # linear constraint für input pwl (x1 + x2 ≤ 10)
+    input_pwl_lc = LinearConstraint([1//1, 1//1], 10//1, true)
+    # semi-linear constraint für input pwl (2*x1 + 2*x2 + 3*x2 < 20)  
+    input_pwl_term = Variable("x2", nothing, 2)
+    input_pwl_approx = Dict{ApproxQuery,Rational{BigInt}}(ApproxQuery(Upper, input_pwl_term) => 3//1)
+    input_pwl_coeffs = Rational{BigInt}.([2//1, 2//1])
+    input_pwl_bias = Rational{BigInt}(20,1)
+    input_pwl_slc = SemiLinearConstraint(input_pwl_approx, input_pwl_coeffs, input_pwl_bias, false)
+    # input_constraints zusammensetzen
+    input_constraints = PwlConjunction(input_pwl_bounds, [input_pwl_lc], [input_pwl_slc])
+
+    input_constraints_expr = Sat.and(
+        ( (-10.0 <= x[1]) ∧ (x[1] <= 10.0) ) ∧
+        ( (-20.0 <= x[2]) ∧ (x[2] <= 20.0) ),
+        ( 1.0*x[1] + 1.0*x[2] ≤ 10.0 ),
+        ( 2.0*x[1] + 2.0*x[2] + 3.0*x[2] < 20.0 )
+    )
+
+    # PwlConjunction für Mixed
+    mixed_pwl_bounds = [
+        [-11.0, 11.0], # -11.0 ≤ x1 ≤ 11.0
+        [-21.0, 21.0], # -21.0 ≤ x2 ≤ 21.0
+        [-31.0, 31.0]  # -31.0 ≤ x3 ≤ 31.0
+    ]
+    # linear constraint für mixed pwl (x1 + x2 + x3 ≤ 11)
+    mixed_pwl_lc = LinearConstraint([1//1, 1//1, 1//1], 11//1, true)
+    # semi-linear constraint für mixed pwl (2*x1 + 2*x2 + 2*x3 + 3*x3 ≤ 21)  
+    mixed_pwl_term = Variable("x3", nothing, 3)
+    mixed_pwl_approx = Dict{ApproxQuery,Rational{BigInt}}(ApproxQuery(Upper, mixed_pwl_term) => 3//1)
+    mixed_pwl_coeffs = Rational{BigInt}.([2//1, 2//1, 2//1])
+    mixed_pwl_bias = Rational{BigInt}(21,1)
+    mixed_pwl_slc = SemiLinearConstraint(mixed_pwl_approx, mixed_pwl_coeffs, mixed_pwl_bias, true)
+    # mixed_constraints zusammensetzen
+    mixed_constraints = PwlConjunction(mixed_pwl_bounds, [mixed_pwl_lc], [mixed_pwl_slc])
+
+    mixed_constraints_expr = 
+    Sat.and(
+        Sat.and(
+            ( (-11.0 <= x[1]) ∧ (x[1] <= 11.0) ),
+            ( (-21.0 <= x[2]) ∧ (x[2] <= 21.0) ),
+            ( (-31.0 <= x[3]) ∧ (x[3] <= 31.0) )
+        ),
+        ( 1.0*x[1] + 1.0*x[2] + 1.0*x[3] ≤ 11.0 ),
+        ( 2.0*x[1] + 2.0*x[2] + 2.0*x[3] + 3.0*x[3] ≤ 21.0 )
+    )
+
+    nq = NormalizedQuery(
+        input_bounds,
+        output_bounds,
+        input_constraints,
+        [mixed_constraints],
+        Dict{Term, Vector{BoundType}}()
+    )
     expr = ast2smt(nq, x, [])
-    expected = (  
-        (-5.0 ≤ x[1]) ∧ (x[1] ≤ 5.0) ∧
-        (-5.0 ≤ x[2]) ∧ (x[2] ≤ 5.0) ∧
-        (x[1] + x[2] ≤ 12.0) ∧
-        (1.0 * x[1] + 0.5 * x[2] < 4.0) ∧
-        (-10.0 ≤ x[3]) ∧ (x[3] ≤ 10.0) ∧
-        (
-            ((x[3] < 20.0) ∧ (2.0 * x[3] + 0.75 * x[3] ≤ 15.0)) ∨
-            ((x[3] < 20.0) ∧ (2.0 * x[3] + 0.75 * x[3] ≤ 15.0))
-        ) 
-        )
+    expected = Sat.and(
+        input_bounds_expr,
+        output_bounds_expr,
+        input_constraints_expr,
+        mixed_constraints_expr
+    )
     @test isequal(expr, expected)
 end
 

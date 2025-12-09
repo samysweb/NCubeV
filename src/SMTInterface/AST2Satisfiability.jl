@@ -15,8 +15,6 @@ function ast2smt(f :: CompositeFormula, variables, additional, smt_cache=Dict())
 		ITE => Sat.ite(arguments[1],arguments[2],arguments[3])
 	end
 
-	passed && return success
-
 	smt_cache[f] = res
 	return res
 end
@@ -54,6 +52,7 @@ function ast2smt(f :: LinearConstraint, variables, additional, smt_cache=Dict())
 	lincomb = sum(coeff .* variables[1:n])
 	
 	res = f.equality ? lincomb ≤ Float64(f.bias) : lincomb < Float64(f.bias)
+	
 	smt_cache[f] = res
 	return res
 end
