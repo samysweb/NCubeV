@@ -47,11 +47,12 @@ function ast2smt(f :: LinearConstraint, variables, additional, smt_cache=Dict())
 		return smt_cache[f]
 	end
 	
-	coeff = map(c -> Float64(c), f.coefficients)
+	coeff = map(c -> ast2smt(TermNumber(c), variables, additional, smt_cache), f.coefficients)
+	bias = ast2smt(TermNumber(f.bias), variables, additional, smt_cache)
 	n = length(coeff) # variables may have more entries than coefficients (input constraints)
+
 	lincomb = sum(coeff .* variables[1:n])
-	
-	res = f.equality ? lincomb ≤ Float64(f.bias) : lincomb < Float64(f.bias)
+	res = f.equality ? lincomb ≤ bias : lincomb < bias
 	
 	smt_cache[f] = res
 	return res
@@ -68,10 +69,13 @@ function ast2smt(t :: LinearTerm, variables, additional, smt_cache)
 		return smt_cache[t]
 	end
 	
-	coeff = map(c -> Float64(c), t.coefficients)
-	lincomb = sum(coeff .* variables)
+	coeff = map(c -> ast2smt(TermNumber(c), variables, additional, smt_cache), t.coefficients)
+	bias = ast2smt(TermNumber(t.bias), variables, additional, smt_cache)
+	n = length(coeff) # variables may have more entries than coefficients (input constraints)
+	
+	lincomb = sum(coeff .* variables[1:n])
+	res = lincomb + bias
 
-	res = lincomb ≤ Float64(t.bias)
 	smt_cache[t] = res
 	return res
 end
@@ -114,14 +118,27 @@ function ast2smt(f :: Atom, variables, additional, smt_cache=Dict())
 end
 
 
-function smt_pow(term, exp)
-	if exp.den == 1
-		if exp.num > 0
-			return foldl(*, fill(term, exp.num))
-		elseif exp.num < 0
-			return 1.0 / foldl(*, fill(term, -exp.num))
+function smt_pow(base, exp, variables=[], additional=[], smt_cache=Dict())
+	@assert isa(exp, TermNumber) "Exponent must be a TermNumber."
+	@assert isa(base, TermNumber) || isa(base, Variable) "Base must be a TermNumber, Variable."
+	
+	num = exp.value.num
+	den = exp.value.den
+
+	if den == 1
+		if isa(base, TermNumber)
+			return ast2smt(base^exp, variables, additional, smt_cache)
 		else
-			return 1.0
+			var = ast2smt(base, variables, additional, smt_cache)
+			if num > 0
+				# xⁿ = x ⋅ x ⋯ x
+				return foldl(*, fill(var, num))
+			elseif num < 0
+				# x⁻ⁿ = 1 / (x ⋅ x ⋯ x)
+				return 1.0 / foldl(*, fill(var, -num))
+			else
+				return 1.0
+			end		
 		end
 	else
 		@assert false "Non-integer exponents not supported in SMT backend yet."
@@ -150,9 +167,7 @@ function ast2smt(f :: CompositeTerm, variables, additional, smt_cache)
 		end
 	else
 		@assert length(f.args) == 2 "Pow operation requires exactly two arguments."
-		term = ast2smt(f.args[1], variables, additional, smt_cache)
-		exp = (f.args[2]).value
-		res = smt_pow(term, exp)
+		res = smt_pow(f.args..., variables, additional, smt_cache)
 	end
 	
 	smt_cache[f] = res
@@ -162,5 +177,14 @@ function ast2smt(v :: Variable, variables, additional, smt_cache)
 	return variables[v.position]
 end
 function ast2smt(n :: TermNumber, variables, additional, smt_cache)
+	#return Satisfiability.__wrap_const(Float64(n.value))
 	return Float64(n.value)
+	# TODO: Better way?
+	#x = convert(BigFloat, n.value)
+	#@show x
+	#y = rationalize(Int64, x)
+	#@show y
+	#@show Satisfiability.__wrap_const(numerator(y)), Satisfiability.__wrap_const(denominator(y))
+	#@show Satisfiability.__wrap_const(numerator(y)) / Satisfiability.__wrap_const(denominator(y))
+	return Satisfiability.__wrap_const(numerator(y)) / Satisfiability.__wrap_const(denominator(y))
 end

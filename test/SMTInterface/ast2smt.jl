@@ -1,37 +1,3 @@
-@testset "ast2smt - smt_pow" begin
-    @satvariable(x, Real)
-    v = Variable("x", nothing, 1)
-
-    # x⁰ = 1
-    n = TermNumber(0//1)
-    t = CompositeTerm(Pow, [v, n])
-    expr = ast2smt(t, [x], [], Dict())
-    @test isequal(expr, 1.0)
-    
-    # x¹ = x
-    n = TermNumber(1//1)
-    t = CompositeTerm(Pow, [v, n])
-    expr = ast2smt(t, [x], [], Dict())
-    @test isequal(expr, x)
-
-    # x³ = x * x * x
-    n = TermNumber(3//1)
-    t = CompositeTerm(Pow, [v, n])
-    expr = ast2smt(t, [x], [], Dict())
-    @test isequal(expr, x * x * x)
-
-    # x⁻² = 1 / (x * x)
-    n = TermNumber(-2//1)
-    t = CompositeTerm(Pow, [v, n])
-    expr = ast2smt(t, [x], [], Dict())
-    @test isequal(expr, 1.0 / (x * x))
-
-    # non-integer exponent should throw an error
-    n = TermNumber(1//2)
-    t = CompositeTerm(Pow, [v, n])
-    @test_throws AssertionError ast2smt(t, [x], [], Dict())
-end
-
 
 @testset "ast2smt - TermNumber" begin
     n = TermNumber(3.14)
@@ -97,8 +63,9 @@ end
 
     @satvariable(x[1:2], Real)
     a, b = TermNumber(2.5), TermNumber(-4.0)
-    ã, b̃ = Float64(a.value), Float64(b.value)
-
+    ã = ast2smt(a, x, [], Dict())
+    b̃ = ast2smt(b, x, [], Dict()) 
+    
     # Addition test
     ct_add = CompositeTerm(Add, [a, b])
     expr_add = ast2smt(ct_add, x, [], Dict())
@@ -177,7 +144,8 @@ end
 
     lt = LinearTerm([1//2, 3], 4)
     expr = ast2smt(lt, x, [], Dict())
-    @test isequal(expr, Float64(1//2) * x[1] + 3 * x[2] ≤ 4)
+    expected_expr = Float64(1//2) * x[1] + 3 * x[2] + 4.0
+    @test isequal(expr, expected_expr)
 end
 
 
@@ -307,6 +275,55 @@ end
 end
 
 
+@testset "ast2smt - smt_pow" begin
+    @satvariable(x, Real)
+    v = Variable("x", nothing, 1)
+
+    # x⁰ = 1
+    n = TermNumber(0//1)
+    t = CompositeTerm(Pow, [v, n])
+    expr = ast2smt(t, [x], [], Dict())
+    @test isequal(expr, 1.0)
+    
+    # x¹ = x
+    n = TermNumber(1//1)
+    t = CompositeTerm(Pow, [v, n])
+    expr = ast2smt(t, [x], [], Dict())
+    @test isequal(expr, x)
+
+    # x³ = x * x * x
+    n = TermNumber(3//1)
+    t = CompositeTerm(Pow, [v, n])
+    expr = ast2smt(t, [x], [], Dict())
+    @test isequal(expr, x * x * x)
+
+    # x⁻² = 1 / (x * x)
+    n = TermNumber(-2//1)
+    t = CompositeTerm(Pow, [v, n])
+    expr = ast2smt(t, [x], [], Dict())
+    @test isequal(expr, 1.0 / (x * x))
+
+    # non-integer exponent should throw an error
+    n = TermNumber(1//2)
+    t = CompositeTerm(Pow, [v, n])
+    @test_throws AssertionError ast2smt(t, [x], [], Dict())
+    
+    # 2³ = 8
+    a = TermNumber(2.0)
+    n = TermNumber(3//1)
+    t = CompositeTerm(Pow, [a, n])
+    expr = ast2smt(t, [], [], Dict())
+    expected_expr = ast2smt(TermNumber(8//1), [], [], Dict())
+    @test isequal(expr, expected_expr)
+
+    # 2⁻³ = 8
+    a = TermNumber(2.0)
+    n = TermNumber(-3//1)
+    t = CompositeTerm(Pow, [a, n])
+    expr = ast2smt(t, [], [], Dict())
+    expected_expr = ast2smt(TermNumber(1//8), [], [], Dict())
+    @test isequal(expr, expected_expr)
+end
 
 
 
