@@ -27,23 +27,24 @@ its input bounds and affine output mapping (x⁺ = ω(z)).
 
 Used by `check_star` to assemble both linear and nonlinear checks.
 """
-function add_to_solver(solver, variables, star, smt_cache)
+
+
+function ast2smt(star :: Star, variables, additional, smt_cache)
 	input_vars = size(star.constraint_matrix)[2]
-	additional = []
+	exprs = []
 	for (c,b) in zip(eachrow(star.constraint_matrix),star.constraint_bias)
-		smt_internal_add(solver, ast2smt(LinearConstraint(c,b,true), variables, additional, smt_cache))
+		push!(exprs, ast2smt(LinearConstraint(c,b,true), variables, additional, smt_cache))
 	end
 	for (i, b) in enumerate(star.bounds)
-		smt_internal_add(solver, ast2smt(Atom(AST.LessEq, TermNumber(b[1]),Variable("x"*string(i), nothing, i)),variables, additional, smt_cache))
-		smt_internal_add(solver, ast2smt(Atom(AST.LessEq, Variable("x"*string(i), nothing, i), TermNumber(b[2])),variables, additional, smt_cache))
-	end
-	for a in additional
-		smt_internal_add(solver, a)
+		push!(exprs, ast2smt(Atom(AST.LessEq, TermNumber(b[1]),Variable("x"*string(i), nothing, i)),variables, additional, smt_cache))
+		push!(exprs, ast2smt(Atom(AST.LessEq, Variable("x"*string(i), nothing, i), TermNumber(b[2])),variables, additional, smt_cache))
 	end
 	for (i,(c,b)) in enumerate(zip(eachrow(star.output_map_matrix),star.output_map_bias))
-		smt_internal_add(solver, ast2smt(Atom(AST.Eq, Variable("x"*string(input_vars+i), nothing, input_vars+i), LinearTerm(c,b)), variables, additional, smt_cache))
+		push!(exprs, ast2smt(Atom(AST.Eq, Variable("x"*string(input_vars+i), nothing, input_vars+i), LinearTerm(c,b)), variables, additional, smt_cache))
 	end
-	@assert length(additional) == 0
+	
+	
+	return Sat.and(exprs...)
 end
 
 """
@@ -58,71 +59,66 @@ Returns 1 for confirmed counterexample, 2 for unknown/timeout, 0 for spurious.
 
 Implements Lemma 12 from Appendix B.3.
 """
-function check_star(ctx,variables, disjunction_nonlinear, star :: Star, smt_cache)
-	smt_solver(ctx;theory="qfnra",stars=true) do solver
-		add_to_solver(solver, variables, star, smt_cache)
-		disjunction = []
-		smt_solver(ctx;theory="qflra",stars=true) do lin_solver
-			add_to_solver(lin_solver, variables, star, smt_cache)
-			for (linear, nonlinear) in disjunction_nonlinear
-				smt_internal_push(lin_solver)
-				additional = []
-				smt_internal_add(lin_solver, ast2smt(linear, variables, additional, smt_cache))
-				for a in additional
-					smt_internal_add(lin_solver, a)
-				end
-				lin_solverres = smt_internal_check(lin_solver)
-				if !smt_internal_is_unsat(lin_solverres)
-					push!(disjunction,
-						CompositeFormula(AST.And,[
-							linear,
-							nonlinear
-						])
-					)
-				end
-				smt_internal_pop(lin_solver)
-			end
-		end
-		if length(disjunction) > 0
-			additional = []
-			smt_internal_add(
-				solver,
-				ast2smt(AST.or_construction(disjunction),
-				variables, additional, smt_cache))
-			for a in additional
-				smt_internal_add(solver, a)
-			end
-			solverres = smt_internal_check(solver)
-			if smt_internal_is_sat(solverres)
-				try
-					m = smt_internal_get_model(solver)
-					# TODO: Generalize for other SMT solvers...
-					num_input_vars = length(star.counter_example[1])
-					for (var_index, var) in enumerate(variables)
-						var_val =Z3.eval(m,var)
-						num = parse(BigInt,convert(String,get_decimal_string(numerator(var_val),100)))
-						den = parse(BigInt,convert(String,get_decimal_string(denominator(var_val),100)))
-						var_val = convert(Float64,convert(BigFloat,num//den))
-						if var_index <= num_input_vars
-							star.counter_example[1][var_index] = var_val
-						else
-							star.counter_example[2][var_index-num_input_vars] = var_val
-						end
-					end
-				catch
-					print_msg("[SMT] Reusing original (linear) counter-example due to error in SMT model extraction")
-				end
-				return 1, star
-			elseif !smt_internal_is_unsat(solverres)
-				# SMT solver returned unknown
-				return 2, star
-			else
-				return 0, star
-			end
+function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cache)
+	disjunction = []
+	star_expr = ast2smt(star, variables, [], smt_cache)
+	
+	# filter out pairs where the linear part is unsatisfiable
+	for (linear, nonlinear) ∈ disjunction_nonlinear
+		lin_expr = ast2smt(linear, variables, [], smt_cache)
+		#@show typeof(lin_expr)
+		#@show typeof(star_expr)
+		res = sat!(Sat.and(star_expr, lin_expr), solver=Z3(), logic="QF_LRA")
+		if res ≠ :UNSAT
+			@info "lin - SAT: $(Sat.and(star_expr, lin_expr))"
+			push!(disjunction,
+				CompositeFormula(AST.And,[
+					linear,
+					nonlinear
+				])
+			)
 		else
+			@info "lin - UNSAT: $(Sat.and(star_expr, lin_expr))"
+		end
+	end
+	if length(disjunction) > 0
+		#@show disjunction
+		disj_expr = Sat.or(
+			(map(c -> ast2smt(c, variables, [], Dict()), disjunction))...
+		)
+		#disj_expr = ast2smt(AST.or_construction(disjunction), variables, [], smt_cache)
+		res = sat!(Sat.and(star_expr, disj_expr), solver=Z3(), logic="QF_NRA")
+		if res == :SAT
+			#@info "nl - SAT: $(Sat.and(star_expr, disj_expr))"
+			try
+				# TODO: Generalize for other SMT solvers...
+				num_input_vars = length(star.counter_example[1])
+				for (var_index, var) in enumerate(variables)
+					var_val = value(var)
+					num = parse(BigInt,convert(String,get_decimal_string(numerator(var_val),100)))
+					den = parse(BigInt,convert(String,get_decimal_string(denominator(var_val),100)))
+					var_val = convert(Float64,convert(BigFloat,num//den))
+					if var_index <= num_input_vars
+						star.counter_example[1][var_index] = var_val
+					else
+						star.counter_example[2][var_index-num_input_vars] = var_val
+					end
+				end
+			catch
+				print_msg("[SMT] Reusing original (linear) counter-example due to error in SMT model extraction")
+			end
+			return 1, star
+		elseif res ≠ :UNSAT
+			@info "ERROR: $(Sat.and(star_expr, disj_expr))"
+			# SMT solver returned unknown
+			return 2, star
+		else
+			#@info "nl - UNSAT: $(Sat.and(star_expr, disj_expr))"
 			return 0, star
 		end
 	end
+
+	return 0, star
 end
 
 """

@@ -79,12 +79,12 @@ Notes:
 function ast2smt(semi :: SemiLinearConstraint, variables, additional, smt_cache=Dict())
 	println("Translating SemiLinearConstraint to SMT...")
 
-	coeff = map(c -> Float64(c), semi.coefficients)	
-	bias = Float64(semi.bias)
+	coeff = map(c -> ast2smt(TermNumber(c), variables, additional, smt_cache), semi.coefficients)	
+	bias = ast2smt(TermNumber(semi.bias), variables, additional, smt_cache)
 	n = length(coeff) # variables may have more entries than coefficients (input constraints)
 
 	term1 = coeff .* variables[1:n]
-	term2 = [Float64(c) * ast2smt(approx_query.term, variables, additional, smt_cache) 
+	term2 = [ast2smt(TermNumber(c), variables, additional, smt_cache) * ast2smt(approx_query.term, variables, additional, smt_cache) 
 		for (approx_query, c) in semi.semilinears]
 		
 	return semi.equality ? sum(term1) + sum(term2) ≤ bias :
