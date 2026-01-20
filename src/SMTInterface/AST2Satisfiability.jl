@@ -19,18 +19,20 @@ function ast2smt(f :: CompositeFormula, variables, additional, smt_cache=Dict())
 	return res
 end
 function ast2smt(f :: TrueAtom, variables, additional, smt_cache)
+	@satvariable(t, Bool)
 	if haskey(smt_cache, f)
 		return smt_cache[f]
 	end
-    res = true
+    res = Sat.__wrap_const(true)
 	smt_cache[f] = res
 	return res
 end
 function ast2smt(f :: FalseAtom, variables, additional, smt_cache)
+	@satvariable(t, Bool)
 	if haskey(smt_cache, f)
 		return smt_cache[f]
 	end
-    res = false
+    res = Sat.__wrap_const(false)
 	smt_cache[f] = res
 	return res
 end
@@ -68,15 +70,29 @@ function ast2smt(t :: LinearTerm, variables, additional, smt_cache)
 	if haskey(smt_cache, t)
 		return smt_cache[t]
 	end
-	
+
+	@info "linear-term: $t"
+
 	coeff = map(c -> ast2smt(TermNumber(c), variables, additional, smt_cache), t.coefficients)
+	
+	@info "coeff: $coeff"
+	
 	bias = ast2smt(TermNumber(t.bias), variables, additional, smt_cache)
 	n = length(coeff) # variables may have more entries than coefficients (input constraints)
 	
+	@info "vec: $(coeff .* variables[1:n])"
+
 	lincomb = sum(coeff .* variables[1:n])
+
+	@info "lincomb: $lincomb"
+
 	res = lincomb + bias
 
+	@info "res: $res"
+
 	smt_cache[t] = res
+
+
 	return res
 end
 
@@ -177,8 +193,9 @@ function ast2smt(v :: Variable, variables, additional, smt_cache)
 	return variables[v.position]
 end
 function ast2smt(n :: TermNumber, variables, additional, smt_cache)
+	return Sat.to_real(n.value)
 	#return Satisfiability.__wrap_const(Float64(n.value))
-	return Float64(n.value)
+	#return Float64(n.value)
 	# TODO: Better way?
 	#x = convert(BigFloat, n.value)
 	#@show x
@@ -186,5 +203,5 @@ function ast2smt(n :: TermNumber, variables, additional, smt_cache)
 	#@show y
 	#@show Satisfiability.__wrap_const(numerator(y)), Satisfiability.__wrap_const(denominator(y))
 	#@show Satisfiability.__wrap_const(numerator(y)) / Satisfiability.__wrap_const(denominator(y))
-	return Satisfiability.__wrap_const(numerator(y)) / Satisfiability.__wrap_const(denominator(y))
+	#return Satisfiability.__wrap_const(numerator(y)) / Satisfiability.__wrap_const(denominator(y))
 end

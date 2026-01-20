@@ -23,11 +23,11 @@ end
 
     true_atom = TrueAtom()
     expr = ast2smt(true_atom, x, [], Dict())
-    @test isequal(expr, true)
+    @test isequal(expr.value, true)
 
     false_atom = FalseAtom()
     expr = ast2smt(false_atom, x, [], Dict())
-    @test isequal(expr, false)
+    @test isequal(expr.value, false)
 
     @satvariable(y[1:2], Real)
     a, b = 6//7, -3.14
@@ -94,32 +94,34 @@ end
 
 @testset "ast2smt — CompositeFormula" begin
 
-    @satvariable(x[1:3], Bool)
-    T = TrueAtom()
-    F = FalseAtom()
+    @satvariable(x[1:3], Real)
+    b1 = Atom(Eq, TermNumber(1.0), TermNumber(1.0))
+    b2 = Atom(Eq, TermNumber(2.0), TermNumber(2.0))
+    b3 = Atom(Eq, TermNumber(3.0), TermNumber(3.0))
+    # we use b1, b2, b3 instead of TrueAtom/FalseAtom to avoid automatic simplification of the expected expression
 
     # AND/OR test
-    f = CompositeFormula(And, [T, CompositeFormula(Or, [F, T])])
+    f = CompositeFormula(And, [b1, CompositeFormula(Or, [b2, b3])])
     expr = ast2smt(f, x, [], Dict())
-    expected_expr = true ∧ (false ∨ true)
+    expected_expr = (1.0 == 1.0) ∧ ((2.0 == 2.0) ∨ (3.0 == 3.0))
     @test isequal(expr, expected_expr)
 
     # NOT test
-    f₂ = CompositeFormula(Not, [F])
+    f₂ = CompositeFormula(Not, [b1])
     expr₂ = ast2smt(f₂, x, [], Dict())
-    expected_expr₂ = ¬false
+    expected_expr₂ = ¬(1.0 == 1.0)
     @test isequal(expr₂, expected_expr₂)
 
     # IMPLIES test
-    f₃ = CompositeFormula(Implies, [T, F])
+    f₃ = CompositeFormula(Implies, [b1, b2])
     expr₃ = ast2smt(f₃, x, [], Dict())
-    expected_expr₃ = true ⟹ false
+    expected_expr₃ = (1.0 == 1.0) ⟹ (2.0 == 2.0)
     @test isequal(expr₃, expected_expr₃)
 
     # ITE (if-then-else) test
-    f₄ = CompositeFormula(ITE, [T, F, T])
+    f₄ = CompositeFormula(ITE, [b1, b2, b3])
     expr₄ = ast2smt(f₄, x, [], Dict())
-    expected_expr₄ = ite(true, false, true)
+    expected_expr₄ = ite((1.0 == 1.0), (2.0 == 2.0), (3.0 == 3.0))
     @test isequal(expr₄, expected_expr₄)
 end
 
