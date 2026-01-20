@@ -53,7 +53,16 @@ function ast2smt(f :: LinearConstraint, variables, additional, smt_cache=Dict())
 	bias = ast2smt(TermNumber(f.bias), variables, additional, smt_cache)
 	n = length(coeff) # variables may have more entries than coefficients (input constraints)
 
-	lincomb = sum(coeff .* variables[1:n])
+
+	# not working, due to incorrect behavior of multiplicaIIon with 0.0
+	#lincomb = sum(coeff .* variables[1:n])
+	lincomb = 0.0
+	for i in 1:n
+		if (coeff[i] != 0.0) && (variables[i].value != 0.0)
+			lincomb += coeff[i] * variables[i]
+		end
+	end
+
 	res = f.equality ? lincomb ≤ bias : lincomb < bias
 	
 	smt_cache[f] = res
@@ -71,24 +80,36 @@ function ast2smt(t :: LinearTerm, variables, additional, smt_cache)
 		return smt_cache[t]
 	end
 
-	@info "linear-term: $t"
+	#@info "linear-term: $t"
 
 	coeff = map(c -> ast2smt(TermNumber(c), variables, additional, smt_cache), t.coefficients)
+	for c in coeff
+		if isa(c, Sat.NumericExpr)
+			c = c.value
+		end
+	end
 	
-	@info "coeff: $coeff"
+	#@info "coeff: $coeff"
 	
 	bias = ast2smt(TermNumber(t.bias), variables, additional, smt_cache)
 	n = length(coeff) # variables may have more entries than coefficients (input constraints)
 	
-	@info "vec: $(coeff .* variables[1:n])"
+	#@info "vec: $(coeff .* variables[1:n])"
 
-	lincomb = sum(coeff .* variables[1:n])
+	# not working, due to incorrect behavior of multiplication with 0.0
+	#lincomb = sum(coeff .* variables[1:n])
+	lincomb = 0.0
+	for i in 1:n
+		if coeff[i] != 0.0
+			lincomb += coeff[i] * variables[i]
+		end
+	end
 
-	@info "lincomb: $lincomb"
+	#@info "lincomb: $lincomb"
 
 	res = lincomb + bias
 
-	@info "res: $res"
+	#@info "res: $res"
 
 	smt_cache[t] = res
 

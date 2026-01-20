@@ -88,7 +88,7 @@ module SMTInterface
 				end
 			end
 		end
-		
+
 		return (res ≠ :UNSAT)
 		end
 	end

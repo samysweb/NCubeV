@@ -89,7 +89,7 @@ function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cac
 		#disj_expr = ast2smt(AST.or_construction(disjunction), variables, [], smt_cache)
 		res = sat!(Sat.and(star_expr, disj_expr), solver=Z3(), logic="QF_NRA")
 		if res == :SAT
-			#@info "nl - SAT: $(Sat.and(star_expr, disj_expr))"
+			@info "nl - SAT: $(Sat.and(star_expr, disj_expr))"
 			try
 				# TODO: Generalize for other SMT solvers...
 				num_input_vars = length(star.counter_example[1])
@@ -113,7 +113,7 @@ function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cac
 			# SMT solver returned unknown
 			return 2, star
 		else
-			#@info "nl - UNSAT: $(Sat.and(star_expr, disj_expr))"
+			@info "nl - UNSAT: $(Sat.and(star_expr, disj_expr))"
 			return 0, star
 		end
 	end
