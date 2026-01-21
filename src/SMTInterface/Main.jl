@@ -70,6 +70,11 @@ module SMTInterface
 		
 		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
 		
+		# If expr simplified to a native Bool, wrap it back into an SMT expression
+		if expr isa Bool
+			expr = Satisfiability.__wrap_const(expr)
+		end
+
 		res = sat!(expr, solver=Z3(), logic="QF_NRA")
 
 		@timeit TIMER "SMTprep" begin
@@ -117,9 +122,14 @@ module SMTInterface
 		
 		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
 
+		# If expr simplified to a native Bool, wrap it back into an SMT expression
+		if expr isa Bool
+			expr = Satisfiability.__wrap_const(expr)
+		end
+
 		res = sat!(expr, solver=Z3(), logic="QF_LRA")
-		@show res
-		@show expr
+		#@show res
+		#@show expr
 
 		@timeit TIMER "SMTprep" begin
 		if res == :SAT

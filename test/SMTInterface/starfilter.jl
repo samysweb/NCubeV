@@ -26,7 +26,10 @@
         x[3] == 1.0*x[1] + 2.0*x[2] + 5.0,
         x[4] == 3.0*x[1] + 4.0*x[2] + 6.0
     )
-    # TODO: write a function to canonicalize expressions for equality testing
+    
+    #TODO: write a function to canonicalize expressions for equality testing
+    #expr = my_expr_simplify(expr)
+    #expected_expr = my_expr_simplify(expected_expr)
     #@test isequal(expr, expected_expr)
     @test (sat!(expr == expected_expr) == :SAT)
 end

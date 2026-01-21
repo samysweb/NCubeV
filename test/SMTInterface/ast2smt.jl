@@ -277,8 +277,11 @@ end
         mixed_constraints_expr
     )
     # TODO: write a function to canonicalize expressions for equality testing
-    #@test isequal(expr, expected)
-    @test (sat!(expr == expected) == :SAT)
+    expr = my_expr_simplify(expr)
+    expected = my_expr_simplify(expected)
+    @show expr
+    @show expected
+    @test isequal(expr, expected)
 end
 
 

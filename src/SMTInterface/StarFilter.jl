@@ -70,7 +70,7 @@ function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cac
 		#@show typeof(star_expr)
 		res = sat!(Sat.and(star_expr, lin_expr), solver=Z3(), logic="QF_LRA")
 		if res ≠ :UNSAT
-			@info "lin - SAT: $(Sat.and(star_expr, lin_expr))"
+			#@info "lin - SAT: $(Sat.and(star_expr, lin_expr))"
 			push!(disjunction,
 				CompositeFormula(AST.And,[
 					linear,
@@ -78,7 +78,7 @@ function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cac
 				])
 			)
 		else
-			@info "lin - UNSAT: $(Sat.and(star_expr, lin_expr))"
+			#@info "lin - UNSAT: $(Sat.and(star_expr, lin_expr))"
 		end
 	end
 	if length(disjunction) > 0
@@ -89,7 +89,7 @@ function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cac
 		#disj_expr = ast2smt(AST.or_construction(disjunction), variables, [], smt_cache)
 		res = sat!(Sat.and(star_expr, disj_expr), solver=Z3(), logic="QF_NRA")
 		if res == :SAT
-			@info "nl - SAT: $(Sat.and(star_expr, disj_expr))"
+			#@info "nl - SAT: $(Sat.and(star_expr, disj_expr))"
 			try
 				# TODO: Generalize for other SMT solvers...
 				num_input_vars = length(star.counter_example[1])
@@ -109,11 +109,11 @@ function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cac
 			end
 			return 1, star
 		elseif res ≠ :UNSAT
-			@info "ERROR: $(Sat.and(star_expr, disj_expr))"
+			#@info "ERROR: $(Sat.and(star_expr, disj_expr))"
 			# SMT solver returned unknown
 			return 2, star
 		else
-			@info "nl - UNSAT: $(Sat.and(star_expr, disj_expr))"
+			#@info "nl - UNSAT: $(Sat.and(star_expr, disj_expr))"
 			return 0, star
 		end
 	end
