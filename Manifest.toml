@@ -1043,8 +1043,10 @@ uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 version = "0.7.0"
 
 [[deps.Satisfiability]]
-deps = ["Logging", "Unicode", "z3_jll"]
-git-tree-sha1 = "d82a71782d43eb054f489c78b714f5d9b2a9eff4"
+deps = ["Unicode", "z3_jll"]
+git-tree-sha1 = "24252c71efbe0f7d3cd509522ddf4092e3ee5f1c"
+repo-rev = "main"
+repo-url = "https://github.com/elsoroka/Satisfiability.jl.git"
 uuid = "160ab843-0bc6-4ba4-9585-b7478b70f443"
 version = "0.2.0"
 
