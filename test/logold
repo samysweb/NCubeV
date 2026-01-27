@@ -1,0 +1,426 @@
+[CMD] Using SMT solver: Z3
+[CMD] Using verifier: NNEnum
+[CMD] Parsed initial query: NCubeV.AST.Query(((-1.0*x1<0.0&((-1.0*rPos)+(0.004999999999999999*(rVel^2.0)))<=0.0&-1.0*x1<=0.0&1.0*x1<=100.0&-1.0*x2<=200.0&1.0*x2<=200.0&-1.0*x3<=100.0&1.0*x3<=100.0)->(-1.0*x3<=-100.0|(-1.0*x3<=100.0&1.0*x3<100.0&(1.0*x3<0.0|-1.0*x3<0.0)&((((-1.0*x3<0.0&1.0*x20.1*x3<0.0)|(1.0*x3<0.0&-1.0*x2-0.1*x3<0.0)|(-1.0*x3<0.0&-1.0*x2<0.0)|(1.0*x3<0.0&1.0*x2<0.0))&((-0.005000000000000001*rAccpost)+(-0.1*rVel)+(-1.0*rPos)+(5.0e-5*(rAccpost^2.0))+(0.004999999999999999*(rVel^2.0))+(0.001*rAccpost*rVel))<0.0)|(((-0.005000000000000001*rAccpost)+(-0.1*rVel)+(-1.0*rPos)+(5.0e-5*(rAccpost^2.0))+(0.004999999999999999*(rVel^2.0))+(0.001*rAccpost*rVel))<0.0&((-2.0*x3<0.0&((rVel^2.0)+(-2.0*rAccpost*rPos))<0.0)|(2.0*x3<0.0&((-1.0*(rVel^2.0))+(2.0*rAccpost*rPos))<0.0)))))|(1.0*x3<=0.0&-1.0*x3<=0.0&((-0.1*rVel)+(-1.0*rPos)+(0.004999999999999999*(rVel^2.0)))<0.0))), Set(NCubeV.AST.Variable[rAccpost, rVel, rPos]), 2, 1, Dict{NCubeV.AST.ApproxQuery, NCubeV.AST.Approximation}(), Vector{Float64}[])
+[CMD] SMT Timeout: 10s
+[CTRL] Iterating over conjunctions...
+[APPROX] Trying to build approximation...
+[APPROX] Generating expression for (rAccpost*rVel)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost*rPos)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost^2.0)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rVel^2.0)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Skipping verification of approximation (switch on using NCubeV.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using NCubeV.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using NCubeV.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using NCubeV.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using NCubeV.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using NCubeV.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using NCubeV.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using NCubeV.Config.set_rigorous_approximations(true))
+[APPROX] Approximation Bounds: Vector{Float64}[]
+[APPROX] Approximations: Dict{NCubeV.AST.ApproxQuery, NCubeV.AST.Approximation}()
+[APPROX] Approximation is ready
+[SKELETON] Adding linear dependency constraint
+Float32[-1.0, 0.0, 0.0]+0.0<0.0 -> -1.0*x1<=0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=-100.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+-100.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=100.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+100.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<=-100.0 -> -1.0*x3<=100.0
+100.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<100.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00099999999999
+100.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<0.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<0.0 -> Float32[0.0, 0.0, 1.0]+0.0<100.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<0.0 | !Float32[0.0, 0.0, -1.0]+0.0<=-100.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<=-100.0 -> -1.0*x3<0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!-1.0*x3<0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x2<0.0 -> Float32[0.0, -1.0, 0.0]+0.0<=200.0
+0.0
+[SKELETON] Adding linear dependency constraint
+1.0*x2<0.0 -> Float32[0.0, 1.0, 0.0]+0.0<=200.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x2<0.0 | !Float32[0.0, -1.0, 0.0]+0.0<0.0
+[SKELETON] Adding linear dependency constraint
+-2.0*x3<0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<=-100.0 -> -2.0*x3<0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+-2.0*x3<0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<0.0 -> -2.0*x3<0.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!-2.0*x3<0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
+[SKELETON] Adding linear dependency constraint
+2.0*x3<0.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+2.0*x3<0.0 -> Float32[0.0, 0.0, 1.0]+0.0<100.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, 1.0]+0.0<0.0 -> 2.0*x3<0.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!2.0*x3<0.0 | !Float32[0.0, 0.0, -1.0]+0.0<=-100.0
+[SKELETON] Adding negated linear dependency constraint
+!2.0*x3<0.0 | !Float32[0.0, 0.0, -1.0]+0.0<0.0
+[SKELETON] Adding negated linear dependency constraint
+!2.0*x3<0.0 | !Float32[0.0, 0.0, -1.0]+0.0<0.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<=0.0 -> Float32[0.0, 0.0, 1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+1.0*x3<=0.0 -> Float32[0.0, 0.0, 1.0]+0.0<100.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, 1.0]+0.0<0.0 -> 1.0*x3<=0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, 1.0]+0.0<0.0 -> 1.0*x3<=0.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<=0.0 | !Float32[0.0, 0.0, -1.0]+0.0<=-100.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<=0.0 | !Float32[0.0, 0.0, -1.0]+0.0<0.0
+[SKELETON] Adding negated linear dependency constraint
+!1.0*x3<=0.0 | !Float32[0.0, 0.0, -1.0]+0.0<0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.00099999999999
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<=-100.0 -> -1.0*x3<=0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+-1.0*x3<=0.0 -> Float32[0.0, 0.0, -1.0]+0.0<=100.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<0.0 -> -1.0*x3<=0.0
+0.0
+[SKELETON] Adding linear dependency constraint
+Float32[0.0, 0.0, -1.0]+0.0<0.0 -> -1.0*x3<=0.0
+0.0
+[SKELETON] Adding negated linear dependency constraint
+!-1.0*x3<=0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
+[SKELETON] Adding negated linear dependency constraint
+!-1.0*x3<=0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+.[QUERY] Found all non-linear combinations. Count: 1
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+.[QUERY] Found all non-linear combinations. Count: 1
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+[QUERY] Found all non-linear combinations. Count: 2
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+[QUERY] Found all non-linear combinations. Count: 2
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+[QUERY] Found all non-linear combinations. Count: 2
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+.NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+[QUERY] Found all non-linear combinations. Count: 3
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+.NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+.NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+.[QUERY] Found all non-linear combinations. Count: 3
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+[QUERY] Found all non-linear combinations. Count: 2
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = false
+LIN FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+NL FEASIBLE
+!(smt_internal_is_unsat(res)) = true
+[QUERY] Found all non-linear combinations. Count: 1
+[QUERY] Returning nonlinear disjunction
+[CTRL] Considering conjunction with 2 input constraints and a disjunction of size 9
+[APPROX] Checking cache: NCubeV.Approx.ApproxCacheObject[]
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[CTRL] Initiating iterator over current linear queries

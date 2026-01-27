@@ -200,6 +200,7 @@ module SMTInterface
 
 			return res
 		end
+		@show !smt_internal_is_unsat(res)
 		return !smt_internal_is_unsat(res)
 	end
 	"""
