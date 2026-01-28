@@ -60,6 +60,7 @@ Returns 1 for confirmed counterexample, 2 for unknown/timeout, 0 for spurious.
 Implements Lemma 12 from Appendix B.3.
 """
 function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cache)
+	println("checking star with SMT")
 	disjunction = []
 	star_expr = ast2smt(star, variables, [], smt_cache)
 	

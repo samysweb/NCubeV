@@ -135,292 +135,309 @@ Float32[0.0, 0.0, -1.0]+0.0<0.0 -> -1.0*x3<=0.0
 !-1.0*x3<=0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
 [SKELETON] Adding negated linear dependency constraint
 !-1.0*x3<=0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, -1.0*x3<0.0, 1.0*x3<0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x12.0*x2<=200.0, -1.0*x11.95*x20.11*x3<250.15, 42.03*x1400.0*x2-78.98*x3<57476.02, 103.58*x1-200.0*x2151.79*x3<30005.74, -1.0*x11.9*x2<200.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, 1.0*x3<0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x12.0*x2<=200.0, -1.0*x11.95*x20.11*x3<250.15, 42.03*x1400.0*x2-78.98*x3<57476.02, 103.58*x1-200.0*x2151.79*x3<30005.74, -1.0*x11.9*x2<200.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, 1.0*x3<0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x12.0*x2<=200.0, -1.0*x11.95*x20.09*x3<250.15, 42.03*x1400.0*x2-78.98*x3<57476.02, 103.58*x1-200.0*x2151.79*x3<30005.74, -1.0*x11.9*x2<200.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x12.0*x2<=200.0, -1.0*x11.95*x20.09*x3<250.15, 42.03*x1400.0*x2-78.98*x3<57476.02, 103.58*x1-200.0*x2151.79*x3<30005.74, 1.0*x1-0.9*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x12.0*x2<=200.0, -1.0*x11.95*x20.09*x3<250.15, 42.03*x1400.0*x2-78.98*x3<57476.02, 42.03*x1400.0*x2-78.98*x3<=57476.02, 1.0*x1-0.9*x2<=0.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x3<=0.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x12.0*x2<=200.0, -1.0*x11.95*x20.11*x3<250.15, 42.03*x1400.0*x2-78.98*x3<57476.02, 42.03*x1400.0*x2-78.98*x3<=57476.02, 1.0*x1-0.9*x2<=0.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=67.25, 1.0*x3<=-36.59, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=67.25, 1.0*x3<=-36.59, -1.0*x12.0*x2<=200.0, -1.0*x11.78*x2-0.24*x3<226.39, -3.75*x1400.0*x2-48.92*x3<54456.18, -3.75*x1400.0*x2-48.92*x3<=54456.18, 1.0*x1-0.9*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=-67.25, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=-67.25, -1.0*x12.0*x2<=200.0, -1.0*x11.78*x2-0.24*x3<226.13, 125.93*x1400.0*x2-653.84*x3<108891.91, 125.93*x1400.0*x2-653.84*x3<=108891.91, 1.0*x1-0.9*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x12.0*x2<=200.0, 1.0*x1-0.88*x20.04*x3<=30.75, 42.03*x1400.0*x2-78.98*x3<57476.02, 42.03*x1400.0*x2-78.98*x3<=57476.02, 1.0*x1-0.9*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x3<=0.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, 42.03*x1-400.0*x2-78.98*x3<57476.02, 42.03*x1-400.0*x2-78.98*x3<=57476.02, 1.0*x11.1*x2<=0.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=134.49, 1.0*x2<=-73.19, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=134.49, 1.0*x2<=-73.19, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.15*x2-0.0*x3<=29.29, 42.03*x1-400.0*x2-78.98*x3<57476.02, 42.03*x1-400.0*x2-78.98*x3<=57476.02, 1.0*x11.1*x2<=0.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=-134.49, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=-134.49, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x10.55*x20.13*x3<=125.19, 42.03*x1-400.0*x2-78.98*x3<57476.02, 42.03*x1-400.0*x2-78.98*x3<=57476.02, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-16.38, 1.0*x1<=31.7, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-16.38, 1.0*x1<=31.7, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x12.0*x2<=200.0, 1.0*x1-0.88*x20.04*x3<=30.75, 102.16*x1400.0*x2-101.87*x3<59751.44, 102.16*x1400.0*x2-101.87*x3<=59751.44, 1.0*x1-0.9*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x12.0*x2<=200.0, 1.0*x1-0.88*x20.04*x3<=30.75, -1107.69*x1400.0*x2-37.04*x3<47210.85, -1107.69*x1400.0*x2-37.04*x3<=47210.85, 1.0*x1-0.9*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1107.69*x1-400.0*x2-37.04*x3<47210.85, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x12.0*x2<=200.0, 1.0*x1-0.88*x20.04*x3<=30.75, -228.84*x1-200.0*x2-16.97*x3<=1373.25, -1107.69*x1400.0*x2-37.04*x3<=47210.85, 1.0*x1-0.9*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x12.0*x2<=200.0, 1.0*x1-0.88*x20.04*x3<=30.75, -228.84*x1-200.0*x2-16.97*x3<=1373.25, -228.84*x1-200.0*x2-16.97*x3<1373.25, 1.0*x1-0.9*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, 1.0*x2<=0.0, 1.0*x2<0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -228.84*x1200.0*x2-16.97*x3<=1373.25, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
 .[QUERY] Found all non-linear combinations. Count: 1
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, 1.0*x2<=0.0, 1.0*x2<0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.05*x3<=30.75, -228.84*x1200.0*x2-16.97*x3<=1373.25, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
 .[QUERY] Found all non-linear combinations. Count: 1
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=67.25, 1.0*x3<=-36.59, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, 1.0*x3<0.0, 1.0*x3<=0.0, -1.0*x2-0.1*x3<0.0, 1.0*x2<=0.0, 1.0*x2<0.0, 2.0*x3<=0.0, 2.0*x3<0.0, 1.0*x3<=0.0, 1.0*x3<0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=67.25, 1.0*x3<=-36.59, -1.0*x1-2.0*x2<=200.0, 1.0*x11.1*x20.11*x3<=29.29, -227.72*x1200.0*x2-9.12*x3<=1066.96, -402.17*x1-400.0*x2-6.65*x3<44791.06, -402.17*x1-400.0*x2-6.65*x3<=44791.06, -227.72*x1200.0*x2-9.12*x3<1066.96, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=67.25, 1.0*x3<=-36.59, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, 1.0*x3<0.0, 1.0*x3<=0.0, 1.0*x20.1*x3<=0.0, 1.0*x2<=0.0, 1.0*x2<0.0, 2.0*x3<=0.0, 2.0*x3<0.0, 1.0*x3<=0.0, 1.0*x3<0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=67.25, 1.0*x3<=-36.59, -1.0*x1-2.0*x2<=200.0, 1.0*x11.1*x20.11*x3<=29.29, -227.72*x1200.0*x2-9.12*x3<=1066.96, -402.17*x1-400.0*x2-6.65*x3<44791.06, -402.17*x1-400.0*x2-6.65*x3<=44791.06, -227.72*x1200.0*x2-9.12*x3<1066.96, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=100.0, 1.0*x3<=-67.25, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, 1.0*x3<0.0, 1.0*x3<=0.0, 1.0*x20.1*x3<=0.0, 1.0*x2<=0.0, 1.0*x2<0.0, 2.0*x3<=0.0, 2.0*x3<0.0, 1.0*x3<=0.0, 1.0*x3<0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=100.0, 1.0*x3<=-67.25, -1.0*x1-2.0*x2<=200.0, 1.0*x11.16*x2-1.1*x3<=125.19, -227.72*x1200.0*x2-13.86*x3<=1385.72, -117.41*x1-400.0*x2-158.7*x3<55870.42, -117.41*x1-400.0*x2-158.7*x3<=55870.42, -227.72*x1200.0*x2-13.86*x3<1385.72, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, 1.0*x3<0.0, 1.0*x3<=0.0, 1.0*x20.1*x3<=0.0, 1.0*x2<=0.0, 1.0*x2<0.0, 2.0*x3<=0.0, 2.0*x3<0.0, 1.0*x3<=0.0, 1.0*x3<0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.05*x3<=30.75, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<47210.85, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.05*x3<=30.75, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.05*x3<=30.75, -228.84*x1200.0*x2-16.97*x3<=1373.25, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
 [QUERY] Found all non-linear combinations. Count: 2
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, 1.0*x3<0.0, 1.0*x3<=0.0, -1.0*x2-0.1*x3<0.0, 1.0*x2<=0.0, 1.0*x2<0.0, 2.0*x3<=0.0, 2.0*x3<0.0, 1.0*x3<=0.0, 1.0*x3<0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.05*x3<=30.75, -228.84*x1200.0*x2-16.97*x3<=1373.25, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, 1.0*x3<-100.0, 1.0*x3<100.0, 1.0*x3<0.0, 1.0*x3<=0.0, 1.0*x20.1*x3<=0.0, 1.0*x2<=0.0, 1.0*x2<0.0, 2.0*x3<=0.0, 2.0*x3<0.0, 1.0*x3<=0.0, 1.0*x3<0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.05*x3<=30.75, -228.84*x1200.0*x2-16.97*x3<=1373.25, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=67.25, 1.0*x3<=-36.59, -1.0*x1-2.0*x2<=200.0, 1.0*x11.1*x20.11*x3<=29.29, -227.72*x1200.0*x2-9.12*x3<=1066.96, -227.72*x1200.0*x2-9.12*x3<1066.96, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
 [QUERY] Found all non-linear combinations. Count: 2
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=100.0, 1.0*x3<=-67.25, -1.0*x1-2.0*x2<=200.0, 1.0*x11.16*x2-1.1*x3<=125.19, -227.72*x1200.0*x2-13.86*x3<=1385.72, -227.72*x1200.0*x2-13.86*x3<1385.72, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
 [QUERY] Found all non-linear combinations. Count: 2
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=67.25, 1.0*x3<=-36.59, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, 1.0*x3<-100.0, 1.0*x3<100.0, 1.0*x3<0.0, 1.0*x3<=0.0, 1.0*x20.1*x3<=0.0, 1.0*x2<=0.0, 1.0*x2<0.0, 2.0*x3<=0.0, 2.0*x3<0.0, 1.0*x3<=0.0, 1.0*x3<0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=67.25, 1.0*x3<=-36.59, -1.0*x1-2.0*x2<=200.0, 1.0*x11.1*x20.11*x3<=29.29, -227.72*x1200.0*x2-9.12*x3<=1066.96, -227.72*x1200.0*x2-9.12*x3<1066.96, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=100.0, 1.0*x3<=-67.25, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, 1.0*x3<-100.0, 1.0*x3<100.0, 1.0*x3<0.0, 1.0*x3<=0.0, 1.0*x20.1*x3<=0.0, 1.0*x2<=0.0, 1.0*x2<0.0, 2.0*x3<=0.0, 2.0*x3<0.0, 1.0*x3<=0.0, 1.0*x3<0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=100.0, 1.0*x3<=-67.25, -1.0*x1-2.0*x2<=200.0, 1.0*x11.16*x2-1.1*x3<=125.19, -227.72*x1200.0*x2-13.86*x3<=1385.72, -227.72*x1200.0*x2-13.86*x3<1385.72, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-.NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-[QUERY] Found all non-linear combinations. Count: 3
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-.NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-.NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
 .[QUERY] Found all non-linear combinations. Count: 3
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=100.0, 1.0*x3<=-67.25, -1.0*x1-2.0*x2<=200.0, -1.0*x1-1.16*x21.1*x3<-125.19, -1.0*x1-2.22*x2-0.24*x3<226.13, -227.72*x1200.0*x2-13.86*x3<=1385.72, -227.72*x1200.0*x2-13.86*x3<1385.72, 1.0*x11.1*x2<=0.0, -1.0*x1-2.1*x2<200.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, -1.0*x3<0.0, -1.0*x2-0.1*x3<=0.0, 1.0*x20.1*x3<=0.0, 1.0*x2<=0.0, 1.0*x2<0.0, -2.0*x3<0.0, -2.0*x3<=0.0, -1.0*x3<0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=36.59, 1.0*x3<=0.0, -1.0*x1-2.0*x2<=200.0, -1.0*x1-2.05*x20.09*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0, -1.0*x1-2.1*x2<200.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, -1.0*x3<0.0, -1.0*x2-0.1*x3<=0.0, 1.0*x20.1*x3<=0.0, 1.0*x2<=0.0, 1.0*x2<0.0, -2.0*x3<0.0, -2.0*x3<=0.0, -1.0*x3<0.0, -1.0*x3<=0.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0, -1.0*x1-2.1*x2<200.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, -1.0*x3<0.0, -1.0*x2-0.1*x3<=0.0, -1.0*x2-0.1*x3<0.0, 1.0*x2<=0.0, 1.0*x2<0.0, -2.0*x3<0.0, -2.0*x3<=0.0, -1.0*x3<0.0, -1.0*x3<=0.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0, -1.0*x1-2.1*x2<200.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, -1.0*x3<=-100.0, -1.0*x3<=0.0, -1.0*x3<0.0, 1.0*x20.1*x3<0.0, 1.0*x20.1*x3<=0.0, 1.0*x2<=0.0, 1.0*x2<0.0, -2.0*x3<0.0, -2.0*x3<=0.0, -1.0*x3<0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0, -1.0*x1-2.1*x2<200.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, -1.0*x3<0.0, 1.0*x20.1*x3<0.0, 1.0*x20.1*x3<=0.0, 1.0*x2<=0.0, 1.0*x2<0.0, -2.0*x3<0.0, -2.0*x3<=0.0, -1.0*x3<0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -228.84*x1200.0*x2-16.97*x3<=1373.25, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0, -1.0*x1-2.1*x2<200.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+...[QUERY] Found all non-linear combinations. Count: 3
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0, -1.0*x1-2.1*x2<200.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0, -1.0*x1-2.1*x2<200.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<47210.85, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0, -1.0*x1-2.1*x2<200.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<47210.85, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<47210.85, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
+!(smt_internal_is_unsat(res)) = true
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
 [QUERY] Found all non-linear combinations. Count: 2
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, -1.0*x1-1.12*x2-0.04*x3<-30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, 228.84*x1-200.0*x216.97*x3<=-1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, -1.0*x3<0.0, 1.0*x20.1*x3<0.0, -1.0*x2-0.1*x3<0.0, 1.0*x2<=0.0, 1.0*x2<0.0, -2.0*x3<0.0, -2.0*x3<=0.0, -1.0*x3<0.0, -1.0*x3<=0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, 1.0*x12.05*x2-0.11*x3<=-250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, 1107.69*x1400.0*x237.04*x3<-47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = false
-LIN FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
-!(smt_internal_is_unsat(res)) = true
-NL FEASIBLE
+ckeck lin feasible
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=0.0, 1.0*x1<=16.38, -1.0*x2<=73.19, 1.0*x2<=0.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1-2.0*x2<=200.0, 1.0*x11.12*x20.04*x3<=30.75, -1.0*x1-2.05*x20.11*x3<250.15, -228.84*x1200.0*x2-16.97*x3<=1373.25, -1107.69*x1-400.0*x2-37.04*x3<=47210.85, -228.84*x1200.0*x2-16.97*x3<1373.25, 1.0*x11.1*x2<=0.0]
 !(smt_internal_is_unsat(res)) = true
 [QUERY] Found all non-linear combinations. Count: 1
 [QUERY] Returning nonlinear disjunction
 [CTRL] Considering conjunction with 2 input constraints and a disjunction of size 9
-[APPROX] Checking cache: NCubeV.Approx.ApproxCacheObject[]
-[APPROX] Constructing Approximation
-[APPROX] Resolving approximation
-[CTRL] Initiating iterator over current linear queries
+[APPROX] Checking cache: ^C
+     Testing Tests interrupted. Exiting the test process
+
+Test Summary:     |   Time
+Integration Tests | None  1m18.4s
+  SAT             | None  1m18.4s
+ERROR: LoadError: InterruptException:
+Stacktrace:
+  [1] print(::Base.TTY, ::String, ::Vector{NCubeV.Approx.ApproxCacheObject}, ::Vararg{Any})
+    @ Base ./strings/io.jl:46
+  [2] println(::Base.TTY, ::String, ::Vararg{Any})
+    @ Base ./strings/io.jl:75
+  [3] println(::String, ::Vector{NCubeV.Approx.ApproxCacheObject})
+    @ Base ./coreio.jl:4
+  [4] print_msg
+    @ ~/projects/NCubeV/src/Util/Main.jl:44 [inlined]
+  [5] get_approx_normalized_query(initial_query::NCubeV.AST.NormalizedQuery, approx_cache::Dict{NCubeV.Approx.ApproxCacheObject, NCubeV.AST.Approximation})
+    @ NCubeV.Approx ~/projects/NCubeV/src/Approx/Generation.jl:87
+  [6] (::NCubeV.Control.var"#2#5"{String, Dict{String, Any}, NCubeV.Cmd.var"#4#8"{Dict{String, Any}}, NCubeV.AST.Query, Z3.ContextAllocated, Int32, Vector{Any}, Dict{NCubeV.Approx.ApproxCacheObject, NCubeV.AST.Approximation}})(smt_ctx::Tuple{Z3.ContextAllocated, Vector{Any}})
+    @ NCubeV.Control ~/projects/NCubeV/src/Control/Processing.jl:135
+  [7] smt_context(f::NCubeV.Control.var"#2#5"{String, Dict{String, Any}, NCubeV.Cmd.var"#4#8"{Dict{String, Any}}, NCubeV.AST.Query, Z3.ContextAllocated, Int32, Vector{Any}, Dict{NCubeV.Approx.ApproxCacheObject, NCubeV.AST.Approximation}}, varnum::Int64; timeout::Int64)
+    @ NCubeV.SMTInterface ~/projects/NCubeV/src/SMTInterface/Base.jl:18
+  [8] run_query(f::NCubeV.Cmd.var"#4#8"{Dict{String, Any}}, query::NCubeV.AST.Query, ctx::Z3.ContextAllocated, smt_timeout::Int32, variables::Vector{Any}; backup::String, backup_meta::Dict{String, Any})
+    @ NCubeV.Control ~/projects/NCubeV/src/Control/Processing.jl:111
+  [9] (::NCubeV.Cmd.var"#3#7"{Dict{String, Any}, Int32, NCubeV.AST.Query})(::Tuple{Z3.ContextAllocated, Vector{Any}})
+    @ NCubeV.Cmd ~/projects/NCubeV/src/Cmd/Main.jl:135
+ [10] smt_context(f::NCubeV.Cmd.var"#3#7"{Dict{String, Any}, Int32, NCubeV.AST.Query}, varnum::Int64; timeout::Int64)
+    @ NCubeV.SMTInterface ~/projects/NCubeV/src/SMTInterface/Base.jl:18
+ [11] run_internal(args::Dict{String, Any})
+    @ NCubeV.Cmd ~/projects/NCubeV/src/Cmd/Main.jl:134
+ [12] macro expansion
+    @ ~/projects/NCubeV/test/integration/main.jl:13 [inlined]
+ [13] macro expansion
+    @ /opt/julia-1.10.5/share/julia/stdlib/v1.10/Test/src/Test.jl:1577 [inlined]
+ [14] macro expansion
+    @ ~/projects/NCubeV/test/integration/main.jl:4 [inlined]
+ [15] macro expansion
+    @ /opt/julia-1.10.5/share/julia/stdlib/v1.10/Test/src/Test.jl:1577 [inlined]
+ [16] top-level scope
+    @ ~/projects/NCubeV/test/integration/main.jl:3
+ [17] include(fname::String)
+    @ Base.MainInclude ./client.jl:489
+ [18] top-level scope
+    @ ~/projects/NCubeV/test/runtests.jl:4
+ [19] include(fname::String)
+    @ Base.MainInclude ./client.jl:489
+ [20] top-level scope
+    @ none:6
+in expression starting at /home/jango/projects/NCubeV/test/integration/main.jl:2
+in expression starting at /home/jango/projects/NCubeV/test/runtests.jl:4
+
+(NCubeV) pkg> 

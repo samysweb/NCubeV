@@ -57,7 +57,7 @@ module SMTInterface
 	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables, conflicts; print_model=false)
 		
 		println("checking nl feasibility")
-		#@show constraints
+		@show constraints
 		#@show variables
 
 		n = length(constraints)
@@ -93,7 +93,7 @@ module SMTInterface
 				end
 			end
 		end
-
+		@show (res ≠ :UNSAT)
 		return (res ≠ :UNSAT)
 		end
 	end
@@ -108,7 +108,7 @@ module SMTInterface
 	function lin_feasible(constraints :: Vector{LinearConstraint}, ctx, variables, conflicts; print_model=false)
 		
 		println("checking lin feasibility")
-		#@show constraints
+		@show constraints
 		#@show variables
 
 		n = length(constraints)
@@ -148,6 +148,7 @@ module SMTInterface
 			end
 		end
 
+		@show (res ≠ :UNSAT)
 		return (res ≠ :UNSAT)
 	end
 	"""

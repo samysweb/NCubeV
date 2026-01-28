@@ -4,9 +4,6 @@
 [CMD] SMT Timeout: 10s
 [CTRL] Iterating over conjunctions...
 [APPROX] Trying to build approximation...
-[APPROX] Generating expression for (rAccpost*rPos)...
-Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
-Using N=1, ϵ=0.0, rel_error_tol=0.005
 [APPROX] Generating expression for (rVel^2.0)...
 Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
 Using N=1, ϵ=0.0, rel_error_tol=0.005
@@ -14,6 +11,9 @@ Using N=1, ϵ=0.0, rel_error_tol=0.005
 Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
 Using N=1, ϵ=0.0, rel_error_tol=0.005
 [APPROX] Generating expression for (rAccpost^2.0)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost*rPos)...
 Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.00100708007812, 100.00100708007812], :x1 => [0.0, 100.0])
 Using N=1, ϵ=0.0, rel_error_tol=0.005
 [APPROX] Skipping verification of approximation (switch on using NCubeV.Config.set_rigorous_approximations(true))
@@ -136,7 +136,11 @@ Float32[0.0, 0.0, -1.0]+0.0<0.0 -> -1.0*x3<=0.0
 [SKELETON] Adding negated linear dependency constraint
 !-1.0*x3<=0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
 checking lin feasibility
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.0, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, -1.0*x3<0.0, 1.0*x3<0.0]
+res ≠ :UNSAT = false
 checking lin feasibility
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=0.0, 1.0*x3<=100.0, -1.0*x12.0*x2<=200.0, -1.0*x11.95*x20.11*x3<250.15, 42.03*x1400.0*x2-78.98*x3<57476.02, 103.58*x1-200.0*x2151.79*x3<30005.74, -1.0*x11.9*x2<200.0]
+res ≠ :UNSAT = true
 SAT: Test Failed at /home/jango/projects/NCubeV/test/integration/main.jl:14
   Expression: cex_count == 88
    Evaluated: 0 == 88
@@ -160,9 +164,6 @@ Stacktrace:
 [CMD] SMT Timeout: 10s
 [CTRL] Iterating over conjunctions...
 [APPROX] Trying to build approximation...
-[APPROX] Generating expression for (rAccpost*rPos)...
-Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.0, 100.01000213623047], :x1 => [0.0, 100.0])
-Using N=1, ϵ=0.0, rel_error_tol=0.005
 [APPROX] Generating expression for (rVel^2.0)...
 Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.0, 100.01000213623047], :x1 => [0.0, 100.0])
 Using N=1, ϵ=0.0, rel_error_tol=0.005
@@ -170,6 +171,9 @@ Using N=1, ϵ=0.0, rel_error_tol=0.005
 Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.0, 100.01000213623047], :x1 => [0.0, 100.0])
 Using N=1, ϵ=0.0, rel_error_tol=0.005
 [APPROX] Generating expression for (rAccpost^2.0)...
+Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.0, 100.01000213623047], :x1 => [0.0, 100.0])
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost*rPos)...
 Val Ranges: Dict(:x2 => [-200.0, 200.0], :x3 => [-100.0, 100.01000213623047], :x1 => [0.0, 100.0])
 Using N=1, ϵ=0.0, rel_error_tol=0.005
 [APPROX] Skipping verification of approximation (switch on using NCubeV.Config.set_rigorous_approximations(true))
@@ -301,4 +305,18 @@ Float32[0.0, 0.0, -1.0]+0.0<0.0 -> -1.0*x3<=0.0
 [SKELETON] Adding negated linear dependency constraint
 !-1.0*x3<=0.0 | !Float32[0.0, 0.0, 1.0]+0.0<0.0
 checking lin feasibility
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=-0.01, 1.0*x3<=100.01, -1.0*x1<0.0, -1.0*x1<=0.0, 1.0*x1<=100.0, -1.0*x2<=200.0, 1.0*x2<=200.0, -1.0*x3<=100.0, 1.0*x3<=100.01, 1.0*x2<=0.1, -1.0*x2<=2.1, -1.0*x1<-0.08, 1.0*x3<100.0, -1.0*x3<=0.0, 1.0*x3<=0.0, -1.0*x2<=0.0, 2.0*x3<=0.0, -2.0*x3<=0.0, -1.0*x3<0.0]
+res ≠ :UNSAT = false
 checking lin feasibility
+constraints = NCubeV.AST.LinearConstraint[-1.0*x1<=-31.7, 1.0*x1<=100.0, -1.0*x2<=0.0, 1.0*x2<=200.0, -1.0*x3<=-0.01, 1.0*x3<=100.01, -1.0*x12.0*x2<=200.0, -1.0*x11.95*x20.11*x3<250.16, 42.02*x1400.0*x2-78.98*x3<57476.32, 103.59*x1-200.0*x2151.79*x3<30007.7, -1.0*x11.9*x2<200.0]
+res ≠ :UNSAT = true
+Test Summary:     | Pass  Fail  Total     Time
+Integration Tests |    1     1      2  1m31.9s
+  SAT             |          1      1  1m24.4s
+  UNSAT           |    1            1     7.5s
+ERROR: LoadError: Some tests did not pass: 1 passed, 1 failed, 0 errored, 0 broken.
+in expression starting at /home/jango/projects/NCubeV/test/integration/main.jl:2
+in expression starting at /home/jango/projects/NCubeV/test/runtests.jl:8
+ERROR: Package NCubeV errored during testing
+
+(NCubeV) pkg> 
