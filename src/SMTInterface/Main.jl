@@ -65,9 +65,10 @@ module SMTInterface
 		additional = []
 
 		cons_trans = map(con -> ast2smt(con, variables, additional, Dict()), constraints)
-		expr = Sat.and(cons_trans...) ∧
-			Sat.and([c ⟹ con for (c,con) in zip(C, cons_trans)])
-		
+		#expr = Sat.and(cons_trans...) ∧
+		#	Sat.and([c ⟹ con for (c,con) in zip(C, cons_trans)])
+		expr = 	Sat.and([c ⟹ con for (c,con) in zip(C, cons_trans)])
+
 		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
 		
 		# If expr simplified to a native Bool, wrap it back into an SMT expression
@@ -116,9 +117,9 @@ module SMTInterface
 		additional = []
 
 		cons_trans = map(con -> ast2smt(con, variables, additional, Dict()), constraints)
-		expr = Sat.and(cons_trans...) ∧
-			Sat.and([c ⟹ con for (c,con) in zip(C, cons_trans)])
-
+		#expr = Sat.and(cons_trans...) ∧
+		#	Sat.and([c ⟹ con for (c,con) in zip(C, cons_trans)])
+		expr = Sat.and([c ⟹ con for (c,con) in zip(C, cons_trans)])
 		
 		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
 
