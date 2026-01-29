@@ -54,14 +54,14 @@ function ast2smt(f :: LinearConstraint, variables, additional, smt_cache=Dict())
 	n = length(coeff) # variables may have more entries than coefficients (input constraints)
 
 
-	# not working, due to incorrect behavior of multiplicaIIon with 0.0
-	#lincomb = sum(coeff .* variables[1:n])
-	lincomb = 0.0
-	for i in 1:n
-		if (coeff[i] != 0.0) && (variables[i].value != 0.0)
-			lincomb += coeff[i] * variables[i]
-		end
-	end
+	# not working, due to incorrect behavior of multiplication with 0.0
+	lincomb = sum(coeff .* variables[1:n])
+	#lincomb = 0.0
+	#for i in 1:n
+	#	if (coeff[i] != 0.0) && (variables[i].value != 0.0)
+	#		lincomb += coeff[i] * variables[i]
+	#	end
+	#end
 
 	res = f.equality ? lincomb ≤ bias : lincomb < bias
 	
@@ -97,14 +97,13 @@ function ast2smt(t :: LinearTerm, variables, additional, smt_cache)
 	#@info "vec: $(coeff .* variables[1:n])"
 
 	# not working, due to incorrect behavior of multiplication with 0.0
-	#lincomb = sum(coeff .* variables[1:n])
-	lincomb = 0.0
-	for i in 1:n
-		if coeff[i] != 0.0
-			lincomb += coeff[i] * variables[i]
-		end
-	end
-
+	lincomb = sum(coeff .* variables[1:n])
+	#lincomb = 0.0
+	#for i in 1:n
+	#	if coeff[i] != 0.0
+	#		lincomb += coeff[i] * variables[i]
+	#	end
+	#end
 	#@info "lincomb: $lincomb"
 
 	res = lincomb + bias
@@ -214,10 +213,22 @@ function ast2smt(v :: Variable, variables, additional, smt_cache)
 	return variables[v.position]
 end
 function ast2smt(n :: TermNumber, variables, additional, smt_cache)
+
+	# TODO: Better way?
+	x = Sat.to_real(n.value)
+	s = string(x)
+	if contains(s, "e")
+		#@warn "SMT does not support scientific notation. Approximating $x."
+		parts = split(s, "e")
+		exponent = parse(Int, parts[2])
+		if exponent <= -5
+			return Sat.to_real(0.0001)
+		end
+	end
+	
 	return Sat.to_real(n.value)
 	#return Satisfiability.__wrap_const(Float64(n.value))
 	#return Float64(n.value)
-	# TODO: Better way?
 	#x = convert(BigFloat, n.value)
 	#@show x
 	#y = rationalize(Int64, x)
