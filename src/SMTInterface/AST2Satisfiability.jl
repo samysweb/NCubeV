@@ -212,28 +212,30 @@ end
 function ast2smt(v :: Variable, variables, additional, smt_cache)
 	return variables[v.position]
 end
-function ast2smt(n :: TermNumber, variables, additional, smt_cache)
+function ast2smt(n::TermNumber, variables, additional, smt_cache)
+	x = Float64(n.value)
+	x_str = string(x)
 
-	# TODO: Better way?
-	x = Sat.to_real(n.value)
-	s = string(x)
-	if contains(s, "e")
-		#@warn "SMT does not support scientific notation. Approximating $x."
-		parts = split(s, "e")
+	if !contains(x_str, "e")
+		return x
+	else
+		@warn "$(x) contains scientific notation. adding shield variable."
+		@satvariable(t_shield, Real)
+		push!(additional, t_shield == 1.0)
+
+		parts = split(x_str, 'e')
+		coeff = parse(Float64, parts[1])
 		exponent = parse(Int, parts[2])
-		if exponent <= -5
-			return Sat.to_real(0.0001)
-		end
+
+		@assert exponent < 0 "Only negative exponents are supported for shield variables."
+		
+		divisor = 10.0^(-exponent)
+
+		@assert !contains(string(divisor), "e") "Shield variable divisor cannot be in scientific notation."
+
+		return (coeff / (divisor * t_shield))
 	end
 	
-	return Sat.to_real(n.value)
-	#return Satisfiability.__wrap_const(Float64(n.value))
-	#return Float64(n.value)
-	#x = convert(BigFloat, n.value)
-	#@show x
-	#y = rationalize(Int64, x)
-	#@show y
-	#@show Satisfiability.__wrap_const(numerator(y)), Satisfiability.__wrap_const(denominator(y))
-	#@show Satisfiability.__wrap_const(numerator(y)) / Satisfiability.__wrap_const(denominator(y))
-	#return Satisfiability.__wrap_const(numerator(y)) / Satisfiability.__wrap_const(denominator(y))
 end
+
+
