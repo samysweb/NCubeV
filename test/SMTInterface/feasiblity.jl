@@ -1,58 +1,9 @@
 @testset "lin_feasible tests" begin
     @satvariable(x[1:2], Real)
     conflicts = []
-
     # -1 ≤ x₁ ≤ 1
     lb1 = LinearConstraint([-1//1], 1//1, true)
     ub1 = LinearConstraint([1//1], 1//1, true)
-
-    NCubeV.AST.LinearConstraint[
-        -1.0*x1<=-31.7, 
-        1.0*x1<=100.0, 
-        -1.0*x2<=0.0,
-        1.0*x2<=200.0,
-        -1.0*x3<=0.0, 
-        1.0*x3<=100.0, 
-        -1.0*x1<0.0, 
-        -1.0*x1<=0.0, 
-        1.0*x1<=100.0, 
-        -1.0*x2<=200.0, 
-        1.0*x2<=200.0, 
-        -1.0*x3<=100.0, 
-        1.0*x3<=100.0, 
-        1.0*x3<100.0, 
-        1.0*x3<100.0, 
-        -1.0*x3<=0.0, 
-        1.0*x3<=0.0, 
-        -1.0*x2<=0.0, 
-        2.0*x3<=0.0, 
-        -2.0*x3<=0.0, 
-        1.0*x3<=0.0, 
-        1.0*x3<0.0]
-    constraints = [
-    LinearConstraint([ -1//1 ], -317//10, true)
-    LinearConstraint([ 1//1 ], 100//1, true)
-    LinearConstraint([ 0//1, -1//1 ], 0//1, true)
-    LinearConstraint([ 0//1, 1//1 ], 200//1, true)
-    LinearConstraint([ 0//1, 0//1, -1//1 ], 0//1, true)
-    LinearConstraint([ 0//1, 0//1, 1//1 ], 100//1, true)
-    LinearConstraint([ -1//1 ], 0//1, false)
-    LinearConstraint([ 1//1 ], 0//1, true)
-    LinearConstraint([ 1//1 ], 100//1, true)
-    LinearConstraint([ 0//1, -1//1 ], 200//1, true)
-    LinearConstraint([ 0//1, 1//1 ], 200//1, true)
-    LinearConstraint([ 0//1, 0//1, -1//1 ], 100//1, true)
-    LinearConstraint([ 0//1, 0//1, 1//1 ], 100//1, true)
-    LinearConstraint([ 0//1, 0//1, 1//1 ], 100//1, false)
-    LinearConstraint([ 0//1, 0//1, 1//1 ], 100//1, false)
-    LinearConstraint([ 0//1, 0//1, -1//1 ], 0//1, true)
-    LinearConstraint([ 0//1, 0//1, 1//1 ], 0//1, true)
-    LinearConstraint([ 0//1, -1//1 ], 0//1, true)
-    LinearConstraint([ 0//1, 0//1, 2//1], 0//1, true)
-    LinearConstraint([ 0//1, 0//1, -2//1], 0//1, true)
-    LinearConstraint([ 0//1, 0//1, 1//1 ], 0//1, true)
-    LinearConstraint([ 0//1, 0//1, 1//1 ], 0//1, false)
-    ]
     
     # 1 ≤ x₂ ≤ 2
     lb2 = LinearConstraint([0//1, -1//1], -1//1, true)

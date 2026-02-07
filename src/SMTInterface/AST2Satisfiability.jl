@@ -129,7 +129,11 @@ end
 
 function smt_pow(arguments)
 	@assert length(arguments) == 2
-	exp = Rational{BigInt}(arguments[2])
+	if arguments[2] isa IntExpr
+		exp = Rational{BigInt}(arguments[2].value)
+	else
+		exp = Rational{BigInt}(arguments[2])
+	end
 	base = arguments[1]
 	if exp.den == 1
 		if exp.num > 0
@@ -189,7 +193,7 @@ function ast2smt(n::TermNumber, variables, additional, smt_cache)
 	x_rat = n.value
 	num = numerator(x_rat)
     den = denominator(x_rat)
-	@show x_rat
+	#@show x_rat
 	@satvariable(t_zero, Real)
     if !any(c -> isequal(c, (t_zero == 0.0)), additional)
         push!(additional, t_zero == 0.0)
