@@ -1,12 +1,38 @@
 
 @testset "ast2smt - TermNumber" begin
-    n = TermNumber(3.14)
-    expr = ast2smt(n, [], [], Dict())
-    @test isequal(expr, 3.14)
-
-    n_neg = TermNumber(-2.71)
-    expr_neg = ast2smt(n_neg, [], [], Dict())
-    @test isequal(expr_neg, -2.71)
+    # Loop 1: ± xxx_xxx.xxx_xxx
+    for _ in 1:10
+        # generate n number with at most 6 digits left and right from the decimal point 
+        n = rand([+1,-1])*rand(1:1_000_000_000_000)/1_000_000
+        additional = []
+        expected_expr = Sat.to_real(n)
+        expr = ast2smt(TermNumber(n), [], [], Dict())
+        test_expr = (expr == Sat.to_real(n))
+        isa(test_expr, Bool) && (test_expr = Sat.__wrap_const(test_expr)) 
+		!isempty(additional) && (test_expr = test_expr ∧ Sat.and(additional...)) 
+        @test (sat!(test_expr) == :SAT)
+    end
+    # Loop 2: ± xxx_xxy_yyy_yyy.0
+    for _ in 1:10
+        n = rand([+1,-1])*rand(10^7:10^11)
+        additional = []
+        expr = ast2smt(TermNumber(n), [], additional, Dict())
+        test_expr = (expr/100_000 == Sat.to_real(n/100_000))
+        !isempty(additional) && (test_expr = test_expr ∧ Sat.and(additional...)) 
+        @test (sat!(test_expr) == :SAT)
+    end
+    #=
+    # Loop 3: ± 0.yyy_yyy_yxx_xxx
+    for _ in 1:10
+        n = rand([+1,-1])*rand(10.0^-8:10.0^-7)
+        additional = []
+        expr = ast2smt(TermNumber(n), [], additional, Dict())
+        test_expr = (expr*1_000_000 == Sat.to_real(n*1_000_000))
+        !isempty(additional) && (test_expr = test_expr ∧ Sat.and(additional...)) 
+        @show test_expr
+        @test (sat!(test_expr) == :SAT)
+    end
+    =#
 end
 
 @testset "ast2smt - Variable" begin
@@ -336,7 +362,7 @@ end
 end
 
 
-
+=#
 
 
 

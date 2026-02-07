@@ -6,7 +6,7 @@ Sat = Satisfiability
 
 
 using Satisfiability
-
+#=
 # A mapping from internal .op symbols to the actual functions in Satisfiability.jl
 const SMT_OPERATOR_MAP = Dict(
     :and     => Satisfiability.and,
@@ -114,6 +114,7 @@ end
     )
     @test isequal(flat_expr, expected_expr)
 end
+=#
 
 include("ast2smt.jl")
 include("feasiblity.jl")

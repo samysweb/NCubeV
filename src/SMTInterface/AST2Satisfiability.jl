@@ -1,6 +1,7 @@
 using Satisfiability
 Sat = Satisfiability
 
+
 # TODO(steuber): Floating Point Correctness?
 function ast2smt(f :: CompositeFormula, variables, additional, smt_cache=Dict())
 	if haskey(smt_cache, f)
@@ -48,21 +49,11 @@ function ast2smt(f :: LinearConstraint, variables, additional, smt_cache=Dict())
 	if haskey(smt_cache, f)
 		return smt_cache[f]
 	end
-	
+
 	coeff = map(c -> ast2smt(TermNumber(c), variables, additional, smt_cache), f.coefficients)
 	bias = ast2smt(TermNumber(f.bias), variables, additional, smt_cache)
 	n = length(coeff) # variables may have more entries than coefficients (input constraints)
-
-
-	# not working, due to incorrect behavior of multiplication with 0.0
 	lincomb = sum(coeff .* variables[1:n])
-	#lincomb = 0.0
-	#for i in 1:n
-	#	if (coeff[i] != 0.0) && (variables[i].value != 0.0)
-	#		lincomb += coeff[i] * variables[i]
-	#	end
-	#end
-
 	res = f.equality ? lincomb ≤ bias : lincomb < bias
 	
 	smt_cache[f] = res
@@ -80,8 +71,6 @@ function ast2smt(t :: LinearTerm, variables, additional, smt_cache)
 		return smt_cache[t]
 	end
 
-	#@info "linear-term: $t"
-
 	coeff = map(c -> ast2smt(TermNumber(c), variables, additional, smt_cache), t.coefficients)
 	for c in coeff
 		if isa(c, Sat.NumericExpr)
@@ -89,27 +78,11 @@ function ast2smt(t :: LinearTerm, variables, additional, smt_cache)
 		end
 	end
 	
-	#@info "coeff: $coeff"
-	
 	bias = ast2smt(TermNumber(t.bias), variables, additional, smt_cache)
 	n = length(coeff) # variables may have more entries than coefficients (input constraints)
 	
-	#@info "vec: $(coeff .* variables[1:n])"
-
-	# not working, due to incorrect behavior of multiplication with 0.0
 	lincomb = sum(coeff .* variables[1:n])
-	#lincomb = 0.0
-	#for i in 1:n
-	#	if coeff[i] != 0.0
-	#		lincomb += coeff[i] * variables[i]
-	#	end
-	#end
-	#@info "lincomb: $lincomb"
-
 	res = lincomb + bias
-
-	#@info "res: $res"
-
 	smt_cache[t] = res
 
 
@@ -154,30 +127,22 @@ function ast2smt(f :: Atom, variables, additional, smt_cache=Dict())
 end
 
 
-function smt_pow(base, exp, variables=[], additional=[], smt_cache=Dict())
-	@assert isa(exp, TermNumber) "Exponent must be a TermNumber."
-	@assert isa(base, TermNumber) || isa(base, Variable) "Base must be a TermNumber, Variable."
-	
-	num = exp.value.num
-	den = exp.value.den
-
-	if den == 1
-		if isa(base, TermNumber)
-			return ast2smt(base^exp, variables, additional, smt_cache)
+function smt_pow(arguments)
+	@assert length(arguments) == 2
+	exp = Rational{BigInt}(arguments[2])
+	base = arguments[1]
+	if exp.den == 1
+		if exp.num > 0
+			# xⁿ = x ⋅ x ⋯ x
+			return foldl(*, fill(base, exp.num))
+		elseif exp.num < 0
+			# x⁻ⁿ = 1 / (x ⋅ x ⋯ x)
+			return 1.0 / foldl(*, fill(base, -exp.num))
 		else
-			var = ast2smt(base, variables, additional, smt_cache)
-			if num > 0
-				# xⁿ = x ⋅ x ⋯ x
-				return foldl(*, fill(var, num))
-			elseif num < 0
-				# x⁻ⁿ = 1 / (x ⋅ x ⋯ x)
-				return 1.0 / foldl(*, fill(var, -num))
-			else
-				return 1.0
-			end		
+			return 1.0
 		end
 	else
-		@assert false "Non-integer exponents not supported in SMT backend yet."
+		@assert False, "Non-integer exponents not supported in SMT backend yet."
 		# TODO(steuber): Implement roots again (but probably hard for SMT solver anyway...)
 	end
 end
@@ -192,50 +157,55 @@ function ast2smt(f :: CompositeTerm, variables, additional, smt_cache)
 	if haskey(smt_cache, f)
 		return smt_cache[f]
 	end
-	if f.operation ≠ Pow
-		arguments = map(x -> ast2smt(x, variables, additional, smt_cache), f.args)
-		res = @match f.operation begin
-			Add => +(arguments...)
-			Sub => -(arguments...)
-			Mul => *(arguments...)
-			Div => /(arguments...)
-			Neg => return -arguments[1]
-		end
-	else
-		@assert length(f.args) == 2 "Pow operation requires exactly two arguments."
-		res = smt_pow(f.args..., variables, additional, smt_cache)
+	arguments = map(x -> ast2smt(x, variables, additional, smt_cache), f.args)
+	res = @match f.operation begin
+		Add => +(arguments...)
+		Sub => -(arguments...)
+		Mul => *(arguments...)
+		Div => /(arguments...)
+		Pow => smt_pow(arguments)
+		Neg => return -arguments[1]
 	end
-	
 	smt_cache[f] = res
 	return res
 end
 function ast2smt(v :: Variable, variables, additional, smt_cache)
 	return variables[v.position]
 end
-function ast2smt(n::TermNumber, variables, additional, smt_cache)
-	x = Float64(n.value)
-	x_str = string(x)
-
-	if !contains(x_str, "e")
-		return x
-	else
-		@warn "$(x) contains scientific notation. adding shield variable."
-		@satvariable(t_shield, Real)
-		push!(additional, t_shield == 1.0)
-
-		parts = split(x_str, 'e')
-		coeff = parse(Float64, parts[1])
-		exponent = parse(Int, parts[2])
-
-		@assert exponent < 0 "Only negative exponents are supported for shield variables."
-		
-		divisor = 10.0^(-exponent)
-
-		@assert !contains(string(divisor), "e") "Shield variable divisor cannot be in scientific notation."
-
-		return (coeff / (divisor * t_shield))
-	end
-	
+function secure_int(val::Integer, zero_var)
+    LIMIT = 1000000 
+    if abs(val) < LIMIT
+        return Int64(val)
+    end
+    CUTOFF = 100000 
+    lower = Int64(rem(val, CUTOFF))
+    upper = Int64(div(val, CUTOFF))
+	#@show val, upper, lower
+	secure_upper = secure_int(upper, zero_var)
+	return (secure_upper * (CUTOFF + zero_var)) + lower
 end
 
+function ast2smt(n::TermNumber, variables, additional, smt_cache) 
+	x_rat = n.value
+	num = numerator(x_rat)
+    den = denominator(x_rat)
+	@show x_rat
+	@satvariable(t_zero, Real)
+    if !any(c -> isequal(c, (t_zero == 0.0)), additional)
+        push!(additional, t_zero == 0.0)
+    end
+    
+	if den == 1
+        return Sat.__wrap_const(secure_int(num, t_zero))
+    end
 
+	#@show num, den
+	num = secure_int(num, t_zero)
+    den = secure_int(den, t_zero)
+
+	@satvariable(t_one, Real)
+    if !any(c -> isequal(c, (t_one == 1.0)), additional)
+        push!(additional, t_one == 1.0)
+    end
+    return num / den * t_one
+end
