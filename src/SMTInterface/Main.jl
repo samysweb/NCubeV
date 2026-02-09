@@ -26,7 +26,7 @@ module SMTInterface
 	Sat = Satisfiability
 
 	export smt_context, lin_feasible, nl_feasible, nl_feasible_init, check_star
-	export ast2smt, pwl2term
+	export ast2smt, pwl2term, secure_int
 
 	#USE_CORES = true
 	USE_CORES = false
@@ -55,19 +55,15 @@ module SMTInterface
 	(indices of `constraints`). Returns `true` if satisfiable or unknown.
 	"""
 	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables, conflicts; print_model=false)
-		
 		println("checking nl feasibility")
-		@show constraints
-		#@show variables
-
 		n = length(constraints)
 		@satvariable(C[1:n], Bool) # conflict bools
 		additional = []
 
 		cons_trans = map(con -> ast2smt(con, variables, additional, Dict()), constraints)
-		#expr = Sat.and(cons_trans...) ∧
+		expr = Sat.and(cons_trans...) #∧
 		#	Sat.and([c ⟹ con for (c,con) in zip(C, cons_trans)])
-		expr = 	Sat.and([c ⟹ con for (c,con) in zip(C, cons_trans)])
+		#expr = 	Sat.and([c ⟹ con for (c,con) in zip(C, cons_trans)])
 
 		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
 		
@@ -79,24 +75,23 @@ module SMTInterface
 		res = sat!(expr, solver=Z3(), logic="QF_NRA")
 
 		@timeit TIMER "SMTprep" begin
-		if res == :SAT
-			if print_model
-				smt_print_model(s)
-			end
-		elseif res != :UNSAT
-			print_msg("[SMT] SMT returned status: ", res)
-		else # res == :UNSAT
-			if USE_CORES
-				# TODO
-			else
-				for (i,_) in enumerate(constraints)
-					push!(conflicts,i)
+			if res == :SAT
+				if print_model
+					smt_print_model(s)
+				end
+			elseif res != :UNSAT
+				print_msg("[SMT] SMT returned status: ", res)
+			else # res == :UNSAT
+				if USE_CORES
+					# TODO
+				else
+					for (i,_) in enumerate(constraints)
+						push!(conflicts,i)
+					end
 				end
 			end
 		end
-		@show (res ≠ :UNSAT)
 		return (res ≠ :UNSAT)
-		end
 	end
 
 
@@ -107,19 +102,15 @@ module SMTInterface
 	for unsat core extraction. Returns `true` if satisfiable or unknown.
 	"""
 	function lin_feasible(constraints :: Vector{LinearConstraint}, ctx, variables, conflicts; print_model=false)
-		
 		println("checking lin feasibility")
-		@show constraints
-		#@show variables
-
 		n = length(constraints)
 		@satvariable(C[1:n], Bool) # conflict bools
 		additional = []
 
 		cons_trans = map(con -> ast2smt(con, variables, additional, Dict()), constraints)
-		#expr = Sat.and(cons_trans...) ∧
+		expr = Sat.and(cons_trans...) #∧
 		#	Sat.and([c ⟹ con for (c,con) in zip(C, cons_trans)])
-		expr = Sat.and([c ⟹ con for (c,con) in zip(C, cons_trans)])
+		#expr = Sat.and([c ⟹ con for (c,con) in zip(C, cons_trans)])
 		
 		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
 
@@ -129,30 +120,27 @@ module SMTInterface
 		end
 
 		res = sat!(expr, solver=Z3(), logic="QF_LRA")
-		#@show res
-		#@show expr
 
 		@timeit TIMER "SMTprep" begin
-		if res == :SAT
-			if print_model
-				smt_print_model(s)
-			end
-		elseif res != :UNSAT
-			print_msg("[SMT] SMT returned status: ", res)
-		else # res == :UNSAT
-			if USE_CORES
-				# TODO
-			else
-				for (i,_) in enumerate(constraints)
-					push!(conflicts,i)
+			if res == :SAT
+				if print_model
+					smt_print_model(s)
+				end
+			elseif res != :UNSAT
+				print_msg("[SMT] SMT returned status: ", res)
+			else # res == :UNSAT
+				if USE_CORES
+					# TODO
+				else
+					for (i,_) in enumerate(constraints)
+						push!(conflicts,i)
+					end
 				end
 			end
 		end
-
-		@show (res ≠ :UNSAT)
 		return (res ≠ :UNSAT)
 	end
-	"""
+	#=
 	function lin_feasible(constraints :: Vector{LinearConstraint}, ctx, variables,conflicts;print_model=false)
 		
 		res = smt_solver(ctx;theory="qflra") do s
@@ -206,5 +194,5 @@ module SMTInterface
 		return !smt_internal_is_unsat(res)
 	end
 	"""
-	end
+	=#
 end
