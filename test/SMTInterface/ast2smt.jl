@@ -205,27 +205,6 @@ end
 end
 
 
-"""
-conversion into Float64 depends on the julia environment and casting to Rational{BigInt} may matter. Example:
-when using NCube.AST, we get:
-
-julia> Float64.(Rational{BigInt}[5//3])
-1-element Vector{Float64}:
-1.6666666666666665
-
-julia> Float64(5//3)
-1.6666666666666667
-
-but when using only Base, we get:
-
-julia> Float64.(Rational{BigInt}[5//3])
-1-element Vector{Float64}:
-1.6666666666666667
-
-julia> Float64(5//3)
-1.6666666666666667
-"""
-
 @testset "ast2smt - SemiLinearConstraint" begin
     @satvariable(x[1:3], Real)
 
@@ -327,38 +306,35 @@ end
         mixed_constraints_expr
     )
     # TODO: write a function to canonicalize expressions for equality testing
-    #expr = my_expr_simplify(expr)
-    #expected = my_expr_simplify(expected)
-    #@show expr
-    #@show expected
-    #@test isequal(expr, expected)
+    # testing whether they can be different
+    test_expr = expr ≠ expected
+    @test (sat!(test_expr) == :UNSAT)
 end
 
-#=
 @testset "ast2smt - smt_pow" begin
     @satvariable(x, Real)
     v = Variable("x", nothing, 1)
 
     # x⁰ = 1
-    n = TermNumber(0//1)
+    n = TermNumber(0)
     t = CompositeTerm(Pow, [v, n])
     expr = ast2smt(t, [x], [], Dict())
     @test isequal(expr, 1.0)
     
     # x¹ = x
-    n = TermNumber(1//1)
+    n = TermNumber(1)
     t = CompositeTerm(Pow, [v, n])
     expr = ast2smt(t, [x], [], Dict())
     @test isequal(expr, x)
 
     # x³ = x * x * x
-    n = TermNumber(3//1)
+    n = TermNumber(3)
     t = CompositeTerm(Pow, [v, n])
     expr = ast2smt(t, [x], [], Dict())
     @test isequal(expr, x * x * x)
 
     # x⁻² = 1 / (x * x)
-    n = TermNumber(-2//1)
+    n = TermNumber(-2)
     t = CompositeTerm(Pow, [v, n])
     expr = ast2smt(t, [x], [], Dict())
     @test isequal(expr, 1.0 / (x * x))
@@ -369,22 +345,27 @@ end
     @test_throws AssertionError ast2smt(t, [x], [], Dict())
     
     # 2³ = 8
-    a = TermNumber(2.0)
-    n = TermNumber(3//1)
+    a = TermNumber(2)
+    n = TermNumber(3)
     t = CompositeTerm(Pow, [a, n])
     expr = ast2smt(t, [], [], Dict())
-    expected_expr = ast2smt(TermNumber(8//1), [], [], Dict())
-    @test isequal(expr, expected_expr)
+    expected_expr = ast2smt(TermNumber(8), [], [], Dict())
+    @test (sat!(expr == expected_expr) == :SAT)
+    #@test isequal(expr, expected_expr)
 
     # 2⁻³ = 8
     a = TermNumber(2.0)
     n = TermNumber(-3//1)
     t = CompositeTerm(Pow, [a, n])
+    additional = []
     expr = ast2smt(t, [], [], Dict())
     expected_expr = ast2smt(TermNumber(1//8), [], [], Dict())
-    @test isequal(expr, expected_expr)
+    test_expr = expr == expected_expr
+    !isempty(additional) && (test_expr = test_expr ∧ Sat.and(additional...)) 
+    @test (sat!(test_expr) == :SAT)
+    #isequal(expr, expected_expr)
 end
-=#
+
 
 
 

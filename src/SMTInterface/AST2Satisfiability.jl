@@ -129,8 +129,11 @@ end
 
 function smt_pow(arguments)
 	@assert length(arguments) == 2
+	#@show arguments
 	if arguments[2] isa IntExpr
 		exp = Rational{BigInt}(arguments[2].value)
+	elseif arguments[2] isa RealExpr
+		@assert false "Non-integer exponents $(arguments[2]) not supported in SMT backend yet."
 	else
 		exp = Rational{BigInt}(arguments[2])
 	end
@@ -146,7 +149,7 @@ function smt_pow(arguments)
 			return 1.0
 		end
 	else
-		@assert False, "Non-integer exponents not supported in SMT backend yet."
+		@assert false "Non-integer exponents not supported in SMT backend yet."
 		# TODO(steuber): Implement roots again (but probably hard for SMT solver anyway...)
 	end
 end

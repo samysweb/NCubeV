@@ -15,7 +15,8 @@
 
     star = Star(tuple)
 
-    expr = ast2smt(star, x, [], Dict())
+    additional = []
+    expr = ast2smt(star, x, additional, Dict())
     expected_expr = Sat.and(
         11.0*x[1] + 12.0*x[2] ≤ 1.0,
         21.0*x[1] + 22.0*x[2] ≤ 2.0,
@@ -28,10 +29,9 @@
     )
     
     #TODO: write a function to canonicalize expressions for equality testing
-    #expr = my_expr_simplify(expr)
-    #expected_expr = my_expr_simplify(expected_expr)
-    #@test isequal(expr, expected_expr)
-    @test (sat!(expr == expected_expr) == :SAT)
+    test_expr = (expr ≠ expected_expr)
+    !isempty(additional) && (test_expr = test_expr ∧ Sat.and(additional...)) 
+    @test (sat!(test_expr) == :UNSAT)
 end
 
 
