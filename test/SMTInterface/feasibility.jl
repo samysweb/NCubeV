@@ -1,11 +1,3 @@
-using NCubeV.AST
-using NCubeV.SMTInterface
-using NCubeV.VerifierInterface
-using Satisfiability
-Sat = Satisfiability
-using Test
-
-
 
 @testset "lin_feasible tests" begin
     @satvariable(x[1:2], Real)

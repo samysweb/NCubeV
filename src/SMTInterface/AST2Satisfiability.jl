@@ -129,7 +129,6 @@ end
 
 function smt_pow(arguments)
 	@assert length(arguments) == 2
-	#@show arguments
 	if arguments[2] isa IntExpr
 		exp = Rational{BigInt}(arguments[2].value)
 	elseif arguments[2] isa RealExpr
@@ -179,40 +178,43 @@ end
 function ast2smt(v :: Variable, variables, additional, smt_cache)
 	return variables[v.position]
 end
+
+# rewrites val using "Horner-Schema with basis 100000"
+# this avoids numbers ≥ 1000000 in the expression  
+# which avoids unknown Symbol error in the Solver
+# the zero_var is introduced to avoid simplification by Satisfiability
 function secure_int(val::Integer, zero_var)
     LIMIT = 1000000 
     if abs(val) < LIMIT
-        return Int64(val)
+        return val
     end
     CUTOFF = 100000 
-    lower = Int64(rem(val, CUTOFF))
-    upper = Int64(div(val, CUTOFF))
-	#@show val, upper, lower
-	secure_upper = secure_int(upper, zero_var)
-	return (secure_upper * (CUTOFF + zero_var)) + lower
+    lower = rem(val, CUTOFF)
+    upper = div(val, CUTOFF)
+    return (secure_int(upper, zero_var) * (CUTOFF + zero_var)) + lower
 end
 
-function ast2smt(n::TermNumber, variables, additional, smt_cache) 
-	x_rat = n.value
-	num = numerator(x_rat)
+function ast2smt(n::TermNumber, variables, additional, smt_cache)    
+    # same value as the Z3 implementation
+	x_rat = rationalize(Int32,Float32(n.value))
+    num = numerator(x_rat)
     den = denominator(x_rat)
-	#@show x_rat
+
 	@satvariable(t_zero, Real)
     if !any(c -> isequal(c, (t_zero == 0.0)), additional)
         push!(additional, t_zero == 0.0)
     end
     
-	if den == 1
-        return Sat.__wrap_const(secure_int(num, t_zero))
-    end
-
-	#@show num, den
 	num = secure_int(num, t_zero)
     den = secure_int(den, t_zero)
+
+	if den == 1
+        return Satisfiability.to_real(num)
+    end
 
 	@satvariable(t_one, Real)
     if !any(c -> isequal(c, (t_one == 1.0)), additional)
         push!(additional, t_one == 1.0)
     end
-    return num / den * t_one
+    return Satisfiability.to_real(num) / (Satisfiability.to_real(den) * t_one)
 end
