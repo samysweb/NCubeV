@@ -60,15 +60,22 @@ Returns 1 for confirmed counterexample, 2 for unknown/timeout, 0 for spurious.
 Implements Lemma 12 from Appendix B.3.
 """
 function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cache)
-	println("checking star with SMT")
 	disjunction = []
-	star_expr = ast2smt(star, variables, [], smt_cache)
+	additional = []
+	@satvariable(x[1:length(variables)], Real)
+	star_expr = ast2smt(star, x, additional, smt_cache)
 	
 	# filter out pairs where the linear part is unsatisfiable
 	for (linear, nonlinear) ∈ disjunction_nonlinear
-		lin_expr = ast2smt(linear, variables, [], smt_cache)
+		lin_expr = ast2smt(linear, x, additional, smt_cache)
+		expr = Sat.and(star_expr, lin_expr)
+		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
+		# If expr simplified to a native Bool, wrap it back into an SMT expression
+		if expr isa Bool
+			expr = Satisfiability.__wrap_const(expr)
+		end
 		# needs qf_nra since ast2smt(TermNumber) uses fractions with variables in the denominator
-		res = sat!(Sat.and(star_expr, lin_expr), solver=Z3(), logic="QF_NRA")
+		res = sat!(expr, solver=Z3(), logic="QF_NRA")
 		if res ≠ :UNSAT
 			push!(disjunction,
 				CompositeFormula(AST.And,[
@@ -80,36 +87,50 @@ function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cac
 	end
 	if length(disjunction) > 0
 		disj_expr = Sat.or(
-			(map(c -> ast2smt(c, variables, [], Dict()), disjunction))...
+			(map(c -> ast2smt(c, variables, additional, smt_cache), disjunction))...
 		)
-		res = sat!(Sat.and(star_expr, disj_expr), solver=Z3(), logic="QF_NRA")
+		expr = Sat.and(star_expr, disj_expr)
+		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
+		# If expr simplified to a native Bool, wrap it back into an SMT expression
+		if expr isa Bool
+			expr = Satisfiability.__wrap_const(expr)
+		end
+		res = nothing
+		try 
+			res = sat!(expr, solver=Z3(), logic="QF_NRA")
+		catch e
+			# Satisfiability may throw OverflowError when trying to parse Model
+			# In this case a Model was found, therefore :SAT
+			if e isa OverflowError
+				print_msg("[SMT] Reusing original (linear) counter-example due to error in SMT model extraction")
+				return 1, star
+			else
+				rethrow(e)
+			end
+		end
+
 		if res == :SAT
-			try
-				# TODO: Generalize for other SMT solvers...
+			println("nl true")
+		else
+			println("nl false")
+		end
+		
+		@match res begin
+			:SAT => begin
 				num_input_vars = length(star.counter_example[1])
-				for (var_index, var) in enumerate(variables)
-					var_val = value(var)
-					num = parse(BigInt,convert(String,get_decimal_string(numerator(var_val),100)))
-					den = parse(BigInt,convert(String,get_decimal_string(denominator(var_val),100)))
-					var_val = convert(Float64,convert(BigFloat,num//den))
+				for (var_index, var) in enumerate(x)
 					if var_index <= num_input_vars
-						star.counter_example[1][var_index] = var_val
+						star.counter_example[1][var_index] = var.value
 					else
-						star.counter_example[2][var_index-num_input_vars] = var_val
+						star.counter_example[2][var_index-num_input_vars] = var.value
 					end
 				end
-			catch
-				print_msg("[SMT] Reusing original (linear) counter-example due to error in SMT model extraction")
+				return 1, star
 			end
-			return 1, star
-		elseif res ≠ :UNSAT
-			# SMT solver returned unknown
-			return 2, star
-		else
-			return 0, star
+			:UNSAT => return 0, star
+			:ERROR => return 2, star 
 		end
 	end
-
 	return 0, star
 end
 

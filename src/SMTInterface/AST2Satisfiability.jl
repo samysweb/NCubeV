@@ -66,7 +66,6 @@ end
 Lower a linear term into a Sat arithmetic expression.
 """
 function ast2smt(t :: LinearTerm, variables, additional, smt_cache)
-	
 	if haskey(smt_cache, t)
 		return smt_cache[t]
 	end
@@ -194,7 +193,10 @@ function secure_int(val::Integer, zero_var)
     return (secure_int(upper, zero_var) * (CUTOFF + zero_var)) + lower
 end
 
-function ast2smt(n::TermNumber, variables, additional, smt_cache)    
+function ast2smt(n::TermNumber, variables, additional, smt_cache)   
+	if haskey(smt_cache, n)
+		return smt_cache[n]
+	end 
     # same value as the Z3 implementation
 	x_rat = rationalize(Int32,Float32(n.value))
     num = numerator(x_rat)
@@ -204,17 +206,22 @@ function ast2smt(n::TermNumber, variables, additional, smt_cache)
     if !any(c -> isequal(c, (t_zero == 0.0)), additional)
         push!(additional, t_zero == 0.0)
     end
-    
-	num = secure_int(num, t_zero)
-    den = secure_int(den, t_zero)
 
 	if den == 1
-        return Satisfiability.to_real(num)
+		num = secure_int(num, t_zero)
+		res = Satisfiability.to_real(num)
+		smt_cache[n] = res
+        return res
     end
+
+	num = secure_int(num, t_zero)
+    den = secure_int(den, t_zero)
 
 	@satvariable(t_one, Real)
     if !any(c -> isequal(c, (t_one == 1.0)), additional)
         push!(additional, t_one == 1.0)
     end
-    return Satisfiability.to_real(num) / (Satisfiability.to_real(den) * t_one)
+	res = Satisfiability.to_real(num) / (Satisfiability.to_real(den) * t_one)
+	smt_cache[n] = res
+    return res
 end
