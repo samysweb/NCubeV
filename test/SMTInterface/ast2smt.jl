@@ -1,20 +1,16 @@
-using NCubeV.AST
-using NCubeV.SMTInterface
-using NCubeV.VerifierInterface
-using Satisfiability
-Sat = Satisfiability
-using Test
-
-
 @testset "ast2smt - TermNumber" begin
     # Loop 1: ± xxx_xxx.xxx_xxx
     for _ in 1:10
         # generate n number with at most 6 digits left and right from the decimal point 
-        n = rand([+1,-1])*rand(1:1_000_000_000_000)/1_000_000
+        x = rand([+1,-1])*rand(1:1_000_000_000_000)/1_000_000
+        # introduce rounding used in the Z3 implementation
+        x̃ = rationalize(Int32, Float32(x))
+        # convert to Satisfiability constant
+        n = Sat.to_real(x̃)
         additional = []
         expected_expr = Sat.to_real(n)
         expr = ast2smt(TermNumber(n), [], [], Dict())
-        test_expr = (expr == Sat.to_real(n))
+        test_expr = (expr == n)
         isa(test_expr, Bool) && (test_expr = Sat.__wrap_const(test_expr)) 
 		!isempty(additional) && (test_expr = test_expr ∧ Sat.and(additional...)) 
         @test (sat!(test_expr) == :SAT)
