@@ -350,7 +350,9 @@ end
     t = CompositeTerm(Pow, [a, n])
     expr = ast2smt(t, [], [], Dict())
     expected_expr = ast2smt(TermNumber(8), [], [], Dict())
-    @test (sat!(expr == expected_expr) == :SAT)
+    test_expr = (expr == expected_expr)
+    isa(test_expr, Bool) && (test_expr = Sat.__wrap_const(test_expr))
+    @test (sat!(test_expr) == :SAT)
     #@test isequal(expr, expected_expr)
 
     # 2⁻³ = 8
@@ -360,7 +362,8 @@ end
     additional = []
     expr = ast2smt(t, [], [], Dict())
     expected_expr = ast2smt(TermNumber(1//8), [], [], Dict())
-    test_expr = expr == expected_expr
+    test_expr = (expr == expected_expr)
+    isa(test_expr, Bool) && (test_expr = Sat.__wrap_const(test_expr))
     !isempty(additional) && (test_expr = test_expr ∧ Sat.and(additional...)) 
     @test (sat!(test_expr) == :SAT)
     #isequal(expr, expected_expr)
