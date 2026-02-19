@@ -31,16 +31,6 @@ module SMTInterface
 	#USE_CORES = true
 	USE_CORES = false
 
-	if SMT_SOLVER == "Z3"
-		#include("Z3/Main.jl")
-	elseif SMT_SOLVER == "CVC5"
-		#include("CVC5/Main.jl")
-	#elseif SMT_SOLVER == "dreal"
-	#	include("dreal/Main.jl")
-	else
-		error("Unknown SMT solver: " + SMT_SOLVER)
-	end
-
 
 	include("AST2SMT.jl")
 	include("AST2Satisfiability.jl")

@@ -1,0 +1,35 @@
+Test Summary:     | Pass  Total      Time
+Integration Tests |    2      2  27m34.4s
+  SAT             |    1      1   7m59.0s
+  UNSAT           |    1      1  19m35.4s
+Test Summary:        | Pass  Total  Time
+ast2smt - TermNumber |   10     10  0.9s
+Test Summary:      | Pass  Total  Time
+ast2smt - Variable |    1      1  0.0s
+Test Summary:  | Pass  Total  Time
+ast2smt - Atom |   42     42  1.3s
+Test Summary:           | Pass  Total  Time
+ast2smt — CompositeTerm |   50     50  1.4s
+Test Summary:              | Pass  Total  Time
+ast2smt — CompositeFormula |    5      5  0.4s
+Test Summary:              | Pass  Total  Time
+ast2smt — LinearConstraint |    2      2  0.1s
+Test Summary:        | Pass  Total  Time
+ast2smt — LinearTerm |    1      1  0.1s
+Test Summary:                  | Pass  Total  Time
+ast2smt - SemiLinearConstraint |    1      1  0.3s
+Test Summary:             | Pass  Total  Time
+ast2smt - NormalizedQuery |    1      1  0.6s
+Test Summary:     | Pass  Total  Time
+ast2smt - smt_pow |    7      7  0.3s
+Test Summary:      | Pass  Total  Time
+lin_feasible tests |    4      4  0.2s
+Test Summary:     | Pass  Total  Time
+nl_feasible tests |    4      4  0.2s
+Test Summary:  | Pass  Total  Time
+ast2smt - Star |    1      1  0.2s
+Test Summary:    | Pass  Total  Time
+check_star tests |    6      6  0.6s
+     Testing NCubeV tests passed 
+
+(NCubeV) pkg> 
