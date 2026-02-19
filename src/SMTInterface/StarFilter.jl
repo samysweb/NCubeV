@@ -61,12 +61,14 @@ Implements Lemma 12 from Appendix B.3.
 """
 function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cache)
 	disjunction = []
-	additional = []
 	@satvariable(x[1:length(variables)], Real)
+	additional = []
 	star_expr = ast2smt(star, x, additional, smt_cache)
+	!isempty(additional) && (star_expr = star_expr ∧ Sat.and(additional...)) 
 	
 	# filter out pairs where the linear part is unsatisfiable
 	for (linear, nonlinear) ∈ disjunction_nonlinear
+		additional = []
 		lin_expr = ast2smt(linear, x, additional, smt_cache)
 		expr = Sat.and(star_expr, lin_expr)
 		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
@@ -86,8 +88,9 @@ function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cac
 		end
 	end
 	if length(disjunction) > 0
+		additional = []
 		disj_expr = Sat.or(
-			(map(c -> ast2smt(c, variables, additional, smt_cache), disjunction))...
+			(map(c -> ast2smt(c, x, additional, smt_cache), disjunction))...
 		)
 		expr = Sat.and(star_expr, disj_expr)
 		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
@@ -109,21 +112,22 @@ function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cac
 			end
 		end
 
-		if res == :SAT
-			println("nl true")
-		else
-			println("nl false")
-		end
-		
+		#println("nl $(res)")
+		#@show expr
+
 		@match res begin
 			:SAT => begin
-				num_input_vars = length(star.counter_example[1])
-				for (var_index, var) in enumerate(x)
-					if var_index <= num_input_vars
-						star.counter_example[1][var_index] = var.value
-					else
-						star.counter_example[2][var_index-num_input_vars] = var.value
+				try
+					num_input_vars = length(star.counter_example[1])
+					for (var_index, var) in enumerate(x)
+						if var_index <= num_input_vars
+							star.counter_example[1][var_index] = var.value
+						else
+							star.counter_example[2][var_index-num_input_vars] = var.value
+						end
 					end
+				catch
+					print_msg("[SMT] Reusing original (linear) counter-example due to error in SMT model extraction")
 				end
 				return 1, star
 			end
