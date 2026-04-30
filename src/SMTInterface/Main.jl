@@ -52,7 +52,9 @@ module SMTInterface
 		cons_trans = map(con -> ast2smt(con, variables, additional, Dict()), constraints)
 		expr = Sat.and(cons_trans...)
 		
-		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
+		if !isempty(additional)
+			expr = expr ∧ Sat.and(additional...)
+		end
 		
 		# If expr simplified to a native Bool, wrap it back into an SMT expression
 		if expr isa Bool
@@ -95,7 +97,9 @@ module SMTInterface
 
 		cons_trans = map(con -> ast2smt(con, variables, additional, Dict()), constraints)
 		expr = Sat.and(cons_trans...)
-		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
+		if !isempty(additional)
+			expr = expr ∧ Sat.and(additional...)
+		end
 
 		# If expr simplified to a native Bool, wrap it back into an SMT expression
 		if expr isa Bool

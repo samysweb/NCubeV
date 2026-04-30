@@ -93,7 +93,9 @@ function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cac
 			(map(c -> ast2smt(c, x, additional, smt_cache), disjunction))...
 		)
 		expr = Sat.and(star_expr, disj_expr)
-		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
+		if !isempty(additional)
+			expr = expr ∧ Sat.and(additional...)
+		end				
 		# If expr simplified to a native Bool, wrap it back into an SMT expression
 		if expr isa Bool
 			expr = Satisfiability.__wrap_const(expr)
