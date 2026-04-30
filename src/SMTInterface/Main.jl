@@ -1,6 +1,6 @@
 """
 SMTInterface
-============
+=============
 
 Abstractions over SMT solvers (Z3, CVC5, …) and AST translations used by the
 Mosaic pipeline. Provides QF_LRA and QF_NRA contexts, translation helpers, and
@@ -22,22 +22,18 @@ module SMTInterface
 	import ..Config.SMT_SOLVER
 	import ..Config.TIMER
 
-	export smt_context, nl_feasible, nl_feasible_init
+	using Satisfiability
+	Sat = Satisfiability
 
-	USE_CORES = true
+	export smt_context, lin_feasible, nl_feasible, nl_feasible_init, check_star
+	export ast2smt, pwl2term, secure_int
 
-	if SMT_SOLVER == "Z3"
-		include("Z3/Main.jl")
-	elseif SMT_SOLVER == "CVC5"
-		include("CVC5/Main.jl")
-	#elseif SMT_SOLVER == "dreal"
-	#	include("dreal/Main.jl")
-	else
-		error("Unknown SMT solver: " + SMT_SOLVER)
-	end
+	#USE_CORES = true
+	USE_CORES = false
 
 
 	include("AST2SMT.jl")
+	include("AST2Satisfiability.jl")
 	include("Base.jl")
 	include("StarFilter.jl")
 
@@ -48,55 +44,43 @@ module SMTInterface
 	Uses activation literals to optionally extract an unsat core into `conflicts`
 	(indices of `constraints`). Returns `true` if satisfiable or unknown.
 	"""
-	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables,conflicts;print_model=false)
-		res = smt_solver(ctx) do s
-			smt_internal_set(s,"unsat-core",true)
-			conflict_clauses = Dict()
-			vars = ExprVector(ctx)
-			@timeit TIMER "SMTprep" begin
-				for (i,c) in enumerate(constraints)
-					additional = []
-					smt_cache = Dict()
-					translated = ast2smt(c, variables, additional, smt_cache)
-					#print_msg(translated)
-					conflict_var = bool_const(ctx, "c" * string(i))
-					smt_internal_add(s, Z3.implies(conflict_var,translated))
-					conflict_clauses[string(conflict_var)] = i
-					push!(vars, conflict_var)
-					for a in additional
-						smt_internal_add(s, a)
-					end
-				end
-			end
-			
-			res = smt_internal_check(s, vars)
-			@timeit TIMER "SMTprep" begin
-			#conflicts = []
-			if smt_internal_is_sat(res)
+	function nl_feasible(constraints :: Vector{Union{Formula}}, ctx, variables, conflicts; print_model=false)
+		n = length(constraints)
+		@satvariable(C[1:n], Bool) # conflict bools
+		additional = []
+
+		cons_trans = map(con -> ast2smt(con, variables, additional, Dict()), constraints)
+		expr = Sat.and(cons_trans...)
+		
+		if !isempty(additional)
+			expr = expr ∧ Sat.and(additional...)
+		end
+		
+		# If expr simplified to a native Bool, wrap it back into an SMT expression
+		if expr isa Bool
+			expr = Satisfiability.__wrap_const(expr)
+		end
+
+		res = sat!(expr, solver=Z3(), logic="QF_NRA")
+
+		@timeit TIMER "SMTprep" begin
+			if res == :SAT
 				if print_model
 					smt_print_model(s)
 				end
-			elseif !smt_internal_is_unsat(res)
+			elseif res != :UNSAT
 				print_msg("[SMT] SMT returned status: ", res)
-			else # unsat
-				#print_msg("[SMT] Conflict:")
+			else # res == :UNSAT
 				if USE_CORES
-					for c in unsat_core(s)
-						#print_msg("[SMT] ", c)
-						#print_msg("[SMT] ", constraints[conflict_clauses[string(c)]])
-						push!(conflicts,conflict_clauses[string(c)])
-					end
+					# TODO
 				else
 					for (i,_) in enumerate(constraints)
 						push!(conflicts,i)
 					end
 				end
 			end
-			end
-
-			return res
 		end
-		return !smt_internal_is_unsat(res)
+		return (res ≠ :UNSAT)
 	end
 
 
@@ -106,54 +90,41 @@ module SMTInterface
 	Check feasibility of linear constraints under QF_LRA with activation literals
 	for unsat core extraction. Returns `true` if satisfiable or unknown.
 	"""
-	function lin_feasible(constraints :: Vector{LinearConstraint}, ctx, variables,conflicts;print_model=false)
-		res = smt_solver(ctx;theory="qflra") do s
-			smt_internal_set(s,"unsat-core",true)
-			conflict_clauses = Dict()
-			vars = ExprVector(ctx)
-			@timeit TIMER "SMTprep" begin
-				for (i,c) in enumerate(constraints)
-					additional = []
-					smt_cache = Dict()
-					translated = ast2smt(c, variables, additional, smt_cache)
-					#print_msg(translated)
-					conflict_var = bool_const(ctx, "c" * string(i))
-					smt_internal_add(s, Z3.implies(conflict_var,translated))
-					conflict_clauses[string(conflict_var)] = i
-					push!(vars, conflict_var)
-					for a in additional
-						smt_internal_add(s, a)
-					end
-				end
-			end
-			
-			res = smt_internal_check(s, vars)
-			@timeit TIMER "SMTprep" begin
-			#conflicts = []
-			if smt_internal_is_sat(res)
+	function lin_feasible(constraints :: Vector{LinearConstraint}, ctx, variables, conflicts; print_model=false)
+		n = length(constraints)
+		@satvariable(C[1:n], Bool) # conflict bools
+		additional = []
+
+		cons_trans = map(con -> ast2smt(con, variables, additional, Dict()), constraints)
+		expr = Sat.and(cons_trans...)
+		if !isempty(additional)
+			expr = expr ∧ Sat.and(additional...)
+		end
+
+		# If expr simplified to a native Bool, wrap it back into an SMT expression
+		if expr isa Bool
+			expr = Satisfiability.__wrap_const(expr)
+		end
+		# needs qf_nra since ast2smt(TermNumber) uses fractions with variables in the denominator
+		res = sat!(expr, solver=Z3(), logic="QF_NRA")
+
+		@timeit TIMER "SMTprep" begin
+			if res == :SAT
 				if print_model
 					smt_print_model(s)
 				end
-			elseif !smt_internal_is_unsat(res)
+			elseif res != :UNSAT
 				print_msg("[SMT] SMT returned status: ", res)
-			else # unsat
-				#print_msg("[SMT] Conflict:")
+			else # res == :UNSAT
 				if USE_CORES
-					for c in unsat_core(s)
-						#print_msg("[SMT] ", c)
-						#print_msg("[SMT] ", constraints[conflict_clauses[string(c)]])
-						push!(conflicts,conflict_clauses[string(c)])
-					end
+					# TODO
 				else
 					for (i,_) in enumerate(constraints)
 						push!(conflicts,i)
 					end
 				end
 			end
-			end
-
-			return res
 		end
-		return !smt_internal_is_unsat(res)
+		return (res ≠ :UNSAT)
 	end
 end

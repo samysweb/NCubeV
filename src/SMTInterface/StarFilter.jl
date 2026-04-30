@@ -27,23 +27,24 @@ its input bounds and affine output mapping (x⁺ = ω(z)).
 
 Used by `check_star` to assemble both linear and nonlinear checks.
 """
-function add_to_solver(solver, variables, star, smt_cache)
+
+
+function ast2smt(star :: Star, variables, additional, smt_cache)
 	input_vars = size(star.constraint_matrix)[2]
-	additional = []
+	exprs = []
 	for (c,b) in zip(eachrow(star.constraint_matrix),star.constraint_bias)
-		smt_internal_add(solver, ast2smt(LinearConstraint(c,b,true), variables, additional, smt_cache))
+		push!(exprs, ast2smt(LinearConstraint(c,b,true), variables, additional, smt_cache))
 	end
 	for (i, b) in enumerate(star.bounds)
-		smt_internal_add(solver, ast2smt(Atom(AST.LessEq, TermNumber(b[1]),Variable("x"*string(i), nothing, i)),variables, additional, smt_cache))
-		smt_internal_add(solver, ast2smt(Atom(AST.LessEq, Variable("x"*string(i), nothing, i), TermNumber(b[2])),variables, additional, smt_cache))
-	end
-	for a in additional
-		smt_internal_add(solver, a)
+		push!(exprs, ast2smt(Atom(AST.LessEq, TermNumber(b[1]),Variable("x"*string(i), nothing, i)),variables, additional, smt_cache))
+		push!(exprs, ast2smt(Atom(AST.LessEq, Variable("x"*string(i), nothing, i), TermNumber(b[2])),variables, additional, smt_cache))
 	end
 	for (i,(c,b)) in enumerate(zip(eachrow(star.output_map_matrix),star.output_map_bias))
-		smt_internal_add(solver, ast2smt(Atom(AST.Eq, Variable("x"*string(input_vars+i), nothing, input_vars+i), LinearTerm(c,b)), variables, additional, smt_cache))
+		push!(exprs, ast2smt(Atom(AST.Eq, Variable("x"*string(input_vars+i), nothing, input_vars+i), LinearTerm(c,b)), variables, additional, smt_cache))
 	end
-	@assert length(additional) == 0
+	
+	
+	return Sat.and(exprs...)
 end
 
 """
@@ -58,71 +59,85 @@ Returns 1 for confirmed counterexample, 2 for unknown/timeout, 0 for spurious.
 
 Implements Lemma 12 from Appendix B.3.
 """
-function check_star(ctx,variables, disjunction_nonlinear, star :: Star, smt_cache)
-	smt_solver(ctx;theory="qfnra",stars=true) do solver
-		add_to_solver(solver, variables, star, smt_cache)
-		disjunction = []
-		smt_solver(ctx;theory="qflra",stars=true) do lin_solver
-			add_to_solver(lin_solver, variables, star, smt_cache)
-			for (linear, nonlinear) in disjunction_nonlinear
-				smt_internal_push(lin_solver)
-				additional = []
-				smt_internal_add(lin_solver, ast2smt(linear, variables, additional, smt_cache))
-				for a in additional
-					smt_internal_add(lin_solver, a)
-				end
-				lin_solverres = smt_internal_check(lin_solver)
-				if !smt_internal_is_unsat(lin_solverres)
-					push!(disjunction,
-						CompositeFormula(AST.And,[
-							linear,
-							nonlinear
-						])
-					)
-				end
-				smt_internal_pop(lin_solver)
+function check_star(ctx, variables, disjunction_nonlinear, star :: Star, smt_cache)
+	disjunction = []
+	@satvariable(x[1:length(variables)], Real)
+	additional = []
+	star_expr = ast2smt(star, x, additional, smt_cache)
+	!isempty(additional) && (star_expr = star_expr ∧ Sat.and(additional...)) 
+	
+	# filter out pairs where the linear part is unsatisfiable
+	for (linear, nonlinear) ∈ disjunction_nonlinear
+		additional = []
+		lin_expr = ast2smt(linear, x, additional, smt_cache)
+		expr = Sat.and(star_expr, lin_expr)
+		!isempty(additional) && (expr = expr ∧ Sat.and(additional...)) 
+		# If expr simplified to a native Bool, wrap it back into an SMT expression
+		if expr isa Bool
+			expr = Satisfiability.__wrap_const(expr)
+		end
+		# needs qf_nra since ast2smt(TermNumber) uses fractions with variables in the denominator
+		res = sat!(expr, solver=Z3(), logic="QF_NRA")
+		if res ≠ :UNSAT
+			push!(disjunction,
+				CompositeFormula(AST.And,[
+					linear,
+					nonlinear
+				])
+			)
+		end
+	end
+	if length(disjunction) > 0
+		additional = []
+		disj_expr = Sat.or(
+			(map(c -> ast2smt(c, x, additional, smt_cache), disjunction))...
+		)
+		expr = Sat.and(star_expr, disj_expr)
+		if !isempty(additional)
+			expr = expr ∧ Sat.and(additional...)
+		end				
+		# If expr simplified to a native Bool, wrap it back into an SMT expression
+		if expr isa Bool
+			expr = Satisfiability.__wrap_const(expr)
+		end
+		res = nothing
+		try 
+			res = sat!(expr, solver=Z3(), logic="QF_NRA")
+		catch e
+			# Satisfiability may throw OverflowError when trying to parse Model
+			# In this case a Model was found, therefore :SAT
+			if e isa OverflowError
+				print_msg("[SMT] Reusing original (linear) counter-example due to error in SMT model extraction")
+				return 1, star
+			else
+				rethrow(e)
 			end
 		end
-		if length(disjunction) > 0
-			additional = []
-			smt_internal_add(
-				solver,
-				ast2smt(AST.or_construction(disjunction),
-				variables, additional, smt_cache))
-			for a in additional
-				smt_internal_add(solver, a)
-			end
-			solverres = smt_internal_check(solver)
-			if smt_internal_is_sat(solverres)
+
+		#println("nl $(res)")
+		#@show expr
+
+		@match res begin
+			:SAT => begin
 				try
-					m = smt_internal_get_model(solver)
-					# TODO: Generalize for other SMT solvers...
 					num_input_vars = length(star.counter_example[1])
-					for (var_index, var) in enumerate(variables)
-						var_val =Z3.eval(m,var)
-						num = parse(BigInt,convert(String,get_decimal_string(numerator(var_val),100)))
-						den = parse(BigInt,convert(String,get_decimal_string(denominator(var_val),100)))
-						var_val = convert(Float64,convert(BigFloat,num//den))
+					for (var_index, var) in enumerate(x)
 						if var_index <= num_input_vars
-							star.counter_example[1][var_index] = var_val
+							star.counter_example[1][var_index] = var.value
 						else
-							star.counter_example[2][var_index-num_input_vars] = var_val
+							star.counter_example[2][var_index-num_input_vars] = var.value
 						end
 					end
 				catch
 					print_msg("[SMT] Reusing original (linear) counter-example due to error in SMT model extraction")
 				end
 				return 1, star
-			elseif !smt_internal_is_unsat(solverres)
-				# SMT solver returned unknown
-				return 2, star
-			else
-				return 0, star
 			end
-		else
-			return 0, star
+			:UNSAT => return 0, star
+			:ERROR => return 2, star 
 		end
 	end
+	return 0, star
 end
 
 """

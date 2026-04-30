@@ -101,7 +101,8 @@ module Cmd
 			print_msg("[CMD] Not using cores for SMT queries")
 			SMTInterface.USE_CORES = false
 		else
-			SMTInterface.USE_CORES = true
+			#SMTInterface.USE_CORES = true
+			SMTInterface.USE_CORES = false
 		end
 		if args["no-normalization"]
 			print_msg("[CMD] Not normalizing atoms")
@@ -157,6 +158,7 @@ module Cmd
 		args = parse_commandline(cmd_args)
 		
 		@time result, cex_count = run_internal(args)
+		
 
 		print_msg("----------------------------------------------------------")
 		#print_msg("Status: "*string(result.status))

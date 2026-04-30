@@ -91,7 +91,7 @@ left-hand side term and creating a strict/weak inequality depending on
 Notes:
 - Coefficients are rationalized to improve solver stability.
 """
-function ast2smt(semi :: SemiLinearConstraint, variables, additional)
+function ast2smt(semi :: SemiLinearConstraint, variables, additional, smt_cache=Dict())
 	term = TermNumber(0.0)
 	for (i,c) in enumerate(semi.coefficients)
 		term = CompositeTerm(Add, Term[term, rationalize(Int32,BigFloat(c)) * Variable("x"*string(i),nothing,i)])

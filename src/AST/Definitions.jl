@@ -108,6 +108,9 @@ end
 	coefficients :: Array{Rational{BigInt}}
 	bias :: Rational{BigInt}
 	equality :: Bool
+	function SemiLinearConstraint(semilinears :: Dict{ApproxQuery, Rational{BigInt}}, coefficients :: Array{Rational{BigInt}}, bias :: Rational{BigInt}, equality :: Bool)
+		return new(semilinears, coefficients, bias, equality)
+	end
 	function SemiLinearConstraint(semilinears :: Dict{ApproxQuery, Rational{BigInt}})
 		return function(coefficients :: Array{Rational{BigInt}}, bias :: Rational{BigInt}, equality :: Bool)
 			return new(semilinears, coefficients, bias, equality)
@@ -254,6 +257,9 @@ struct PwlConjunction
 	bounds :: Vector{Vector{Float64}}
 	linear_constraints :: Vector{LinearConstraint}
 	semilinear_constraints :: Vector{SemiLinearConstraint}
+	function PwlConjunction(bounds :: Vector{Vector{Float64}}, linear_constraints :: Vector{LinearConstraint}, semilinear_constraints :: Vector{SemiLinearConstraint})
+		return new(bounds, linear_constraints, semilinear_constraints)
+	end
 	function PwlConjunction(num_vars :: Int64, linear_constraints :: Vector{LinearConstraint}, semilinear_constraints :: Vector{SemiLinearConstraint})
 		return new(
 			Vector{Float64}[Float64[] for _ in 1:num_vars],
@@ -276,6 +282,9 @@ struct NormalizedQuery
 	input_constraints :: PwlConjunction
 	mixed_constraints :: Vector{PwlConjunction}
 	approx_queries :: Dict{Term, Vector{BoundType}}
+	function NormalizedQuery(input_bounds :: Vector{Vector{Float64}}, output_bounds :: Vector{Vector{Float64}}, input_constraints :: PwlConjunction, mixed_constraints :: Vector{PwlConjunction}, approx_queries :: Dict{Term, Vector{BoundType}})
+		return new(input_bounds, output_bounds, input_constraints, mixed_constraints, approx_queries)
+	end
 	function NormalizedQuery(
 		input :: Vector{T1},
 		disjunction :: Vector{Vector{T2}},

@@ -20,6 +20,8 @@ PackageCompiler = "9b87118b-4619-50d2-8e1e-99f35a4d4d9d"
 PicoSAT = "ff2beb65-d7cd-5ff1-a187-74671133a339"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+Satisfiability = "160ab843-0bc6-4ba4-9585-b7478b70f443"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 SymbolicUtils = "d1185830-fcd6-423d-90d6-eec64667417b"
 TermInterface = "8ea1fca8-c5ef-4a55-8b96-4e9afe9c9a3c"
 TimerOutputs = "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"
@@ -27,12 +29,6 @@ Tokenize = "0796e94c-ce3b-5d07-9a54-7f471281c624"
 Z3 = "06b161dc-0161-11ea-0f74-41f836f4024b"
 libcxxwrap_julia_jll = "3eaa8342-bff7-56a5-9981-c04077f7cee7"
 z3_jll = "1bc4e1ec-7839-5212-8f2f-0d16b7bd09bc"
-
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Test"]
 
 [compat]
 CxxWrap = "0.15.1"
@@ -42,3 +38,9 @@ SymbolicUtils = "0.19.11"
 Z3 = "0.4.4"
 libcxxwrap_julia_jll = "0.12.3"
 z3_jll = "4.13.0"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
