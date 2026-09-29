@@ -113,4 +113,10 @@ module Cmd
 		save(args["output"],"result",result,"args",args)
 		print_msg(" Done")
 	end
+
+
+	function main_NCubeV():Cint
+		result = run_cmd(ARGS)
+		return convert(Cint, result)
+	end
 end

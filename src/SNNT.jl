@@ -46,5 +46,6 @@ using .Verifiers
 using .Cmd
 
 export run_cmd
+export main_NCubeV
 
 end # module

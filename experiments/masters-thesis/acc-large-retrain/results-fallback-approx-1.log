@@ -1,0 +1,500 @@
+[runlim] version:		1.10
+[runlim] time limit:		311040000 seconds
+[runlim] real time limit:	311040000 seconds
+[runlim] space limit:		30907 MB
+[runlim] argv[0]:		./deps/NCubeV/bin/julia
+[runlim] argv[1]:		--project
+[runlim] argv[2]:		cli.jl
+[runlim] argv[3]:		test/parsing/examples/acc/formula-fallback
+[runlim] argv[4]:		test/parsing/examples/acc/fixed
+[runlim] argv[5]:		test/parsing/examples/acc/mapping
+[runlim] argv[6]:		test/networks/acc-2000000-64-64-64-64-retrain-100000-200000-0.9.onnx
+[runlim] argv[7]:		experiments/masters-thesis/acc-large-retrain/results-approx-1.jld
+[runlim] argv[8]:		--approx
+[runlim] argv[9]:		1
+[runlim] start:			Tue Sep 29 15:41:24 2026
+[runlim] main pid:		126002
+[CMD] Using SMT solver: Z3
+[CMD] Parsed initial query: SNNT.AST.Query((((-1.0*x1<=0//1&1.0*x1<=100//1&-1.0*x2<=200//1&1.0*x2<=200//1&-1.0*x3<=100//1&1.0*x3<=741143478055935533075925389486008170521953994650285619813513790504409094098559959//7410693711188236507108543040556026102609279018600996098525285376506440296955904)&(-1.0*x1<0//1&((-1.0*rPos)+(0.005*(rVel^2.0)))<=0.0)&(-1.0*x2<-23158417847463239084714197001737581570653996933128112807891516801582625927987//231584178474632390847141970017375815706539969331281128078915168015826259279872|1.0*x2<-30395423424795501298687383564780575811483370974730648060357615802077196530483//14474011154664524427946373126085988481658748083205070504932198000989141204992|-1.0*x1<-74106937111882365071085430405560261026092790186009960985252853765064402969559//926336713898529563388567880069503262826159877325124512315660672063305037119488))->(-1.0*x3<=-100//1|(-1.0*x3<=100//1&1.0*x3<100//1&(1.0*x3<0//1|-1.0*x3<0//1)&(((1.0*x20.1*x3<0//1|-1.0*x2<0//1)&((-0.1*rVel)+(-1.0*rPos)+(5.0e-5*(rAccpost^2.0))+(-0.0050000004*rAccpost)+(0.005*(rVel^2.0))+(0.0009999999*rAccpost*rVel))<0.0)|(((-0.1*rVel)+(-1.0*rPos)+(5.0e-5*(rAccpost^2.0))+(-0.0050000004*rAccpost)+(0.005*(rVel^2.0))+(0.0009999999*rAccpost*rVel))<0.0&((0.5*(rVel^2.0))+(-1.0*rAccpost*rPos))<0.0)))|(((-0.1*rVel)+(-1.0*rPos)+(0.005*(rVel^2.0)))<0.0&(1.0*x3<=0//1&-1.0*x3<=0//1)))), Set(SNNT.AST.Variable[rAccpost, rVel, rPos]), 2, 1)
+[CTRL] Iterating over conjunctions...
+[CTRL] Considering conjunction with 2 input constraints and a disjunction of size 5
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[]
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-2.1, 0.0)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-2.1, 0.0)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost^2.0)), [(-100.0, 100.00999999999999)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)])
+[APPROX] Constructing Approximation
+[APPROX] Generating expression for (rVel^2.0)...
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost^2.0)...
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost*rPos)...
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost*rVel)...
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Resolving approximation
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] # Conjunctions over output: 180
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, -2.1]
+[NNENUM] ub: [100.0, -1.0490000000000002]
+[runlim] sample:		11.0 time, 10.9 real, 1276.3 MB
+[NNENUM] Spec list length:  180
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 2/4  (37.5%) CEs: 2 ETA: 0.3 sec (expected 5 stars)   
+(0.3 sec) Q: 0, Sets: 4/7  (40.625%) CEs: 4 ETA: 0.5 sec (expected 10 stars)   (0.5 sec) Q: 0, Sets: 6/9  (42.188%) CEs: 6 ETA: 0.6 sec (expected 14 stars)   
+(0.6 sec) Q: 0, Sets: 8/10  (43.75%) CEs: 8 ETA: 0.8 sec (expected 18 stars)   (0.7 sec) Q: 0, Sets: 10/12  (48.438%) CEs: 10 ETA: 0.8 sec (expected 21 stars)   (0.9 sec) Q: 0, Sets: 12/17  (51.562%) CEs: 12 ETA: 0.8 sec (expected 23 stars)   (1.0 sec) Q: 0, Sets: 14/19  (52.344%) CEs: 14 ETA: 0.9 sec (expected 27 stars)   
+(1.2 sec) Q: 0, Sets: 17/22  (53.906%) CEs: 16 ETA: 1.0 sec (expected 32 stars)   (1.3 sec) Q: 0, Sets: 20/24  (55.469%) CEs: 18 ETA: 1.0 sec (expected 36 stars)   (1.4 sec) Q: 0, Sets: 22/25  (56.25%) CEs: 20 ETA: 1.1 sec (expected 39 stars)   (1.6 sec) Q: 0, Sets: 24/26  (68.75%) CEs: 22 ETA: 0.7 sec (expected 35 stars)   (1.7 sec) Q: 0, Sets: 27/32  (75.781%) CEs: 24 ETA: 0.6 sec (expected 36 stars)   (1.9 sec) Q: 0, Sets: 32/36  (77.344%) CEs: 26 ETA: 0.5 sec (expected 41 stars)   (2.0 sec) Q: 0, Sets: 35/40  (78.516%) CEs: 28 ETA: 0.6 sec (expected 45 stars)   (2.2 sec) Q: 0, Sets: 37/41  (79.297%) CEs: 30 ETA: 0.6 sec (expected 47 stars)   
+(2.3 sec) Q: 0, Sets: 39/43  (80.078%) CEs: 32 ETA: 0.6 sec (expected 49 stars)   (2.4 sec) Q: 0, Sets: 41/44  (80.859%) CEs: 34 ETA: 0.6 sec (expected 51 stars)   (2.5 sec) Q: 0, Sets: 43/46  (82.812%) CEs: 36 ETA: 0.5 sec (expected 52 stars)   (2.7 sec) Q: 0, Sets: 45/47  (85.938%) CEs: 38 ETA: 0.4 sec (expected 52 stars)   (2.8 sec) Q: 0, Sets: 47/50  (86.328%) CEs: 40 ETA: 0.4 sec (expected 54 stars)   (2.9 sec) Q: 0, Sets: 48/50  (86.719%) CEs: 42 ETA: 0.4 sec (expected 55 stars)   (3.1 sec) Q: 0, Sets: 50/52  (90.625%) CEs: 44 ETA: 0.3 sec (expected 55 stars)   (3.2 sec) Q: 0, Sets: 53/53  (100.0%) CEs: 46 ETA: 0.0 sec (expected 53 stars)   
+Total Stars: 53 (53 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 3.2 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 729
+Total Num Lps: 729
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [0.07999999821186066, -1.0490000247955322]
+Output: [51.05220413208008]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27c95b20>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 46
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 46 stars (out of 46).
+[CTRL] Saving current state of verification...
+[APPROX] # Conjunctions over output: 60
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, -1.051]
+[NNENUM] ub: [100.0, 0.0]
+[NNENUM] Spec list length:  60
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 1/4  (12.5%) CEs: 2 ETA: 1.2 sec (expected 8 stars)   
+(0.3 sec) Q: 0, Sets: 5/7  (43.75%) CEs: 6 ETA: 0.4 sec (expected 11 stars)   (0.4 sec) Q: 0, Sets: 9/11  (62.5%) CEs: 10 ETA: 0.2 sec (expected 14 stars)   
+(0.5 sec) Q: 0, Sets: 14/14  (100.0%) CEs: 14 ETA: 0.0 sec (expected 14 stars)   
+Total Stars: 14 (14 exact, 0 approx)
+Unfinished Stars: 0
+Runtime: 0.5 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 338
+Total Num Lps: 338
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [0.07999999821186066, -0.7600950598716736]
+Output: [36.03409957885742]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27cc83a0>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 14
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 14 stars (out of 14).
+[CTRL] Saving current state of verification...
+[runlim] sample:		22.3 time, 20.9 real, 1302.0 MB
+[CTRL] Considering conjunction with 2 input constraints and a disjunction of size 5
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)])]
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-200.0, -2.1)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-200.0, -2.1)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost^2.0)), [(-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.0, 0.07999999999999999), (-100.0, 100.00999999999999)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)])
+[APPROX] Constructing Approximation
+[APPROX] Generating expression for (rVel^2.0)...
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost*rPos)...
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost*rVel)...
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Resolving approximation
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] # Conjunctions over output: 180
+[APPROX] # Conjunctions over output: 60
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, -101.05100000000002]
+[NNENUM] ub: [0.07999999999999999, -2.1]
+[NNENUM] Spec list length:  60
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27ca0a60>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0).
+[CTRL] Saving current state of verification...
+[runlim] sample:		33.6 time, 30.9 real, 1341.5 MB
+[CTRL] Considering conjunction with 2 input constraints and a disjunction of size 5
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.0, 0.07999999999999999), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-200.0, -2.1)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-200.0, -2.1)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)])]
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-200.0, -2.1)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-200.0, -2.1)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost^2.0)), [(-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)])
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[APPROX] # Conjunctions over output: 180
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, -200.0]
+[NNENUM] ub: [100.0, -101.049]
+[NNENUM] Spec list length:  180
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27cc77c0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0).
+[CTRL] Saving current state of verification...
+[APPROX] # Conjunctions over output: 60
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, -101.05100000000002]
+[NNENUM] ub: [100.0, -2.1]
+[NNENUM] Spec list length:  60
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 5/11  (9.375%) CEs: 0 ETA: 1.6 sec (expected 53 stars)   
+(0.3 sec) Q: 0, Sets: 24/27  (31.25%) CEs: 0 ETA: 0.6 sec (expected 77 stars)   (0.4 sec) Q: 0, Sets: 38/43  (87.5%) CEs: 0 ETA: 0.1 sec (expected 43 stars)   
+
+Total Stars: 50 (37 exact, 13 approx)
+Unfinished Stars: 0
+Runtime: 0.4 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 1266
+Total Num Lps: 1266
+
+Result: network is UNSAFE with confirmed counterexample in result.cinput and result.coutput
+Input: [0.07999999821186066, -2.0999999046325684]
+Output: [100.0009994506836]
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27d320d0>
+[NNENUM] Enumeration finished.
+unsafe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0).
+[CTRL] Saving current state of verification...
+[CTRL] Considering conjunction with 2 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.0, 0.07999999999999999), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-200.0, -2.1)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-200.0, -2.1)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)])]
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(0.09999999999999999, 200.0)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(0.09999999999999999, 200.0)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.0, 0.07999999999999999), (-100.0, 100.00999999999999)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(0.09999999999999999, 200.0), (-100.0, 100.00999999999999)])
+[APPROX] Constructing Approximation
+[APPROX] Generating expression for (rVel^2.0)...
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost*rVel)...
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Resolving approximation
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] # Conjunctions over output: 36
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.0, 0.09999999999999999]
+[NNENUM] ub: [0.07999999999999999, 100.051]
+[NNENUM] Spec list length:  36
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+
+Total Stars: 7 (0 exact, 7 approx)
+Unfinished Stars: 0
+Runtime: 0.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 0
+Total Num Lps: 0
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27cc8820>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0).
+[CTRL] Saving current state of verification...
+[APPROX] # Conjunctions over output: 12
+[CTRL] Considering conjunction with 2 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.0, 0.07999999999999999), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(0.09999999999999999, 200.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-200.0, -2.1)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-200.0, -2.1)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(0.09999999999999999, 200.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(0.09999999999999999, 200.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)])]
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-200.0, -2.1)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-200.0, -2.1)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)])
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[APPROX] # Conjunctions over output: 36
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, -200.0]
+[NNENUM] ub: [100.0, -101.049]
+[NNENUM] Spec list length:  36
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27ca0d90>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0).
+[CTRL] Saving current state of verification...
+[APPROX] # Conjunctions over output: 12
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, -101.05100000000002]
+[NNENUM] ub: [100.0, -2.1]
+[NNENUM] Spec list length:  12
+[NNENUM] Enumeration in progress... 
+(0.2 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.3 sec) Q: 0, Sets: 4/9  (6.25%) CEs: 0 ETA: 5.1 sec (expected 64 stars)   
+(0.4 sec) Q: 0, Sets: 18/23  (17.969%) CEs: 0 ETA: 2.0 sec (expected 100 stars)   (0.6 sec) Q: 0, Sets: 33/37  (21.875%) CEs: 0 ETA: 2.0 sec (expected 151 stars)   
+(0.7 sec) Q: 0, Sets: 44/56  (28.125%) CEs: 0 ETA: 1.7 sec (expected 156 stars)   (0.8 sec) Q: 0, Sets: 59/62  (37.5%) CEs: 0 ETA: 1.3 sec (expected 157 stars)   (0.9 sec) Q: 0, Sets: 69/75  (44.629%) CEs: 0 ETA: 1.1 sec (expected 155 stars)   (1.0 sec) Q: 0, Sets: 81/85  (45.117%) CEs: 0 ETA: 1.2 sec (expected 180 stars)   
+(1.1 sec) Q: 0, Sets: 89/98  (45.343%) CEs: 0 ETA: 1.3 sec (expected 196 stars)   (1.2 sec) Q: 0, Sets: 96/103  (45.532%) CEs: 0 ETA: 1.4 sec (expected 211 stars)   (1.3 sec) Q: 0, Sets: 101/105  (45.703%) CEs: 0 ETA: 1.5 sec (expected 221 stars)   (1.4 sec) Q: 0, Sets: 112/117  (47.363%) CEs: 0 ETA: 1.6 sec (expected 236 stars)   (1.5 sec) Q: 0, Sets: 121/125  (47.632%) CEs: 0 ETA: 1.7 sec (expected 254 stars)   (1.6 sec) Q: 0, Sets: 125/129  (48.926%) CEs: 0 ETA: 1.7 sec (expected 255 stars)   (1.7 sec) Q: 0, Sets: 135/143  (51.709%) CEs: 0 ETA: 1.6 sec (expected 261 stars)   (1.8 sec) Q: 0, Sets: 153/156  (62.5%) CEs: 0 ETA: 1.1 sec (expected 245 stars)   
+(1.9 sec) Q: 0, Sets: 172/177  (93.75%) CEs: 0 ETA: 0.1 sec (expected 183 stars)   (2.0 sec) Q: 0, Sets: 194/196  (96.826%) CEs: 0 ETA: 0.1 sec (expected 200 stars)   
+Total Stars: 202 (53 exact, 149 approx)
+Unfinished Stars: 0
+Runtime: 2.0 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 2492
+Total Num Lps: 2492
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27d35c10>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0).
+[CTRL] Saving current state of verification...
+[CTRL] Considering conjunction with 2 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.0, 0.07999999999999999), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(0.09999999999999999, 200.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-200.0, -2.1)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-200.0, -2.1)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(0.09999999999999999, 200.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(0.09999999999999999, 200.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)])]
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-2.1, 0.0)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-2.1, 0.0)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)])
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[APPROX] # Conjunctions over output: 36
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, -2.1]
+[NNENUM] ub: [100.0, -1.0490000000000002]
+[NNENUM] Spec list length:  36
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 12/17  (10.156%) CEs: 0 ETA: 1.5 sec (expected 118 stars)   
+(0.3 sec) Q: 0, Sets: 28/32  (22.656%) CEs: 0 ETA: 0.9 sec (expected 124 stars)   (0.4 sec) Q: 0, Sets: 44/46  (43.75%) CEs: 0 ETA: 0.5 sec (expected 101 stars)   
+(0.5 sec) Q: 0, Sets: 57/64  (62.5%) CEs: 0 ETA: 0.3 sec (expected 91 stars)   
+Total Stars: 65 (8 exact, 57 approx)
+Unfinished Stars: 0
+Runtime: 0.5 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 136
+Total Num Lps: 136
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27d351c0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0).
+[CTRL] Saving current state of verification...
+[APPROX] # Conjunctions over output: 12
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, -1.051]
+[NNENUM] ub: [100.0, 0.0]
+[NNENUM] Spec list length:  12
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 9/16  (1.953%) CEs: 0 ETA: 9.2 sec (expected 461 stars)   
+(0.3 sec) Q: 0, Sets: 23/30  (16.016%) CEs: 0 ETA: 1.5 sec (expected 144 stars)   (0.4 sec) Q: 0, Sets: 30/39  (16.113%) CEs: 0 ETA: 2.0 sec (expected 186 stars)   
+(0.5 sec) Q: 0, Sets: 49/55  (16.992%) CEs: 0 ETA: 2.4 sec (expected 288 stars)   (0.6 sec) Q: 0, Sets: 65/70  (23.633%) CEs: 0 ETA: 1.9 sec (expected 275 stars)   (0.7 sec) Q: 0, Sets: 79/87  (26.758%) CEs: 0 ETA: 1.9 sec (expected 295 stars)   (0.8 sec) Q: 0, Sets: 98/105  (28.125%) CEs: 0 ETA: 2.0 sec (expected 348 stars)   
+(0.9 sec) Q: 0, Sets: 115/123  (33.643%) CEs: 0 ETA: 1.8 sec (expected 342 stars)   (1.0 sec) Q: 0, Sets: 133/138  (71.289%) CEs: 0 ETA: 0.4 sec (expected 187 stars)   (1.1 sec) Q: 0, Sets: 150/152  (95.312%) CEs: 0 ETA: 0.1 sec (expected 157 stars)   
+Total Stars: 157 (5 exact, 152 approx)
+Unfinished Stars: 0
+Runtime: 1.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 55
+Total Num Lps: 55
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27ca04f0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0).
+[CTRL] Saving current state of verification...
+[runlim] sample:		51.3 time, 40.9 real, 1402.8 MB
+[CTRL] Considering conjunction with 2 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.0, 0.07999999999999999), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(0.09999999999999999, 200.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-200.0, -2.1)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-200.0, -2.1)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(0.09999999999999999, 200.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(0.09999999999999999, 200.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)])]
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(0.0, 0.09999999999999999)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(0.0, 0.09999999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)])
+[APPROX] Not found: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(0.0, 0.09999999999999999), (-100.0, 100.00999999999999)])
+[APPROX] Constructing Approximation
+[APPROX] Generating expression for (rVel^2.0)...
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Generating expression for (rAccpost*rVel)...
+Using N=1, ϵ=0.0, rel_error_tol=0.005
+[APPROX] Resolving approximation
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] Skipping verification of approximation (switch on using SNNT.Config.set_rigorous_approximations(true))
+[APPROX] # Conjunctions over output: 36
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, 0.0]
+[NNENUM] ub: [100.0, 0.051]
+[NNENUM] Spec list length:  36
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+
+Total Stars: 4 (0 exact, 4 approx)
+Unfinished Stars: 0
+Runtime: 0.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 0
+Total Num Lps: 0
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27d2e460>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0).
+[CTRL] Saving current state of verification...
+[APPROX] # Conjunctions over output: 12
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, 0.048999999999999995]
+[NNENUM] ub: [100.0, 0.09999999999999999]
+[NNENUM] Spec list length:  12
+[NNENUM] Enumeration in progress... 
+(0.2 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+
+Total Stars: 4 (0 exact, 4 approx)
+Unfinished Stars: 0
+Runtime: 0.2 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 0
+Total Num Lps: 0
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27ca0130>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0).
+[CTRL] Saving current state of verification...
+[CTRL] Considering conjunction with 2 input constraints and a disjunction of size 1
+[APPROX] Checking cache: SNNT.Approx.ApproxCacheObject[SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.0, 0.07999999999999999), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(0.09999999999999999, 200.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-2.1, 0.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(-200.0, -2.1)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(0.0, 0.09999999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(-200.0, -2.1)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(0.0, 0.09999999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(0.0, 0.09999999999999999), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(0.09999999999999999, 200.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(0.09999999999999999, 200.0)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-200.0, -2.1), (-100.0, 100.00999999999999)]), SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(-2.1, 0.0), (-100.0, 100.00999999999999)])]
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rVel^2.0)), [(0.09999999999999999, 200.0)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rVel^2.0)), [(0.09999999999999999, 200.0)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost^2.0)), [(-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Lower, (rAccpost*rPos)), [(0.07999999999999999, 100.0), (-100.0, 100.00999999999999)])
+[APPROX] Reusing approximation for query: SNNT.Approx.ApproxCacheObject(SNNT.AST.ApproxQuery(SNNT.AST.Upper, (rAccpost*rVel)), [(0.09999999999999999, 200.0), (-100.0, 100.00999999999999)])
+[APPROX] Constructing Approximation
+[APPROX] Resolving approximation
+[APPROX] # Conjunctions over output: 36
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, 0.09999999999999999]
+[NNENUM] ub: [100.0, 100.051]
+[NNENUM] Spec list length:  36
+[NNENUM] Enumeration in progress... 
+(0.1 sec) Q: 0, Sets: 0/1  (0.0%) CEs: 0 ETA: - (expected 1 stars)   
+(0.2 sec) Q: 0, Sets: 4/8  (10.938%) CEs: 0 ETA: 1.4 sec (expected 37 stars)   
+(0.3 sec) Q: 0, Sets: 17/24  (12.146%) CEs: 0 ETA: 2.1 sec (expected 140 stars)   (0.4 sec) Q: 0, Sets: 26/31  (19.922%) CEs: 0 ETA: 1.6 sec (expected 131 stars)   
+(0.5 sec) Q: 0, Sets: 40/44  (22.656%) CEs: 0 ETA: 1.7 sec (expected 177 stars)   (0.6 sec) Q: 0, Sets: 52/57  (23.315%) CEs: 0 ETA: 2.0 sec (expected 223 stars)   (0.7 sec) Q: 0, Sets: 66/74  (23.474%) CEs: 0 ETA: 2.3 sec (expected 281 stars)   (0.8 sec) Q: 0, Sets: 78/88  (23.538%) CEs: 0 ETA: 2.6 sec (expected 331 stars)   
+(0.9 sec) Q: 0, Sets: 92/97  (23.926%) CEs: 0 ETA: 2.9 sec (expected 385 stars)   (1.0 sec) Q: 0, Sets: 105/110  (24.609%) CEs: 0 ETA: 3.1 sec (expected 427 stars)   (1.1 sec) Q: 0, Sets: 118/127  (25.879%) CEs: 0 ETA: 3.2 sec (expected 456 stars)   (1.2 sec) Q: 0, Sets: 131/140  (50.0%) CEs: 0 ETA: 1.2 sec (expected 262 stars)   (1.3 sec) Q: 0, Sets: 140/151  (50.128%) CEs: 0 ETA: 1.3 sec (expected 279 stars)   (1.4 sec) Q: 0, Sets: 149/156  (50.586%) CEs: 0 ETA: 1.4 sec (expected 295 stars)   (1.5 sec) Q: 0, Sets: 157/165  (51.025%) CEs: 0 ETA: 1.5 sec (expected 308 stars)   (1.7 sec) Q: 0, Sets: 170/173  (65.625%) CEs: 0 ETA: 0.9 sec (expected 259 stars)   
+(1.8 sec) Q: 0, Sets: 179/181  (73.438%) CEs: 0 ETA: 0.6 sec (expected 244 stars)   (1.9 sec) Q: 0, Sets: 182/188  (73.523%) CEs: 0 ETA: 0.7 sec (expected 248 stars)   (2.0 sec) Q: 0, Sets: 194/201  (74.615%) CEs: 0 ETA: 0.7 sec (expected 260 stars)   (2.1 sec) Q: 0, Sets: 209/211  (87.5%) CEs: 0 ETA: 0.3 sec (expected 239 stars)   
+Total Stars: 213 (23 exact, 190 approx)
+Unfinished Stars: 0
+Runtime: 2.1 sec
+Completed work frac: 1.0
+Num Stars Copied Between Processes: 0
+Num Lps During Enumeration: 627
+Total Num Lps: 627
+
+Result: network is SAFE
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27cb7070>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Found counter-example stars: 0
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0).
+[CTRL] Saving current state of verification...
+[APPROX] # Conjunctions over output: 12
+[NNENUM] Running nnenum now...
+[NNENUM] lb: [0.07999999999999999, 100.04899999999999]
+[NNENUM] ub: [100.0, 200.0]
+[NNENUM] Spec list length:  12
+[NNENUM] Enumeration in progress... 
+
+[NNENUM] Result: 
+<nnenum.result.Result object at 0x7bcd27d32df0>
+[NNENUM] Enumeration finished.
+safe
+[NNENUM] Filtering result using SMT solver...
+[SMT] SMT filtered out 0 stars (out of 0).
+[CTRL] Saving current state of verification...
+ 46.220245 seconds (194.50 M allocations: 8.784 GiB, 7.67% gc time, 20.54% compilation time: 6% of which was recompilation)
+ 47.346014 seconds (196.69 M allocations: 8.898 GiB, 8.65% gc time, 20.72% compilation time: 6% of which was recompilation)
+----------------------------------------------------------
+Status: Safe
+# Unsafe Stars: 0
+Saving result in experiments/masters-thesis/acc-large-retrain/results-approx-1.jld... Done
+[runlim] end:			Tue Sep 29 15:42:14 2026
+[runlim] status:		ok
+[runlim] result:		0
+[runlim] children:		479
+[runlim] real:			50.09 seconds
+[runlim] time:			64.76 seconds
+[runlim] space:			1418.7 MB
+[runlim] samples:		491
